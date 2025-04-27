@@ -48,3 +48,7 @@ Objeto | snake_case | my_user
 
 ACTIVAR ENTORNO VIRTUAL
 .venv\Scripts\activate
+
+CORRER SERVICIO
+Hacerlo con el entorno virtual activado!!!
+python manage.py runserver
