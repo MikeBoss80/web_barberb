@@ -1,5 +1,5 @@
-from django import path
-from views import HomepageView
+from django.urls import path
+from core.views import HomepageView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es mas moderno."""
 

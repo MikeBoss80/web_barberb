@@ -44,3 +44,7 @@ Variable | snake_case | user_name
 Función | snake_case | get_user_email()
 Constante | UPPER_CASE | MAX_RETRIES
 Objeto | snake_case | my_user
+
+
+ACTIVAR ENTORNO VIRTUAL
+.venv\Scripts\activate
