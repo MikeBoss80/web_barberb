@@ -105,6 +105,14 @@
         "documentation": {}
     },
     {
+        "label": "LoginView",
+        "importPath": "core.views",
+        "description": "core.views",
+        "isExtraImport": true,
+        "detail": "core.views",
+        "documentation": {}
+    },
+    {
         "label": "render",
         "importPath": "django.shortcuts",
         "description": "django.shortcuts",
@@ -323,7 +331,7 @@
         "kind": 5,
         "importPath": "core.urls",
         "description": "core.urls",
-        "peekOfCode": "urlpatterns = [\n    path('', HomepageView.as_view(), name='main'),\n]",
+        "peekOfCode": "urlpatterns = [\n    path('', HomepageView.as_view(), name='main'),\n    path('login/', LoginView.as_view(), name='login'),\n]",
         "detail": "core.urls",
         "documentation": {}
     },
@@ -332,7 +340,16 @@
         "kind": 6,
         "importPath": "core.views",
         "description": "core.views",
-        "peekOfCode": "class HomepageView(TemplateView):\n    \"\"\"Vista principal Main//Home\"\"\"\n    template_name = 'core/main.html'",
+        "peekOfCode": "class HomepageView(TemplateView):\n    \"\"\"Vista principal Main//Home\"\"\"\n    template_name = 'core/main.html'\nclass LoginView(TemplateView):\n    \"\"\"Vista de inicio de sesión Login\"\"\"\n    template_name = 'core/Login.html'",
+        "detail": "core.views",
+        "documentation": {}
+    },
+    {
+        "label": "LoginView",
+        "kind": 6,
+        "importPath": "core.views",
+        "description": "core.views",
+        "peekOfCode": "class LoginView(TemplateView):\n    \"\"\"Vista de inicio de sesión Login\"\"\"\n    template_name = 'core/Login.html'",
         "detail": "core.views",
         "documentation": {}
     },
