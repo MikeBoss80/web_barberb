@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, ListView
 
 # Create your views here.
 
-class HomeadminView(TemplateView, ListView):
+class HomeadminView(TemplateView):
     """Vista Principal Modulo Admin"""
     template_name = 'admin_module/main.html'
     

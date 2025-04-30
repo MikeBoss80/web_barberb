@@ -7,12 +7,7 @@ app_name = 'admin_module'
 
 urlpatterns = [
     path('', HomeadminView.as_view(), name='admin_main'),
-   
-    
-]
-
-
-""" path('citas/', CitasView.as_view(), name='citas'),
+    path('citas/', CitasView.as_view(), name='citas'),
     path('barberos/', BarberosView.as_view(), name='barberos'),
     path('servicios/', ServiciosView.as_view(), name='servicios'),
     path('inventario/', InventarioView.as_view(), name='inventario'),
@@ -20,4 +15,9 @@ urlpatterns = [
     path('seguridad/', SeguridadView.as_view(), name='seguridad'),
     path('soporte/', SoporteView.as_view(), name='soporte'),
     path('soporte/', ContenidosView.as_view(), name='contenidos'),
+    
+]
+
+
+""" 
 """

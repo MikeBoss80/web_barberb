@@ -1,0 +1,134 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "arial", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url("../img/fondo5.png");
+    background-size: cover;
+    background-position: center;
+    
+    animation: gradient 15s ease infinite;
+    
+    
+       }
+
+.wrapper {
+  width: 420px;
+  background: transparent;
+  color: rgb(253, 254, 255);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 10px rgb(45, 55, 65);
+  border-radius: 10px;
+  padding: 30px 40px;
+}
+
+.wrapper h1 {
+    font-size: 40px;
+    text-align: center;
+}
+
+.wrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 40px ;
+    font-size:16px ;
+    padding: auto;
+}
+
+.input-box input ::placeholder{
+    color: rgb(24, 21, 21) ;
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.wrapper .remember {
+    display: flex;
+    justify-content: space-between;
+    font-size: -14.5px;
+    margin: -15px 0 15px;
+}
+
+.remember label input {
+    accent-color: red;
+    margin-right: 3px;   
+    }
+
+    .remember a {
+        color: rgb(199, 35, 35);
+        text-decoration: none;
+    }
+
+    .remember a:hover {
+        text-decoration: underline;
+    }
+
+    .wrapper .btn {
+        width: 100%;
+        height: 45px;
+        background: linear-gradient(to right, rgba(255, 0, 0, 0.767), rgba(0, 0, 255, 0.322)) ;
+        border: none;
+        outline: none;
+        border-radius: 40px;
+        box-shadow: 0 0 10´x rgb(238, 235, 235);
+        cursor: pointer;
+        font-size: 16px;
+        color: rgb(255, 251, 251);
+        font-weight: 600;
+    }
+
+    .wrapper .registrar {
+        font-size: 14.5px;
+        text-align: center;
+        margin: 20px 0 15px;
+    }
+
+    .registrar p a {
+        color: rgb(209, 17, 17);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .registrar p a:hover {
+        text-decoration: underline;
+    }
+
+    .wrapper .LogoBBB {
+        width: 110px;
+        height: 110px;
+        border-radius: 60%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      
+
+
+        
+        
