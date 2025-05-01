@@ -1,98 +1,205 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyectos Mike</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"         rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyectos Mike</title>
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- Fuente moderna (opcional) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">    
-    <!-- Bootstrap CSS -->
-   
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
-
-    .box{
+    /* Reset general */
+    * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     }
 
     body {
-    font-family: 'Inter', sans-serif; /* asegúrate de incluirla en el <head> */
+    font-family: 'Inter', sans-serif;
     }
 
+    /* Header fijo */
     header {
     height: 60px;
     background-color: #b9052a;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra debajo del header */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.2); /* Línea oscura  abajo del header */      
     }
 
+    /* Layout principal con flexbox */
     .layout {
     display: flex;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 60px); /* El layout ocupa todo el espacio disponible menos el header */
+    gap: 0;                /* Asegura que no haya espacio entre aside y main */
+    margin: 0;
+    padding: 0;
     }
 
+    /* Sidebar (barra lateral) */
     aside {
     width: 200px;
     background-color: #b9052a;
     padding: 1rem;
-    height: calc(100vh - 60px);
+    height: 100%; /* Aseguramos que el aside ocupe todo el alto de la pantalla */
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;        /* Impide que el aside se reduzca y cause espacio */
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15); /* Sombra al costado derecho del aside */
+    border-right: 3px solid rgba(0, 0, 0, 0.2); /* Línea oscura al borde derecho del aside */
     }
 
-    /* Estilo para el nav lateral */
-    aside .nav {
-    padding: 0;
+    /* Cuando está colapsado (oculto) */
+    aside.collapsed {
+    transform: translateX(-100%);
     }
 
+    /* En escritorio, el sidebar no debe ocultarse nunca */
+    @media (min-width: 769px) {
+    aside.collapsed {
+    transform: translateX(0);
+    }
+
+    main {
+    margin-left: 200px; /* Cuando el sidebar está visible, el main se desplaza hacia la derecha */
+    }
+    }
+
+    /* En móviles, posicionamos el sidebar encima del contenido */
+    @media (max-width: 768px) {
+    aside {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    z-index: 1050;
+    height: calc(100vh - 60px); /* Asegura que el sidebar ocupe toda la altura de la pantalla */
+    }
+
+    main {
+    margin-left: 0; /* El main no tendrá margen izquierdo en móviles */
+    }
+    }
+
+    /* Enlaces del menú lateral */
     aside .nav-link {
     color: white;
     margin-bottom: 0.5rem;
     border-radius: 4px;
     padding: 0.5rem 0.45rem;
-    width: 100%; /* Hace que cada enlace ocupe todo el ancho */
-    display: block; /* Asegura que se muestre como un bloque */
+    width: 100%;
+    display: block;
     text-decoration: none;
-    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+    border-radius: 8px;
+    transition: all 0.3s ease;    
     }
 
     aside .nav-link:hover {
     background-color: #8c0657;
+    transform: translateX(4px);
     }
 
+    /* Estilo del contenido principal */
     main {
     flex-grow: 1;
     background-color: #ecf0f1;
     padding: 1rem;
+    margin: 0;
     }
 
+    /* Scroll personalizado en barra lateral */
+    aside::-webkit-scrollbar {
+    width: 8px;
+    }
 
-  </style>
+    aside::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    }
 
+    aside nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    }
+
+</style>
 </head>
+
 <body>
-    <header></header>
-    <div class="layout">
-    <aside>
-        <nav>
-            <a class="nav-link text-white" href="{% url 'admin_module:citas' %}"><i class="fas fa-calendar-alt me-2"></i>Citas</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:barberos' %}"><i class="fas fa-user me-2"></i>Barberos</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:servicios' %}"><i class="fas fa-scissors me-2"></i>Servicios</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:inventario' %}"><i class="fas fa-boxes me-2"></i>Inventario</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:contenidos' %}"><i class="fas fa-photo-video me-2"></i>Contenido</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:reportes' %}"><i class="fas fa-chart-line me-2"></i>Reportes</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:seguridad' %}"><i class="fas fa-shield-alt me-2"></i>Seguridad</a>
-            <a class="nav-link text-white" href="{% url 'admin_module:soporte' %}"><i class="fas fa-headset me-2"></i>Soporte</a>
-        </nav>
+
+<!-- Header con botón de menú -->
+<header class="d-flex align-items-center justify-content-between px-3">
+    <button id="toggleSidebar" class="btn btn-light">
+    <i class="fas fa-bars"></i>
+    </button>
+    <h5 class="mb-0">Proyectos Mike</h5>
+</header>
+
+<!-- Contenedor principal -->
+<div class="layout">
+    
+    <!-- Sidebar -->
+    <aside class="collapsed" id="sidebar">
+    <nav>
+        <a class="nav-link text-white" href="#"><i class="fas fa-calendar-alt me-2"></i>Horarios</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-user me-2"></i>Barberos</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-scissors me-2"></i>Servicios</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-boxes me-2"></i>Inventario</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-photo-video me-2"></i>Contenido</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-chart-line me-2"></i>Reportes</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-shield-alt me-2"></i>Seguridad</a>
+        <a class="nav-link text-white" href="#"><i class="fas fa-headset me-2"></i>Soporte</a>
+        <a class="nav-link text-white" href="adminview.html"><i class="fas fa-user-shield me-2"></i>AdminView</a>
+        <a class="nav-link text-white" href="sistema">Sistema</a>
+        <a class="nav-link text-white" href="styles">Styles</a>
+        <a class="nav-link text-white" href="sena/login.php">Estudiantes</a>
+        <a class="nav-link text-white" href="barberb">Citas Agendadas</a>
+        <a class="nav-link text-white" href="maps">Mapa</a>
+        <a class="nav-link text-white" href="python">Python Tests</a>
+    </nav>
     </aside>
+    
+    <!-- Contenido principal -->
     <main>
-         
+        <h1>Este es un encabezado H1</h1>
+
+    <!-- Aquí va el contenido principal -->
     </main>
-    </div>
+</div>
+
+<!-- JavaScript para funcionalidad del botón -->
+<script>
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const aside = document.getElementById('sidebar');
+
+    // Ajustar visibilidad inicial según el ancho de la pantalla
+    const setSidebarInitial = () => {
+    if (window.innerWidth <= 768) {
+        aside.classList.add('collapsed');
+    } else {
+        aside.classList.remove('collapsed');
+    }
+    };
+
+    // Ejecutar al cargar y al redimensionar
+    setSidebarInitial();
+    window.addEventListener('resize', setSidebarInitial);
+
+    // Alternar sidebar al hacer clic
+    toggleBtn.addEventListener('click', () => {
+    aside.classList.toggle('collapsed');
+    });
+</script>
 
 </body>
 </html>
