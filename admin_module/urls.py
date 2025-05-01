@@ -1,6 +1,7 @@
 from django.urls import path
 from admin_module.views import HomeadminView
 from admin_module.views import CitasView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView
+from . import views
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
 app_name = 'admin_module'

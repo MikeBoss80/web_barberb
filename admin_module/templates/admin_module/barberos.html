@@ -1,0 +1,91 @@
+{% extends "admin_module/base_admin.html" %}
+
+{% block title %}Agenda de Citas{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Agenda de Citas</h1>
+    <!-- TARJETAS INFORMATIVAS -->
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Citas del Día</h6>
+                <h3 class="card-text">{{ resumen.total_citas }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Completadas</h6>
+                <h3 class="card-text">{{ resumen.completadas }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Pendientes</h6>
+                <h3 class="card-text">{{ resumen.pendientes }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Canceladas</h6>
+                <h3 class="card-text">{{ resumen.canceladas }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form class="row gy-2 gx-3 align-items-center">
+            <div class="col-md-3">
+                <label class="form-label">Fecha</label>
+                <input type="date" class="form-control" name="fecha" value="{{ fecha_actual }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Barbero</label>
+                <select class="form-select" name="barbero">
+                    <option value="">Todos</option>
+                    {% for barbero in barberos %}
+                        <option value="{{ barbero.id }}">{{ barbero.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Estado</label>
+                <select class="form-select" name="estado">
+                    <option value="">Todos</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="confirmada">Confirmada</option>
+                    <option value="cancelada">Cancelada</option>
+                    <option value="completada">Completada</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Cliente</label>
+                <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Citas -->
+
+
+<!-- Modales de Detalle de cada Cita -->
+{% for cita in citas %}
+
+{% endfor %}
+{% endblock %}
+
+
+

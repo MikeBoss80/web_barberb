@@ -1,0 +1,115 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %}Proyectos Mike{% endblock %}</title>
+    
+    <!-- Fuentes y Estilos Externos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Estilo base del admin -->
+    <link rel="stylesheet" href="{% static 'admin_modulo/css/base.css' %}">
+
+    <!-- Estilos específicos por vista -->
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'admin_modulo/css/base.css' %}">
+    {% endblock %}
+
+</head>
+
+<style>
+    
+.box{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Inter', sans-serif; /* asegúrate de incluirla en el <head> */
+}
+
+header {
+height: 60px;
+background-color: #b9052a;
+}
+
+.layout {
+display: flex;
+height: calc(100vh - 60px);
+}
+
+aside {
+width: 200px;
+background-color: #b9052a;
+padding: 1rem;
+height: calc(100vh - 60px);
+}
+
+/* Estilo para el nav lateral */
+aside .nav {
+padding: 0;
+}
+
+aside .nav-link {
+color: white;
+margin-bottom: 0.5rem;
+border-radius: 4px;
+padding: 0.5rem 0.45rem;
+width: 100%; /* Hace que cada enlace ocupe todo el ancho */
+display: block; /* Asegura que se muestre como un bloque */
+text-decoration: none;
+box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+}
+
+aside .nav-link:hover {
+background-color: #8c0657;
+}
+
+main {
+flex-grow: 1;
+background-color: #ecf0f1;
+padding: 1rem;
+}
+
+
+</style>
+<body>
+    <header>
+        <!-- Puedes agregar el header aquí si lo necesitas -->
+    </header>
+
+    <div class="layout">
+        <aside>
+            <nav>
+                <a class="nav-link text-white" href="{% url 'admin_module:citas' %}"><i class="fas fa-calendar-alt me-2"></i>Citas</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:barberos' %}"><i class="fas fa-user me-2"></i>Barberos</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:servicios' %}"><i class="fas fa-scissors me-2"></i>Servicios</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:inventario' %}"><i class="fas fa-boxes me-2"></i>Inventario</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:contenidos' %}"><i class="fas fa-photo-video me-2"></i>Contenido</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:reportes' %}"><i class="fas fa-chart-line me-2"></i>Reportes</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:seguridad' %}"><i class="fas fa-shield-alt me-2"></i>Seguridad</a>
+                <a class="nav-link text-white" href="{% url 'admin_module:soporte' %}"><i class="fas fa-headset me-2"></i>Soporte</a>
+            </nav>
+        </aside>
+
+        <main>
+            {% block content %}
+            <!-- Aquí se inyectarán las vistas específicas -->
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- Scripts específicos por vista -->
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>
+

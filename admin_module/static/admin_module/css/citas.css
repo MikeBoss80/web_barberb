@@ -1,0 +1,65 @@
+.card-citas-dia {
+    background-color: #1e88e5; /* azul personalizado */
+    color: rgb(0, 0, 0);
+    }
+    
+    .card-completadas {
+        background-color: #43a047; /* verde personalizado */
+        color: rgb(0, 0, 0);
+    }
+    
+    .card-pendientes {
+        background-color: #fdd835; /* amarillo personalizado */
+        color: rgb(0, 0, 0);
+    }
+    
+    .card-canceladas {
+        background-color: #e53935; /* rojo personalizado */
+        color: rgb(0, 0, 0);
+    }
+    
+    .bg-citas-dia,
+    .bg-completadas,
+    .bg-pendientes,
+    .bg-canceladas {
+        color: #000 !important;
+    }
+    
+    .bg-citas-dia .card-title,
+    .bg-citas-dia .card-text,
+    .bg-completadas .card-title,
+    .bg-completadas .card-text,
+    .bg-pendientes .card-title,
+    .bg-pendientes .card-text,
+    .bg-canceladas .card-title,
+    .bg-canceladas .card-text {
+        color: #000 !important;
+    }
+    
+    .table {
+        color: #000 !important;
+    }
+    
+    .badge {
+        color: #000 !important;
+        border-radius: 20px;
+        padding: 0.4em 0.8em;
+        font-size: 0.85em;
+    }
+    
+    .bg-pendiente {
+        background-color: #fdd835; /* amarillo claro */
+        color: #856404;
+    }
+    
+    .bg-completada {
+        background-color: #43a047; /* verde claro */
+        color: #155724;
+    }
+    
+    .bg-cancelada {
+        background-color: #e53935; /* rojo claro */
+        color: #721c24;
+    }
+    
+    
