@@ -82,12 +82,19 @@ padding: 1rem;
 
 </style>
 <body>
-    <header>
-        <!-- Puedes agregar el header aquí si lo necesitas -->
+
+    <header class="d-flex align-items-center justify-content-between px-3">
+        <button id="toggleSidebar" class="btn btn-light">
+        <i class="fas fa-bars"></i>
+        </button>
+        <h5 class="mb-0">Proyectos Mike</h5>
+                <!-- Puedes agregar el header aquí si lo necesitas -->
+
     </header>
+    
 
     <div class="layout">
-        <aside>
+        <aside class="collapsed" id="sidebar">
             <nav>
                 <a class="nav-link text-white" href="{% url 'admin_module:citas' %}"><i class="fas fa-calendar-alt me-2"></i>Citas</a>
                 <a class="nav-link text-white" href="{% url 'admin_module:barberos' %}"><i class="fas fa-user me-2"></i>Barberos</a>
@@ -109,6 +116,7 @@ padding: 1rem;
 
     <!-- Scripts específicos por vista -->
     {% block extra_js %}{% endblock %}
+
 
 </body>
 </html>
