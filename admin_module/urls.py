@@ -1,6 +1,6 @@
 from django.urls import path
 from admin_module.views import HomeadminView
-from admin_module.views import CitasView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView
+from admin_module.views import CitasView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView
 from . import views
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
@@ -16,8 +16,9 @@ urlpatterns = [
     path('seguridad/', SeguridadView.as_view(), name='seguridad'),
     path('soporte/', SoporteView.as_view(), name='soporte'),
     path('soporte/', ContenidosView.as_view(), name='contenidos'),
-    
-]
+    path('barberos/<int:barbero_id>/calendario/', CalendarioBarberoView.as_view(), name='calendario_barbero'),
+
+]   
 
 
 """ 

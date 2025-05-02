@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, ListView
 from datetime import date, time
 from django.utils import timezone
+from django.views import View
 
 
 
@@ -101,7 +102,50 @@ class CitasView(TemplateView):
 class BarberosView(TemplateView):
      template_name= 'admin_module/barberos.html'
      
+     #DATOS TEMPORALES
+     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['barberos'] = [
+            {
+                'id': 1,
+                'nombre': 'Carlos Pérez',
+                'foto_url': 'https://via.placeholder.com/150',
+                'especialidades': 'Cortes modernos, Barba',
+                'horario': 'Lunes a Viernes, 10am - 6pm',
+                'ingresos_generados': 450.00,  # Aquí van los ingresos estáticos
+                'rating': 4.8,
+            },
+            {
+                'id': 2,
+                'nombre': 'Luis Martínez',
+                'foto_url': 'https://via.placeholder.com/150',
+                'especialidades': 'Afeitados, Degradados',
+                'horario': 'Martes a Sábado, 12pm - 8pm',
+                'ingresos_generados': 320.00,  # Ingresos estáticos también
+                'rating': 4.5,
+            },
+            {
+                'id': 3,
+                'nombre': 'Ana Gómez',
+                'foto_url': 'https://via.placeholder.com/150',
+                'especialidades': 'Cortes femeninos, Tinte',
+                'horario': 'Lunes a Miércoles, 9am - 5pm',
+                'ingresos_generados': 500.00,  # Ejemplo de otro barbero
+                'rating': 4.9,
+            },
+        ]
+        return context
      
+class CalendarioBarberoView(View):
+    def get(self, request, barbero_id):
+        # Aquí podrías cargar datos específicos del barbero, por ahora lo haremos estático
+        context = {
+            'barbero_id': barbero_id,
+            'nombre_barbero': 'Carlos Pérez',  # Lo puedes modificar según el barbero
+        }
+        return render(request, 'calendario_barbero.html', context)
+    
+
 class ServiciosView(TemplateView):
      template_name= 'admin_module/servicios.html'
 

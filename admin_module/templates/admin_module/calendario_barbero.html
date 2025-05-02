@@ -1,0 +1,12 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+<h2>Calendario de {{ nombre_barbero }}</h2>
+
+<!-- Aquí puedes integrar un calendario real de Google Calendar o usar FullCalendar -->
+<!-- Vamos a usar un ejemplo de iframe para simularlo -->
+
+<iframe src="https://calendar.google.com/calendar/embed?src=your_calendar_id%40gmail.com&ctz=America%2FNew_York" 
+        style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+
+{% endblock %}

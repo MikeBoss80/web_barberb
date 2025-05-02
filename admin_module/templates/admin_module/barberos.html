@@ -1,91 +1,66 @@
 {% extends "admin_module/base_admin.html" %}
 
-{% block title %}Agenda de Citas{% endblock %}
-
-{% block content %}
-<h1 class="mb-4">Agenda de Citas</h1>
-    <!-- TARJETAS INFORMATIVAS -->
-
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-body">
-                <h6 class="card-title">Citas del Día</h6>
-                <h3 class="card-text">{{ resumen.total_citas }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-body">
-                <h6 class="card-title">Completadas</h6>
-                <h3 class="card-text">{{ resumen.completadas }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-body">
-                <h6 class="card-title">Pendientes</h6>
-                <h3 class="card-text">{{ resumen.pendientes }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-danger mb-3">
-            <div class="card-body">
-                <h6 class="card-title">Canceladas</h6>
-                <h3 class="card-text">{{ resumen.canceladas }}</h3>
-            </div>
-        </div>
-    </div>
-</div>
-    
+{% load static %}
 
 
-<!-- Filtros -->
-<div class="card mb-4">
-    <div class="card-body">
-        <form class="row gy-2 gx-3 align-items-center">
-            <div class="col-md-3">
-                <label class="form-label">Fecha</label>
-                <input type="date" class="form-control" name="fecha" value="{{ fecha_actual }}">
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Barbero</label>
-                <select class="form-select" name="barbero">
-                    <option value="">Todos</option>
-                    {% for barbero in barberos %}
-                        <option value="{{ barbero.id }}">{{ barbero.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Estado</label>
-                <select class="form-select" name="estado">
-                    <option value="">Todos</option>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="confirmada">Confirmada</option>
-                    <option value="cancelada">Cancelada</option>
-                    <option value="completada">Completada</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Cliente</label>
-                <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
-            </div>
-        </form>
-    </div>
-</div>
+{% block title %}Barberos{% endblock %}
 
-<!-- Tabla de Citas -->
-
-
-<!-- Modales de Detalle de cada Cita -->
-{% for cita in citas %}
-
-{% endfor %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_modulo/css/barberos.css' %}">
 {% endblock %}
 
+{% block content %}
+<h2>Barberos del Establecimiento</h2>
 
+<script>
+    function mostrarCalendario(barberoId) {
+        const modal = document.getElementById('calendario-modal');
+        const iframe = document.getElementById('iframe-calendario');
+        iframe.src = `/barberos/${barberoId}/calendario/`;  // Cambiamos para cargar la URL dinámica
+        modal.style.display = 'block';
+    }
 
+    function cerrarCalendario() {
+        const modal = document.getElementById('calendario-modal');
+        modal.style.display = 'none';
+        document.getElementById('iframe-calendario').src = '';  // Limpiar el iframe para evitar carga repetida
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('calendario-modal');
+        if (event.target == modal) {
+            cerrarCalendario();
+        }
+    }
+</script>
+
+<div class="barberos-container">
+    {% for barbero in barberos %}
+        <div class="barbero-card">
+            <img src="{{ barbero.foto_url }}" alt="Foto de {{ barbero.nombre }}" class="barbero-foto">
+            <h3>{{ barbero.nombre }}</h3>
+            <p><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
+            <p><strong>Horario:</strong> {{ barbero.horario }}</p>
+            <p><strong>Ingresos generados:</strong> ${{ barbero.ingresos_generados }}</p>
+            <p><strong>Calificación:</strong> {{ barbero.rating }} ⭐</p>
+
+            <div class="acciones">
+                <button onclick="mostrarCalendario()">Ver Calendario</button>
+                
+                <!-- TEMPORAL -->
+                <a href="#">Editar</a>
+                <a href="#">Desactivar</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Modal para el calendario -->
+<div id="calendario-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarCalendario()">&times;</span>
+        <iframe id="iframe-calendario" src="" frameborder="0" style="width:100%; height:500px;"></iframe>
+    </div>
+</div>
+
+{% endblock %}
