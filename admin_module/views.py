@@ -3,15 +3,21 @@ from django.views.generic import TemplateView, ListView
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
+from .utils.mixins import BreadcrumbMixin  # ← Importa desde tu nueva ruta
+from django.urls import reverse
+
 
 
 
 
 # Create your views here.
 
-class HomeadminView(TemplateView):
+class HomeadminView(BreadcrumbMixin, TemplateView):
     """Vista Principal Modulo Admin"""
     template_name = 'admin_module/main.html'
+    
+    def get_breadcrumb(self):
+        return []
 
     #DATPS TEMPORALES
     def get_context_data(self, **kwargs):
@@ -42,9 +48,13 @@ class HomeadminView(TemplateView):
 
 
 
-class CitasView(TemplateView):
+class CitasView(BreadcrumbMixin, TemplateView):
     """Vista citas"""
     template_name = 'admin_module/citas.html'
+
+    def get_breadcrumb(self):
+        return [{'label': 'Citas', 'url': reverse('admin_module:citas')}]
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -99,9 +109,12 @@ class CitasView(TemplateView):
         return context
 
 
-class BarberosView(TemplateView):
+class BarberosView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/barberos.html'
      
+     def get_breadcrumb(self):
+        return [{'label': 'Barberos', 'url': reverse('admin_module:barberos')}]
+
      #DATOS TEMPORALES
      def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -146,25 +159,37 @@ class CalendarioBarberoView(View):
         return render(request, 'calendario_barbero.html', context)
     
 
-class ServiciosView(TemplateView):
+class ServiciosView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/servicios.html'
+     def get_breadcrumb(self):
+        return [{'label': 'Servicios', 'url': reverse('admin_module:servicios')}]
 
-class ContenidosView(TemplateView):
+class ContenidosView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/contenidos.html'
-
+     def get_breadcrumb(self):
+        return [{'label': 'Contenidos', 'url': reverse('admin_module:contenidos')}]
      
-class InventarioView(TemplateView):
+class InventarioView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/inventario.html'
+     def get_breadcrumb(self):
+        return [{'label': 'Inventario', 'url': reverse('admin_module:inventario')}]
 
-
-class ReportesView(TemplateView):
+     
+     
+class ReportesView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/reportes.html'
+     def get_breadcrumb(self):
+        return [{'label': 'Reportes', 'url': reverse('admin_module:reportes')}]
 
 
-class SeguridadView(TemplateView):
+
+class SeguridadView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/seguridad.html'
-     
+     def get_breadcrumb(self):
+        return [{'label': 'Seguridad', 'url': reverse('admin_module:seguridad')}]
 
-class SoporteView(TemplateView):
+
+class SoporteView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/soporte.html'
-     
+     def get_breadcrumb(self):
+        return [{'label': 'Soporte', 'url': reverse('admin_module:soporte')}]

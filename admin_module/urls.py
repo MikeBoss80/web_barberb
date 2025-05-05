@@ -15,7 +15,7 @@ urlpatterns = [
     path('reportes/', ReportesView.as_view(), name='reportes'),
     path('seguridad/', SeguridadView.as_view(), name='seguridad'),
     path('soporte/', SoporteView.as_view(), name='soporte'),
-    path('soporte/', ContenidosView.as_view(), name='contenidos'),
+    path('contenidos/', ContenidosView.as_view(), name='contenidos'),
     path('barberos/<int:barbero_id>/calendario/', CalendarioBarberoView.as_view(), name='calendario_barbero'),
 
 ]   
