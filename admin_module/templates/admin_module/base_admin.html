@@ -25,71 +25,142 @@
 </head>
 
 <style>
-    
-.box{
-margin: 0;
-padding: 0;
-box-sizing: border-box;
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-font-family: 'Inter', sans-serif; /* asegúrate de incluirla en el <head> */
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden; /* evita doble scroll */
 }
 
+/* Header fijo */
 header {
-height: 60px;
-background-color: #b9052a;
+  height: 60px;
+  background-color: #b9052a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
+/* Layout principal debajo del header */
 .layout {
-display: flex;
-height: calc(100vh - 60px);
+  display: flex;
+  position: absolute;
+  top: 60px; /* debajo del header */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
 }
 
+/* Aside fijo a la izquierda */
 aside {
-width: 200px;
-background-color: #b9052a;
-padding: 1rem;
-height: calc(100vh - 60px);
+  width: 200px;
+  background-color: #b9052a;
+  padding: 1rem;
+  overflow-y: auto;
+  height: calc(100vh - 60px); /* ocupa el alto restante */
+  position: fixed;
+  top: 60px;
+  left: 0;
 }
 
-/* Estilo para el nav lateral */
+/* Menú lateral */
 aside .nav {
-padding: 0;
+  padding: 0;
 }
 
 aside .nav-link {
-color: white;
-margin-bottom: 0.5rem;
-border-radius: 4px;
-padding: 0.5rem 0.45rem;
-width: 100%; /* Hace que cada enlace ocupe todo el ancho */
-display: block; /* Asegura que se muestre como un bloque */
-text-decoration: none;
-box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+  color: white;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  padding: 0.5rem 0.45rem;
+  width: 100%;
+  display: block;
+  text-decoration: none;
 }
 
 aside .nav-link:hover {
-background-color: #8c0657;
+  background-color: #8c0657;
 }
 
+/* Contenido principal desplazable */
 main {
-flex-grow: 1;
-background-color: #ecf0f1;
-padding: 1rem;
+  margin-left: 200px; /* espacio para el aside */
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  background-color: #ecf0f1;
+  padding: 1rem;
+  width: calc(100% - 200px);
 }
 
+.breadcrumb-container {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Estilo para los elementos de breadcrumb si los haces enlaces */
+.breadcrumb-container a {
+  color: #f1f1f1;
+  text-decoration: none;
+}
+
+.breadcrumb-container a:hover {
+  text-decoration: underline;
+}
+
+
+/* Responsive: ocultar aside en pantallas pequeñas */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1100;
+  }
+
+  aside.show {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0;
+    width: 100%;
+  }
+}
 
 </style>
+
 <body>
 
     <header class="d-flex align-items-center justify-content-between px-3">
         <button id="toggleSidebar" class="btn btn-light">
         <i class="fas fa-bars"></i>
         </button>
-        <h5 class="mb-0">Proyecto BarberB</h5>
-                <!-- Puedes agregar el header aquí si lo necesitas -->
-
+        <h5 class="mb-0" style="color: #ecf0f1;">Proyecto BarberB</h5>
+            <!-- Puedes agregar el header aquí si lo necesitas -->
+            <div class="breadcrumb-container text-white ms-3">
+                {% for crumb in breadcrumb %}
+                {% if not forloop.last %}
+                    <a href="{{ crumb.url }}">{{ crumb.label }}</a> /
+                {% else %}
+                    <span>{{ crumb.label }}</span>
+                {% endif %}
+                {% empty %}
+                <a href="{% url 'admin_module:admin_main' %}">Inicio</a>
+                {% endfor %}
+            </div>   
     </header>
     
 
@@ -117,7 +188,17 @@ padding: 1rem;
     <!-- Scripts específicos por vista -->
     {% block extra_js %}{% endblock %}
 
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const toggleBtn = document.getElementById('toggleSidebar');
+          const sidebar = document.getElementById('sidebar');
+      
+          toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('show');
+          });
+        });
+      </script>
+      
 </body>
 </html>
 
