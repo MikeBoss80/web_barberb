@@ -14,10 +14,6 @@ class LoginView(TemplateView):
     
     template_name = 'core/Login.html'
 
-class MapServicesView(TemplateView):
-    """Vista de mapas Maps"""
-    
-    template_name = 'services/map_services.html'
 
 class BarberoDashboardView(TemplateView):
     #La página principal para los barberos cuando inician sesión.
