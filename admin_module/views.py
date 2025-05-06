@@ -1,10 +1,11 @@
 from django.shortcuts import render 
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, UpdateView
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
-from .utils.mixins import BreadcrumbMixin  # ← Importa desde tu nueva ruta
-from django.urls import reverse
+from .utils.mixins import BreadcrumbMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse, reverse_lazy
 
 
 
@@ -193,3 +194,29 @@ class SoporteView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/soporte.html'
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('admin_module:soporte')}]
+
+
+class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
+     template_name ='admin_module/perfil_usuario.html'
+     def get_breadcrumb(self):
+        return [{'label': 'Perfil', 'url': reverse('admin_module:perfil_usuario')}]
+    
+    
+     def get_context_data(self, **kwargs):
+        usuario = "Miguel Bolivar"
+        context = super().get_context_data(**kwargs)
+        context['usuario'] = self.request.user  # Agrega el usuario autenticado al contexto
+        return context
+
+# Editar perfil (nombre y email básico)
+class EditarPerfilView(LoginRequiredMixin, UpdateView):
+#    model = usuario
+    fields = ['first_name', 'last_name', 'email']
+    template_name = 'admin_modulo/editar_perfil.html'
+    success_url = reverse_lazy('admin_module:perfil_usuario')
+
+    def get_object(self):
+        return self.request.user
+    
+class LogoutView(BreadcrumbMixin, TemplateView):
+    template_name='admin_module/login.html'
