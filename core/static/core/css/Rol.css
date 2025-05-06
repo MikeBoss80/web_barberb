@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "arial", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background: url("../img/fondo5.png");
+    background-size: cover;
+    
+    
+    animation: gradient 15s ease infinite;
+}
+
+.Rol{
+    width: 420px;
+    background: transparent;
+    color: rgb(12, 46, 80);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 10px rgb(45, 55, 65);
+    border-radius: 10px;
+    padding: 30px 40px;
+   
+    
+  }
+
+  .Rolh1 {
+    font-size: 30px;
+    text-align: center;
+}
+
+.Rol .button {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 10px 0;
+}
+
+.button input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 40px ;
+    font-size:16px ;
+    padding: auto;
+}
+
+.Rol .button {
+    width: 100%;
+    height: 45px;
+    background: linear-gradient(to right, rgba(255, 0, 0, 0.767), rgba(0, 0, 255, 0.322)) ;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10´x rgb(238, 235, 235);
+    cursor: pointer;
+    font-size: 16px;
+    color: rgb(255, 251, 251);
+    font-weight: 600;
+}
+
+.Rol .user1 {
+    width: 60px;
+    height: 70px;
+    border-radius: 20%;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    flex-direction: row;
+    
+    
+  }
+
+  .Rol .barbero1{
+    width: 60px;
+    height: 70px;
+    border-radius: 20%;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: 20%;
+    flex-direction: row;
+  }
+
+  .Rol .admin1 {
+    width: 60px;
+    height: 70px;
+    border-radius: 20%;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: 10%;
+    flex-direction: row;
+   
+  }
+  
+  
+  
+  
+  
