@@ -1,0 +1,37 @@
+
+
+
+{% extends "admin_module/base_admin.html" %}
+
+{% load static %}
+
+
+{% block title %}Agenda de Citas{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+    <h2>Mi Perfil</h2>
+    <p><strong>Nombre:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+    <p><strong>Correo:</strong> {{ usuario.email }}</p>
+    <p><strong>Usuario:</strong> {{ usuario.username }}</p>
+
+    <a href="{% url 'admin_module:editar_perfil' %}" class="btn btn-primary mt-3">Editar Perfil</a>
+</div>
+   
+
+
+
+{% for cita in citas %}
+
+{% endfor %}
+{% endblock %}
+
+
+
