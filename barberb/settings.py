@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +26,9 @@ SECRET_KEY = 'django-insecure-g+h5pxxd%f1f$!y7smq!gy%sj$r-f57_rg%p(#%x6_6e0us46w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Environment Variables with decouple
+MAPS_APIKEY = config('MAPS_APIKEY')
+
 ALLOWED_HOSTS = []
 
 
@@ -37,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',  # Esta es la app que creaste
-]
+    'core', 
+    'admin_module',
+    'services_module',
+    ]
 
 
 MIDDLEWARE = [
@@ -53,16 +59,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'barberb.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # << Asegúrate que esté esto
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
@@ -122,3 +131,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

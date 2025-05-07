@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BarberB</title>
+    <link rel="stylesheet" href="../../static/core/css/style.css"> <!-- Ajusta si tu ruta es diferente -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: url('../../static/core/img/fondo_barberia.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+
+        .dashboard-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #000;
+        }
+
+        .dashboard-container h1 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #9b111e, #180b47);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .dashboard-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Bienvenido al Dashboard del Barbero</h1>
+        <div class="dashboard-grid">
+            <a href="{% url 'barbero_historial_servicios' %}" class="dashboard-card">Historial de Servicios</a>
+            <a href="{% url 'barbero_home' %}" class="dashboard-card">Inicio</a>
+            <a href="{% url 'barbero_opciones_usuario' %}" class="dashboard-card">Opciones de Usuario</a>
+            <a href="{% url 'barbero_solicitudes' %}" class="dashboard-card">Solicitudes</a>
+        </div>
+    </div>
+</body>
+</html>
