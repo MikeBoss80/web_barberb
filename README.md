@@ -52,3 +52,10 @@ ACTIVAR ENTORNO VIRTUAL
 CORRER SERVICIO
 Hacerlo con el entorno virtual activado!!!
 python manage.py runserver
+
+
+
+                AGREGAR A BARBEROS.HTML DIV BARBEROS CONTAINER /DIV ACCIONES LINEA 96
+                ESTOS SE ACTIVARAN CUANDO CREEMOS LOS ARCHIVOS DE LAS RUTAS 
+                <a href="{% url 'editar_barbero' barbero.id %}">Editar</a>
+                <a href="{% url 'desactivar_barbero' barbero.id %}">Desactivar</a>

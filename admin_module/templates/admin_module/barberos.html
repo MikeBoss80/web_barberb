@@ -1,0 +1,116 @@
+{% extends "admin_module/base_admin.html" %}
+
+{% load static %}
+
+
+{% block title %}Barberos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_module/css/barberos.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Barberos del Establecimiento</h2>
+
+<script>
+    function mostrarCalendario(barberoId) {
+        const modal = document.getElementById('calendario-modal');
+        const iframe = document.getElementById('iframe-calendario');
+        iframe.src = `/barberos/${barberoId}/calendario/`;  // Cambiamos para cargar la URL dinámica
+        modal.style.display = 'block';
+    }
+
+    function cerrarCalendario() {
+        const modal = document.getElementById('calendario-modal');
+        modal.style.display = 'none';
+        document.getElementById('iframe-calendario').src = '';  // Limpiar el iframe para evitar carga repetida
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('calendario-modal');
+        if (event.target == modal) {
+            cerrarCalendario();
+        }
+    }
+</script>
+
+<script>
+    function mostrarCalendario(barberoId) {
+        const modal = document.getElementById('calendario-modal');
+        const iframe = document.getElementById('iframe-calendario');
+        iframe.src = `/barberos/${barberoId}/calendario/`;  // Cambiar URL dinámica
+        modal.classList.add('show');  // Muestra el modal con animación
+    }
+
+    function cerrarCalendario() {
+        const modal = document.getElementById('calendario-modal');
+        modal.classList.remove('show');  // Oculta el modal con animación
+        document.getElementById('iframe-calendario').src = '';  // Limpiar el iframe
+    }
+
+    // Cierra el modal si se hace clic fuera del contenido
+    window.onclick = function(event) {
+        const modal = document.getElementById('calendario-modal');
+        if (event.target == modal) {
+            cerrarCalendario();
+        }
+    }
+</script>
+
+<form method="get" action="" class="filtro-barberos">
+    <input type="text" name="q" placeholder="Buscar barbero por nombre o especialidad..." />
+    <button type="submit">🔍 Buscar</button>
+</form>
+
+
+<div class="acciones-globales">
+    <a href="#" class="btn-agregar">+ Agregar Barbero</a>
+</div>
+
+<div class="barberos-container">
+    {% for barbero in barberos %}
+        <div class="barbero-card">
+            <img src="https://placehold.co/200x200" alt="Foto de {{ barbero.nombre }}" class="barbero-foto">
+            <h3>{{ barbero.nombre }}</h3>
+            <p><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
+            <p><strong>Horario:</strong> {{ barbero.horario }}</p>
+            <p><strong>Ingresos generados:</strong> ${{ barbero.ingresos_generados }}</p>
+            <p><strong>Calificación:</strong> {{ barbero.rating }} ⭐</p>
+            <p><strong>Estado:</strong>
+            {% if barbero.activo %}
+                <span class="estado activo">🟢 Activo</span>
+            {% else %}
+                <span class="estado inactivo">🔴 Inactivo</span>
+            {% endif %}
+            </p>
+
+            <div class="acciones">
+                <button onclick="mostrarCalendario({{ barbero.id }})">📅 Calendario</button>
+                <BR></BR>
+                <a href="#" class="btn-editar">✏️ Editar</a>
+                <a href="#" class="btn-desactivar">🛑 Desactivar</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% if messages %}
+    <div class="mensajes">
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<!-- Modal para el calendario -->
+
+<div id="calendario-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarCalendario()">&times;</span>
+        <iframe id="iframe-calendario" src="" frameborder="0"></iframe>
+    </div>
+</div>
+
+
+{% endblock %}
