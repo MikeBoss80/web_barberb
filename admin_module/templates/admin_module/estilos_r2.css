@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+:root {
+  /* Paleta de colores principales */
+  --color-1: #1f02e7;
+  --color-2: #3b04b7;
+  --color-3: #5a058f;
+  --color-4: #8c0657;
+  --color-5: #b9052a;
+  --color-6: #cf0513;
+
+  /* Degradado de marca */
+  --gradient-principal: linear-gradient(
+    90deg,
+    var(--color-1),
+    var(--color-2),
+    var(--color-3),
+    var(--color-4),
+    var(--color-5),
+    var(--color-6)
+  );
+
+  /* Neutros */
+  --blanco: #E0E0E0;
+  --azul-opacidad: #184463;
+  --bg-body: #C7E1FF;
+}
+
+/* GENERALES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background-color: var(--bg-body);
+  color: var(--blanco);
+}
+
+/* LAYOUT */
+.menu-dashboard {
+  max-width: 150px;
+  height: 100vh;
+  background: var(--gradient-principal); /* degradado de marca */
+  padding: 20px;
+  transition: max-width 0.3s ease;
+  overflow: hidden;
+}
+
+.top-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-menu .logo {
+  display: flex;
+  align-items: center;
+}
+
+.top-menu .logo img {
+  width: 40px;
+  transition: width 0.3s ease;
+}
+
+.top-menu .logo span {
+  font-size: 20px;
+  margin-left: 20px;
+  display: none;
+}
+
+.top-menu .toggle {
+  width: 30px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.top-menu .toggle i {
+  font-size: 30px;
+  color: var(--blanco);
+}
+
+/* INPUT BOX */
+.input-search {
+  width: 100%;
+  margin: 50px 0;
+  background-color: var(--color-3); /* tercer tono de la paleta */
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.input-search i {
+  font-size: 20px;
+  margin-right: 10px;
+  color: var(--blanco);
+}
+
+.input-search .input {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  width: 100%;
+  height: 30px;
+  color: var(--blanco);
+  font-size: 16px;
+  display: none;
+}
+
+/* ENLACES MENU */
+.menu .enlace {
+  width: 100%;
+  padding: 15px 0 15px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--blanco);
+  transition: background 0.3s ease;
+}
+
+.menu .enlace i {
+  margin-right: 15px;
+  font-size: 20px;
+  color: var(--blanco);
+}
+
+.menu .enlace span {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: var(--blanco);
+}
+
+.menu .enlace:hover {
+  background: var(--color-4); /* cuarto tono para hover */
+}
+
+/* MENU ABIERTO */
+.menu-dashboard.open {
+  max-width: 300px;
+}
+
+.menu-dashboard.open .top-menu .logo span {
+  display: block;
+  color: var(--blanco);
+}
+
+.menu-dashboard.open .input-search .input {
+  display: block;
+}
+
+.menu-dashboard.open .menu .enlace span {
+  opacity: 1;
+}
