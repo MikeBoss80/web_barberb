@@ -1,0 +1,166 @@
+servicios:{% extends "admin_module/base_admin.html" %}
+
+{% load static %}
+
+
+{% block title %}Servicios{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+</style>
+
+<div class="container">
+    <h2 class="mb-4">Gestión de Servicios</h2>
+
+    <!-- Botón para crear servicio -->
+    <div class="text-end mb-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
+            <i class="fas fa-plus"></i> Nuevo Servicio
+        </button>
+    </div>
+
+    <!-- Tabla de servicios -->
+    <table class="table table-bordered table-striped bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Duración</th>
+                <th>Estado</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Datos estáticos -->
+            <tr>
+                <td>Corte Clásico</td>
+                <td>Corte</td>
+                <td>$15.000</td>
+                <td>30 min</td>
+                <td><span class="badge bg-success">Activo</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarServicio">Editar</button>
+                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Afeitado con Navaja</td>
+                <td>Barba</td>
+                <td>$12.000</td>
+                <td>20 min</td>
+                <td><span class="badge bg-secondary">Inactivo</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarServicio">Editar</button>
+                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Crear Servicio -->
+<div class="modal fade" id="modalCrearServicio" tabindex="-1" aria-labelledby="modalCrearServicioLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCrearServicioLabel">Nuevo Servicio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulario estático -->
+        <form>
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del Servicio</label>
+            <input type="text" class="form-control" id="nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            <select class="form-select" id="categoria">
+              <option>Corte</option>
+              <option>Barba</option>
+              <option>Tinte</option>
+              <option>Tratamiento</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="precio" required>
+          </div>
+          <div class="mb-3">
+            <label for="duracion" class="form-label">Duración (minutos)</label>
+            <input type="number" class="form-control" id="duracion" required>
+          </div>
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select class="form-select" id="estado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Servicio -->
+<div class="modal fade" id="modalEditarServicio" tabindex="-1" aria-labelledby="modalEditarServicioLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarServicioLabel">Editar Servicio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario con datos precargados (estáticos) -->
+          <form>
+            <div class="mb-3">
+              <label for="edit_nombre" class="form-label">Nombre del Servicio</label>
+              <input type="text" class="form-control" id="edit_nombre" value="Corte Clásico" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit_categoria" class="form-label">Categoría</label>
+              <select class="form-select" id="edit_categoria">
+                <option selected>Corte</option>
+                <option>Barba</option>
+                <option>Tinte</option>
+                <option>Tratamiento</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="edit_precio" class="form-label">Precio</label>
+              <input type="number" class="form-control" id="edit_precio" value="15000" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit_duracion" class="form-label">Duración (minutos)</label>
+              <input type="number" class="form-control" id="edit_duracion" value="30" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit_estado" class="form-label">Estado</label>
+              <select class="form-select" id="edit_estado">
+                <option value="activo" selected>Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+{% endblock %}
