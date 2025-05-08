@@ -1,4 +1,4 @@
-servicios:{% extends "admin_module/base_admin.html" %}
+{% extends "admin_module/base_admin.html" %}
 
 {% load static %}
 
@@ -7,16 +7,11 @@ servicios:{% extends "admin_module/base_admin.html" %}
 
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
+<link rel="stylesheet" href="{% static 'admin_module/css/barberos.css' %}">
 {% endblock %}
 
 
 {% block content %}
-
-<style>
-
-</style>
-
 <div class="container">
     <h2 class="mb-4">Gestión de Servicios</h2>
 
@@ -163,4 +158,24 @@ servicios:{% extends "admin_module/base_admin.html" %}
   
 
 
+  <div class="row">
+    <div class="col-md-4 mb-3" *por cada servicio*>
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Corte Clásico</h5>
+          <p class="card-text">
+            <strong>Categoría:</strong> Corte<br>
+            <strong>Precio:</strong> $15.000<br>
+            <strong>Duración:</strong> 30 min<br>
+            <strong>Estado:</strong> <span class="badge bg-success">Activo</span>
+          </p>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-sm btn-primary me-2">Editar</button>
+            <button class="btn btn-sm btn-danger">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 {% endblock %}
