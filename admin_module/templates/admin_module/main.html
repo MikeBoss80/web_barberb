@@ -8,104 +8,120 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  body {
+  background-color: #f8f9fa;
+  font-family: 'Roboto', sans-serif;
+  }
+
+  h2, h4, h5 {
+  color: #343a40;
+  }
+
+  /* Tarjeta personalizada */
+  .card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* shadow-sm */
+  transition: all 0.2s ease-in-out;
+  padding: 0.75rem; /* Compacta */
+  min-height: 120px; /* Opcional, puedes bajarlo más */
+  }
+
+  .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  }
+
+  .card .card-body {
+      padding: 1rem 1.2rem; /* menos espacio interior */
+  }
+
+  .card .card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #000000; /* texto gris elegante */
+  margin-bottom: 0.3rem;
+  }
+
+  .card .card-body h2 {
+  font-size: 1.5rem;
+  color: #000000;
+  margin: 0;
+  font-weight: bold;
+  }
+
+  /* Tarjetas en pantallas pequeñas */
+  @media (max-width: 768px) {
+  .card .card-body h2 {
+      font-size: 1.2rem;
+  }
+}
+
+  .card .card-title {
+      font-size: 0.85rem;
+  }
+
+  .list-group-item {
+  border: none;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  }
+
+  .list-group-item:last-child {
+  border-bottom: none;
+  }
+
+  .badge {
+  font-size: 0.9rem;
+  padding: 0.4em 0.75em;
+  transition: transform 0.2s ease-in-out;
+
+  }
+
+  .badge:hover {
+    transform: scale(1.05);
+  }
+
+  .custom-badge-border {
+  border: 2px solid #004D98; /* Cambia el color y grosor */
+  }
+
+  .card-border-color {
+  border-left: 3.5px solid #004D98; /* azul Bootstrap */
+  }
+
+  .card-body,
+  .card-header {
+    padding: 0 !important; /* ajusta a tu gusto */
+  }
+
+
+  /* Chart containers */
+  canvas {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Notificaciones */
+  .list-group-item i {
+  color: #ffc107; /* Icono de advertencia */
+  }
+
+
+
+  
+</style>
 {% endblock %}
 
 
 {% block content %}
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
-
-<style>
-    body {
-    background-color: #f8f9fa;
-    font-family: 'Roboto', sans-serif;
-    }
-
-    h2, h4, h5 {
-    color: #343a40;
-    }
-
-    /* Tarjeta personalizada */
-    .card {
-    background-color: #343a40;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* shadow-sm */
-    transition: all 0.2s ease-in-out;
-    padding: 0.75rem; /* Compacta */
-    min-height: 120px; /* Opcional, puedes bajarlo más */
-    }
-
-    .card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-    }
-
-    .card .card-body {
-        padding: 1rem 1.2rem; /* menos espacio interior */
-    }
-
-    .card .card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #adb5bd; /* texto gris elegante */
-    margin-bottom: 0.3rem;
-    }
-
-    .card .card-body h2 {
-    font-size: 1.5rem;
-    color: #ffffff;
-    margin: 0;
-    font-weight: bold;
-    }
-
-    /* Tarjetas en pantallas pequeñas */
-    @media (max-width: 768px) {
-    .card .card-body h2 {
-        font-size: 1.2rem;
-    }
-}
-
-    .card .card-title {
-        font-size: 0.85rem;
-    }
-
-    .list-group-item {
-    border: none;
-    background-color: #ffffff;
-    border-bottom: 1px solid #dee2e6;
-    }
-
-    .list-group-item:last-child {
-    border-bottom: none;
-    }
-
-    .badge {
-    font-size: 0.9rem;
-    padding: 0.4em 0.75em;
-    }
-
-    /* Chart containers */
-    canvas {
-    background-color: #ffffff;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Notificaciones */
-    .list-group-item i {
-    color: #ffc107; /* Icono de advertencia */
-    }
-
-
-    .badge {
-        font-size: 0.8rem;
-    }
-  
-</style>
 
 
 <div class="container my-4">
@@ -117,41 +133,65 @@
     </div>
   
     <!-- 2. Tarjetas Resumen -->
-    <div class="row g-3">
+    
+    <div class="row gy-4">
       <div class="col-md-3 col-sm-6 col-12">
-        <div class="card shadow-sm border-0">
+        <div class="card card-border-color mb-3" style="max-width: 18rem;">
+          <div class="card-header">Citas del Dia</div>
           <div class="card-body">
-            <h5 class="card-title">Citas Hoy</h5>
-            <h2>{{ citas_hoy }}</h2>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2>{{ citas_hoy }}</h2>
+              </div>
+              <i class="bi bi-calendar-check-fill fs-1"></i>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="col-md-3 col-sm-6 col-12">
-        <div class="card shadow-sm border-0">
+        <div class="card card-border-color mb-3" style="max-width: 18rem;">
+          <div class="card-header">Barberos Activos</div>
           <div class="card-body">
-            <h5 class="card-title">Ingresos Estimados</h5>
-            <h2>${{ ingresos_hoy }}</h2>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2>{{ barberos_activos }}</h2>
+              </div>
+              <i class="bi bi-person-check-fill fs-1"></i>
+            </div>
           </div>
         </div>
       </div>
+    
       <div class="col-md-3 col-sm-6 col-12">
-        <div class="card shadow-sm border-0">
+        <div class="card card-border-color mb-3" style="max-width: 18rem;">
+          <div class="card-header">Inventario (Bajo Stock)</div>
           <div class="card-body">
-            <h5 class="card-title">Barberos Activos</h5>
-            <h2>{{ barberos_activos }}</h2>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2>{{ bajo_stock }}</h2>
+              </div>
+              <i class="bi bi-box-seam fs-1"></i>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="col-md-3 col-sm-6 col-12">
-        <div class="card shadow-sm border-0">
+        <div class="card card-border-color mb-3" style="max-width: 18rem;">
+          <div class="card-header">Ingresos Estimados</div>
           <div class="card-body">
-            <h5 class="card-title">Productos en Bajo Stock</h5>
-            <h2>{{ bajo_stock }}</h2>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2>${{ ingresos_hoy }}</h2>
+              </div>
+              <i class="bi bi-cash-coin fs-1"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  
+
     <!-- 3. Próximas Citas -->
     <div class="mt-5">
       <h4>Próximas Citas</h4>
@@ -159,7 +199,7 @@
         {% for cita in proximas_citas %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ cita.hora }} - {{ cita.cliente }} ({{ cita.servicio }})
-            <span class="badge bg-primary rounded-pill">{{ cita.barbero }}</span>
+            <span class="badge bg-primary rounded-pill custom-badge-border">{{ cita.barbero }}</span>
           </li>
         {% empty %}
           <li class="list-group-item">No hay citas próximas.</li>
