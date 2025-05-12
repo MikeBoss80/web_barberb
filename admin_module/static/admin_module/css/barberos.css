@@ -91,13 +91,13 @@
 /*Boton agregar barbero*/
 
 /* Cambiar color para todos los btn-outline-* */
-.btn-outline-success {
+.btn.btn.btn-outline-success {
     color: #3e1a4e; /* Color del texto */
     border-color: #3e1a4e; /* Color del borde */
     background-color: transparent; /* Color de fondo */
 }
 
-.btn-outline-success:hover {
+.btn.btn.btn.btn-outline-success:hover {
     color: #fff; /* Color del texto al pasar el mouse */
     border-color: #3e1a4e; /* Color del borde al pasar el mouse */
     background-color: #3e1a4e; /* Fondo transparente al pasar el mouse */
