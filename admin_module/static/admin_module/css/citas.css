@@ -7,6 +7,34 @@
   transition: transform 0.2s ease;
   max-width: 18rem;
 }
+/*
+.card.card-border-completadas {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+
+.card.card-border-pendientes {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+
+.card.card-border-canceladas {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+*/
 
 .card.card-border-color:hover {
   transform: translateY(-2px);
@@ -20,7 +48,7 @@
   color: #212529;
   border-bottom: none;
   padding: 0.75rem 1rem;
-}
+  }
 
 /* Cuerpo más compacto */
 .card.card-border-color .card-body {
@@ -77,8 +105,8 @@
 }
 
 .modal-header {
-  background-color: #004D98;
-  color: white;
+  background-color: #e6dce9;
+  color: rgb(0, 0, 0);
   padding: 1rem;
 }
 
@@ -121,3 +149,16 @@ form .form-select {
     font-size: 0.85rem;
   }
 }
+  .modal-header{
+    background-color: #e6dce9; /* Variante clara/opaca del color base */
+    color: #3e1a4e; /* Mismo color base para el texto */
+    border-bottom: 1px solid #cdbcd3;
+  }
+
+
+  .btn-primary {
+    background-color: #004D98;
+    border-color: #004D98;
+    color: #ffffff;
+
+  }

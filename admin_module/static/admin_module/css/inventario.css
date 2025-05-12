@@ -1,0 +1,11 @@
+.custom-btn-edit {
+  background-color: #004D98 !important; /* tu color personalizado */
+  border-color: #004D98 !important;
+  color: white;
+}
+
+.custom-btn-delete {
+  background-color: #A50044 !important; /* tu color personalizado */
+  border-color: #A50044 !important;
+  color: white;
+}
