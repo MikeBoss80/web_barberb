@@ -13,9 +13,10 @@
 <h2 class="mb-4">Barberos del Establecimiento</h2>
 
 <div class="acciones-globales text-end mb-4">
-  <a href="#" class="btn btn-outline-success btn-sm px-4">
-    <i class="bi bi-person-plus"></i> Agregar Barbero
-  </a>
+  <button class="btn btn-outline-add_item me-2" onclick="tuFuncion()">
+    <i class="fas fa-plus me-1"></i> Agregar Barbero
+  </button>
+
 </div>
 
 <div class="container">
@@ -23,7 +24,8 @@
     {% for barbero in barberos %}
     <div class="col-md-3 col-sm-6 col-12 d-flex justify-content-center mb-4">
       <div class="card barbero">
-        <img src="{% static 'admin_module/img/foto_barbero1.png' %}" class="card-img-top" alt="Foto de {{ barbero.nombre }}">
+        <img src="{% static 'admin_module/img/foto_barbero1.png' %}" class="card-img-top"
+          alt="Foto de {{ barbero.nombre }}">
         <div class="card-body">
           <h5 class="card-title">{{ barbero.nombre }}</h5>
           <p class="card-text"><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
@@ -33,14 +35,15 @@
           <p class="card-text">
             <strong>Estado:</strong>
             {% if barbero.activo %}
-              <span class="text-success">🟢 Activo</span>
+            <span class="text-success">🟢 Activo</span>
             {% else %}
-              <span class="text-danger">🔴 Inactivo</span>
+            <span class="text-danger">🔴 Inactivo</span>
             {% endif %}
           </p>
         </div>
         <div class="card-footer d-flex flex-column align-items-start gap-2">
-          <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({{ barbero.id }})">📅 Ver Calendario</button>
+          <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({{ barbero.id }})">📅 Ver
+            Calendario</button>
           <div class="d-flex w-100 justify-content-between">
             <a href="#" class="btn btn-sm btn-outline-secondary">✏️ Editar</a>
             <a href="#" class="btn btn-sm btn-outline-danger">🛑 Desactivar</a>
@@ -53,31 +56,31 @@
 </div>
 
 {% if messages %}
-  <div class="container">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-      <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
+<div class="container">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
+  {% endfor %}
+</div>
 {% endif %}
 
 <!-- Modal para el calendario -->
-    <div id="calendario-modal" class="modal fade" tabindex="-1" aria-hidden="true" onclick="cerrarCalendario()">
-    <div class="modal-dialog modal-dialog-centered modal-lg" onclick="event.stopPropagation()">
-      <div class="modal-content shadow-lg border-0 rounded-3">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Calendario del Barbero</h5>
-          <button type="button" class="btn-close" onclick="cerrarCalendario()"></button>
-        </div>
-        <div class="modal-body p-0">
-          <iframe id="iframe-calendario" src="" style="width: 100%; height: 500px; border: none;"></iframe>
-        </div>
+<div id="calendario-modal" class="modal fade" tabindex="-1" aria-hidden="true" onclick="cerrarCalendario()">
+  <div class="modal-dialog modal-dialog-centered modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-content shadow-lg border-0 rounded-3">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title">Calendario del Barbero</h5>
+        <button type="button" class="btn-close" onclick="cerrarCalendario()"></button>
+      </div>
+      <div class="modal-body p-0">
+        <iframe id="iframe-calendario" src="" style="width: 100%; height: 500px; border: none;"></iframe>
       </div>
     </div>
-    </div>
-  
+  </div>
+</div>
+
 <script>
   function mostrarCalendario(barberoId) {
     const modal = document.getElementById('calendario-modal');
@@ -94,7 +97,7 @@
     document.getElementById('iframe-calendario').src = '';
   }
 
-  window.onclick = function(event) {
+  window.onclick = function (event) {
     const modal = document.getElementById('calendario-modal');
     if (event.target === modal) {
       cerrarCalendario();
