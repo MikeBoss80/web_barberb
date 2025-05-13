@@ -151,7 +151,7 @@ form .form-select {
 }
   .modal-header{
     background-color: #e6dce9; /* Variante clara/opaca del color base */
-    color: #3e1a4e; /* Mismo color base para el texto */
+    color: #000000; /* Mismo color base para el texto */
     border-bottom: 1px solid #cdbcd3;
   }
 

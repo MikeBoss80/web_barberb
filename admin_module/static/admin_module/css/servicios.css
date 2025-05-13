@@ -38,3 +38,75 @@
 .modal-body {
     padding: 1.5rem;
 }
+
+
+/* Quitar el efecto de borde azul en focus y aplicar color personalizado */
+.form-control:focus,
+.form-select:focus {
+  border-color: #3e1a4e;      /* Color del botón */
+  box-shadow: 0 0 0 0.15rem rgba(62, 26, 78, 0.25); /* Sombra suave */
+  outline: none;
+}
+
+/* Aplicar color de fondo suave y bordes redondeados */
+.form-control,
+.form-select {
+  background-color: #ffffff;  /* Un tono claro que combine con #e6dce9 */
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+/* Estilo personalizado para el header del modal */
+.custom-header {
+  background-color: #e6dce9;  /* Color del header */
+  color: #3e1a4e;
+}
+
+/* Botón primario personalizado */
+.btn-primary-custom {
+  background-color: #3e1a4e;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-primary-custom:hover {
+  background-color: #2c1238;
+}
+
+
+
+
+/* INPUT y SELECT: estilo base */
+input, select {
+  background-color: #ffffff;       /* Fondo oscuro */
+  color: #000000;                  /* Texto claro */
+  border: 2px solid #3e1a4e;      /* Borde azul sobrio */
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Al enfocar: borde rojo grana y sombra azul claro */
+input:focus, select:focus {
+  border-color: #3e1a4e;          /* Rojo grana */
+  box-shadow: 0 0 0 0.2rem rgba(165, 0, 68, 0.5); /* Sombra compatible */
+  outline: none;
+}
+
+/* OPCIONES del SELECT */
+select option {
+  background-color: #ffffff;      /* Fondo oscuro del menú desplegable */
+  color: #000000;                 /* Texto claro */
+}
+
+/* OPCIÓN seleccionada */
+select option:checked {
+  background-color: #3e1a4e;      /* Azul oscuro */
+  color: #F1F1F1;
+}
+
+.choices__item--selectable.is-highlighted {
+  background-color: #3e1a4e; /* Azul oscuro al pasar el mouse */
+  color: #F1F1F1;
+}

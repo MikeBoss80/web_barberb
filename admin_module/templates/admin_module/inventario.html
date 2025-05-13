@@ -24,7 +24,7 @@
     <!-- Encabezado -->
     <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
       <h2 class="fw-bold">Inventario de Barbería</h2>
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
+      <button class="btn btn-outline-add_item" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
         <i class="fas fa-plus me-1"></i> Agregar Producto
       </button>
     </div>
@@ -100,7 +100,7 @@
   <div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-labelledby="modalAgregarProductoLabel" aria-hidden="true">
     <div class="modal-dialog">
       <form class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header custom-header">
           <h5 class="modal-title">Agregar Nuevo Producto</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
@@ -134,7 +134,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Guardar Producto</button>
+          <button type="submit" class="btn btn-primary-custom">Guardar Producto</button>
         </div>
       </form>
     </div>
