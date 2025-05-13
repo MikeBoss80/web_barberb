@@ -122,6 +122,15 @@ class BarberosView(BreadcrumbMixin, TemplateView):
         context['barberos'] = [
             {
                 'id': 1,
+                'nombre': 'Miguel Bolivar',
+                'foto_url': 'https://via.placeholder.com/150',
+                'especialidades': 'Cortes Masculinos, Tinte',
+                'horario': 'Lunes a Miércoles, 9am - 5pm',
+                'ingresos_generados': 1500.00,  # Ejemplo de otro barbero
+                'rating': 4.9,
+            },
+            {
+                'id': 2,
                 'nombre': 'Carlos Pérez',
                 'foto_url': 'https://via.placeholder.com/150',
                 'especialidades': 'Cortes modernos, Barba',
@@ -130,7 +139,7 @@ class BarberosView(BreadcrumbMixin, TemplateView):
                 'rating': 4.8,
             },
             {
-                'id': 2,
+                'id': 3,
                 'nombre': 'Luis Martínez',
                 'foto_url': 'https://via.placeholder.com/150',
                 'especialidades': 'Afeitados, Degradados',
@@ -139,7 +148,7 @@ class BarberosView(BreadcrumbMixin, TemplateView):
                 'rating': 4.5,
             },
             {
-                'id': 3,
+                'id': 4,
                 'nombre': 'Ana Gómez',
                 'foto_url': 'https://via.placeholder.com/150',
                 'especialidades': 'Cortes femeninos, Tinte',

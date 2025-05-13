@@ -1,0 +1,94 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Roboto', sans-serif;
+}
+
+h2,
+h4,
+h5 {
+    color: #343a40;
+}
+
+
+.list-group-item {
+    border: none;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.4em 0.75em;
+    transition: transform 0.2s ease-in-out;
+
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+.custom-badge-border {
+    border: 2px solid #004D98 !important;
+    /* Cambia el color y grosor */
+}
+
+
+
+/* Chart containers */
+canvas {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Notificaciones */
+.list-group-item i {
+    color: #ffc107;
+    /* Icono de advertencia */
+}
+
+/* ==== TARJETAS INFORMATIVAS ==== */
+.card.card-border-color {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+
+.card.card-border-color:hover {
+  transform: translateY(-2px);
+}
+
+/* Header suave */
+.card.card-border-color .card-header {
+  background-color: #e9eff6; /* color neutro azul suave */
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #212529;
+  border-bottom: none;
+  padding: 0.75rem 1rem;
+  }
+
+/* Cuerpo más compacto */
+.card.card-border-color .card-body {
+  padding: 1rem;
+}
+
+/* Número destacado */
+.card.card-border-color h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Ícono alineado */
+.card.card-border-color i {
+  color: #004D98;
+}
