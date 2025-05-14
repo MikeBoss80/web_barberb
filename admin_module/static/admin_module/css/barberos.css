@@ -1,104 +1,157 @@
+:root {
+  --primary-color: #004D98;
+  --secondary-color: #e9eff6;
+  --accent-color: #ffc107;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 
-/* Tarjeta compacta */
+/* Estructura principal */
 .card.barbero {
-  max-width: 300px;
-  max-height: 500px;
-  margin: 0 auto;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, max-height 0.3s ease;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: hidden;
+  margin-bottom: 1.5rem;
 }
 
 .card.barbero:hover {
-  transform: translateY(-4px);
-  max-height: 800px;
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow);
+  border-color: rgba(0, 77, 152, 0.2);
 }
 
-/* Imagen dentro de la tarjeta */
+/* Header visual mejorado */
 .card.barbero .card-img-top {
-  height: 160px;
+  height: 180px;
   object-fit: cover;
-  object-position: center;
+  object-position: top;
+  border-bottom: 3px solid var(--primary-color);
 }
 
 /* Cuerpo de la tarjeta */
 .card.barbero .card-body {
-  padding: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(to bottom, white 80%, var(--secondary-color));
 }
 
 .card.barbero .card-title {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Sección de información */
+.info-item {
+  display: flex;
+  align-items: flex-start;
   margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
-.card.barbero .card-text {
-  font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-  line-height: 1.3;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  transition: all 0.3s ease;
+.info-item i {
+  color: var(--primary-color);
+  margin-right: 8px;
+  font-size: 0.9em;
+  margin-top: 2px;
 }
 
-.card.barbero:hover .card-text {
-  -webkit-line-clamp: unset;
-  display: block;
-  overflow: visible;
+/* Estado del barbero */
+.status-badge {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-/* Footer compacto */
+.status-active {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: var(--success-color);
+}
+
+.status-inactive {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: var(--danger-color);
+}
+
+/* Footer de acciones */
 .card.barbero .card-footer {
-  padding: 0.75rem;
-  background-color: #fff;
-  border-top: none;
+  background-color: white;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-/* Botones */
-.card.barbero .btn {
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.btn-barbero {
   font-size: 0.8rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s;
 }
 
-/* Mensajes */
-.alert {
-  margin-top: 1rem;
+.btn-calendar {
+  grid-column: span 2;
+  background-color: var(--primary-color);
+  color: white;
 }
 
-/* Mejora visual para modal */
-.modal-content {
-    max-height: 90vh;
-    overflow: hidden;
-  }
-  
-  .modal-body iframe {
-    width: 100%;
-    height: 500px;
-    border: none;
-  }
-
-  .modal.fade .modal-dialog {
-    transform: scale(0.95);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  
-  .modal.fade.show .modal-dialog {
-    transform: scale(1);
-  }
-
-  
-/*Boton agregar barbero*/
-
-/* Cambiar color para todos los btn-outline-* */
-.btn.btn.btn-outline-success {
-    color: #3e1a4e; /* Color del texto */
-    border-color: #3e1a4e; /* Color del borde */
-    background-color: transparent; /* Color de fondo */
+.btn-calendar:hover {
+  background-color: #003d7a;
 }
 
-.btn.btn.btn.btn-outline-success:hover {
-    color: #fff; /* Color del texto al pasar el mouse */
-    border-color: #3e1a4e; /* Color del borde al pasar el mouse */
-    background-color: #3e1a4e; /* Fondo transparente al pasar el mouse */
+
+/* MODAL STYLE*/
+
+/* Modal mejorado */
+#calendario-modal .modal-dialog {
+  max-width: 90%;
+  margin: 1.75rem auto;
+}
+
+#calendario-modal .modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+#calendario-modal .modal-header {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+}
+
+#calendario-modal .modal-title {
+  font-weight: 500;
+}
+
+#calendario-modal .btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+#iframe-calendario {
+  min-height: 500px;
+  background: white;
 }
