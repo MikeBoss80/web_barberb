@@ -6,8 +6,5 @@
 /services_module/__pycache__
 /virtual
 /barberb/__pycache__
-<<<<<<< HEAD
 /admin_module/utils/__pycache__
-=======
-/admin_module/utils/__pycache__
->>>>>>> 0b5ef3a (gitignore)
+.gitignore
