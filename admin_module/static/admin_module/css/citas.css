@@ -1,65 +1,123 @@
-.card-citas-dia {
-    background-color: #1e88e5; /* azul personalizado */
-    color: rgb(0, 0, 0);
-    }
-    
-    .card-completadas {
-        background-color: #43a047; /* verde personalizado */
-        color: rgb(0, 0, 0);
-    }
-    
-    .card-pendientes {
-        background-color: #fdd835; /* amarillo personalizado */
-        color: rgb(0, 0, 0);
-    }
-    
-    .card-canceladas {
-        background-color: #e53935; /* rojo personalizado */
-        color: rgb(0, 0, 0);
-    }
-    
-    .bg-citas-dia,
-    .bg-completadas,
-    .bg-pendientes,
-    .bg-canceladas {
-        color: #000 !important;
-    }
-    
-    .bg-citas-dia .card-title,
-    .bg-citas-dia .card-text,
-    .bg-completadas .card-title,
-    .bg-completadas .card-text,
-    .bg-pendientes .card-title,
-    .bg-pendientes .card-text,
-    .bg-canceladas .card-title,
-    .bg-canceladas .card-text {
-        color: #000 !important;
-    }
-    
-    .table {
-        color: #000 !important;
-    }
-    
-    .badge {
-        color: #000 !important;
-        border-radius: 20px;
-        padding: 0.4em 0.8em;
-        font-size: 0.85em;
-    }
-    
-    .bg-pendiente {
-        background-color: #fdd835; /* amarillo claro */
-        color: #856404;
-    }
-    
-    .bg-completada {
-        background-color: #43a047; /* verde claro */
-        color: #155724;
-    }
-    
-    .bg-cancelada {
-        background-color: #e53935; /* rojo claro */
-        color: #721c24;
-    }
-    
-    
+/* ==== TARJETAS INFORMATIVAS ==== */
+.card.card-border-color {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+
+.card.card-border-color:hover {
+  transform: translateY(-2px);
+}
+
+/* Header suave */
+.card.card-border-color .card-header {
+  background-color: #e9eff6; /* color neutro azul suave */
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #212529;
+  border-bottom: none;
+  padding: 0.75rem 1rem;
+}
+
+/* Cuerpo más compacto */
+.card.card-border-color .card-body {
+  padding: 1rem;
+}
+
+/* Número destacado */
+.card.card-border-color h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Ícono alineado */
+.card.card-border-color i {
+  color: #004D98;
+}
+
+/* ==== BADGES DE ESTADO ==== */
+.badge.bg-pendiente {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge.bg-confirmada {
+  background-color: #0d6efd;
+}
+
+.badge.bg-completada {
+  background-color: #198754;
+}
+
+.badge.bg-cancelada {
+  background-color: #dc3545;
+}
+
+/* ==== TABLA ==== */
+.table thead.table-dark th {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  font-size: 0.88rem;
+}
+
+/* ==== MODAL DE DETALLE ==== */
+.modal-content {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.modal-header {
+  background-color: #004D98;
+  color: white;
+  padding: 1rem;
+}
+
+.modal-header .btn-close {
+  background-color: #ffffff;
+}
+
+.modal-body {
+  padding: 1.25rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.7rem;
+  font-size: 0.95rem;
+}
+
+/* ==== FORMULARIO DE FILTROS ==== */
+form .form-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+form .form-control,
+form .form-select {
+  font-size: 0.88rem;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 576px) {
+  .card.card-border-color {
+    margin-bottom: 1rem;
+  }
+
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+
+  .modal-body p {
+    font-size: 0.85rem;
+  }
+}

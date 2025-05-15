@@ -1,116 +1,105 @@
 {% extends "admin_module/base_admin.html" %}
-
 {% load static %}
-
 
 {% block title %}Barberos{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'admin_module/css/barberos.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<h2>Barberos del Establecimiento</h2>
+<h2 class="mb-4">Barberos del Establecimiento</h2>
 
-<script>
-    function mostrarCalendario(barberoId) {
-        const modal = document.getElementById('calendario-modal');
-        const iframe = document.getElementById('iframe-calendario');
-        iframe.src = `/barberos/${barberoId}/calendario/`;  // Cambiamos para cargar la URL dinámica
-        modal.style.display = 'block';
-    }
-
-    function cerrarCalendario() {
-        const modal = document.getElementById('calendario-modal');
-        modal.style.display = 'none';
-        document.getElementById('iframe-calendario').src = '';  // Limpiar el iframe para evitar carga repetida
-    }
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('calendario-modal');
-        if (event.target == modal) {
-            cerrarCalendario();
-        }
-    }
-</script>
-
-<script>
-    function mostrarCalendario(barberoId) {
-        const modal = document.getElementById('calendario-modal');
-        const iframe = document.getElementById('iframe-calendario');
-        iframe.src = `/barberos/${barberoId}/calendario/`;  // Cambiar URL dinámica
-        modal.classList.add('show');  // Muestra el modal con animación
-    }
-
-    function cerrarCalendario() {
-        const modal = document.getElementById('calendario-modal');
-        modal.classList.remove('show');  // Oculta el modal con animación
-        document.getElementById('iframe-calendario').src = '';  // Limpiar el iframe
-    }
-
-    // Cierra el modal si se hace clic fuera del contenido
-    window.onclick = function(event) {
-        const modal = document.getElementById('calendario-modal');
-        if (event.target == modal) {
-            cerrarCalendario();
-        }
-    }
-</script>
-
-<form method="get" action="" class="filtro-barberos">
-    <input type="text" name="q" placeholder="Buscar barbero por nombre o especialidad..." />
-    <button type="submit">🔍 Buscar</button>
-</form>
-
-
-<div class="acciones-globales">
-    <a href="#" class="btn-agregar">+ Agregar Barbero</a>
+<div class="acciones-globales text-end mb-4">
+  <a href="#" class="btn btn-outline-success btn-sm px-4">
+    <i class="bi bi-person-plus"></i> Agregar Barbero
+  </a>
 </div>
 
-<div class="barberos-container">
+<div class="container">
+  <div class="row g-4">
     {% for barbero in barberos %}
-        <div class="barbero-card">
-            <img src="https://placehold.co/200x200" alt="Foto de {{ barbero.nombre }}" class="barbero-foto">
-            <h3>{{ barbero.nombre }}</h3>
-            <p><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
-            <p><strong>Horario:</strong> {{ barbero.horario }}</p>
-            <p><strong>Ingresos generados:</strong> ${{ barbero.ingresos_generados }}</p>
-            <p><strong>Calificación:</strong> {{ barbero.rating }} ⭐</p>
-            <p><strong>Estado:</strong>
+    <div class="col-md-3 col-sm-6 col-12 d-flex justify-content-center mb-4">
+      <div class="card barbero">
+        <img src="https://placehold.co/300x200" class="card-img-top" alt="Foto de {{ barbero.nombre }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ barbero.nombre }}</h5>
+          <p class="card-text"><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
+          <p class="card-text"><strong>Horario:</strong> {{ barbero.horario }}</p>
+          <p class="card-text"><strong>Ingresos:</strong> ${{ barbero.ingresos_generados }}</p>
+          <p class="card-text"><strong>Calificación:</strong> {{ barbero.rating }} ⭐</p>
+          <p class="card-text">
+            <strong>Estado:</strong>
             {% if barbero.activo %}
-                <span class="estado activo">🟢 Activo</span>
+              <span class="text-success">🟢 Activo</span>
             {% else %}
-                <span class="estado inactivo">🔴 Inactivo</span>
+              <span class="text-danger">🔴 Inactivo</span>
             {% endif %}
-            </p>
-
-            <div class="acciones">
-                <button onclick="mostrarCalendario({{ barbero.id }})">📅 Calendario</button>
-                <BR></BR>
-                <a href="#" class="btn-editar">✏️ Editar</a>
-                <a href="#" class="btn-desactivar">🛑 Desactivar</a>
-            </div>
+          </p>
         </div>
+        <div class="card-footer d-flex flex-column align-items-start gap-2">
+          <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({{ barbero.id }})">📅 Ver Calendario</button>
+          <div class="d-flex w-100 justify-content-between">
+            <a href="#" class="btn btn-sm btn-outline-secondary">✏️ Editar</a>
+            <a href="#" class="btn btn-sm btn-outline-danger">🛑 Desactivar</a>
+          </div>
+        </div>
+      </div>
+    </div>
     {% endfor %}
+  </div>
 </div>
 
 {% if messages %}
-    <div class="mensajes">
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
+  <div class="container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    {% endfor %}
+  </div>
 {% endif %}
 
-
 <!-- Modal para el calendario -->
-
-<div id="calendario-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="cerrarCalendario()">&times;</span>
-        <iframe id="iframe-calendario" src="" frameborder="0"></iframe>
+<!-- Modal para el calendario -->
+    <div id="calendario-modal" class="modal fade" tabindex="-1" aria-hidden="true" onclick="cerrarCalendario()">
+    <div class="modal-dialog modal-dialog-centered modal-lg" onclick="event.stopPropagation()">
+      <div class="modal-content shadow-lg border-0 rounded-3">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">Calendario del Barbero</h5>
+          <button type="button" class="btn-close" onclick="cerrarCalendario()"></button>
+        </div>
+        <div class="modal-body p-0">
+          <iframe id="iframe-calendario" src="" style="width: 100%; height: 500px; border: none;"></iframe>
+        </div>
+      </div>
     </div>
-</div>
+    </div>
+  
+<script>
+  function mostrarCalendario(barberoId) {
+    const modal = document.getElementById('calendario-modal');
+    const iframe = document.getElementById('iframe-calendario');
+    iframe.src = `/barberos/${barberoId}/calendario/`;
+    modal.classList.add('show');
+    modal.style.display = 'block';
+  }
 
+  function cerrarCalendario() {
+    const modal = document.getElementById('calendario-modal');
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+    document.getElementById('iframe-calendario').src = '';
+  }
 
+  window.onclick = function(event) {
+    const modal = document.getElementById('calendario-modal');
+    if (event.target === modal) {
+      cerrarCalendario();
+    }
+  }
+</script>
 {% endblock %}

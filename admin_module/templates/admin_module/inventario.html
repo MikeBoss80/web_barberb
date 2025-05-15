@@ -1,0 +1,144 @@
+
+
+{% extends "admin_module/base_admin.html" %}
+
+{% load static %}
+
+
+{% block title %}Inventario{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+</style>
+
+
+<div class="container-fluid">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+      <h2 class="fw-bold">Inventario de Barbería</h2>
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
+        <i class="fas fa-plus me-1"></i> Agregar Producto
+      </button>
+    </div>
+  
+    <!-- Filtros -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="Buscar producto...">
+      </div>
+      <div class="col-md-4">
+        <select class="form-select">
+          <option value="">Todas las categorías</option>
+          <option>Cosmético</option>
+          <option>Herramienta</option>
+          <option>Desechable</option>
+        </select>
+      </div>
+    </div>
+  
+    <!-- Tabla de productos -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+            <th>Unidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr>
+            <td>Gel Fijador</td>
+            <td>Cosmético</td>
+            <td>20</td>
+            <td>Unidades</td>
+            <td><span class="badge bg-success">Activo</span></td>
+            <td>
+              <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td>Máquina Corta Pelo</td>
+            <td>Herramienta</td>
+            <td>3</td>
+            <td>Unidades</td>
+            <td><span class="badge bg-success">Activo</span></td>
+            <td>
+              <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td>Toallas Desechables</td>
+            <td>Desechable</td>
+            <td><span class="text-danger fw-bold">5</span> <span class="badge bg-warning text-dark">Bajo stock</span></td>
+            <td>Unidades</td>
+            <td><span class="badge bg-success">Activo</span></td>
+            <td>
+              <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Modal Agregar Producto -->
+  <div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-labelledby="modalAgregarProductoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar Nuevo Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="producto_nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="producto_nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="producto_categoria" class="form-label">Categoría</label>
+            <select class="form-select" id="producto_categoria">
+              <option>Cosmético</option>
+              <option>Herramienta</option>
+              <option>Desechable</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="producto_cantidad" class="form-label">Cantidad</label>
+            <input type="number" class="form-control" id="producto_cantidad" min="0" required>
+          </div>
+          <div class="mb-3">
+            <label for="producto_unidad" class="form-label">Unidad</label>
+            <input type="text" class="form-control" id="producto_unidad" value="Unidades">
+          </div>
+          <div class="mb-3">
+            <label for="producto_estado" class="form-label">Estado</label>
+            <select class="form-select" id="producto_estado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+{% endblock %}

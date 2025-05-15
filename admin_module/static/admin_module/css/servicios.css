@@ -1,0 +1,40 @@
+/* Cambiar color para todos los btn-outline-* */
+.btn-outline-add_service {
+    color: #3e1a4e; /* Color del texto */
+    border-color: #3e1a4e; /* Color del borde */
+    background-color: transparent; /* Color de fondo */
+}
+
+.btn-outline-add_service:hover {
+    color: #fff; /* Color del texto al pasar el mouse */
+    border-color: #3e1a4e; /* Color del borde al pasar el mouse */
+    background-color: #3e1a4e; /* Fondo transparente al pasar el mouse */
+}
+
+/* === Botones de formulario: Guardar / Actualizar === */
+.btn-primary-custom {
+    background-color: #3e1a4e; /* Mismo color que hover del botón Agregar */
+    border-color: #3e1a4e;
+    color: #fff;
+}
+
+.btn-primary-custom:hover {
+    color: #fff; /* Color del texto al pasar el mouse */
+    background-color: #2f143d; /* Un poco más oscuro al hacer hover */
+    border-color: #2f143d;
+}
+
+/* === Encabezado del modal === */
+.modal-header.custom-header {
+    background-color: #e6dce9; /* Variante clara/opaca del color base */
+    color: #3e1a4e; /* Mismo color base para el texto */
+    border-bottom: 1px solid #cdbcd3;
+}
+
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
