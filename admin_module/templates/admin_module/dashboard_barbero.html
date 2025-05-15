@@ -1,87 +1,66 @@
 {% extends "admin_module/base_admin.html" %}
-
 {% load static %}
-
 
 {% block title %}Agenda de Citas{% endblock %}
 
-
 {% block extra_css %}
-
-<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'admin_module/css/dashboard.css' %}">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'admin_module/css/dashboard.css' %}">
 {% endblock %}
-
 
 {% block content %}
 
-  <div class="main-content">
+<main class="dashboard">
+  <!-- Tarjetas de resumen -->
+  <section class="stats card-container">
+    <div class="card"><h3>Ganancias</h3><p>$1,200</p></div>
+    <div class="card"><h3>Citas Atendidas</h3><p>37</p></div>
+    <div class="card"><h3>Servicios Solicitados</h3><p>45%</p></div>
+    <div class="card"><h3>Calificación</h3><p>4.8 ★</p></div>
+  </section>
 
-    <main class="dashboard">
-      <!-- Tarjetas de resumen -->
-      <section class="stats card-container">
-        <div class="card">
-          <h3>Ganancias</h3>
-          <p>$1,200</p>
-        </div>
-        <div class="card">
-          <h3>Citas Atendidas</h3>
-          <p>37</p>
-        </div>
-        <div class="card">
-          <h3>Servicios Solicitados</h3>
-          <p>45%</p>
-        </div>
-        <div class="card">
-          <h3>Calificación</h3>
-          <p>4.8 ★</p>
-        </div>
-      </section>
+  <!-- Gráficas -->
+  <section class="charts">
+    <div class="chart-container"><canvas id="barChart"></canvas></div>
+    <div class="chart-container"><canvas id="areaChart"></canvas></div>
+    <div class="chart-container"><canvas id="donutChart"></canvas></div>
+  </section>
 
-      <!-- Gráficas -->
-      <section class="charts">
-        <div class="chart-container">
-          <canvas id="barChart"></canvas>
-        </div>
-        <div class="chart-container">
-          <canvas id="areaChart"></canvas>
-        </div>
-        <div class="chart-container">
-          <canvas id="donutChart"></canvas>
-        </div>
-      </section>
+  <!-- Tabla de citas recientes -->
+  <section class="tabla-citas table-container">
+    <h2>Citas Recientes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Servicio</th>
+          <th>Hora</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Juan Pérez</td>
+          <td>Corte + Barba</td>
+          <td>10:30 AM</td>
+          <td><span class="estado pendiente">Pendiente</span></td>
+        </tr>
+        <tr>
+          <td>Ana Torres</td>
+          <td>Tinte</td>
+          <td>12:00 PM</td>
+          <td><span class="estado completado">Completado</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
 
-      <!-- Tabla de citas recientes -->
-      <section class="tabla-citas table-container">
-        <h2>Citas Recientes</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Servicio</th>
-              <th>Hora</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Juan Pérez</td>
-              <td>Corte + Barba</td>
-              <td>10:30 AM</td>
-              <td><span class="estado pendiente">Pendiente</span></td>
-            </tr>
-            <tr>
-              <td>Ana Torres</td>
-              <td>Tinte</td>
-              <td>12:00 PM</td>
-              <td><span class="estado completado">Completado</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    </main>
-  </div>
+<!-- Datos dinámicos para las gráficas -->
 
-  <script src="../js/app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}    
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'admin_module/js/menu.js' %}"></script>
+<script src="{% static 'admin_module/js/app.js' %}"></script>
+{% endblock %}

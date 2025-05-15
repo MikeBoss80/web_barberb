@@ -6,6 +6,10 @@ from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
+import json
+from django.shortcuts import render
+
+
 
 
 
@@ -195,7 +199,10 @@ class DashboardView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/dashboard_barbero.html'
      def get_breadcrumb(self):
         return [{'label': 'Dashboard', 'url': reverse('admin_module:dashboard')}]
-
+     
+     
+   
+   
 class SeguridadView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/seguridad.html'
      def get_breadcrumb(self):
