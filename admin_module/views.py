@@ -191,7 +191,10 @@ class ReportesView(BreadcrumbMixin, TemplateView):
      def get_breadcrumb(self):
         return [{'label': 'Reportes', 'url': reverse('admin_module:reportes')}]
 
-
+class DashboardView(BreadcrumbMixin, TemplateView):
+     template_name= 'admin_module/dashboard_barbero.html'
+     def get_breadcrumb(self):
+        return [{'label': 'Dashboard', 'url': reverse('admin_module:dashboard')}]
 
 class SeguridadView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/seguridad.html'
