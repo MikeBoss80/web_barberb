@@ -198,6 +198,9 @@ h1 {
     margin: 0.5rem auto;
   }
 }  
+.btn-close {
+  background-color: #ffffff;
+}
 
 /*
 .card.card-border-color {

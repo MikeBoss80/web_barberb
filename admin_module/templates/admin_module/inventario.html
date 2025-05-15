@@ -1,144 +1,297 @@
 
-
 {% extends "admin_module/base_admin.html" %}
-
 {% load static %}
 
-
-{% block title %}Inventario{% endblock %}
-
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'admin_module/css/inventario.css' %}">
-{% endblock %}
-
+{% block title %}Gestión de Inventario{% endblock %}
 
 {% block content %}
-
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-    <!-- Encabezado -->
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-      <h2 class="fw-bold">Inventario de Barbería</h2>
-      <button class="btn btn-outline-add_item" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
-        <i class="fas fa-plus me-1"></i> Agregar Producto
+<div class="container-fluid py-4">
+  <!-- Encabezado con acciones -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+      <i class="fas fa-boxes me-2" style="color: var(--primary-color);"></i>
+      Inventario de Barbería
+    </h2>
+    <div>
+      <button class="btn btn-outline-add_item me-2" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
+        <i class="fas fa-plus me-1"></i> Nuevo Producto
+      </button>
+      <button class="btn btn-outline-secondary" onclick="exportarInventario()">
+        <i class="fas fa-file-export me-1"></i> Exportar
       </button>
     </div>
-  
-    <!-- Filtros -->
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <input type="text" class="form-control" placeholder="Buscar producto...">
-      </div>
-      <div class="col-md-4">
-        <select class="form-select">
-          <option value="">Todas las categorías</option>
-          <option>Cosmético</option>
-          <option>Herramienta</option>
-          <option>Desechable</option>
-        </select>
-      </div>
-    </div>
-  
-    <!-- Tabla de productos -->
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped">
-        <thead class="table-dark text-center">
-          <tr>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Cantidad</th>
-            <th>Unidad</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="text-center">
-          <tr>
-            <td>Gel Fijador</td>
-            <td>Cosmético</td>
-            <td>20</td>
-            <td>Unidades</td>
-            <td><span class="badge bg-success">Activo</span></td>
-            <td>
-              <button class="btn btn-sm custom-btn-edit"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm custom-btn-delete"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td>Máquina Corta Pelo</td>
-            <td>Herramienta</td>
-            <td>3</td>
-            <td>Unidades</td>
-            <td><span class="badge bg-success">Activo</span></td>
-            <td>
-              <button class="btn btn-sm custom-btn-edit"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm custom-btn-delete"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td>Toallas Desechables</td>
-            <td>Desechable</td>
-            <td><span class="text-danger fw-bold">5</span> <span class="badge bg-warning text-dark">Bajo stock</span></td>
-            <td>Unidades</td>
-            <td><span class="badge bg-success">Activo</span></td>
-            <td>
-              <button class="btn btn-sm custom-btn-edit"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm custom-btn-delete"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
-  
-  <!-- Modal Agregar Producto -->
-  <div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-labelledby="modalAgregarProductoLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <form class="modal-content">
-        <div class="modal-header custom-header">
-          <h5 class="modal-title">Agregar Nuevo Producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="producto_nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="producto_nombre" required>
-          </div>
-          <div class="mb-3">
-            <label for="producto_categoria" class="form-label">Categoría</label>
-            <select class="form-select" id="producto_categoria">
-              <option>Cosmético</option>
-              <option>Herramienta</option>
-              <option>Desechable</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="producto_cantidad" class="form-label">Cantidad</label>
-            <input type="number" class="form-control" id="producto_cantidad" min="0" required>
-          </div>
-          <div class="mb-3">
-            <label for="producto_unidad" class="form-label">Unidad</label>
-            <input type="text" class="form-control" id="producto_unidad" value="Unidades">
-          </div>
-          <div class="mb-3">
-            <label for="producto_estado" class="form-label">Estado</label>
-            <select class="form-select" id="producto_estado">
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary-custom">Guardar Producto</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  
 
+  <!-- Filtros mejorados -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white">
+          <i class="fas fa-search"></i>
+        </span>
+        <input type="text" class="form-control" id="buscarProducto" placeholder="Buscar producto...">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" id="filtroCategoria">
+        <option value="">Todas las categorías</option>
+        <option>Cosmético</option>
+        <option>Herramienta</option>
+        <option>Desechable</option>
+        <option>Equipo</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" id="filtroEstado">
+        <option value="">Todos los estados</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+        <option value="bajo-stock">Bajo stock</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-light w-100" onclick="resetearFiltros()">
+        <i class="fas fa-undo me-1"></i> Reiniciar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de productos mejorada -->
+  <div class="table-responsive rounded-3 shadow-sm">
+    <table class="table table-hover mb-0" id="tablaInventario">
+      <thead>
+        <tr>
+          <th class="text-start">Nombre</th>
+          <th>Categoría</th>
+          <th class="text-end">Stock</th>
+          <th>Unidad</th>
+          <th class="text-center">Estado</th>
+          <th class="text-end">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Para iterar productos -->
+        {% for producto in productos %}
+        <tr data-categoria="{{ producto.categoria|lower }}"
+          data-estado="{% if producto.cantidad <= producto.stock_minimo %}bajo-stock{% else %}{% if producto.activo %}activo{% else %}inactivo{% endif %}{% endif %}">
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.get_categoria_display }}</td>
+          <td>{{ producto.cantidad }}</td>
+          <td>{{ producto.get_unidad_display }}</td>
+          <td>
+            <span class="badge bg-{% if producto.activo %}success{% else %}secondary{% endif %}">
+              {{ producto.get_activo_display }}
+            </span>
+          </td>
+          <!-- Acciones -->
+        </tr>
+        {% endfor %}
+
+        <!-- Para los formularios modales -->
+        <form method="post" action="#">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <!-- resto del modal -->
+        </form>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pie de tabla con resumen -->
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="text-muted">
+      Mostrando <span id="productosMostrados">{{ productos|length }}</span> de {{ productos|length }} productos
+    </div>
+    <div>
+      <span class="badge bg-success me-2">Activo: {{ productos_activos }}</span>
+      <span class="badge bg-warning me-2">Bajo stock: {{ productos_bajo_stock }}</span>
+      <span class="badge bg-secondary">Inactivo: {{ productos_inactivos }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agregar Producto -->
+<div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form class="modal-content" method="post" action="#">
+      {% csrf_token %}
+      <div class="modal-header custom-header">
+        <h5 class="modal-title">
+          <i class="fas fa-plus-circle me-2"></i>
+          Nuevo Producto
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="producto_nombre" class="form-label">Nombre del Producto</label>
+            <input type="text" class="form-control" id="producto_nombre" name="nombre" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="producto_categoria" class="form-label">Categoría</label>
+            <select class="form-select" id="producto_categoria" name="categoria" required>
+              <option value="" disabled selected>Seleccione categoría</option>
+              <option value="cosmetico">Cosmético</option>
+              <option value="herramienta">Herramienta</option>
+              <option value="desechable">Desechable</option>
+              <option value="equipo">Equipo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="producto_cantidad" class="form-label">Cantidad Actual</label>
+            <input type="number" class="form-control" id="producto_cantidad" name="cantidad" min="0" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="producto_stock_minimo" class="form-label">Stock Mínimo</label>
+            <input type="number" class="form-control" id="producto_stock_minimo" name="stock_minimo" min="0">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="producto_unidad" class="form-label">Unidad</label>
+            <select class="form-select" id="producto_unidad" name="unidad">
+              <option value="unidades" selected>Unidades</option>
+              <option value="litros">Litros</option>
+              <option value="ml">Mililitros</option>
+              <option value="gramos">Gramos</option>
+              <option value="paquetes">Paquetes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="producto_descripcion" class="form-label">Descripción (Opcional)</label>
+          <textarea class="form-control" id="producto_descripcion" name="descripcion" rows="2"></textarea>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="producto_activo" name="activo" checked>
+          <label class="form-check-label" for="producto_activo">Producto activo en inventario</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary-custom">
+          <i class="fas fa-save me-1"></i> Guardar Producto
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Editar Producto (similar al de agregar pero con datos precargados) -->
+<div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-hidden="true">
+  <!-- Contenido similar al modal de agregar pero con datos precargados -->
+</div>
+
+<!-- Scripts -->
+<script>
+  // Función para confirmar eliminación
+  function confirmarEliminacion(nombre, id) {
+    Swal.fire({
+      title: `¿Eliminar "${nombre}"?`,
+      text: "Esta acción no se puede deshacer",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/inventario/eliminar/${id}/`;
+      }
+    });
+  }
+
+  // Filtrado de productos
+  function filtrarProductos() {
+    const texto = document.getElementById('buscarProducto').value.toLowerCase();
+    const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
+    const estado = document.getElementById('filtroEstado').value;
+
+    let contador = 0;
+
+    document.querySelectorAll('#tablaInventario tbody tr').forEach(tr => {
+      const nombre = tr.querySelector('td:first-child').textContent.toLowerCase();
+      const trCategoria = tr.getAttribute('data-categoria');
+      const trEstado = tr.getAttribute('data-estado');
+
+      const coincideTexto = nombre.includes(texto);
+      const coincideCategoria = categoria === '' || trCategoria === categoria;
+      const coincideEstado = estado === '' || trEstado === estado;
+
+      if (coincideTexto && coincideCategoria && coincideEstado) {
+        tr.style.display = '';
+        contador++;
+      } else {
+        tr.style.display = 'none';
+      }
+    });
+
+    document.getElementById('productosMostrados').textContent = contador;
+  }
+
+  // Resetear filtros
+  function resetearFiltros() {
+    document.getElementById('buscarProducto').value = '';
+    document.getElementById('filtroCategoria').value = '';
+    document.getElementById('filtroEstado').value = '';
+    filtrarProductos();
+  }
+
+  // Exportar inventario
+  function exportarInventario() {
+    // Lógica para exportar el inventario a Excel/PDF
+    Swal.fire({
+      title: 'Exportar Inventario',
+      text: 'Seleccione el formato de exportación',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Excel',
+      cancelButtonText: 'PDF',
+      showDenyButton: true,
+      denyButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/inventario/exportar/excel/';
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        window.location.href = '/inventario/exportar/pdf/';
+      }
+    });
+  }
+
+  // Event listeners
+  document.getElementById('buscarProducto').addEventListener('input', filtrarProductos);
+  document.getElementById('filtroCategoria').addEventListener('change', filtrarProductos);
+  document.getElementById('filtroEstado').addEventListener('change', filtrarProductos);
+
+  // Cargar datos en modal de edición
+  document.getElementById('modalEditarProducto').addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const productoId = button.getAttribute('data-producto-id');
+
+    // Aquí iría la lógica para cargar los datos del producto
+    // mediante una petición AJAX o similar
+  });
+</script>
+
+<script>
+  // Ejemplo para eliminar sin recargar
+  $('.btn-delete').click(function () {
+    $.ajax({
+      url: $(this).data('url'),
+      method: 'POST',
+      data: {
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      success: function (response) {
+        // Actualizar tabla
+      }
+    });
+  });
+
+</script>
 {% endblock %}
