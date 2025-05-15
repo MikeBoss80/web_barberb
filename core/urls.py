@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import HomepageView, LoginView, BarberoDashboardView 
+from core.views import HomepageView, LoginView, SolicitudesView  
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es mas moderno."""
 
@@ -7,6 +7,6 @@ from core.views import HomepageView, LoginView, BarberoDashboardView
 urlpatterns = [
     path('', HomepageView.as_view(), name='main'),
     path('login/', LoginView.as_view(), name='login'),
-    path('dashboard/', BarberoDashboardView.as_view(), name='dashboard'),
+    
 
 ]

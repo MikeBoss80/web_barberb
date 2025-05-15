@@ -15,9 +15,10 @@ class LoginView(TemplateView):
     template_name = 'core/Login.html'
 
 
-class BarberoDashboardView(TemplateView):
+class SolicitudesView(TemplateView):
     #La página principal para los barberos cuando inician sesión.
-    template_name = 'core/barbero/dashboard.html'
+    template_name = 'core/barbero/solicitudes_barbero.html'
+
      
 class BarberoOpcionesUsuarioView(TemplateView):
     #las opciones que tiene el barbero como usuario (perfil, configuración, etc.)
