@@ -23,7 +23,7 @@
     {% for barbero in barberos %}
     <div class="col-md-3 col-sm-6 col-12 d-flex justify-content-center mb-4">
       <div class="card barbero">
-        <img src="https://placehold.co/300x200" class="card-img-top" alt="Foto de {{ barbero.nombre }}">
+        <img src="{% static 'admin_module/img/foto_barbero1.png' %}" class="card-img-top" alt="Foto de {{ barbero.nombre }}">
         <div class="card-body">
           <h5 class="card-title">{{ barbero.nombre }}</h5>
           <p class="card-text"><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
@@ -63,7 +63,6 @@
   </div>
 {% endif %}
 
-<!-- Modal para el calendario -->
 <!-- Modal para el calendario -->
     <div id="calendario-modal" class="modal fade" tabindex="-1" aria-hidden="true" onclick="cerrarCalendario()">
     <div class="modal-dialog modal-dialog-centered modal-lg" onclick="event.stopPropagation()">

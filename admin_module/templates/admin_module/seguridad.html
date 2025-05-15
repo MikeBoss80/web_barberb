@@ -1,0 +1,175 @@
+
+
+{% extends "admin_module/base_admin.html" %}
+
+{% load static %}
+
+
+{% block title %}Agenda de Citas{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_module/css/seguridad.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Seguridad</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .nav-link.active {
+            background-color: #343a40;
+            color: white !important;
+        }
+        .badge-cliente {
+            background-color: #28a745;
+        }
+        .badge-barbero {
+            background-color: #6f42c1;
+        }
+        .badge-admin {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4 p-4" style="background-color: #f8f9fa; border-radius: 10px;">
+        <div class="mb-4" style="background-color: #343a40; padding: 15px; border-radius: 8px;">
+            <h2 class="text-white mb-0"><i class="fas fa-cogs"></i> Panel de seguridad</h2>
+        </div>
+
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" href="#usuarios"><i class="fas fa-users"></i> Usuarios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#cambiar-contrasena"><i class="fas fa-key"></i> Cambiar Contraseña</a>
+            </li>
+        </ul>
+
+        <div id="usuarios">
+            <h4><i class="fas fa-users"></i> Gestión de Usuarios</h4>
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Nuevo Usuario</button>
+            </div>
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1001</td>
+                        <td>Juan Pérez</td>
+                        <td>juan@example.com</td>
+                        <td>3001234567</td>
+                        <td><span class="badge badge-cliente">Cliente</span></td>
+                        <td><span class="badge bg-success">Activo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1002</td>
+                        <td>María Gómez</td>
+                        <td>maria@example.com</td>
+                        <td>3109876543</td>
+                        <td><span class="badge badge-barbero">Barbero</span></td>
+                        <td><span class="badge bg-success">Activo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1003</td>
+                        <td>Admin System</td>
+                        <td>admin@barberia.com</td>
+                        <td>3155555555</td>
+                        <td><span class="badge badge-admin">Administrador</span></td>
+                        <td><span class="badge bg-success">Activo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link">Anterior</a></li>
+                    <li class="page-item active"><a class="page-link">1</a></li>
+                    <li class="page-item"><a class="page-link">2</a></li>
+                    <li class="page-item"><a class="page-link">3</a></li>
+                    <li class="page-item"><a class="page-link">Siguiente</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="mt-5">
+            <h4><i class="fas fa-user-shield"></i> Asignación de Roles y Accesos</h4>
+            <form class="row g-3" method="POST" action="/asignar-rol">
+                <div class="col-md-6">
+                    <label for="buscarPersona" class="form-label">Buscar Persona</label>
+                    <input type="text" id="buscarPersona" name="persona" class="form-control" placeholder="Ingrese nombre..." required>
+                </div>
+                <div class="col-md-3">
+                    <label for="seleccionarRol" class="form-label">Rol</label>
+                    <select class="form-select" id="seleccionarRol" name="rol" required>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Barbero">Barbero</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-check"></i> Asignar Rol</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="cambiar-contrasena" class="mt-5">
+            <h4><i class="fas fa-key"></i> Cambio de Contraseña</h4>
+            <form class="row g-3" method="POST" action="/cambiar-contrasena">
+                <div class="col-md-4">
+                    <label for="usuarioEmail" class="form-label">Correo del Usuario</label>
+                    <input type="email" class="form-control" id="usuarioEmail" name="email" placeholder="usuario@correo.com" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="nuevaContrasena" class="form-label">Nueva Contraseña</label>
+                    <input type="password" class="form-control" id="nuevaContrasena" name="password" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-save"></i> Asignar Contraseña</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
+
+{% endblock %}

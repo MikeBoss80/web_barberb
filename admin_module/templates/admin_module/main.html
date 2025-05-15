@@ -19,147 +19,261 @@
 
 <div class="container my-4">
 
-    <!-- 1. Bienvenida -->
-    <div class="mb-4">
-      <h2>¡Hola, {{ user.first_name }}!</h2>
-      <p class="text-muted">Esto es lo más relevante de tu barbería hoy: {{ today|date:"l, d F Y" }}</p>
-    </div>
-  
-    <!-- 2. Tarjetas Resumen -->
-    
-    <div class="row gy-4">
-      <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-          <div class="card-header">Citas del Dia</div>
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h2>{{ citas_hoy }}</h2>
-              </div>
-              <i class="bi bi-calendar-check-fill fs-1"></i>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="mb-4">
+    <h1 class="h2">¡Hola, {{ user.first_name }}!</h1>
+    <p class="lead text-muted">Resumen del {{ today|date:"l, d F Y" }}</p>
+  </div>
 
-      <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-          <div class="card-header">Barberos Activos</div>
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h2>{{ barberos_activos }}</h2>
-              </div>
-              <i class="bi bi-person-check-fill fs-1"></i>
-            </div>
-          </div>
+  <!-- SECCIÓN DE TARJETAS -->
+  <div class="row g-4 mb-5">
+    <!-- Tarjeta 1: Citas del Día -->
+    <div class="col-xl-3 col-md-6">
+      <div class="metric-card card-border-color" role="region" aria-label="Citas programadas para hoy">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Citas del Día</span>
+          <i class="bi bi-calendar-check-fill metric-icon"></i>
         </div>
-      </div>
-    
-      <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-          <div class="card-header">Inventario (Bajo Stock)</div>
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h2>{{ bajo_stock }}</h2>
-              </div>
-              <i class="bi bi-box-seam fs-1"></i>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-end">
+            <div>
+              <h2 class="metric-value">{{ citas_hoy }}</h2>
+              <p class="metric-trend text-success">
+                <i class="bi bi-arrow-up-short"></i> 12% vs ayer
+              </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-          <div class="card-header">Ingresos Estimados</div>
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h2>${{ ingresos_hoy }}</h2>
-              </div>
-              <i class="bi bi-cash-coin fs-1"></i>
-            </div>
+            <button class="btn btn-sm btn-outline-primary">Ver todas</button>
           </div>
         </div>
       </div>
     </div>
 
-    
+    <!-- Tarjeta 2: Barberos Activos -->
+    <div class="col-xl-3 col-md-6">
+      <div class="metric-card card-border-color" role="region" aria-label="Barberos disponibles">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Barberos Activos</span>
+          <i class="bi bi-person-check-fill metric-icon"></i>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-end">
+            <div>
+              <h2 class="metric-value">{{ barberos_activos }}</h2>
+              <p class="metric-trend text-muted">
+                <i class="bi bi-dash"></i> Sin cambios
+              </p>
+            </div>
+            <button class="btn btn-sm btn-outline-primary">Gestión</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- 3. Próximas Citas -->
-    <div class="mt-5">
-      <h4>Próximas Citas</h4>
-      <ul class="list-group">
-        {% for cita in proximas_citas %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ cita.hora }} - {{ cita.cliente }} ({{ cita.servicio }})
-            <span class="badge bg-primary rounded-pill custom-badge-border">{{ cita.barbero }}</span>
-          </li>
-        {% empty %}
-          <li class="list-group-item">No hay citas próximas.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  
-    <!-- 4. Gráficas -->
-    <div class="row mt-5">
-      <div class="col-md-6">
-        <h5>Ingresos Semanales</h5>
-        <canvas id="ingresosChart"></canvas>
-      </div>
-      <div class="col-md-6">
-        <h5>Servicios Más Solicitados</h5>
-        <canvas id="serviciosChart"></canvas>
+    <!-- Tarjeta 3: Inventario -->
+    <div class="col-xl-3 col-md-6">
+      <div class="metric-card card-border-color" role="region" aria-label="Productos con bajo stock">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Bajo Stock</span>
+          <i class="bi bi-box-seam-fill metric-icon"></i>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-end">
+            <div>
+              <h2 class="metric-value">{{ bajo_stock }}</h2>
+              <p class="metric-trend text-danger">
+                <i class="bi bi-arrow-down-short"></i> 3 productos críticos
+              </p>
+            </div>
+            <button class="btn btn-sm btn-outline-primary">Reabastecer</button>
+          </div>
+        </div>
       </div>
     </div>
-  
-    <!-- 5. Notificaciones -->
-    <div class="mt-5">
-      <h4>Notificaciones del Sistema</h4>
-      <ul class="list-group">
-        {% for notificacion in notificaciones %}
-          <li class="list-group-item">
-            <i class="bi bi-exclamation-circle text-warning me-2"></i>{{ notificacion }}
-          </li>
-        {% empty %}
-          <li class="list-group-item">No hay notificaciones por ahora.</li>
-        {% endfor %}
-      </ul>
+
+    <!-- Tarjeta 4: Ingresos -->
+    <div class="col-xl-3 col-md-6">
+      <div class="metric-card card-border-color" role="region" aria-label="Ingresos estimados">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Ingresos Estimados</span>
+          <i class="bi bi-cash-coin metric-icon"></i>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-end">
+            <div>
+              <h2 class="metric-value">${{ ingresos_hoy }}</h2>
+              <p class="metric-trend text-success">
+                <i class="bi bi-arrow-up-short"></i> 18% vs promedio
+              </p>
+            </div>
+            <button class="btn btn-sm btn-outline-primary">Detalles</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  
-  
+
+
+
+  <!-- 3. Próximas Citas -->
+  <div class="mt-5">
+    <h4>Próximas Citas</h4>
+    <ul class="list-group">
+      {% for cita in proximas_citas %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ cita.hora }} - {{ cita.cliente }} ({{ cita.servicio }})
+        <span class="badge bg-primary rounded-pill custom-badge-border">{{ cita.barbero }}</span>
+      </li>
+      {% empty %}
+      <li class="list-group-item">No hay citas próximas.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- SECCIÓN DE GRÁFICAS -->
+  <div class="row mt-5">
+    <!-- Gráfica 1: Ingresos Semanales -->
+    <div class="col-lg-6 mb-4">
+      <div class="chart-card">
+        <div class="chart-header d-flex justify-content-between align-items-center mb-3">
+          <h3>Ingresos Semanales</h3>
+          <div class="chart-legend">
+            <span class="legend-item"><i class="bi bi-square-fill text-primary me-1"></i>2025</span>
+            <span class="legend-item"><i class="bi bi-square-fill text-muted me-1"></i>2024</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="ingresosChart" aria-label="Evolución de ingresos semanales"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica 2: Servicios Populares -->
+    <div class="col-lg-6 mb-4">
+      <div class="chart-card">
+        <div class="chart-header d-flex justify-content-between align-items-center mb-3">
+          <h3>Servicios Más Solicitados</h3>
+          <select class="form-select form-select-sm chart-filter" style="width: auto;">
+            <option>Este Mes</option>
+            <option>Últimos 3 Meses</option>
+            <option>Este Año</option>
+          </select>
+        </div>
+        <div class="chart-container">
+          <canvas id="serviciosChart" aria-label="Distribución de servicios más solicitados"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 5. Notificaciones -->
+  <div class="mt-5">
+    <h4>Notificaciones del Sistema</h4>
+    <ul class="list-group">
+      {% for notificacion in notificaciones %}
+      <li class="list-group-item">
+        <i class="bi bi-exclamation-circle text-warning me-2"></i>{{ notificacion }}
+      </li>
+      {% empty %}
+      <li class="list-group-item">No hay notificaciones por ahora.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+
 <!-- Chart.js Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const ingresosChart = new Chart(document.getElementById('ingresosChart'), {
+  // Configuración global de gráficas
+  Chart.defaults.font.family = "'Roboto', sans-serif";
+  Chart.defaults.color = "#6c757d";
+
+  // 1. Gráfica de Ingresos (Lineal)
+  const ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
+  new Chart(ingresosCtx, {
     type: 'line',
     data: {
-      labels: {{ labels|safe }},
-      datasets: [{
-        label: 'Ingresos',
-        data: {{ ingresos_data|safe }},
-        borderColor: 'rgba(75, 192, 192, 1)',
-        fill: false,
-        tension: 0.1
-      }]
+      labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+      datasets: [
+        {
+          label: '2025',
+          data: [1200, 1900, 1700, 2100, 2500, 2200, 1800],
+          borderColor: '#004D98',
+          backgroundColor: 'rgba(0, 77, 152, 0.05)',
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: '2024',
+          data: [900, 1200, 1100, 1500, 1800, 1600, 1300],
+          borderColor: '#6c757d',
+          borderWidth: 1,
+          borderDash: [5, 5],
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: function (context) {
+              return ` $${context.parsed.y.toLocaleString()}`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: {
+            callback: function (value) {
+              return `$${value.toLocaleString()}`;
+            }
+          }
+        },
+        x: { grid: { display: false } }
+      }
     }
   });
 
-  const serviciosChart = new Chart(document.getElementById('serviciosChart'), {
+  // 2. Gráfica de Servicios (Barras horizontales)
+  const serviciosCtx = document.getElementById('serviciosChart').getContext('2d');
+  new Chart(serviciosCtx, {
     type: 'bar',
     data: {
-      labels: {{ servicios_labels|safe }},
+      labels: ['Corte Clásico', 'Barba Premium', 'Tinte', 'Afeitado', 'Tratamiento'],
       datasets: [{
-        label: 'Veces Solicitado',
-        data: {{ servicios_data|safe }},
-        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+        label: 'Veces solicitado',
+        data: [45, 32, 18, 25, 12],
+        backgroundColor: [
+          'rgba(0, 77, 152, 0.7)',
+          'rgba(0, 77, 152, 0.6)',
+          'rgba(0, 77, 152, 0.5)',
+          'rgba(0, 77, 152, 0.4)',
+          'rgba(0, 77, 152, 0.3)'
+        ],
+        borderColor: '#004D98',
+        borderWidth: 1
       }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { grid: { display: false } }
+      }
     }
   });
+
 </script>
 {% endblock %}
-
-
-

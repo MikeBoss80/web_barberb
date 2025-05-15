@@ -1,1 +1,10 @@
 .env
+/admin_module/__pycache__
+/admin_module/migrations/__pycache__
+/core/__pycache__
+/core/migrations/__pycache__
+/services_module/__pycache__
+/virtual
+/barberb/__pycache__
+/admin_module/utils/__pycache__
+.gitignore
