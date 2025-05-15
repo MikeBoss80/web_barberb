@@ -7,3 +7,4 @@
 /virtual
 /barberb/__pycache__
 /admin_module/utils/__pycache__
+.gitignore

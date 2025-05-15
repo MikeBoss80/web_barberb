@@ -1,4 +1,205 @@
-/* ==== TARJETAS INFORMATIVAS ==== */
+h1 {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.row.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.card.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+* {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:root {
+  --primary-color: #3e1a4e;
+  /* Morado profesional */
+  --secondary-color: #6c757d;
+  /* Gris para textos */
+  --success-color: #28a745;
+  /* Verde para completadas */
+  --warning-color: #ffc107;
+  /* Amarillo para pendientes */
+  --danger-color: #dc3545;
+  /* Rojo para canceladas */
+  --info-color: #17a2b8;
+  /* Azul para confirmadas */
+  --light-bg: #f8f9fa;
+  /* Fondo claro */
+  --dark-text: #212529;
+  /* Texto oscuro */
+}
+
+/* Estilo unificado para todas las tarjetas */
+.card.card-border-color {
+  border-left: 4px solid var(--primary-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+/* Colores específicos para cada estado */
+.card-completada {
+  border-left-color: var(--success-color);
+}
+
+.card-pendiente {
+  border-left-color: var(--warning-color);
+}
+
+.card-cancelada {
+  border-left-color: var(--danger-color);
+}
+
+.card-header {
+  background-color: var(--light-bg);
+  font-weight: 600;
+  color: var(--dark-text);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-body i {
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.card:hover i {
+  transform: scale(1.1);
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(62, 26, 78, 0.03);
+}
+
+.table thead.table-dark th {
+  background-color: var(--primary-color);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(62, 26, 78, 0.05);
+}
+
+/* Badges mejorados */
+.badge {
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-size: 0.75em;
+}
+
+.badge.bg-pendiente {
+  background-color: var(--warning-color);
+}
+
+.badge.bg-confirmada {
+  background-color: var(--info-color);
+}
+
+.badge.bg-completada {
+  background-color: var(--success-color);
+}
+
+.badge.bg-cancelada {
+  background-color: var(--danger-color);
+}
+
+/* Contenedor de filtros */
+.card.filter-card {
+  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--dark-text);
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(62, 26, 78, 0.15);
+}
+
+.modal-content {
+  border: none;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.8rem;
+  display: flex;
+}
+
+.modal-body strong {
+  min-width: 100px;
+  display: inline-block;
+  color: var(--secondary-color);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #341742;
+  border-color: #341742;
+  transform: translateY(-1px);
+}
+
+.btn-sm i {
+  font-size: 0.85em;
+}
+
+@media (max-width: 768px) {
+  .card.card-border-color {
+    margin-bottom: 1rem;
+  }
+
+  .table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+  }
+
+  .modal-dialog {
+    margin: 0.5rem auto;
+  }
+}  
+
+/*
 .card.card-border-color {
   border-left: 3.5px solid #004D98 !important;
   border-radius: 8px;
@@ -7,39 +208,62 @@
   transition: transform 0.2s ease;
   max-width: 18rem;
 }
+/*
+.card.card-border-completadas {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
 
+.card.card-border-pendientes {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+
+.card.card-border-canceladas {
+  border-left: 3.5px solid #004D98 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+  max-width: 18rem;
+}
+*/
+/*
 .card.card-border-color:hover {
   transform: translateY(-2px);
 }
 
-/* Header suave */
 .card.card-border-color .card-header {
-  background-color: #e9eff6; /* color neutro azul suave */
+  background-color: #e9eff6; 
   font-weight: 600;
   font-size: 0.95rem;
   color: #212529;
   border-bottom: none;
   padding: 0.75rem 1rem;
-}
+  }
 
-/* Cuerpo más compacto */
 .card.card-border-color .card-body {
   padding: 1rem;
 }
 
-/* Número destacado */
 .card.card-border-color h2 {
   font-size: 1.8rem;
   font-weight: bold;
   margin: 0;
 }
 
-/* Ícono alineado */
 .card.card-border-color i {
   color: #004D98;
 }
 
-/* ==== BADGES DE ESTADO ==== */
 .badge.bg-pendiente {
   background-color: #ffc107;
   color: #212529;
@@ -57,7 +281,6 @@
   background-color: #dc3545;
 }
 
-/* ==== TABLA ==== */
 .table thead.table-dark th {
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -70,15 +293,14 @@
   font-size: 0.88rem;
 }
 
-/* ==== MODAL DE DETALLE ==== */
 .modal-content {
   border-radius: 8px;
   overflow: hidden;
 }
 
 .modal-header {
-  background-color: #004D98;
-  color: white;
+  background-color: #e6dce9;
+  color: rgb(0, 0, 0);
   padding: 1rem;
 }
 
@@ -95,7 +317,6 @@
   font-size: 0.95rem;
 }
 
-/* ==== FORMULARIO DE FILTROS ==== */
 form .form-label {
   font-weight: 500;
   font-size: 0.9rem;
@@ -107,7 +328,6 @@ form .form-select {
   font-size: 0.88rem;
 }
 
-/* ==== RESPONSIVE ==== */
 @media (max-width: 576px) {
   .card.card-border-color {
     margin-bottom: 1rem;
@@ -121,3 +341,16 @@ form .form-select {
     font-size: 0.85rem;
   }
 }
+  .modal-header{
+    background-color: #e6dce9; 
+    color: #000000; 
+    border-bottom: 1px solid #cdbcd3;
+  }
+
+
+  .btn-primary {
+    background-color: #004D98;
+    border-color: #004D98;
+    color: #ffffff;
+
+  } */
