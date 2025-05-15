@@ -4,13 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../static/core/css/Barber.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <title>Register/Barber</title>
 </head>
 <body>
     <div class="Barber">
         <form action="">
-            <img src="../../static/core/img/barbero1.png" alt="barbero1" class="barbero1">
+            <i class="bi bi-scissors"style="color:#DAA520; font-size: 4rem; display: block; text-align: center; margin-bottom: 10px;"></i>
             <h1>Registro Barbero</h1>
+
+            <div class="input-box">
+  <select required>
+    <option value="" disabled selected>Tipo de Documento</option>
+    <option value="cc">Cédula de Ciudadanía</option>
+    <option value="ti">Tarjeta de Identidad</option>
+    <option value="ce">Cédula de Extranjería</option>
+    <option value="pp">Pasaporte</option>
+    <option value="nit">NIT</option>
+  </select>
+</div>
+
+      
+
+      <div class="input-box">
+        <input type="text" placeholder="Documento" required>
+      </div>
             <div class="input-box">
               <input type="text" placeholder="Nombres
               " required>
@@ -51,7 +69,7 @@
                     <label><input type="checkbox">Validar Correo</label>
                </div>
                <div style="text-align: center; margin-top: 20px;">
-                <button type="button" class="button">Confirmar Registro</button>
+                <button type="button" class="Boton">Confirmar Registro</button>
               </div>
     </div>
 </body>

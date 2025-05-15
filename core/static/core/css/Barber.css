@@ -8,116 +8,115 @@
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
+     min-height: 100vh;
+    background: rgb(40, 38, 38);
     background-size: cover;
     background-position: center;
-    background: linear-gradient(to right, rgb(158, 3, 3), rgb(31, 31, 177)) ;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    color: white;
 }   
 
-.Barber .barbero1 {
-    width: 60px;
-    height: 80px;
-    border-radius: 20%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
 
-  .Barber{
-    width: 420px;
-    background: transparent;
-    color: rgb(12, 46, 80);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 10px rgb(45, 55, 65);
-    border-radius: 10px;
-    padding: 30px 40px;
-    background-color: #f8f8f8;
-    
-  }
-  
-  .Barber h1 {
-      font-size: 30px;
-      text-align: center;
-  }
-
-  .input-box{
-    position: relative;
-    margin: 1.5rem 0;
+.Barber {
     width: 100%;
-  }
-  
-  .input-box input {
-    width: 100%;
-    padding: 1rem 0.5rem 0.5rem;
-    border: none;
-    border-bottom: 2px solid #aaa;
-    background: transparent;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-  
-  
-  .input-box input:focus {
-    border-color: #0c4685;
-  }
-  
- 
-  .input-box label {
-    position: absolute;
-    top: 1rem;
-    left: 0.5rem;
-    color: #888;
-    font-size: 1rem;
-    pointer-events: none;
-    transition: all 0.2s ease-out;
-  }
-  
-  .input-box input:focus + label,
-  .input-box input:valid + label {
-    top: 0;
-    font-size: 0.75rem;
-    color: #007bff;
-  }
-
-  .record .terminos {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14.5px;
-    margin: -15px 0 15px;
+    max-width: 800px;
+    margin: auto;
 }
 
-.terminos, .Validar {
+.Barber h1 {
+    font-size: 36px;
+    text-align: center;
+    color: rgb(244, 237, 237);
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+.Barber h1 {
+    font-size: 36px;
+    text-align: center;
+    color: rgb(244, 237, 237);
+    margin-bottom: 30px;
+}
+
+.input-box {
+    position: relative;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.input-box input,
+.input-box select {
+    width: 100%;
+    padding: 14px 12px;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 10px;
+    font-size: 16px;
+    color: white;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.input-box input::placeholder {
+    color: #ccc;
+}
+
+.input-box select option {
+    color: rgb(18, 2, 92);
+}
+
+.input-help {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 5px;
+    display: block;
+}
+
+.terminos,
+.Validar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 10px;
     font-size: 14px;
     margin: 15px 0;
-  }
-  
-  .terminos label input,
-  .Validar label input {
-    margin-right: 8px;
-  }
-   
-      
-    .Barber .button {
-    width: 50%;
-    height: 40px;
-    background: linear-gradient(to right, rgb(158, 3, 3), rgb(0, 0, 255)) ;
-    border: none;
-    outline: none;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgb(238, 235, 235);
-    cursor: pointer;
-    font-size: 12px;
-    color: rgb(255, 251, 251);
-    font-weight: 600;
-    margin-left: auto;
-    margin-right: auto;    
-        
-    }
+}
 
+.terminos a {
+    color: #daa520;
+    text-decoration: underline;
+    font-size: 14px;
+}
 
+.Barber .Boton {
+     width: 80%;
+  height: 50px;
+  background: linear-gradient(135deg, #0b0b3b, #1c1c85);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+}
+
+.Barber .Boton:hover {
+  background: linear-gradient(135deg, #1c1c85, #3838a8);
+  transform: scale(1.03);
+}
+
+.bi-person-fill-check {
+    text-align: center;
+    display: block;
+    font-size: 4rem;
+    margin-bottom: 10px;
+    color: #DAA520;
+}
