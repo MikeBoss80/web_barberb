@@ -1,3 +1,4 @@
+/*
 body {
     background-color: #f8f9fa;
     font-family: 'Roboto', sans-serif;
@@ -33,12 +34,12 @@ h5 {
 
 .custom-badge-border {
     border: 2px solid #004D98 !important;
-    /* Cambia el color y grosor */
+    /* Cambia el color y grosor 
 }
 
 
 
-/* Chart containers */
+/* Chart containers 
 canvas {
     background-color: #ffffff;
     padding: 1rem;
@@ -46,13 +47,12 @@ canvas {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Notificaciones */
+/* Notificaciones 
 .list-group-item i {
     color: #ffc107;
-    /* Icono de advertencia */
-}
+  }
 
-/* ==== TARJETAS INFORMATIVAS ==== */
+/* ==== TARJETAS INFORMATIVAS ==== 
 .card.card-border-color {
   border-left: 3.5px solid #004D98 !important;
   border-radius: 8px;
@@ -66,29 +66,132 @@ canvas {
   transform: translateY(-2px);
 }
 
-/* Header suave */
+/* Header suave 
 .card.card-border-color .card-header {
-  background-color: #e9eff6; /* color neutro azul suave */
-  font-weight: 600;
+  background-color: #e9eff6;
+  font-weight: 60
   font-size: 0.95rem;
   color: #212529;
   border-bottom: none;
   padding: 0.75rem 1rem;
   }
 
-/* Cuerpo más compacto */
+/* Cuerpo más compacto 
 .card.card-border-color .card-body {
   padding: 1rem;
 }
 
-/* Número destacado */
+/* Número destacado 
 .card.card-border-color h2 {
   font-size: 1.8rem;
   font-weight: bold;
   margin: 0;
 }
 
-/* Ícono alineado */
+/* Ícono alineado 
 .card.card-border-color i {
   color: #004D98;
+}
+
+
+
+/* Estructura de tarjetas */
+/* Variables CSS para mantener consistencia */
+:root {
+  --primary-blue: #004D98;
+  --secondary-blue: #e9eff6;
+  --accent-yellow: #ffc107;
+  --dark-text: #343a40;
+  --light-bg: #f8f9fa;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Mejoras en las tarjetas */
+.card.card-border-color {
+  border-left: 4px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* sombra más visible */
+  box-shadow:  0 4px 12px rgba(0, 0, 0, 0.1); /* o una sombra suave adicional */
+  transform: translateY(-2px); /* leve elevación */
+
+  transition: all 0.3s ease;
+  max-width: 100%; /* Más responsive */
+  background-color: white; /* Asegura contraste si el fondo es claro */
+
+}
+
+.card.card-border-color:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: var(--secondary-blue);
+  font-weight: 600;
+  /* Corregido el valor faltante */
+  font-size: 1rem;
+}
+
+.metric-icon {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  opacity: 0.8;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.metric-trend {
+  font-size: 0.85rem;
+  margin-bottom: 0;
+}
+
+
+/*GRAFICOS*/
+.chart-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.chart-header {
+  padding-bottom: 0.5rem;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  position: relative;
+  height: 0;
+  padding-bottom: 60%;
+
+}
+
+.chart-legend {
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  margin-left: 1rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.chart-filter {
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+}
+
+@media (min-width: 992px) {
+  .chart-container {
+    padding-bottom: 45% !important;
+    /* Proporción más ancha en desktop */
+  }
 }

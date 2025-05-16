@@ -1,0 +1,203 @@
+:root {
+  --primary-color: #3e1a4e;
+  --primary-light: #e6dce9;
+  --primary-dark: #2f143d;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --gray-medium: #6c757d;
+}
+
+/* Estructura principal */
+.container-fluid {
+  padding: 0 2rem;
+  max-width: 1600px;
+}
+
+/* Encabezado */
+.fw-bold {
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Botón agregar */
+.btn-outline-add_item {
+  --btn-color: var(--primary-color);
+  color: var(--btn-color);
+  border-color: var(--btn-color);
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-add_item:hover {
+  color: white;
+  background-color: var(--btn-color);
+}
+
+/* Filtros */
+.form-control, .form-select {
+  border: 1px solid var(--primary-light);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(62, 26, 78, 0.25);
+}
+
+/* Tabla mejorada */
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(62, 26, 78, 0.03);
+}
+
+.table td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-top: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+/* Badges */
+.badge {
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: 50px;
+}
+
+.bg-success {
+  background-color: rgba(40, 167, 69, 0.15) !important;
+  color: var(--success-color);
+}
+
+.bg-warning {
+  background-color: rgba(255, 193, 7, 0.15) !important;
+  color: var(--warning-color);
+}
+
+/* Botones de acción */
+.custom-btn-edit, .custom-btn-delete {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.custom-btn-edit {
+  color: var(--primary-color);
+  background-color: rgba(62, 26, 78, 0.08);
+  border: 1px solid rgba(62, 26, 78, 0.2);
+}
+
+.custom-btn-edit:hover {
+  background-color: rgba(62, 26, 78, 0.15);
+}
+
+.custom-btn-delete {
+  color: var(--danger-color);
+  background-color: rgba(220, 53, 69, 0.08);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.custom-btn-delete:hover {
+  background-color: rgba(220, 53, 69, 0.15);
+}
+
+/* Alertas de stock */
+.text-danger {
+  color: var(--danger-color) !important;
+}
+
+/* Modal */
+.modal-header.custom-header {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modal-content {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary-custom {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 0 1rem;
+  }
+  
+  .table-responsive {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .table thead {
+    display: none;
+  }
+  
+  .table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: none;
+    text-align: right !important;
+  }
+  
+  .table td::before {
+    content: attr(data-label);
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-right: 1rem;
+    text-align: left;
+  }
+  
+  .table td:last-child {
+    justify-content: flex-end;
+    border-top: 1px dashed rgba(0, 0, 0, 0.05);
+  }
+}
+

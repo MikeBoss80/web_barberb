@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Esperar a que el DOM cargue
 document.addEventListener('DOMContentLoaded', () => {
   console.log('app.js cargado');
@@ -63,3 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
     options: { responsive: true }
   });
 });
+=======
+document.addEventListener("DOMContentLoaded", function () {
+    const menuDashboard = document.querySelector(".menu-dashboard");
+    const toggleBtn = document.querySelector(".top-menu .toggle");
+  
+    toggleBtn.addEventListener("click", function () {
+      menuDashboard.classList.toggle("open");
+    });
+  });
+>>>>>>> cf7be63 (Vista Dashboard agregada, mas menu de navegacion)

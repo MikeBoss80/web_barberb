@@ -1,12 +1,15 @@
 from django.shortcuts import render 
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
-
+from .models import Producto
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
+from .forms import ProductoForm  # <-- Importa tu formulario personalizado
 
 
 
@@ -184,7 +187,48 @@ class InventarioView(BreadcrumbMixin, TemplateView):
      def get_breadcrumb(self):
         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario')}]
 
-     
+class InventarioListView(ListView):
+    model = Producto
+    template_name = 'admin_module/inventario.html'
+    context_object_name = 'productos'
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Estadísticas para el dashboard
+        context['productos_activos'] = self.model.objects.filter(activo=True).count()
+        context['productos_inactivos'] = self.model.objects.filter(activo=False).count()
+        context['productos_bajo_stock'] = self.model.objects.filter(
+            cantidad__lte=('stock_minimo')
+        ).count()
+        return context
+
+class ProductoCreateView(SuccessMessageMixin, CreateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'admin_module/modals/modal_producto.html'
+    success_url = reverse_lazy('inventario')
+    success_message = "Producto creado exitosamente"
+    
+    def form_valid(self, form):
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
+class ProductoUpdateView(SuccessMessageMixin, UpdateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'admin_module/modals/modal_producto.html'
+    success_url = reverse_lazy('inventario')
+    success_message = "Producto actualizado exitosamente"
+
+class ProductoDeleteView(DeleteView):
+    model = Producto
+    success_url = reverse_lazy('inventario')
+    
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        # Puedes añadir mensajes o lógica adicional aquí
+        return response    
      
 class ReportesView(BreadcrumbMixin, TemplateView):
      template_name= 'admin_module/reportes.html'
