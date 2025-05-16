@@ -37,6 +37,28 @@
             </div>
         </form>
     </div>
+
+    <script>
+  document.querySelector("form").addEventListener("submit", function(e) {
+    e.preventDefault(); // Evita que se recargue la página
+
+    const usuario = document.querySelector('input[placeholder="ID de Usuario"]').value;
+    const contrasena = document.querySelector('input[placeholder="Contraseña"]').value;
+
+    // Puedes cambiar estos valores por los correctos
+    const usuarioCorrecto = "admin";
+    const contrasenaCorrecta = "1234";
+
+    if (usuario === usuarioCorrecto && contrasena === contrasenaCorrecta) {
+      alert("¡Login exitoso!");
+      // Redirigir a otra página
+      window.location.href = "dashboard.html"; // cámbialo según tu ruta
+    } else {
+      alert("Usuario o contraseña incorrectos.");
+    }
+  });
+</script>
+
 </body>
 
 </html>
