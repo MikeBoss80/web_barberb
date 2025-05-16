@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib import admin
 
+
 # Create your views here.
 
 class HomepageView(TemplateView):
@@ -10,9 +11,16 @@ class HomepageView(TemplateView):
     template_name = 'core/main.html'
 
 class LoginView(TemplateView):
+    template_name = 'login/login.html'
     """Vista de inicio de sesión Login"""
     
     template_name = 'core/Login.html'
+    
+    #edirect_authenticated_user = True
+    
+    #success_url = reverse_lazy('administrador:dashboard')
+   # def get_success_url(self):
+        #return self.success_url
 
 
 class BarberoDashboardView(TemplateView):
@@ -34,3 +42,6 @@ class BarberoHomeView(TemplateView):
 class BarberoSolicitudesView(TemplateView):
     #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
     template_name = 'barbero/solicitudes.html'
+
+
+    

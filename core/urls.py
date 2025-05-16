@@ -7,6 +7,7 @@ from core.views import HomepageView, LoginView, BarberoDashboardView
 urlpatterns = [
     path('', HomepageView.as_view(), name='main'),
     path('login/', LoginView.as_view(), name='login'),
-    path('dashboard/', BarberoDashboardView.as_view(), name='dashboard'),
+   # path('', HomeadminView.as_view(), name='admin_main'), 
+    
 
 ]
