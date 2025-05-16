@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Principal - Barbero</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #3b04b7, #c40513);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 2rem;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .perfil {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .perfil img.avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .opciones-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .btn {
+      background-color: #5a058f;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #8c0657;
+    }
+
+    .btn.cerrar {
+      background-color: #cf0513;
+    }
+
+    .btn.cerrar:hover {
+      background-color: #a2020f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Panel del Barbero</h1>
+    <div class="perfil">
+      <img src="/static/img/barbero.png" alt="Foto del Barbero" class="avatar"/>
+      <div>
+        <h2>Carlos Ramírez</h2>
+        <p>Horario: 9:00 AM - 5:00 PM</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="opciones-grid">
+      <a href="/solicitudes/" class="btn">🗓 Solicitar Días Libres</a>
+      <a href="/historial_servicios/" class="btn">📋 Historial de Servicios</a>
+      <a href="/citas-hoy/" class="btn">📅 Ver Citas del Día</a>
+      <a href="/inventario/" class="btn">📦 Consultar Inventario</a>
+      <a href="/perfil/" class="btn">👤 Ver Perfil</a>
+      <a href="/logout/" class="btn cerrar">🔓 Cerrar Sesión</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Barbería Élite</p>
+  </footer>
+</body>
+</html>

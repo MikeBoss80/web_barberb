@@ -6,19 +6,10 @@ from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
-<<<<<<< HEAD
-import json
-from django.shortcuts import render
-
-
-
-=======
 from .models import Producto
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .forms import ProductoForm  # <-- Importa tu formulario personalizado
->>>>>>> main
-
 
 
 
@@ -103,7 +94,7 @@ class CitasView(BreadcrumbMixin, TemplateView):
                 'servicio': 'Color y corte',
                 'estado': 'cancelada',
                 'notas': 'Canceló por WhatsApp',
-            },
+            }
         ]
 
      
