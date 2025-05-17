@@ -1,50 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BarberB / Login & Registro</title>
     <link rel="stylesheet" href="../../static/core/css/Style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-   
-
-     
 </head>
+
 <body>
-    <div class =wrapper>
+    <div class="wrapper">
         <form action="">
             <h1></h1>
-            <img src="../../static/core/img/LogoBB.pgn.png" alt="LogoBB" class="LogoBBB">
+            <img src="../../static/core/img/LogoBarberB2.png" alt="LogoBarberB2" class="LogoBarberB2">
+
             <div class="input-box">
-                <input type="text" placeholder="ID de Usuario"
-                required>
-                <i class='bx bxs-user'><box-icon name='user'></box-icon></i>
-                
+                <input type="text" placeholder="ID de Usuario" required>
+                <i class='bx bxs-user' ></i>
             </div>
 
-                <div class="input-box">
-                    <input type="Contraseña" placeholder="Contraseña"
-                    required>
-                    <box-icon name='lock-alt'></box-icon>
-                    <i class='bx bxs-lock-alt'><box-icon name='lock-alt'></box-icon></i>
-                </div>
-                
-                <div class="remember">
-                    <label><input type="checkbox"> Recordar Contraseña
-                    </label>
-                    <a href="#">Olvidaste tu Contraseña?</a>
-                </div>
+            <div class="input-box">
+                <input type="password" placeholder="Contraseña" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
 
-                <button type="submit"class="btn">Login</button>
+            <div class="remember">
+                <label><input type="checkbox"> Recordar Contraseña</label>
+                <a href="#">¿Olvidaste tu Contraseña?</a>
+            </div>
 
-                <div class="registrar">
-                    <p>No tengo cuenta <a
-                    href="#">Registrarme</a></p>
-                     </div>
+            <button type="submit" class="btn">Login</button>
 
+            <div class="registrar">
+                <p>No tengo cuenta <a href="#">Registrarme</a></p>
+            </div>
+        </form>
+    </div>
 
-                     
-</div>
+    <script>
+  document.querySelector("form").addEventListener("submit", function(e) {
+    e.preventDefault(); // Evita que se recargue la página
+
+    const usuario = document.querySelector('input[placeholder="ID de Usuario"]').value;
+    const contrasena = document.querySelector('input[placeholder="Contraseña"]').value;
+
+    // Puedes cambiar estos valores por los correctos
+    const usuarioCorrecto = "admin";
+    const contrasenaCorrecta = "1234";
+
+    if (usuario === usuarioCorrecto && contrasena === contrasenaCorrecta) {
+      alert("¡Login exitoso!");
+      // Redirigir a otra página
+      window.location.href = "/admin_module/"; // cámbialo según tu ruta
+    } else {
+      alert("Usuario o contraseña incorrectos.");
+    }
+  });
+</script>
+
 </body>
 
 </html>
