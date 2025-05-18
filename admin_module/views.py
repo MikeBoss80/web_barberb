@@ -54,7 +54,7 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
 
 class CitasView(BreadcrumbMixin, TemplateView):
     """Vista citas"""
-    template_name = 'admin_module/citas.html'
+    template_name = 'citas/citas.html'
 
     def get_breadcrumb(self):
         return [{'label': 'Citas', 'url': reverse('admin_module:citas')}]
@@ -113,8 +113,8 @@ class CitasView(BreadcrumbMixin, TemplateView):
         return context
 
 
-class BarberosView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/barberos.html'
+class BarberosView(BreadcrumbMixin, TemplateView):  
+     template_name= 'barberos/barberos.html'
      
      def get_breadcrumb(self):
         return [{'label': 'Barberos', 'url': reverse('admin_module:barberos')}]
@@ -173,23 +173,23 @@ class CalendarioBarberoView(View):
     
 
 class ServiciosView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/servicios.html'
+     template_name= 'establecimiento\servicios.html'
      def get_breadcrumb(self):
         return [{'label': 'Servicios', 'url': reverse('admin_module:servicios')}]
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/contenidos.html'
+     template_name= 'establecimiento/contenidos.html'
      def get_breadcrumb(self):
         return [{'label': 'Contenidos', 'url': reverse('admin_module:contenidos')}]
      
 class InventarioView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/inventario.html'
+     template_name= 'inventario/inventario.html'
      def get_breadcrumb(self):
         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario')}]
 
 class InventarioListView(ListView):
     model = Producto
-    template_name = 'admin_module/inventario.html'
+    template_name = 'inventario/inventario.html'
     context_object_name = 'productos'
     paginate_by = 10
     
@@ -206,7 +206,7 @@ class InventarioListView(ListView):
 class ProductoCreateView(SuccessMessageMixin, CreateView):
     model = Producto
     form_class = ProductoForm
-    template_name = 'admin_module/modals/modal_producto.html'
+    template_name = 'establecimiento/modal_producto.html'
     success_url = reverse_lazy('inventario')
     success_message = "Producto creado exitosamente"
     
@@ -217,7 +217,7 @@ class ProductoCreateView(SuccessMessageMixin, CreateView):
 class ProductoUpdateView(SuccessMessageMixin, UpdateView):
     model = Producto
     form_class = ProductoForm
-    template_name = 'admin_module/modals/modal_producto.html'
+    template_name = 'establecimiento/modal_producto.html'
     success_url = reverse_lazy('inventario')
     success_message = "Producto actualizado exitosamente"
 
@@ -231,26 +231,26 @@ class ProductoDeleteView(DeleteView):
         return response    
      
 class ReportesView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/reportes.html'
+     template_name= 'reportes/reportes.html'
      def get_breadcrumb(self):
         return [{'label': 'Reportes', 'url': reverse('admin_module:reportes')}]
 
 
 
 class SeguridadView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/seguridad.html'
+     template_name= 'perfil/seguridad.html'
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('admin_module:seguridad')}]
 
 
 class SoporteView(BreadcrumbMixin, TemplateView):
-     template_name= 'admin_module/soporte.html'
+     template_name= 'perfil/soporte.html'
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('admin_module:soporte')}]
 
 
 class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
-     template_name ='admin_module/perfil_usuario.html'
+     template_name ='perfil/perfil_usuario.html'
      def get_breadcrumb(self):
         return [{'label': 'Perfil', 'url': reverse('admin_module:perfil_usuario')}]
     
@@ -265,11 +265,11 @@ class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
 class EditarPerfilView(LoginRequiredMixin, UpdateView):
 #    model = usuario
     fields = ['first_name', 'last_name', 'email']
-    template_name = 'admin_modulo/editar_perfil.html'
-    success_url = reverse_lazy('admin_module:perfil_usuario')
+    template_name = 'perfil/editar_perfil.html'
+    success_url = reverse_lazy('perfil:perfil_usuario')
 
     def get_object(self):
         return self.request.user
     
 class LogoutView(BreadcrumbMixin, TemplateView):
-    template_name='admin_module/login.html'
+    template_name='core/login.html'
