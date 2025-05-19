@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'core', 
     'admin_module',
     'services_module',
+    'funciones_barbero'
+
     ]
 
 

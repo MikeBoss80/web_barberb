@@ -19,7 +19,7 @@ class LoginView(TemplateView):
     #edirect_authenticated_user = True
     
     #success_url = reverse_lazy('administrador:dashboard')
-   # def get_success_url(self):
+    # def get_success_url(self):
         #return self.success_url
 
 class BarberoDashboardView(TemplateView):
@@ -39,4 +39,12 @@ class BarberoHomeView(TemplateView):
 
 class SolicitudesView(TemplateView):
     #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
-    template_name = 'barbero/solicitudes.html'
+    template_name = 'core/solicitudes.html'
+  
+class VistaprincipalbarView(TemplateView):
+    #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
+    template_name = 'core/vista_principal_bar.html'
+
+class HistorialserviciosView(TemplateView):
+    #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
+    template_name = 'core/historial_servicios.html'
