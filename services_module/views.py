@@ -17,6 +17,12 @@ class PlacesListView(View):
         context = {
         }
         return render(request, 'places_list.html', context)
+    
+class FormServicesView(View):
+    def get(self, request):
+        context = {
+        }
+        return render(request, 'form_services.html', context)
 
 def getMap(request):
     return JsonResponse({'mapApiKey': settings.MAPS_APIKEY})

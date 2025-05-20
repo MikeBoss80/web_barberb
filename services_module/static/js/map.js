@@ -105,7 +105,9 @@ function loadPlacesList(dataPlaces) {
             <div class="card-body">
                 <h6 class="card-title">${place.name}</h6>
                 <p class="card-text">Calificación ${place.rating ?? 0.0}</p>
-                <a href="${place.url}" class="btn btn-primary">Ver más</a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Solicitar
+                </button>
             </div>
         `;
 
