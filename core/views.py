@@ -10,17 +10,7 @@ class HomepageView(TemplateView):
     
     template_name = 'core/main.html'
 
-class LoginView(TemplateView):
-    template_name = 'login/login.html'
-    """Vista de inicio de sesión Login"""
-    
-    template_name = 'core/Login.html'
-    
-    #edirect_authenticated_user = True
-    
-    #success_url = reverse_lazy('administrador:dashboard')
-   # def get_success_url(self):
-        #return self.success_url
+
 
 
 class BarberoDashboardView(TemplateView):

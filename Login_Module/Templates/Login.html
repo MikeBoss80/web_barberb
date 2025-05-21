@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BarberB / Login & Registro</title>
-    <link rel="stylesheet" href="../../static/core/css/Style.css">
+    <link rel="stylesheet" href="/static/Login_Module/Css/Login.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -13,7 +13,7 @@
     <div class="wrapper">
         <form action="">
             <h1></h1>
-            <img src="../../static/core/img/LogoBarberB2.png" alt="LogoBarberB2" class="LogoBarberB2">
+            <img src="/static/Login_Module/Img/LogoBarberB2.png" alt="LogoBarberB2" class="LogoBarberB2">
 
             <div class="input-box">
                 <input type="text" placeholder="ID de Usuario" required>
@@ -27,13 +27,13 @@
 
             <div class="remember">
                 <label><input type="checkbox"> Recordar Contraseña</label>
-                <a href="#">¿Olvidaste tu Contraseña?</a>
+                <a href="{% url 'cambio_contraseña' %}">¿Olvidaste tu Contraseña?</a>
             </div>
 
             <button type="submit" class="btn">Login</button>
 
             <div class="registrar">
-                <p>No tengo cuenta <a href="#">Registrarme</a></p>
+                <p>No tengo cuenta <a href="{% url 'tipo_rol' %}">Registrarme</a></p>
             </div>
         </form>
     </div>
