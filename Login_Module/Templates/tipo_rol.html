@@ -4,25 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tipe/Rol</title>
-    <link rel="stylesheet" href="../../static/core/css/Rol.css">
+    <link rel="stylesheet" href="/static/Login_Module/Css/tipo_rol.css">
 
 
 </head>
 <body>
  
     <div class="Rol">
-       <img src="../../static/core/img/LogoBarberB2.png" alt="LogoB2" class="LogoB2">
+       <img src="/static/Login_Module/Img/LogoBarberB2.png" alt="LogoB2" class="LogoB2">
         <h1>Tipo de Registro</h1>
+       
         <div style="text-align: center; margin-top: 20px;">
+          <a href="{% url 'registro_usuario' %}">
             <button type="button" class="button">Usuario</button>
+          </a>
           </div>
 
           <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'registro_Barbero' %}">
             <button type="button" class="button">Barbero</button>
+            </a>
           </div>
 
           <div style="text-align: center; margin-top: 20px;">
-            <button type="button" class="button">Administrador</button>
+            <a href="{% url 'registroadministrador' %}">
+            <button type="button"  class="button">Administrador</button> 
+            </a>
           </div>
 </body>
 </html>
