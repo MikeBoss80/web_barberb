@@ -2,62 +2,93 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberB / Login & Registro</title>
-    <link rel="stylesheet" href="../../static/core/css/Style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BarberB / Login & Registro</title>
+  <link rel="stylesheet" href="../../static/core/css/Style.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
-    <div class="wrapper">
-        <form action="">
-            <h1></h1>
-            <img src="../../static/core/img/LogoBarberB2.png" alt="LogoBarberB2" class="LogoBarberB2">
+  <div class="wrapper">
+    <form method="POST" action="{% url 'login' %}">
+      {% csrf_token %}
+      <h1>Iniciar Sesión</h1>
+      <img src="" alt="LogoBarberB2" class="LogoBarberB2">
 
-            <div class="input-box">
-                <input type="text" placeholder="ID de Usuario" required>
-                <i class='bx bxs-user' ></i>
-            </div>
+      <div class="input-box">
+        <input type="text" name="usuario" placeholder=" ID de Usuario" id="usuario" required>
+        <i class='bx bxs-user'></i>
+      </div>
 
-            <div class="input-box">
-                <input type="password" placeholder="Contraseña" required>
-                <i class='bx bxs-lock-alt'></i>
-            </div>
+      <div class="input-box">
+        <input type="password" name="contrasena" placeholder=" Contraseña" id="password" required>
+        <i class='bx bxs-lock-alt'></i>
+      </div>
 
-            <div class="remember">
-                <label><input type="checkbox"> Recordar Contraseña</label>
-                <a href="#">¿Olvidaste tu Contraseña?</a>
-            </div>
+      <div class="remember">
+        <label><input type="checkbox"> Recordar Contraseña</label>
+        <a href="#">¿Olvidaste tu Contraseña?</a>
+      </div>
 
-            <button type="submit" class="btn">Login</button>
+      <button type="submit" class="btn">Login</button>
 
-            <div class="registrar">
-                <p>No tengo cuenta <a href="#">Registrarme</a></p>
-            </div>
-        </form>
+      <div class="registrar">
+        <p>No tengo cuenta <a href="#">Registrarme</a></p>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mensajes">
+      {% for message in messages %}
+      <p>{{ message }}</p>
+      {% endfor %}
     </div>
+    {% endif %}
 
-    <script>
-  document.querySelector("form").addEventListener("submit", function(e) {
-    e.preventDefault(); // Evita que se recargue la página
+  </div>
 
-    const usuario = document.querySelector('input[placeholder="ID de Usuario"]').value;
-    const contrasena = document.querySelector('input[placeholder="Contraseña"]').value;
+  <script>
+    document.querySelector("form").addEventListener("submit", function (e) {
+      e.preventDefault(); // Evita que se recargue la página
 
-    // Puedes cambiar estos valores por los correctos
-    const usuarioCorrecto = "admin";
-    const contrasenaCorrecta = "1234";
+      const usuario = document.getElementById('usuario').value;
+      const contrasena = document.getElementById('password').value;
+      console.log(usuario, contrasena)
 
-    if (usuario === usuarioCorrecto && contrasena === contrasenaCorrecta) {
-      alert("¡Login exitoso!");
-      // Redirigir a otra página
-      window.location.href = "/admin_module/"; // cámbialo según tu ruta
-    } else {
-      alert("Usuario o contraseña incorrectos.");
-    }
-  });
-</script>
+      // Puedes cambiar estos valores por los correctos
+      const usuarioCorrecto = "admin";
+      const contrasenaCorrecta = "1234";
+
+      const datos = {
+        'usuario': usuario,
+        'contrasena': contrasena
+      }
+      const url=`http://127.0.0.1:8000/validate?usuario=${usuario}&contrasena=${contrasena}`
+      fetch(url
+      ).then(response => {
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      }).then(data => {
+        console.log("Login exitoso:", data);
+        // Ejemplo: guardar token
+        // localStorage.setItem("token", data.token);
+      })
+
+
+
+/* 
+      if (usuario === usuarioCorrecto && contrasena === contrasenaCorrecta) {
+        alert("¡Login exitoso!");
+        // Redirigir a otra página
+        window.location.href = "/admin_module/"; // cámbialo según tu ruta
+      } else {
+        alert("Usuario o contraseña incorrectos.");
+      } */
+    });
+  </script>
 
 </body>
 
