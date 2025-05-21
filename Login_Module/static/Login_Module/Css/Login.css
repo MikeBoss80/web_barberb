@@ -1,0 +1,165 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css');
+
+/* Estilos generales para todos los elementos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+/* Estilos generales del body (fondo, alineación, altura) */
+body {
+    
+    margin:0;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url("../img/ref8.jpg") no-repeat;
+    background-size: cover;
+    background-position: center;
+    animation: 10s ease infinite;
+       }
+
+ /* Contenedor del formulario login */
+.wrapper {
+  width: 420px;
+  background:transparent;
+  color: white;
+    backdrop-filter: blur(10px);
+  box-shadow: 0 0 10px rgb(113, 109, 109);
+  border-radius: 10px;
+  padding: 30px 40px;
+  text-align: center;
+}
+
+
+/* Estilo para los campos input */
+.wrapper .input-box {
+   position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid white;
+    border-radius: 30px ;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    padding: 20px 45px 20px 20px;
+    
+    }
+
+.input-box input::placeholder{
+    color: rgb(255, 255, 255) ;
+}
+
+/* Íconos dentro de los input */
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+/* Sección de "recordar contraseña" y "olvidaste tu contraseña" */
+.wrapper .remember {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14.5px;
+    margin: 15px 0 ;
+    color: rgb(4, 4, 49);
+    ;
+}
+
+/* Alineación del checkbox + texto */
+.remember label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* Color del checkbox */
+.remember label input {
+    accent-color: rgb(252, 252, 252);
+    margin-right: 3px;   
+    }
+
+/* Color del texto "recordar contraseña" */
+    .remember a {
+        color: rgb(176, 176, 176);
+        text-decoration: none;
+    }
+/* Efecto hover para el texto "recordar contraseña" */
+    .remember a:hover {
+        text-decoration: underline;
+    }
+
+/* Estilo para el botón de inicio de sesión */
+    .wrapper .btn {
+       width: 100%;
+  height: 50px;
+  background: linear-gradient(135deg, #310036, #000000);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+ 
+
+    }
+ .wrapper .btn:hover {
+    background: linear-gradient(135deg, #42025a, #2c013b);
+  transform: scale(1.03);
+    }
+
+/* Estilo para el texto de "¿No tienes una cuenta?" */
+    .wrapper .registrar {
+        font-size: 14.5px;
+        text-align: center;
+        margin: 20px 0 15px;
+    }
+
+    .registrar p a {
+        color: rgb(164, 164, 164);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .registrar p a:hover {
+        text-decoration: underline;
+    }
+
+   
+
+
+    .wrapper .LogoBarberB2 {
+        width: 180px;
+        height: 60px;
+        border-radius: 10%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+ 
+
+
+
+        
+        

@@ -2,19 +2,18 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BarberB / Login & Registro</title>
-  <link rel="stylesheet" href="../../static/core/css/Style.css">
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberB / Login & Registro</title>
+    <link rel="stylesheet" href="/static/Login_Module/Css/Login.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
-  <div class="wrapper">
-    <form method="POST" action="{% url 'login' %}">
-      {% csrf_token %}
-      <h1>Iniciar Sesión</h1>
-      <img src="" alt="LogoBarberB2" class="LogoBarberB2">
+    <div class="wrapper">
+        <form action="">
+            <h1></h1>
+            <img src="/static/Login_Module/Img/LogoBarberB2.png" alt="LogoBarberB2" class="LogoBarberB2">
 
       <div class="input-box">
         <input type="text" name="usuario" placeholder=" ID de Usuario" id="usuario" required>
@@ -26,23 +25,17 @@
         <i class='bx bxs-lock-alt'></i>
       </div>
 
-      <div class="remember">
-        <label><input type="checkbox"> Recordar Contraseña</label>
-        <a href="#">¿Olvidaste tu Contraseña?</a>
-      </div>
+            <div class="remember">
+                <label><input type="checkbox"> Recordar Contraseña</label>
+                <a href="{% url 'cambio_contraseña' %}">¿Olvidaste tu Contraseña?</a>
+            </div>
 
       <button type="submit" class="btn">Login</button>
 
-      <div class="registrar">
-        <p>No tengo cuenta <a href="#">Registrarme</a></p>
-      </div>
-    </form>
-
-    {% if messages %}
-    <div class="mensajes">
-      {% for message in messages %}
-      <p>{{ message }}</p>
-      {% endfor %}
+            <div class="registrar">
+                <p>No tengo cuenta <a href="{% url 'tipo_rol' %}">Registrarme</a></p>
+            </div>
+        </form>
     </div>
     {% endif %}
 
