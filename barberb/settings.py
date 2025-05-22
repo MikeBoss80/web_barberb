@@ -28,6 +28,11 @@ DEBUG = True
 
 # Environment Variables with decouple
 MAPS_APIKEY = config('MAPS_APIKEY')
+DB_NAME = config('DB_NAME')
+DB_USER = config('DB_USER')
+DB_PASSW = config('DB_PASSW')
+DB_HOST = config('DB_HOST')
+DB_PORT = config('DB_PORT')
 
 ALLOWED_HOSTS = []
 
@@ -44,6 +49,7 @@ INSTALLED_APPS = [
     'core', 
     'admin_module',
     'services_module',
+    'Login_Module',
     ]
 
 
@@ -85,10 +91,16 @@ WSGI_APPLICATION = 'barberb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSW,
+        'HOST': DB_HOST,  # o la IP del servidor
+        'PORT': DB_PORT,
     }
+    
 }
+
 
 
 # Password validation

@@ -1,0 +1,166 @@
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css');
+
+/* Estilos globales para todos los elementos */
+* {
+    margin: 0; 
+    padding: 0;
+    box-sizing: border-box; 
+    font-family: "arial", sans-serif; 
+}
+
+/* Estilos generales del body */
+body {
+    min-height: 100vh; 
+    background: linear-gradient(135deg, #260021, #00000bed); 
+    background-size: cover; 
+    background-position: center; 
+    display: flex; 
+    justify-content: center; 
+    padding: 40px 20px; 
+    color: white; 
+}
+
+/* Contenedor principal del formulario */
+.establecimiento {
+    width: 100%;
+    max-width: 800px; 
+    margin: auto;
+}
+
+/* Título del formulario */
+.establecimiento h1 {
+    font-size: 36px;
+    text-align: center;
+    color: rgb(244, 237, 237);
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* (Este h1 está repetido — puedes eliminar uno de ellos si quieres) */
+.establecimiento h1 {
+    font-size: 36px;
+    text-align: center;
+    color: rgb(244, 237, 237);
+    margin-bottom: 30px;
+}
+
+/* Contenedor de inputs */
+.input-box {
+    position: relative;
+    margin: 20px 0;
+    width: 100%;
+}
+
+/* Estilos para inputs y selects */
+.input-box input,
+.input-box select {
+    width: 100%;
+    padding: 14px 12px;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 10px;
+    font-size: 16px;
+    color: white;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.05); 
+}
+
+/* Placeholder gris claro */
+.input-box input::placeholder {
+    color: #ccc;
+}
+
+/* Color de texto en opciones de select */
+.input-box select option {
+    color: rgb(18, 2, 92);
+}
+
+/* Texto de ayuda debajo del input */
+.input-help {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Estilo de checkbox + texto (como términos y condiciones) */
+.terminos,
+.Validar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+/* Enlaces dentro de los términos */
+.terminos a {
+    color: #daa520; 
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+/* Botón principal (error: estaba en .admin en lugar de .establecimiento) */
+.admin .button {
+    width: 80%;
+    height: 50px;
+    background: linear-gradient(135deg, #0b0b3b, #1c1c85);
+    border: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Efecto hover del botón */
+.establecimiento .button:hover {
+    background: linear-gradient(135deg, #1c1c85, #3838a8);
+    transform: scale(1.03);
+}
+
+/* Ícono grande en la parte superior del formulario */
+.bi-person-fill-check {
+    text-align: center;
+    display: block;
+    font-size: 4rem;
+    margin-bottom: 10px;
+    color: #DAA520;
+}
+
+/* Estilo del label que actúa como botón para subir archivos */
+.upload-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgb(10, 2, 61); 
+    border-radius: 10px;
+    padding: 14px 12px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+/* Efecto hover en el área de subida de archivo */
+.upload-label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Oculta el input de tipo file */
+.input-box input[type="file"] {
+    display: none;
+}
+
+/* Ícono de cámara dentro del label de subida */
+.bi-camera-fill {
+    font-size: 1.5rem;
+    color: #daa520; 
+}
