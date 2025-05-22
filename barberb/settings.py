@@ -28,6 +28,11 @@ DEBUG = True
 
 # Environment Variables with decouple
 MAPS_APIKEY = config('MAPS_APIKEY')
+DB_NAME = config('DB_NAME')
+DB_USER = config('DB_USER')
+DB_PASSW = config('DB_PASSW')
+DB_HOST = config('DB_HOST')
+DB_PORT = config('DB_PORT')
 
 ALLOWED_HOSTS = []
 
@@ -87,11 +92,11 @@ WSGI_APPLICATION = 'barberb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sena',
-        'USER': 'root',
-        'PASSWORD': '1233506287Mb$',
-        'HOST': 'localhost',  # o la IP del servidor
-        'PORT': '3306',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSW,
+        'HOST': DB_HOST,  # o la IP del servidor
+        'PORT': DB_PORT,
     }
     
 }
