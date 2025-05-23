@@ -36,15 +36,3 @@ class BarberoHistorialServiciosView(TemplateView):
 class BarberoHomeView(TemplateView):
     #Vista principal del barbero, la usaré como pantalla de inicio antes de entrar al dashboard
     template_name = 'barbero/home.html'
-
-class SolicitudesView(TemplateView):
-    #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
-    template_name = 'core/solicitudes.html'
-  
-class VistaprincipalbarView(TemplateView):
-    #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
-    template_name = 'core/vista_principal_bar.html'
-
-class HistorialserviciosView(TemplateView):
-    #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
-    template_name = 'core/historial_servicios.html'

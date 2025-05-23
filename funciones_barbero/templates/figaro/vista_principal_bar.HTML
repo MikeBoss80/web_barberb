@@ -1,0 +1,459 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}Proyectos Mike{% endblock %}</title>
+
+  <!-- Fuentes y Estilos Externos -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+
+  <!-- Estilos específicos por vista -->
+  {% block extra_css %}
+  <link rel="stylesheet" href="{% static 'base_barbero/css/base.css' %}">
+  {% endblock %}
+
+</head>
+
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    /* evita doble scroll */
+  }
+
+  /* Header fijo */
+  header {
+    height: 60px;
+    background-color: #212121;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    font-family: 'Roboto', sans-serif;
+
+    background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+
+
+  }
+
+  /* Layout principal debajo del header */
+  .layout {
+    display: flex;
+    position: absolute;
+    top: 60px;
+    /* debajo del header */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+  }
+
+
+
+
+  /* Aside fijo a la izquierda */
+  aside {
+    width: 200px;
+    background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+    padding: 1rem;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    /* ocupa el alto restante*/
+    position: fixed;
+    top: 60px;
+    left: 0;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+
+
+  }
+
+  /* Menú lateral */
+  aside .nav {
+    padding: 0;
+  }
+
+
+  aside .nav-link {
+    color: white;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    padding: 0.5rem 0.45rem;
+    width: 100%;
+    display: block;
+    text-decoration: none;
+
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  aside .nav-link:hover {
+    background-color: #3e1a4e;
+    font-weight: 600;
+
+  }
+
+  /* Contenido principal desplazable */
+  main {
+    margin-left: 200px;
+    /* espacio para el aside */
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    background-color: #ecf0f1;
+    padding: 1rem;
+    width: calc(100% - 200px);
+  }
+
+  .breadcrumb-container {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    color: #f1f1f1;
+
+  }
+
+  /* Estilo para los elementos de breadcrumb si los haces enlaces */
+  .breadcrumb-container a {
+    color: #f1f1f1;
+    text-decoration: none;
+  }
+
+  .breadcrumb-container a:hover {
+    text-decoration: underline;
+  }
+
+
+  /* Responsive: ocultar aside en pantallas pequeñas */
+  @media (max-width: 768px) {
+    aside {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1100;
+    }
+
+    aside.show {
+      transform: translateX(0);
+    }
+
+    main {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  /* Estilo sugerido para el logo */
+  .logo-container {
+    padding: 1rem 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
+  }
+
+  .logo-sidebar {
+    max-width: 80%;
+    height: auto;
+  }
+
+  /* Estilos correspondientes */
+  .logo-header-container {
+    height: 80%;
+    aspect-ratio: 1/1;
+    z-index: 1050;
+  }
+
+  .logo-header {
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    /*Para logo oscuro sobre fondo claro */
+    /*filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));*/
+    transition: transform 0.3s ease;
+  }
+
+  .logo-header:hover {
+    transform: scale(1.05);
+  }
+
+  @keyframes fadeInLogo {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .logo-header {
+    animation: fadeInLogo 0.5s ease-out forwards;
+  }
+
+  @media (max-width: 768px) {
+    .logo-header-container {
+      position: static;
+      transform: none;
+      height: 40px;
+      margin: 0 auto;
+    }
+
+    header {
+      justify-content: center !important;
+    }
+
+    #toggleSidebar {
+      position: absolute;
+      left: 1rem;
+    }
+
+    .user-options {
+      position: absolute;
+      right: 1rem;
+    }
+  }
+
+  /* Si el logo tiene un color destacado (ej: dorado) */
+  :root {
+    --logo-primary: #FFD700;
+  }
+
+  .logo-header:hover {
+    filter: drop-shadow(0 0 8px var(--logo-primary));
+  }
+</style>
+
+<body>
+
+
+  <header class="d-flex align-items-center justify-content-between px-3">
+    <div class="d-flex align-items-center">
+      <!-- Botón hamburguesa -->
+      <button id="toggleSidebar" class="btn btn-light me-3">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="breadcrumb-container text-white">
+        {% for crumb in breadcrumb %}
+        {% if not forloop.last %}
+        <a href="{{ crumb.url }}">{{ crumb.label }}</a> /
+        {% else %}
+        <span>{{ crumb.label }}</span>
+        {% endif %}
+        {% empty %}
+        <a href="{% url 'admin_module:admin_main' %}">Inicio</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Logo centrado -->
+    <div class="logo-header-container position-absolute start-50 translate-middle-x">
+      <img src="{% static 'admin_module/img/logo.png' %}" alt="Logo Barbería" class="logo-header h-100">
+    </div>
+
+    <!-- Opciones de usuario a la derecha -->
+    <div class="d-flex align-items-center gap-3 text-white">
+      <span>{{ request.user.username }}</span>
+
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" id="dropdownPerfil"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user-circle me-2"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownPerfil">
+          <li><a class="dropdown-item" href="{% url 'admin_module:perfil_usuario' %}">Ver perfil</a></li>
+          <li><a class="dropdown-item" href="#">Editar perfil</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
+        </ul>
+      </div>
+      <a href="" class="text-white text-decoration-none"><i class="fas fa-sign-out-alt"></i></a>
+    </div>
+  </header>
+
+
+  <div class="layout">
+    <aside class="collapsed" id="sidebar">
+      <!--<div class="logo-container d-none d-md-block">
+        <img src="{% static 'admin_module/img/logo.png' %}" alt="Logo" class="logo-sidebar">
+      </div>-->
+      <nav>
+        <a class="nav-link text-white" href="{% url 'admin_module:citas' %}"><i
+            class="fas fa-calendar-alt me-2"></i>Citas</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:barberos' %}"><i
+            class="fas fa-user me-2"></i>Barberos</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:servicios' %}"><i
+            class="fas fa-scissors me-2"></i>Servicios</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:inventario' %}"><i
+            class="fas fa-boxes me-2"></i>Inventario</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:contenidos' %}"><i
+            class="fas fa-photo-video me-2"></i>Contenido</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:reportes' %}"><i
+            class="fas fa-chart-line me-2"></i>Reportes</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:seguridad' %}"><i
+            class="fas fa-shield-alt me-2"></i>Seguridad</a>
+        <a class="nav-link text-white" href="{% url 'admin_module:soporte' %}"><i
+            class="fas fa-headset me-2"></i>Soporte</a>
+      </nav>
+    </aside>
+
+    <main>
+      {% block content %}
+      <!-- Aquí se inyectarán las vistas específicas -->
+      <body>
+  <div>
+    <h1>Panel del Barbero</h1>
+    <div class="perfil">
+      <img src="/static/img/barbero.png" alt="Foto del Barbero" class="avatar"/>
+      <div>
+        <h2>Carlos Ramírez</h2>
+        <p>Horario: 9:00 AM - 5:00 PM</p>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="opciones-grid">
+      <a href="/solicitudes/" class="btn">🗓 Solicitar Días Libres</a>
+      <a href="/historial_servicios/" class="btn">📋 Historial de Servicios</a>
+      <a href="/citas-hoy/" class="btn">📅 Ver Citas del Día</a>
+      <a href="/inventario/" class="btn">📦 Consultar Inventario</a>
+      <a href="/perfil/" class="btn">👤 Ver Perfil</a>
+      <a href="/logout/" class="btn cerrar">🔓 Cerrar Sesión</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Barbería Élite</p>
+  </footer>
+</body>
+      {% endblock %}
+    </main>
+  </div>
+
+  <!-- Scripts específicos por vista -->
+  {% block extra_js %}{% endblock %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggleBtn = document.getElementById('toggleSidebar');
+      const sidebar = document.getElementById('sidebar');
+
+      toggleBtn.addEventListener('click', function () {
+        sidebar.classList.toggle('show');
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
+
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #3b04b7, #c40513);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 2rem;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .perfil {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .perfil img.avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .opciones-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .btn {
+      background-color: #5a058f;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #8c0657;
+    }
+
+    .btn.cerrar {
+      background-color: #cf0513;
+    }
+
+    .btn.cerrar:hover {
+      background-color: #a2020f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: rgba(0,0,0,0.2);
+    }
+  </style>
