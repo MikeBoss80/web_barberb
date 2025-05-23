@@ -1,0 +1,135 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css');
+
+/* Estilos globales para todos los elementos */
+* {
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: "arial", sans-serif; 
+}
+
+/* Estilos generales del body */
+body {
+    min-height: 100vh; 
+    background: linear-gradient(135deg, #260021, #00000bed); 
+    background-size: cover; 
+    background-position: center; 
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start;
+    padding: 40px 20px; 
+    color: white; 
+}
+
+/* Contenedor principal del formulario de administrador */
+.admin {
+    width: 100%;
+    max-width: 800px;
+    margin: auto; 
+}
+
+/* Estilo del título principal */
+.admin h1 {
+    font-size: 36px;
+    text-align: center;
+    color: rgb(244, 237, 237); 
+    margin-bottom: 30px; 
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* (Repetido, pero con mismo efecto que el anterior, se puede eliminar uno) */
+.admin h1 {
+    font-size: 36px;
+    text-align: center;
+    color: rgb(244, 237, 237);
+    margin-bottom: 30px;
+}
+
+/* Contenedor de campos de entrada (input o select) */
+.input-box {
+    position: relative; 
+    margin: 20px 0; 
+    width: 100%;
+}
+
+/* Estilos para inputs y selects */
+.input-box input,
+.input-box select {
+    width: 100%;
+    padding: 14px 12px; 
+    background: transparent; 
+    border: 2px solid white; /* Bordes blancos */
+    border-radius: 10px; 
+    font-size: 16px;
+    color: white; 
+    outline: none; 
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Color del texto placeholder */
+.input-box input::placeholder {
+    color: #ccc; 
+}
+
+/* Estilo del texto dentro de las opciones del select */
+.input-box select option {
+    color: rgb(18, 2, 92);
+}
+
+/* Texto de ayuda debajo de los inputs */
+.input-help {
+    font-size: 12px; 
+    color: #bbb; 
+    margin-top: 5px;
+    display: block;
+}
+
+/* Estilo para secciones como términos y validaciones (checkbox + texto) */
+.terminos,
+.Validar {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+/* Enlace dentro del texto de términos */
+.terminos a {
+    color: #daa520; 
+    text-decoration: underline; 
+    font-size: 14px;
+}
+
+/* Estilo del botón principal */
+.admin .button {
+    width: 80%;
+    height: 50px;
+    background: linear-gradient(135deg, #0b0b3b, #1c1c85);
+    border: none;
+    border-radius: 30px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 15px;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el mouse sobre el botón */
+.admin .button:hover {
+    background: linear-gradient(135deg, #1c1c85, #3838a8);
+    transform: scale(1.03);
+}
+
+/* Estilo para ícono decorativo de usuario */
+.bi-person-fill-check {
+    text-align: center;
+    display: block;
+    font-size: 4rem; 
+    margin-bottom: 10px;
+    color: #DAA520; 
+}

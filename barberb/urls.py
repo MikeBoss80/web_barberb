@@ -22,6 +22,8 @@ urlpatterns = [
     path('', include('core.urls')),
     path('admin_module/', include('admin_module.urls')),  # Rutas del módulo admin
     path('services/', include('services_module.urls')),  # Rutas del módulo servicios
-    path('funciones_barbero/', include('funciones_barbero.urls')) #Ritas del modulo de barbero
+    path('funciones_barbero/', include('funciones_barbero.urls')), #Ritas del modulo de barbero
+    path('login_module/', include('Login_Module.urls')),  # Rutas del módulo Login
     
+
 ]

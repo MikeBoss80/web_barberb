@@ -28,27 +28,10 @@ async function initMap() {
     });
 
 
-    let btnSearch = document.getElementById("btnSearch");
     let inputSearch = document.getElementById("inputSearch");
     document.getElementById("btnSearch").addEventListener("click", function () {
         let searchValue = inputSearch.value;
         if (searchValue) {
-            // request = {
-            //     location: ubicationUser,
-            //     query: searchValue,
-            //     radius: 500
-            // };
-
-            // service = new PlacesService(map);
-            // service.textSearch(request, (results, status) => {
-            //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-            //         for (let i = 0; i < results.length; i++) {
-            //             createMarker(results[i]);
-            //         }
-                
-            //         map.setCenter(results[0].geometry.location);
-            //     }
-            // });
             const request = {
                 location: '4.679531063698843,-74.04015630448359',
                 query: searchValue,
@@ -77,7 +60,7 @@ function createMarker(place) {
 }
 
 function getPlacesList(params) {
-    url = 'http://127.0.0.1:8000/services/getplacesbysearch'
+    let url = 'http://127.0.0.1:8000/services/getplacesbysearch'
     url += `?query=${params.query}&location=${params.location}&radius=${params.radius}`;
     fetch(url).then(response => {
         if (response.ok) {
@@ -93,19 +76,32 @@ function getPlacesList(params) {
 }
 
 function loadPlacesList(dataPlaces) {
-    list = document.getElementById("listPlaces");
+    let list = document.getElementById("listPlaces");
     list.innerHTML = '';
     dataPlaces.forEach((place) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.style.width = '18rem';
-
+        card.style.width = '19rem';
         card.innerHTML = `
-            <img src="${place.icon}" class="card-img-top" height="100" alt="${place.name}">
+            <img src="https://placehold.co/100x50" class="card-img-top" alt="${place.name}">
             <div class="card-body">
                 <h6 class="card-title">${place.name}</h6>
-                <p class="card-text">Calificación ${place.rating ?? 0.0}</p>
-                <a href="${place.url}" class="btn btn-primary">Ver más</a>
+                <div class="row">
+                    <div class="col-4">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        Solicitar
+                        </button>
+                    </div>
+                    <div class="col-5">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        Ver más
+                        </button>
+                    </div>
+                    <div class="col-3 align-self-center">
+                        <p class="card-text">${place.rating ?? 0.0} <i class="bi bi-star-fill"></i></p>
+                    </div>
+                    </div>
+                </div>
             </div>
         `;
 
