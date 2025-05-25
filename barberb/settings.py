@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'admin_module',
     'services_module',
     'Login_Module',
+    'barber_module',
     ]
 
 
