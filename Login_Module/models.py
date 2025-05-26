@@ -2,13 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class Usuario(AbstractUser):
-    TIPO_USUARIO_CHOICES = [
-        ('admin', 'Administrador'),
-        ('barbero', 'Barbero'),
-        ('cliente', 'Cliente'),
-    ]
 
-    tipo_usuario = models.CharField(max_length=10, choices=TIPO_USUARIO_CHOICES)
+
     telefono = models.CharField(max_length=20, blank=True, null=True)
     direccion = models.CharField(max_length=255, blank=True, null=True)
     foto_perfil = models.ImageField(upload_to='usuarios/', blank=True, null=True)

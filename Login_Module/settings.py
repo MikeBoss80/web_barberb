@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Tus apps personalizadas
-    'Login_Module',
+    'login_module',
 ]
 
 MIDDLEWARE = [
@@ -38,7 +38,7 @@ ROOT_URLCONF = 'barberb.urls'  # Asegúrate que sea el nombre de tu archivo urls
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'Login_Module', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'login_module', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,10 +86,10 @@ USE_TZ = True
 # Archivos estáticos (CSS, JS, imágenes)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'Login_Module', 'static'),
+    os.path.join(BASE_DIR, 'login_module', 'static'),
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-AUTH_USER_MODEL = 'Login_Module.Usuario'
+AUTH_USER_MODEL = 'login_module.Usuario'

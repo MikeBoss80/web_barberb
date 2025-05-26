@@ -2,7 +2,7 @@ from django.urls import path
 from core.views import HomepageView, LoginView, BarberoDashboardView, post
 
 from core.views import HomepageView, BarberoDashboardView 
-from Login_Module.views import LoginView
+from login_module.views import LoginView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es mas moderno."""
 

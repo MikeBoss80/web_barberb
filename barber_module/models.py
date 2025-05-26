@@ -1,8 +1,6 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
-from Login_Module.models import Usuario
+from login_module.models import Usuario
 from admin_module.models import Establecimiento
 
 class Barbero(models.Model):

@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('admin_module/', decorator_include(login_required, 'admin_module.urls')),  # Rutas del módulo admin
     path('services/', decorator_include(login_required, 'services_module.urls')),  # Rutas del módulo de servicios
-    path('login_module/', include('Login_Module.urls')),  # Rutas del módulo Login
+    path('login/', include('login_module.urls')),  # Rutas del módulo Login
     
     
 ]

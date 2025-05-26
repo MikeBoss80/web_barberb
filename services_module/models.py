@@ -4,12 +4,12 @@ from django.db import models
 
 
 from django.db import models
-from Login_Module.models import Usuario
+from login_module.models import Usuario
 from admin_module.models import Establecimiento, Cita
 
 class SolicitudCita(models.Model):
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, default=0)
     fecha = models.DateField()
     hora_deseada = models.TimeField()
     servicios_solicitados = models.TextField(help_text="Lista de IDs de servicios solicitados separados por coma")

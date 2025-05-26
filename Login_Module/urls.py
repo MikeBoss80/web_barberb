@@ -1,5 +1,5 @@
 from django.urls import path
-from Login_Module.views import (
+from login_module.views import (
     LoginView,
     RegistroAdministradorView,
     RegistroBarberoView,

@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'core', 
     'admin_module',
     'services_module',
-    'Login_Module',
+    'login_module',
     'barber_module',
     ]
 
