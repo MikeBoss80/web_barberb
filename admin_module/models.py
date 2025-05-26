@@ -96,7 +96,7 @@ class HorarioEstablecimiento(models.Model):
         ('LU', 'Lunes'), ('MA', 'Martes'), ('MI', 'Miércoles'),
         ('JU', 'Jueves'), ('VI', 'Viernes'), ('SA', 'Sábado'), ('DO', 'Domingo')
     ]
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, default=0)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE,  null=True)
     dia_semana = models.CharField(max_length=2, choices=DIAS_SEMANA)
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
@@ -106,7 +106,7 @@ class HorarioEstablecimiento(models.Model):
         return f"{self.establecimiento.nombre} - {self.get_dia_semana_display()}"
 
 class Servicio(models.Model):
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, default=0)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, null=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
     precio = models.DecimalField(max_digits=8, decimal_places=2)
@@ -117,7 +117,7 @@ class Servicio(models.Model):
         return self.nombre
 
 class Inventario(models.Model):
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, default=0)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, null=True)
     nombre_producto = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
     cantidad = models.PositiveIntegerField()
@@ -134,7 +134,7 @@ class Cita(models.Model):
         ('cancelada', 'Cancelada'),
     ]
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='citas_cliente')
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, default=0)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, null=True)
     barbero = models.ForeignKey('barber_module.Barbero', on_delete=models.SET_NULL, null=True)
     fecha = models.DateField()
     hora_inicio = models.TimeField()
@@ -154,7 +154,7 @@ class CitaServicio(models.Model):
 
 class CalificacionEstablecimiento(models.Model):
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE,default=0)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE,null=True)
     calificacion = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     comentario = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
@@ -163,7 +163,7 @@ class CalificacionEstablecimiento(models.Model):
         return f"{self.establecimiento.nombre} - {self.calificacion} estrellas"
 
 class ConfiguracionEstablecimiento(models.Model):
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE,default=0)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE,null=True)
     campo = models.CharField(max_length=100)
     valor = models.TextField()
 

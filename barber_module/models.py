@@ -5,7 +5,7 @@ from admin_module.models import Establecimiento
 
 class Barbero(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, null=True)
     especialidades = models.TextField(blank=True, null=True)
     esta_activo = models.BooleanField(default=True)
     foto = models.ImageField(upload_to='barberos/', blank=True, null=True)
