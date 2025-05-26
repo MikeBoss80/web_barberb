@@ -19,6 +19,7 @@ from .forms import ProductoForm  # <-- Importa tu formulario personalizado
 class HomeadminView(BreadcrumbMixin, TemplateView):
     """Vista Principal Modulo Admin"""
     template_name = 'admin_module/main.html'
+    login_url = '/login_module/login/'
     
     def get_breadcrumb(self):
         return []

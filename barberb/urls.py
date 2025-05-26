@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth.decorators import login_required
+from decorator_include import decorator_include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    path('admin_module/', include('admin_module.urls')),  # Rutas del módulo admin
-    path('services/', include('services_module.urls')),  # Rutas del módulo servicios
+    path('admin_module/', decorator_include(login_required, 'admin_module.urls')),  # Rutas del módulo admin
+    path('services/', decorator_include(login_required, 'services_module.urls')),  # Rutas del módulo de servicios
     path('login_module/', include('Login_Module.urls')),  # Rutas del módulo Login
     
     

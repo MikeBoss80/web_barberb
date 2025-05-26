@@ -8,10 +8,11 @@ from Login_Module.views import (
     TerminosYCondicionesView,
     TipoRolView,
     CambiocontraseñaView,
+    CustomLoginView
 )
 
 urlpatterns = [
-    path('login/', LoginView.as_view(), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
     path('registro/administrador/', RegistroAdministradorView.as_view(), name='registroadministrador'),
     path('registro/barbero/', RegistroBarberoView.as_view(), name='registro_Barbero'),
     path('registro/usuario/', RegistroUsuarioView.as_view(), name='registro_usuario'),

@@ -1,4 +1,17 @@
 from django.views.generic import TemplateView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
+from django.urls import reverse_lazy
+
+class CustomLoginView(LoginView):
+    template_name = 'login_custom.html'
+    authentication_form = AuthenticationForm
+    redirect_authenticated_user = True
+
+
+    def get_success_url(self):
+        return '/admin_module/' 
+
 
 class LoginView(TemplateView):
     template_name = 'login.html'
