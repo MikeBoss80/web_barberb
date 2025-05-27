@@ -294,10 +294,13 @@
           <li>
             <hr class="dropdown-divider">
           </li>
-          <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'admin_module:logout' %}">Cerrar sesión</a></li>
         </ul>
       </div>
-      <a href="" class="text-white text-decoration-none"><i class="fas fa-sign-out-alt"></i></a>
+      <form method="post" action="{% url 'admin_module:logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-light d-flex align-items-center" type="submit"><i class="fas fa-sign-out-alt"></i></button>
+      </form>
     </div>
   </header>
 
