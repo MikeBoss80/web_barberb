@@ -2,9 +2,17 @@
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
+  <div class="remember">
+    <label><input type="checkbox"> Recordar Contraseña</label>
+    <a href="{% url 'cambio_contraseña' %}">¿Olvidaste tu Contraseña?</a>
+  </div>
   <button type="submit">Entrar</button>
+
+ <div class="registrar">
+                <p>No tengo cuenta <a href="{% url 'tipo_rol' %}">Registrarme</a></p>
+            </div>
 </form>
 
 {% if form.errors %}
-  <p style="color: red;">Usuario o contraseña incorrectos</p>
+<p style="color: red;">Usuario o contraseña incorrectos</p>
 {% endif %}

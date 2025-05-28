@@ -1,135 +1,63 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css');
 
-/* Estilos globales para todos los elementos */
-* {
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-    font-family: "arial", sans-serif; 
-}
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
 
-/* Estilos generales del body */
-body {
-    min-height: 100vh; 
-    background: linear-gradient(135deg, #260021, #00000bed); 
-    background-size: cover; 
-    background-position: center; 
-    display: flex; 
-    justify-content: center; 
-    align-items: flex-start;
-    padding: 40px 20px; 
-    color: white; 
-}
+  .form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
 
-/* Contenedor principal del formulario de administrador */
-.admin {
-    width: 100%;
-    max-width: 800px;
-    margin: auto; 
-}
-
-/* Estilo del título principal */
-.admin h1 {
-    font-size: 36px;
+  h2 {
     text-align: center;
-    color: rgb(244, 237, 237); 
-    margin-bottom: 30px; 
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-}
+    color: #333;
+  }
 
-/* (Repetido, pero con mismo efecto que el anterior, se puede eliminar uno) */
-.admin h1 {
-    font-size: 36px;
-    text-align: center;
-    color: rgb(244, 237, 237);
-    margin-bottom: 30px;
-}
-
-/* Contenedor de campos de entrada (input o select) */
-.input-box {
-    position: relative; 
-    margin: 20px 0; 
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
     width: 100%;
-}
-
-/* Estilos para inputs y selects */
-.input-box input,
-.input-box select {
-    width: 100%;
-    padding: 14px 12px; 
-    background: transparent; 
-    border: 2px solid white; /* Bordes blancos */
-    border-radius: 10px; 
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     font-size: 16px;
-    color: white; 
-    outline: none; 
-    background-color: rgba(255, 255, 255, 0.05);
-}
+  }
 
-/* Color del texto placeholder */
-.input-box input::placeholder {
-    color: #ccc; 
-}
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+  }
 
-/* Estilo del texto dentro de las opciones del select */
-.input-box select option {
-    color: rgb(18, 2, 92);
-}
-
-/* Texto de ayuda debajo de los inputs */
-.input-help {
-    font-size: 12px; 
-    color: #bbb; 
-    margin-top: 5px;
-    display: block;
-}
-
-/* Estilo para secciones como términos y validaciones (checkbox + texto) */
-.terminos,
-.Validar {
-    display: flex;
-    align-items: center;
-    gap: 10px; 
-    font-size: 14px;
-    margin: 15px 0;
-}
-
-/* Enlace dentro del texto de términos */
-.terminos a {
-    color: #daa520; 
-    text-decoration: underline; 
-    font-size: 14px;
-}
-
-/* Estilo del botón principal */
-.admin .button {
-    width: 80%;
-    height: 50px;
-    background: linear-gradient(135deg, #0b0b3b, #1c1c85);
-    border: none;
-    border-radius: 30px; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
     color: white;
+    border: none;
+    border-radius: 4px;
     font-size: 16px;
-    font-weight: bold;
-    margin-top: 15px;
-    cursor: pointer; 
-    transition: all 0.3s ease;
-}
+    cursor: pointer;
+  }
 
-/* Efecto al pasar el mouse sobre el botón */
-.admin .button:hover {
-    background: linear-gradient(135deg, #1c1c85, #3838a8);
-    transform: scale(1.03);
-}
+  button:hover {
+    background-color: #0056b3;
+  }
 
-/* Estilo para ícono decorativo de usuario */
-.bi-person-fill-check {
-    text-align: center;
-    display: block;
-    font-size: 4rem; 
+  /* Estilo para los mensajes de error */
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
     margin-bottom: 10px;
-    color: #DAA520; 
-}
+  }
