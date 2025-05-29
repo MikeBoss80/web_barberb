@@ -1,9 +1,82 @@
 from django.db import models
-from login_module.models import Usuario
+from login_module.models import Profile
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 
+# Tabla: admin_module_days
+class Day(models.Model):
+    name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
+# Tabla: admin_module_schedulesch
+class Schedule(models.Model):
+    day = models.IntegerField()
+    start_hour = models.DateTimeField()
+    end_hour = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.day} | {self.start_hour} - {self.end_hour}"
+
+class ScheduleAssignment(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+
+# Tabla: admin_module_products
+class Product(models.Model):
+    name_product = models.CharField(max_length=30)
+    description_product = models.CharField(max_length=80)
+    amount = models.IntegerField()
+    minimum_stock = models.IntegerField()
+    price_product = models.DecimalField(max_digits=8, decimal_places=2)
+    last_update = models.DateTimeField()
+
+    def __str__(self):
+        return self.name_product
+
+# Tabla: admin_module_establishment
+class Establishment(models.Model):
+    name_est = models.CharField(max_length=50)
+    address_est = models.CharField(max_length=80)
+    city_est = models.CharField(max_length=20)
+    country_est = models.CharField(max_length=20)
+    phone_est = models.IntegerField()
+    email_est = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
+    lat_est = models.DecimalField(max_digits=9, decimal_places=6)
+    lng_est = models.DecimalField(max_digits=9, decimal_places=6)
+    img_est = models.ImageField(upload_to="establishments/")
+    qa_average_est = models.FloatField()
+    created_date = models.DateTimeField()
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name_est
+
+# Tabla: admin_module_services
+class Service(models.Model):
+    name_service = models.CharField(max_length=60)
+    description_service = models.CharField(max_length=100)
+    price_service = models.FloatField()
+    duration = models.IntegerField()
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name_service
+
+# Relación muchos a muchos entre establecimiento y servicios
+class EstablishmentService(models.Model):
+    establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+
+# Tabla: admin_module_inventory
+class Inventory(models.Model):
+    establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+""" 
 class Establecimiento(models.Model):
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=255)
@@ -153,4 +226,4 @@ class Producto(models.Model):
     class Meta:
         verbose_name_plural = "Productos"
         ordering = ['-fecha_actualizacion']
-
+ """

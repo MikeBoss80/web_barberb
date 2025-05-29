@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'core', 
     'admin_module',
     'services_module',
-    'login_module',
     'barber_module',
+    'login_module.apps.LoginModuleConfig',
     ]
 
 

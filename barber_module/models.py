@@ -3,16 +3,10 @@ from django.db import models
 from login_module.models import Usuario
 from admin_module.models import Establecimiento
 
-class Barbero(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE, null=True)
-    especialidades = models.TextField(blank=True, null=True)
-    esta_activo = models.BooleanField(default=True)
-    foto = models.ImageField(upload_to='barberos/', blank=True, null=True)
 
-    def __str__(self):
-        return self.usuario.username
 
+
+""" 
 class HorarioBarbero(models.Model):
     barbero = models.ForeignKey(Barbero, on_delete=models.CASCADE)
     dia_semana = models.IntegerField(choices=[(i, dia) for i, dia in enumerate(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'])])
@@ -46,3 +40,4 @@ class SeguridadBarbero(models.Model):
 
     def __str__(self):
         return f"Seguridad - {self.barbero.usuario.username}"
+ """
