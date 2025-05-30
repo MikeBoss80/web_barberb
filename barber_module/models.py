@@ -1,7 +1,5 @@
 # Create your models here.
 from django.db import models
-from login_module.models import Usuario
-from admin_module.models import Establecimiento
 
 
 

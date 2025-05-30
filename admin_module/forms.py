@@ -1,10 +1,10 @@
 # admin_module/forms.py
 from django import forms
-from .models import Producto
+from .models import Product
 
 class ProductoForm(forms.ModelForm):
     class Meta:
-        model = Producto
+        model = Product
         fields = '__all__'
         widgets = {
             'nombre': forms.TextInput(attrs={

@@ -3,8 +3,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
-from login_module.models import Usuario
-from admin_module.models import Establecimiento
+from login_module.models import Profile
+from admin_module.models import Establishment
 import requests
 from django.contrib import messages
 
@@ -31,11 +31,11 @@ class RegistroAdministradorView(TemplateView):
         nombre = request.POST['nombre']
         correo = request.POST['correo']
         contrasena = request.POST['contrasena']
-        nombre_establecimiento = request.POST['nombre_establecimiento']
+        nombre_establishment = request.POST['nombre_Establishment']
         direccion = request.POST['direccion']
 
         # Crear usuario
-        usuario = Usuario.objects.create_user(
+        usuario = Profile.objects.create_user(
             username=correo,
             email=correo,
             password=contrasena,
@@ -43,15 +43,16 @@ class RegistroAdministradorView(TemplateView):
             tipo_usuario='administrador'
         )
 
-        # Crear establecimiento asociado
-        Establecimiento.objects.create(
+        # Crear Establishment asociado
+        Establishment.objects.create(
             administrador=usuario,
-            nombre=nombre_establecimiento,
+            nombre=nombre_establishment,
             direccion=direccion,
             # agregar demás campos...
         )
 
         return redirect('login')  # O a un dashboard
+    
 class RegistroBarberoView(TemplateView):
     template_name = 'registro_barbero.html'
 

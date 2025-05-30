@@ -6,7 +6,7 @@ from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
-from .models import Producto
+from .models import Product
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .forms import ProductoForm  # <-- Importa tu formulario personalizado
@@ -189,7 +189,7 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario')}]
 
 class InventarioListView(ListView):
-    model = Producto
+    model = Product
     template_name = 'inventario/inventario.html'
     context_object_name = 'productos'
     paginate_by = 10
@@ -205,7 +205,7 @@ class InventarioListView(ListView):
         return context
 
 class ProductoCreateView(SuccessMessageMixin, CreateView):
-    model = Producto
+    model = Product
     form_class = ProductoForm
     template_name = 'establecimiento/modal_producto.html'
     success_url = reverse_lazy('inventario')
@@ -216,14 +216,14 @@ class ProductoCreateView(SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 class ProductoUpdateView(SuccessMessageMixin, UpdateView):
-    model = Producto
+    model = Product
     form_class = ProductoForm
     template_name = 'establecimiento/modal_producto.html'
     success_url = reverse_lazy('inventario')
     success_message = "Producto actualizado exitosamente"
 
 class ProductoDeleteView(DeleteView):
-    model = Producto
+    model = Product
     success_url = reverse_lazy('inventario')
     
     def delete(self, request, *args, **kwargs):

@@ -1,6 +1,7 @@
 
 from django.db import models
-from admin_module.models import EstablishmentService
+from admin_module.models import EstablishmentService, Day
+from django.contrib.auth.models import User
 
 
 # Tabla: services_module_dates

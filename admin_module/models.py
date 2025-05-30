@@ -1,7 +1,7 @@
 from django.db import models
-from login_module.models import Profile
+# from login_module.models import Profile
 from django.core.validators import MinValueValidator
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 
 # Tabla: admin_module_days
