@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from login_module.views import (
     LoginView,
     RegistroAdministradorView,
@@ -8,7 +9,8 @@ from login_module.views import (
     TerminosYCondicionesView,
     TipoRolView,
     CambiocontraseñaView,
-    CustomLoginView
+    CustomLoginView,
+    CustomPasswordResetView,
 )
 
 urlpatterns = [
@@ -19,5 +21,11 @@ urlpatterns = [
     path('registro/establecimiento/', RegistroEstablecimientoView.as_view(), name='registro_establecimiento'),
     path('terminos-condiciones/', TerminosYCondicionesView.as_view(), name='terminosycondiciones'),
     path('tipo-rol/', TipoRolView.as_view(), name='tipo_rol'),
-    path('cambio/contraseña/', CambiocontraseñaView.as_view(), name='cambio_contraseña'),
+    path('cambio_contraseña/', CambiocontraseñaView.as_view(), name='cambio_contraseña'),
+    #auth vies django para restablecimiento
+     path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
 ]

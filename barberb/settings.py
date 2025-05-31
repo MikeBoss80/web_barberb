@@ -27,12 +27,22 @@ SECRET_KEY = 'django-insecure-g+h5pxxd%f1f$!y7smq!gy%sj$r-f57_rg%p(#%x6_6e0us46w
 DEBUG = True
 
 # Environment Variables with decouple
+#DataBase Info
 MAPS_APIKEY = config('MAPS_APIKEY')
 DB_NAME = config('DB_NAME')
 DB_USER = config('DB_USER')
 DB_PASSW = config('DB_PASSW')
 DB_HOST = config('DB_HOST')
 DB_PORT = config('DB_PORT')
+
+#Data of Sender Email
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
 
 ALLOWED_HOSTS = []
 
@@ -51,6 +61,8 @@ INSTALLED_APPS = [
     'services_module',
     'barber_module',
     'login_module.apps.LoginModuleConfig',
+    'widget_tweaks',
+
     ]
 
 
@@ -146,4 +158,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login_module/login/'
+
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 

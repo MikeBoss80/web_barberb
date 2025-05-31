@@ -7,6 +7,8 @@ from login_module.models import Profile
 from admin_module.models import Establishment
 import requests
 from django.contrib import messages
+from django.contrib.auth.views import PasswordResetView
+
 
 class CustomLoginView(LoginView):
     template_name = 'login_custom.html'
@@ -70,3 +72,17 @@ class TipoRolView(TemplateView):
 
 class CambiocontraseñaView(TemplateView):
     template_name = 'cambio_contraseña.html'
+    
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset_form.html'
+    success_url = reverse_lazy('password_reset_done')
+
+class PasswordResetDoneView(TemplateView):
+    template_name='registration/password_reset_done.html'
+    
+class PasswordResetConfirmView(TemplateView):
+    template_name='registration/password_reset_confirm.html'
+    
+class PasswordResetCompleteView(TemplateView):
+    template_name = 'registration/password_reset_complete.html'
