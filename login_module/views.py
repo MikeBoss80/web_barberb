@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from login_module.models import Profile
@@ -74,9 +74,11 @@ class CambiocontraseñaView(TemplateView):
     template_name = 'cambio_contraseña.html'
     
 
-class CustomPasswordResetView(PasswordResetView):
-    template_name = 'registration/password_reset_form.html'
-    success_url = reverse_lazy('password_reset_done')
+class ResetPasswordView(PasswordResetView):
+    template_name = 'password_reset_form.html'
+    form_class = PasswordResetForm
+    def get_success_url(self):
+        return '/login_module/password_reset/'
 
 class PasswordResetDoneView(TemplateView):
     template_name='registration/password_reset_done.html'
