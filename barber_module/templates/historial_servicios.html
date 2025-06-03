@@ -1,14 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../static/barber_module/css/">
-  <title>historial/barbero</title>
-</head>
 
-<body>
+
+{% extends "base_barber.html" %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'barber_module/css/historial_servicios.css' %}">
+
+{% block title %}TITULO DE VISTA{% endblock %}
+
+
+{% block extra_css %}
+
+{% endblock %}
+
+
+{% block content %}
+
+   
    <h1>Servicios de Barbero</h1>
    <div class=" historial">
     
@@ -51,13 +59,14 @@
                 <td>45 minutos</td>
                 <td>$25.000</td>
 
+
+
+                
+
                
 
             </tr>
         </tbody>
     </table>
-</body>
-</div>
 
-
-</html>
+    {% endblock %}
