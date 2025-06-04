@@ -10,13 +10,13 @@ import json
 
 
 
-# Create your views here.
-
 class HomepageView(TemplateView):
     """Vista principal Main//Home"""
     
     template_name = 'core/main.html'
 
+class NotInGroup(TemplateView):
+    template_name = 'core/not_in_group.html'
 
 class LoginView(TemplateView):
     """
