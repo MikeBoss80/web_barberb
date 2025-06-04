@@ -1,94 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
-}
+/* tipo_rol.css (Estilo dark) */
 
 body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url("../img/ref8.jpg") no-repeat center center/cover;
-  background-size: cover;
-  background-position: center;
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    min-height: 100vh;
 }
 
-/* Contenedor principal */
 .Rol {
-  width: 420px;
-  background:transparent;
-  color: white;
-    backdrop-filter: blur(10px);
-  box-shadow: 0 0 10px rgb(113, 109, 109);
-  border-radius: 10px;
-  padding: 30px 40px;
-  text-align: center;
+    margin-top: 40px;
+    text-align: center;
 }
 
-/* Título */
-.Rol h1 {
-  font-size: 26px;
-  color: #010a40;
-  margin-bottom: 30px;
+.LogoB2 {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
 }
 
-/* Imagen logo */
-.Rol .LogoB2 {
-  width: 180px;
-  height: 70;
-  display: block;
-  margin: 0 auto 20px;
+h1 {
+    font-size: 2em;
+    color: #e0e0e0;
+    margin-bottom: 30px;
 }
 
-/* Estilos para los botones */
-.Rol .button {
-  width: 80%;
-  height: 50px;
-  background: linear-gradient(135deg, #2f0134, #000000);
-  border: none;
-  border-radius: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.button {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: 2px solid #ffffff30;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00000050;
 }
 
-.Rol .button:hover {
-  background: linear-gradient(135deg, #480058, #360042);
-  transform: scale(1.03);
+.button:hover {
+    background-color: #333333;
+    border-color: #ffffff;
+    transform: scale(1.05);
 }
 
-/* Iconos de roles */
-.Rol .user1,
-.Rol .barbero1,
-.Rol .admin1 {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: inline-block;
-  margin: 10px 15px;
-  border: 2px solid #ffffff33;
-  transition: transform 0.3s ease;
+a {
+    text-decoration: none;
 }
-
-.Rol .user1:hover,
-.Rol .barbero1:hover,
-.Rol .admin1:hover {
-  transform: scale(1.1);
-  border-color: #5a0000;
-}
-
-      
-  
-  
-  
-  

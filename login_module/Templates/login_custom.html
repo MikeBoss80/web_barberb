@@ -1,20 +1,37 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'Login_Module/Css/login.css' %}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-<h2>Iniciar sesión</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <div class="remember">
-    <label><input type="checkbox"> Recordar Contraseña</label>
-    <a href="{% url 'password_reset' %}">¿Olvidaste tu Contraseña?</a>
+<div class="container">
+  <div class="login-form">
+     <img src="/static/login_module/Img/LogoBarberB2.png" alt="LogoB2" class="LogoB2">
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <a href="{% url 'password_reset' %}" class="forgot">Olvido contraseña?</a>
+
+      <button type="submit" class="btn-login">INICIAR</button>
+
+      <div class="social-login">
+        <button class="btn-facebook">Conectar con Facebook <i class='bx bxl-facebook-circle'></i> Facebook</button>
+      </div>
+
+      <div class="registrar-mobile">
+        <p>¿Eres Nuevo? <a href="{% url 'tipo_rol' %}">INICIAR</a></p>
+      </div>
+    </form>
   </div>
-  <button type="submit">Entrar</button>
 
- <div class="registrar">
-                <p>No tengo cuenta <a href="{% url 'tipo_rol' %}">Registrarme</a></p>
-            </div>
-</form>
+  <div class="side-panel">
+    <div class="overlay">
+      <h3>Registrate</h3>
+      <p>Te ayudamos a destacar, conectar y crecer en grande.!</p>
+      <a href="{% url 'tipo_rol' %}" class="btn-signup">REGISRO</a>
+    </div>
+  </div>
+</div>
 
 {% if form.errors %}
 <p style="color: red;">Usuario o contraseña incorrectos</p>
