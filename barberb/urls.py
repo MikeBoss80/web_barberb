@@ -17,14 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from decorator_include import decorator_include
+
+decorators = [never_cache, login_required]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    path('admin_module/', decorator_include(login_required, 'admin_module.urls')),  # Rutas del módulo admin
-    path('services/', decorator_include(login_required, 'services_module.urls')),  # Rutas del módulo de servicios
+    path('admin_module/', decorator_include(decorators, 'admin_module.urls')),  # Rutas del módulo admin
+    path('services/', decorator_include(decorators, 'services_module.urls')),  # Rutas del módulo de servicios
     path('login_module/', include('login_module.urls')),  # Rutas del módulo Login
+ HEAD
     path('barber/', decorator_include(login_required, 'barber_module.urls')),  # Rutas del módulo Barber
     
+
+main
 ]

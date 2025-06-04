@@ -1,10 +1,10 @@
-from django.shortcuts import render 
+from django.shortcuts import render, redirect
 from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
 from .utils.mixins import BreadcrumbMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from .models import Product
 from django.contrib.messages.views import SuccessMessageMixin
@@ -13,8 +13,6 @@ from .forms import ProductoForm  # <-- Importa tu formulario personalizado
 
 
 
-
-# Create your views here.
 
 class HomeadminView(BreadcrumbMixin, TemplateView):
     """Vista Principal Modulo Admin"""
@@ -52,11 +50,15 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
         return context
 
 
-
-class CitasView(BreadcrumbMixin, TemplateView):
-    """Vista citas"""
+class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     template_name = 'citas/citas.html'
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Administrator').exists()
+
+    def handle_no_permission(self):
+        return redirect('not_in_group')
+    
     def get_breadcrumb(self):
         return [{'label': 'Citas', 'url': reverse('admin_module:citas')}]
 

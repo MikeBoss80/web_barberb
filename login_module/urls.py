@@ -10,7 +10,10 @@ from login_module.views import (
     TipoRolView,
     CambiocontraseñaView,
     CustomLoginView,
-    CustomPasswordResetView,
+    ResetPasswordView,
+    ResetPasswordDoneView,
+    ResetPasswordConfirmView,
+    ResetPasswordCompleteView
 )
 
 urlpatterns = [
@@ -23,9 +26,9 @@ urlpatterns = [
     path('tipo-rol/', TipoRolView.as_view(), name='tipo_rol'),
     path('cambio_contraseña/', CambiocontraseñaView.as_view(), name='cambio_contraseña'),
     #auth vies django para restablecimiento
-     path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('password_reset/', ResetPasswordView.as_view(), name='password_reset'),
+    path('password_reset/done/', ResetPasswordDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', ResetPasswordCompleteView.as_view(), name='password_reset_complete'),
 
 ]
