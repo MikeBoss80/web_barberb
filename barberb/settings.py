@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,6 +85,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates'],  # << Asegúrate que esté esto
         'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Esto NO afecta la carga de templates de tus apps. APP_DIRS: True garantiza que Django siga buscando dentro de cada app también.
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -151,6 +153,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

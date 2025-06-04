@@ -1,13 +1,13 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from login_module.models import Profile
 from admin_module.models import Establishment
 import requests
 from django.contrib import messages
-from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView
 
 
 class CustomLoginView(LoginView):
@@ -73,18 +73,26 @@ class TipoRolView(TemplateView):
 class CambiocontraseñaView(TemplateView):
     template_name = 'cambio_contraseña.html'
     
-
+#Formulario donde se solicita correo electronico para el envio del reseteo de contraseña
 class ResetPasswordView(PasswordResetView):
     template_name = 'password_reset_form.html'
     form_class = PasswordResetForm
-    def get_success_url(self):
-        return '/login_module/password_reset/'
 
-class PasswordResetDoneView(TemplateView):
-    template_name='registration/password_reset_done.html'
-    
-class PasswordResetConfirmView(TemplateView):
-    template_name='registration/password_reset_confirm.html'
-    
-class PasswordResetCompleteView(TemplateView):
-    template_name = 'registration/password_reset_complete.html'
+    def get_success_url(self):
+        return '/login_module/password_reset/done/'
+
+#Confirmacion de envio de correco electronico exitoso.
+class ResetPasswordDoneView(PasswordResetDoneView):
+    template_name='password_reset_done.html'
+    form_class = PasswordResetForm
+
+#Formulario cambio de contraseña.  
+class ResetPasswordConfirmView(PasswordResetConfirmView):
+    template_name='password_reset_confirm.html'
+    form_class = SetPasswordForm
+
+    def get_success_url(self):
+        return 'reset/done/'
+
+class ResetPasswordCompleteView(PasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'
