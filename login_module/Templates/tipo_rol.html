@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tipe/Rol</title>
-    <link rel="stylesheet" href="/static/login_module/Css/tipo_rol.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tipe/Rol</title>
+  <link rel="stylesheet" href="/static/login_module/Css/tipo_rol.css">
 
 
 </head>
+
 <body>
- 
-    <div class="Rol">
-       <img src="/static/login_module/Img/LogoBarberB2.png" alt="LogoB2" class="LogoB2">
-        <h1>Tipo de Registro</h1>
-       
-        <div style="text-align: center; margin-top: 20px;">
-          <a href="{% url 'registro_usuario' %}">
-            <button type="button" class="button">Usuario</button>
-          </a>
-          </div>
 
-          <div style="text-align: center; margin-top: 20px;">
-            <a href="{% url 'registro_Barbero' %}">
-            <button type="button" class="button">Barbero</button>
-            </a>
-          </div>
+  <div class="Rol">
+    <img src="/static/login_module/Img/LogoBarberB2.png" alt="LogoB2" class="LogoB2">
+    <h1>Tipo de Registro</h1>
 
-          <div style="text-align: center; margin-top: 20px;">
-            <a href="{% url 'registroadministrador' %}">
-            <button type="button"  class="button">Administrador</button> 
-            </a>
-          </div>
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="{% url 'registro_usuario' %}">
+        <button type="button" class="button">Usuario</button>
+      </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="{% url 'registro_Barbero' %}">
+        <button type="button" class="button">Barbero</button>
+      </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="{% url 'registroadministrador' %}">
+        <button type="button" class="button">Administrador</button>
+      </a>
+    </div>
 </body>
+
 </html>
