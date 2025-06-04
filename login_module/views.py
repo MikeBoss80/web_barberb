@@ -8,6 +8,8 @@ from admin_module.models import Establishment
 import requests
 from django.contrib import messages
 from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView
+from django.views.generic.edit import FormView
+from .forms import UserProfileForm
 
 
 class CustomLoginView(LoginView):
@@ -61,8 +63,14 @@ class RegistroBarberoView(TemplateView):
 class RegistroEstablecimientoView(TemplateView):
     template_name = 'registro_establecimiento.html'
 
-class RegistroUsuarioView(TemplateView):
+class RegistroUsuarioView(FormView):
     template_name = 'registro_usuario.html'
+    form_class = UserProfileForm
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 class TerminosYCondicionesView(TemplateView):
     template_name = 'terminosycondiciones.html'

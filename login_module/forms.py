@@ -34,15 +34,12 @@ class UserProfileForm(UserCreationForm):
         user.last_name = self.cleaned_data["last_name"]
 
         if commit:
-            user.save()
-            # Crear el perfil asociado
-            Profile.objects.create(
-                user=user,
+            user.save()#Este metodo crea automaticamente el registro de Profile, por eso solo se actualiza 
+            Profile.objects.filter(user=user).update(
                 phone=self.cleaned_data.get("phone"),
                 address=self.cleaned_data.get("address"),
                 birth_date=self.cleaned_data.get("birth_date"),
                 document=self.cleaned_data.get("document"),
-                establishment=self.cleaned_data.get("establishment"),
-                data_complete=True  # puedes poner lógica según validación
+                data_complete=True
             )
         return user
