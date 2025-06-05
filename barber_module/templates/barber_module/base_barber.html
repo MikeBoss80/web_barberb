@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
 
-  <!-- Estilo base del admin -->
+  <!-- Estilo base del barber_module -->
 
   <!-- Estilos específicos por vista -->
   {% block extra_css %}
@@ -267,14 +267,14 @@
         <span>{{ crumb.label }}</span>
         {% endif %}
         {% empty %}
-        <a href="{% url 'admin_module:admin_main' %}">Inicio</a>
+        <a href="{% url 'barber_module:barber_main' %}">Inicio</a>
         {% endfor %}
       </div>
     </div>
 
     <!-- Logo centrado -->
     <div class="logo-header-container position-absolute start-50 translate-middle-x">
-      <img src="{% static 'admin_module/img/logo.png' %}" alt="Logo Barbería" class="logo-header h-100">
+      <img src="{% static '/img/logo.png' %}" alt="Logo Barbería" class="logo-header h-100">
     </div>
 
     <!-- Opciones de usuario a la derecha -->
@@ -287,15 +287,19 @@
           <i class="fas fa-user-circle me-2"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownPerfil">
-          <li><a class="dropdown-item" href="{% url 'admin_module:perfil_usuario' %}">Ver perfil</a></li>
+          <li><a class="dropdown-item" href="{% url 'barber_module:perfil_usuario' %}">Ver perfil</a></li>
           <li><a class="dropdown-item" href="#">Editar perfil</a></li>
           <li>
             <hr class="dropdown-divider">
           </li>
-          <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'barber_module:logout' %}">Cerrar sesión</a></li>
         </ul>
       </div>
-      <a href="" class="text-white text-decoration-none"><i class="fas fa-sign-out-alt"></i></a>
+      <form method="post" action="{% url 'barber_module:logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-light d-flex align-items-center" type="submit"><i
+            class="fas fa-sign-out-alt"></i></button>
+      </form>
     </div>
   </header>
 
@@ -303,26 +307,20 @@
   <div class="layout">
     <aside class="collapsed" id="sidebar">
       <!--<div class="logo-container d-none d-md-block">
-        <img src="{% static 'admin_module/img/logo.png' %}" alt="Logo" class="logo-sidebar">
+        <img src="{% static 'barber_module/img/logo.png' %}" alt="Logo" class="logo-sidebar">
       </div>-->
       <nav>
-        <a class="nav-link text-white" href="{% url 'admin_module:citas' %}"><i
+        <a class="nav-link text-white" href="{% url 'barber_module:citas_barbero' %}"><i
             class="fas fa-calendar-alt me-2"></i>Citas</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:barberos' %}"><i
-            class="fas fa-user me-2"></i>Barberos</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:servicios' %}"><i
-            class="fas fa-scissors me-2"></i>Servicios</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:inventario' %}"><i
-            class="fas fa-boxes me-2"></i>Inventario</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:contenidos' %}"><i
+        <a class="nav-link text-white" href="{% url 'barber_module:contenidos' %}"><i
             class="fas fa-photo-video me-2"></i>Contenido</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:reportes' %}"><i
+        <a class="nav-link text-white" href="{% url 'barber_module:reportes' %}"><i
             class="fas fa-chart-line me-2"></i>Reportes</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:seguridad' %}"><i
+        <a class="nav-link text-white" href="{% url 'barber_module:seguridad' %}"><i
             class="fas fa-shield-alt me-2"></i>Seguridad</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:soporte' %}"><i
+        <a class="nav-link text-white" href="{% url 'barber_module:soporte' %}"><i
             class="fas fa-headset me-2"></i>Soporte</a>
-            
+
       </nav>
     </aside>
 

@@ -43,3 +43,9 @@ class UserProfileForm(UserCreationForm):
                 data_complete=True
             )
         return user
+
+
+class UserEstablishmentForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
