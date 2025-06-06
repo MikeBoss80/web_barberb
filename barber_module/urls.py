@@ -16,7 +16,6 @@ from barber_module.views import BarberCitasView, BarberReportesView, SoporteView
 from . import views
 from django.contrib.auth.views import LogoutView
 
-
 urlpatterns = [
     path('', HomeBarberView.as_view(), name='barber_main'),
     path('', barberView.as_view(), name='barber'),
@@ -28,5 +27,5 @@ urlpatterns = [
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
-
 ]   
+
