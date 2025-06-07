@@ -44,17 +44,3 @@ class UserProfileForm(UserCreationForm):
             )
         return user
 
-
-class UserEstablishmentForm(UserCreationForm):
-    name_est = forms.CharField(max_length=50, required=True)
-    address_est = forms.CharField(max_length=80, required=True)
-    city_est = forms.CharField(max_length=20, required=True)
-    country_est = forms.CharField(max_length=20, required=True)
-    phone_est = forms.IntegerField(max_length=10, required=True)
-    email_est = forms.CharField(max_length=100, required=True)
-    description = forms.CharField(max_length=100, required=True)
-    lat_est = forms.DecimalField()
-
-
-    
-    

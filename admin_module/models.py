@@ -40,9 +40,9 @@ class Product(models.Model):
 class Establishment(models.Model):
     name_est = models.CharField(max_length=50)
     address_est = models.CharField(max_length=80)
-    city_est = models.CharField(max_length=20)
+    city_est = models.CharField(max_length=2)
     country_est = models.CharField(max_length=20)
-    phone_est = models.IntegerField()
+    phone_est = models.IntegerField(max_length=20)
     email_est = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
     lat_est = models.DecimalField(max_digits=9, decimal_places=6)

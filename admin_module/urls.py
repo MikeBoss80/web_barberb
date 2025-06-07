@@ -1,6 +1,5 @@
 from django.urls import path
-from admin_module.views import HomeadminView
-from admin_module.views import CitasView,InventarioListView,ProductoCreateView,ProductoUpdateView,ProductoDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView
+from admin_module.views import CitasView,InventarioListView,ProductoCreateView,ProductoUpdateView,ProductoDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView
 from . import views
 from django.contrib.auth.views import LogoutView
 
@@ -25,5 +24,5 @@ urlpatterns = [
     path('producto/editar/<int:pk>/', ProductoUpdateView.as_view(), name='producto_update'),
     path('producto/eliminar/<int:pk>/', ProductoDeleteView.as_view(), name='producto_delete'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
-
+    path('registro_establishment/', CreateEstablishmentView.as_view(), name='registro_establishment'),
 ]   

@@ -9,7 +9,8 @@ from django.urls import reverse, reverse_lazy
 from .models import Product
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import ProductoForm  # <-- Importa tu formulario personalizado
+from .forms import ProductoForm, CreateEstablishmentForm
+from django.views.generic.edit import FormView
 
 
 
@@ -276,3 +277,22 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     
 class LogoutView(BreadcrumbMixin, TemplateView):
     template_name='core/login.html'
+
+class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
+    template_name = 'establecimiento/registro_est.html'
+    form_class = CreateEstablishmentForm
+    success_url=reverse_lazy('contenidos/')
+
+    def form_validate(self, form):
+        form.save()
+        return super().form_validate(form)
+
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Administrator').exists()
+        
+    def handle_no_permission(self):
+        return redirect('not_in_group')
+    
+    def get_breadcrumb(self):
+        return [{'label': 'Registro Establecimiento', 'url': reverse('admin_module:registro_establishment')}]
