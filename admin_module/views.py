@@ -6,7 +6,7 @@ from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
-from .models import Product
+from .models import Product, Establishment
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .forms import ProductoForm, CreateEstablishmentForm
@@ -182,9 +182,14 @@ class ServiciosView(BreadcrumbMixin, TemplateView):
         return [{'label': 'Servicios', 'url': reverse('admin_module:servicios')}]
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
-     template_name= 'establecimiento/contenidos.html'
-     def get_breadcrumb(self):
+    template_name= 'establecimiento/contenidos.html'
+    def get_breadcrumb(self):
         return [{'label': 'Contenidos', 'url': reverse('admin_module:contenidos')}]
+     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['establecimientos'] = Establishment.objects.all()
+        return context
      
 class InventarioView(BreadcrumbMixin, TemplateView):
      template_name= 'inventario/inventario.html'
@@ -281,11 +286,13 @@ class LogoutView(BreadcrumbMixin, TemplateView):
 class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
     template_name = 'establecimiento/registro_est.html'
     form_class = CreateEstablishmentForm
-    success_url=reverse_lazy('contenidos/')
+    # success_url=reverse_lazy('contenidos/')
+    def get_success_url(self):
+        return '/admin_module/contenidos/'
 
-    def form_validate(self, form):
+    def form_valid(self, form):
         form.save()
-        return super().form_validate(form)
+        return super().form_valid(form)
 
 
     def test_func(self):
@@ -295,4 +302,4 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
         return redirect('not_in_group')
     
     def get_breadcrumb(self):
-        return [{'label': 'Registro Establecimiento', 'url': reverse('admin_module:registro_establishment')}]
+        return [{'label': 'Registro Establecimiento', 'url': reverse('admin_module:registro_est')}]
