@@ -7,7 +7,6 @@ from django.contrib.auth.models import User, Group
 # Tabla: admin_module_days
 class Day(models.Model):
     name = models.CharField(max_length=50)
-
     def __str__(self):
         return self.name
 
@@ -28,10 +27,10 @@ class ScheduleAssignment(models.Model):
 class Product(models.Model):
     name_product = models.CharField(max_length=30)
     description_product = models.CharField(max_length=80)
-    amount = models.IntegerField()
-    minimum_stock = models.IntegerField()
+    amount = models.IntegerField(default=0)
+    minimum_stock = models.IntegerField(default=0)
     price_product = models.DecimalField(max_digits=8, decimal_places=2)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name_product
@@ -49,8 +48,10 @@ class Establishment(models.Model):
     lng_est = models.DecimalField(max_digits=9, decimal_places=6)
     img_est = models.ImageField(upload_to="establishments/")
     qa_average_est = models.FloatField(default=5.0)
-    created_date = models.DateTimeField(null=True)
+    created_date = models.DateTimeField(auto_now_add=True, null=True)
     active = models.BooleanField(default=True)
+    id_admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="admin_est")
+
 
     def __str__(self):
         return self.name_est
@@ -58,9 +59,9 @@ class Establishment(models.Model):
 # Tabla: admin_module_services
 class Service(models.Model):
     name_service = models.CharField(max_length=60)
-    description_service = models.CharField(max_length=100)
-    price_service = models.FloatField()
-    duration = models.IntegerField()
+    description_service = models.CharField(max_length=100, null=True)
+    price_service = models.DecimalField(max_digits=8, decimal_places=2)
+    duration = models.PositiveSmallIntegerField()
     active = models.BooleanField(default=True)
 
     def __str__(self):
