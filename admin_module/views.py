@@ -288,7 +288,7 @@ class LogoutView(BreadcrumbMixin, TemplateView):
 class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
     template_name = 'establecimiento/registro_est.html'
     form_class = CreateEstablishmentForm
-    # success_url=reverse_lazy('contenidos/')
+
     def get_success_url(self):
         return '/admin_module/contenidos/'
 
@@ -310,7 +310,10 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
 
  
 class DeleteEstablishmentView(DeleteView):
-    template_name = "establecimiento/delete_est.html"
+    
+    def get_success_url(self):
+        return '/admin_module/contenidos/'
+    
     def get_queryset(self):
         return Establishment.objects.filter(id_admin_id=self.request.user.id)
     

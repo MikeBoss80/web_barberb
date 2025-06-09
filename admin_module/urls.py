@@ -24,6 +24,6 @@ urlpatterns = [
     path('producto/eliminar/<int:pk>/', ProductoDeleteView.as_view(), name='producto_delete'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
-    path('eliminar_est/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
+    path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
 
 ]   

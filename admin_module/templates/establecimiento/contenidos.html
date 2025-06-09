@@ -107,7 +107,9 @@
                         <td>
                             <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
                             <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-danger" id="btn_est_eliminar"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-sm btn-danger" id="btnEliminarEst" data-id="{{ est.id }}" data-name="{{ est.name_est }}" data-bs-target="#eliminar_est">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -519,28 +521,31 @@
 </div>
 
 
-<div class="modal fade" id="eliminar_est" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalEliminarEst" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" id="eliminar_est_content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title">Eliminar Barberia</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+        <form id="formEliminarEst" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar <strong id="labelEstName"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
             </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar Usuario</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
 <!-- JavaScript para el panel de administración -->
 <script>
     $(document).ready(function () {
+        // Inicializar Tabla de Establecimientos
         $('#tablaEstablecimientos').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
@@ -551,8 +556,21 @@
             ],
             pageLength: 10,
         });
+
+        // Boton para eliminar establecimiento
+        $('#btnEliminarEst').on('click', function () {
+            var btn = $(this);
+            var id = btn.data('id');
+            var estName = btn.data('name');
+            $('#labelEstName').text(estName);
+            $('#formEliminarEst').attr('action', `../eliminar_est/${id}/`);
+
+            var modalEliminarEst = new bootstrap.Modal(document.getElementById('modalEliminarEst'));
+            modalEliminarEst.show();
+        });
+
     });
-//registrar
+
     $('#abrir-formulario').on('click', function () {
         // Limpias contenido previo y puedes mostrar loader
         $('#modal-body-content').html('<p>Cargando formulario...</p>');
@@ -575,27 +593,6 @@
     });
 
 
-    //eliminar
-    $('#btn_est_eliminar').on('click', function () {
-        // Limpias contenido previo y puedes mostrar loader
-        $('#eliminar_est_content').html('<p>Cargando formulario...</p>');
-
-        // Abrir modal con Bootstrap 5 JS API
-        var myModal = new bootstrap.Modal(document.getElementById('eliminar_est'));
-        myModal.show();
-
-        // Petición AJAX para traer el formulario
-        $.ajax({
-            url: '../eliminar_est/',  // Cambia esta URL a la tuya
-            method: 'GET',
-            success: function (data) {
-                $('#eliminar_est_content').html(data);  // Inserta el formulario en el modal
-            },
-            error: function () {
-                $('#eliminar_est_content').html('<p>Error al cargar el formulario.</p>');
-            }
-        });
-    });
 
     // Mostrar/ocultar horario de domingos según checkbox
     document.getElementById('abiertoDomingo').addEventListener('change', function () {
