@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 from login_module.models import Profile
 from admin_module.models import Establishment
@@ -19,8 +19,27 @@ class CustomLoginView(LoginView):
 
 
     def get_success_url(self):
-        return '/admin_module/' 
+        user = self.request.user
+        #obtener nombres de grupos del usuario
+        user_groups = user.groups.values_list('name', flat=True)
 
+        #Validacion si esta en los grupos Barberos y administrator
+        if 'Barber' in user_groups and 'Administrator' in user_groups:
+            return '/login_module/rol_actual/' 
+
+        #Si solo esta en un grupo se dirige segun el grupo
+        elif 'Barber' in user_groups:
+            return '/barber_module/' 
+        elif 'Administrator' in user_groups:
+            return '/admin_module/'
+        else:
+            #Si no es barbero o administrador su rol es como cliente
+            return '/services/'
+        
+class RolSelectView(TemplateView):
+    template_name='rol_actual.html'
+        
+        
 
 class LoginView(TemplateView):
     template_name = 'login.html'
