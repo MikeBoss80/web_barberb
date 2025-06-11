@@ -105,9 +105,24 @@
                         <td>{{ est.city_est }}</td>
                         <td>{{ est.phone_est }}</td>
                         <td>
-                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-danger" id="btnEliminarEst" data-id="{{ est.id }}" data-name="{{ est.name_est }}" data-bs-target="#eliminar_est">
+                            <button class="btn btn-sm btn-warning btnActualizarEst"
+                                data-id="{{ est.id }}"
+                                data-nombre="{{ est.name_est }}" 
+                                data-direccion="{{ est.address_est }}"
+                                data-ciudad="{{ est.city_est }}" 
+                                data-pais="{{ est.country_est }}"
+                                data-telefono="{{ est.phone_est }}" 
+                                data-email="{{ est.email_est }}"
+                                data-descripcion="{{ est.description }}" 
+                                data-lat="{{ est.lat_est }}"
+                                data-lng="{{ est.lng_est }}" 
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarEstablecimiento">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger btnEliminarEst " data-id="{{ est.id }}"
+                                data-name="{{ est.name_est }}" data-bs-target="#eliminar_est">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -485,37 +500,95 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- <form>
-                    <div class="mb-3">
-                        <label for="nombreUsuario" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="nombreUsuario" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="emailUsuario" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="emailUsuario" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="telefonoUsuario" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefonoUsuario">
-                    </div>
-                    <div class="mb-3">
-                        <label for="rolUsuario" class="form-label">Rol</label>
-                        <select class="form-select" id="rolUsuario">
-                            <option value="cliente">Cliente</option>
-                            <option value="barbero">Barbero</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="passwordUsuario" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="passwordUsuario" required>
-                    </div>
-                </form> -->
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary">Guardar Usuario</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de edición 
+<div class="modal fade" id="editEstModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" id="establishment_id" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Establecimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> -->
+
+<div class="modal fade" id="modalEditarEstablecimiento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post">
+                {% csrf_token %}
+                <!-- Campo oculto para el ID del establecimiento -->
+                <input type="hidden" id="inputEstablecimientoId" name="establishment_id">
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" id="inputNombre" name="name_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" id="inputDireccion" name="address_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Ciudad</label>
+                        <input type="text" class="form-control" id="inputCiudad" name="city_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Pais</label>
+                        <input type="text" class="form-control" id="inputPais" name="country_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Telefono</label>
+                        <input type="tel" class="form-control" id="inputTelefono" name="phone_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Correo</label>
+                        <input type="email" class="form-control" id="inputCorreo" name="email_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Descripción</label>
+                        <input type="text" class="form-control" id="inputDescripcion" name="description">
+                    </div>
+                    <div class="mb-3">
+                        <label>Lat Est</label>
+                        <input type="text" class="form-control" id="inputLat" name="lat_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Lgn Est</label>
+                        <input type="" class="form-control" id="inputLng" name="lng_est">
+                    </div>
+                    <!-- Agrega más inputs para ciudad, país, etc. -->
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -557,8 +630,49 @@
             pageLength: 10,
         });
 
+
+        //Boton para Actualizar datos del Establecimientos
+        /*   $('.btnActualizarEst').on('click', function () {
+              let btn_upd = $(this);
+              let id = btn_upd.data('id');
+              console.log(id)
+  
+              $('#establishment_id').val(id);
+  
+              let modalActualizarEst = new bootstrap.Modal(document.getElementById('editEstModal'));
+              modalActualizarEst.show();
+          }) */
+
+
+        $('.btnActualizarEst').on('click', function () {
+            // Leer datos del botón
+            const id = $(this).data('id');
+            const nombre = $(this).data('nombre');
+            const direccion = $(this).data('direccion');
+            const ciudad = $(this).data('ciudad');
+            const pais = $(this).data('pais');
+            const telefono = $(this).data('telefono');
+            const email = $(this).data('email');
+            const descripcion = $(this).data('descripcion');
+            const lat = $(this).data('lat');
+            const lng = $(this).data('lng');
+
+            // Asignar valores a los campos del formulario
+            $('#inputEstablecimientoId').val(id);
+            $('#inputNombre').val(nombre);
+            $('#inputDireccion').val(direccion);
+            $('#inputCiudad').val(ciudad);
+            $('#inputPais').val(pais);
+            $('#inputTelefono').val(telefono);
+            $('#inputCorreo').val(email);
+            $('#inputDescripcion').val(descripcion);
+            $('#inputLat').val(lat);
+            $('#inputLng').val(lng);
+        });
+
+
         // Boton para eliminar establecimiento
-        $('#btnEliminarEst').on('click', function () {
+        $('.btnEliminarEst').on('click', function () {
             var btn = $(this);
             var id = btn.data('id');
             var estName = btn.data('name');
@@ -568,8 +682,8 @@
             var modalEliminarEst = new bootstrap.Modal(document.getElementById('modalEliminarEst'));
             modalEliminarEst.show();
         });
-
     });
+
 
     $('#abrir-formulario').on('click', function () {
         // Limpias contenido previo y puedes mostrar loader

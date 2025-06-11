@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
 from datetime import date, time
 from django.utils import timezone
@@ -188,9 +188,33 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
      
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Cargar todos los establecimientos (o el actual del admin, si aplica)
         context['establecimientos'] = self.request.user.admin_est.all()
+
+        # Si se quiere pasar un formulario vacío para registrar o editar desde modal
+        context['form'] = CreateEstablishmentForm()
         return context
     
+    def post(self, request, *args, **kwargs):
+        # Captura del establecimiento a editar (por ejemplo, con un input hidden)
+        establishment_id = request.POST.get('establishment_id')
+        if establishment_id:
+            # Es edición
+            establishment = get_object_or_404(Establishment, pk=establishment_id)
+            form = CreateEstablishmentForm(request.POST, instance=establishment)
+        else:
+            # Es creación
+            form = CreateEstablishmentForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('/admin_module/contenidos/')  # o el name de tu url para esta vista
+
+        # Si hay errores, recarga la página con el mismo contexto
+        context = self.get_context_data(instance=establishment)
+        context['form'] = form
+        return self.render_to_response(context)
 
      
 class InventarioView(BreadcrumbMixin, TemplateView):
