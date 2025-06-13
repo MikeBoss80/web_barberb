@@ -8,7 +8,7 @@
 }
 
 body {
-  background: #0e0e0e;
+  background: linear-gradient(135deg, #b483d3 30%, #1a1a1a 100%);
   height: 100vh;
   color: #eaeaea;
   overflow: hidden;
@@ -23,20 +23,20 @@ body {
 /* === FORMULARIO LOGIN DARK MOD === */
 .login-form {
   flex: 1;
-  background: rgba(10, 10, 10, 0.9);
+  background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(12px);
   padding: 80px 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .login-form h2 {
   font-size: 30px;
   margin-bottom: 12px;
-  color: #00f0ff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+  color: #8a2be2;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .login-form .subtitle {
@@ -59,12 +59,13 @@ form input {
   background-color: #151515;
   color: #fff;
   font-size: 14px;
-  transition: border 0.3s;
+  transition: border 0.3s, box-shadow 0.3s;
 }
 
 form input:focus {
-  border-color: #00f0ff;
+  border-color: #8a2be2;
   outline: none;
+  box-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
 }
 
 form input::placeholder {
@@ -80,12 +81,12 @@ form input::placeholder {
 }
 
 .forgot:hover {
-  color: #00f0ff;
+  color: #8a2be2;
 }
 
 /* === BOTÓN LOGIN === */
 .btn-login {
-  background: linear-gradient(145deg, #00f0ff, #0033aa);
+  background: linear-gradient(145deg, #8a2be2, #0033aa);
   border: none;
   padding: 12px;
   width: 100%;
@@ -94,12 +95,12 @@ form input::placeholder {
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 
 .btn-login:hover {
-  background: linear-gradient(145deg, #00c8e6, #002d8a);
+  background: linear-gradient(145deg, #b000e6, #002d8a);
   transform: scale(1.03);
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
 }
@@ -135,7 +136,7 @@ form input::placeholder {
 }
 
 .registrar-mobile a {
-  color: #00f0ff;
+  color: #8a2be2;
   text-decoration: none;
 }
 
@@ -146,7 +147,7 @@ form input::placeholder {
 /* === PANEL DERECHO CON IMAGEN === */
 .side-panel {
   flex: 1;
-  background-image: url("/static/Login_Module/img/barber02.jpg");
+  background-image: url("/static/login_module/img/barber02.jpg");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -167,8 +168,8 @@ form input::placeholder {
 .overlay h3 {
   font-size: 30px;
   margin-bottom: 15px;
-  color: #00f0ff;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  color: #8a2be2;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .overlay p {
@@ -178,18 +179,18 @@ form input::placeholder {
 }
 
 .btn-signup {
-  border: 1px solid #00f0ff;
+  border: 1px solid #8a2be2;
   padding: 12px 24px;
   border-radius: 30px;
   background: transparent;
-  color: #00f0ff;
+  color: #8a2be2;
   font-weight: bold;
   text-decoration: none;
   transition: 0.3s;
 }
 
 .btn-signup:hover {
-  background: #00f0ff;
+  background: #8a2be2;
   color: #000;
 }
 
@@ -221,5 +222,5 @@ form p[style="color: red;"] {
   height: auto;
   display: block;
   margin: 0 auto 30px;
-  filter: drop-shadow(0 0 10px #00f0ff);
+  filter: drop-shadow(0 0 10px #8a2be2);
 }
