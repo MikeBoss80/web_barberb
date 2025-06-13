@@ -1,11 +1,18 @@
 from django.shortcuts import render 
-from django.views.generic import TemplateView
 from django.contrib import admin
 from django.http import JsonResponse
 from django.conf import settings
 from django.views import View
 from urllib.request import urlopen, Request
 import json
+from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
+from .utils.mixins import BreadcrumbMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.views import LogoutView
+
+
+
 # Create your views here.
 
 class HomeServicesView(BreadcrumbMixin, TemplateView):

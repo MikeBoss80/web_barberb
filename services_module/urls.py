@@ -1,5 +1,6 @@
 from django.urls import path
 from services_module.views import MapServicesView, PlacesListView , getMap, getPlacesBySearch, HomeServicesView, SeguridadView, SoporteView, ServicesCitasView, LogoutView,EditarPerfilView,PerfilUsuarioView
+from django.contrib.auth.views import LogoutView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
 app_name = 'services_module'
