@@ -1,5 +1,5 @@
 from django.urls import path
-from services_module.views import MapServicesView, PlacesListView , getMap, getPlacesBySearch
+from services_module.views import MapServicesView, PlacesListView , getMap, getPlacesBySearch, HomeServicesView, SeguridadView, SoporteView, ServicesCitasView, LogoutView,EditarPerfilView,PerfilUsuarioView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
 app_name = 'services_module'
@@ -8,4 +8,12 @@ urlpatterns = [
     path('', MapServicesView.as_view(), name='map_services'),
     path('getplacesbysearch/', getPlacesBySearch, name='getplacesbysearch'),
     path('getmap/', getMap, name='getmap'),
+    path('', HomeServicesView.as_view(), name='services_main'),
+    path('citas/barbero', ServicesCitasView.as_view(), name='citas_cliente'),
+    path('seguridad/', SeguridadView.as_view(), name='seguridad'),
+    path('soporte/', SoporteView.as_view(), name='soporte'),
+    path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
+    path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+
 ]   
