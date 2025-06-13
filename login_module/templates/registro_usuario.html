@@ -76,7 +76,8 @@
     </form>
 </body>
 </html> -->
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'login_module/css/registro_usuario.css' %}">
 <h2>Registro</h2>
 <form method="post">
     {% csrf_token %}
