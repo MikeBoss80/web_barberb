@@ -7,7 +7,7 @@
 
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'services_module/css/citas.css' %}">
+<link rel="stylesheet" href="{% static 'services_module/static/css/citas.css' %}">
 {% endblock %}
 
 
@@ -16,164 +16,246 @@
 <style>
 
 </style>
-
-<h1 class="mb-4">Agenda de Citas</h1>
-
-<!-- TARJETAS INFORMATIVAS -->
-<div class="row mb-4">
-
-    <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Citas del Dia</div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2>{{ resumen.total_citas }}</h2>
-                    </div>
-                    <i class="fas fa-calendar-check fs-1"></i>
-                </div>
-            </div>
+<div class="tab-content" id="adminTabsContent">
+    <!-- Pestaña de Usuarios -->
+    <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+        <div class="d-flex justify-content-between mb-3">
+            <h4><i class="fas fa-calendar-alt me-2-"></i> Mis Citas</h4>
+            <button class="btn btn-primary" id="abrir-formulario">
+                <i class="fas fa-plus"></i> Nuevo Establecimiento
+            </button>
         </div>
-    </div>
 
-    <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Completadas</div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2>{{ resumen.completadas }}</h2>
-                    </div>
-                    <i class="fas fa-check-circle fs-1"></i>
-                </div>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover display" id="tablaEstablecimientos">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Cliente</th>
+                        <th>Servicio</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date in dates %}
+                    <tr>
+                        <td>{{ date.name_est }}</td>
+                        <td>{{ date.address_est }}</td>
+                        <td>{{ date.city_est }}</td>
+                        <td>{{ date.phone_est }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning btnActualizarEst"
+                                data-id="{{ date.id }}"
+                                data-nombre="{{ date.name_est }}" 
+                                data-direccion="{{ date.address_est }}"
+                                data-ciudad="{{ date.city_est }}" 
+                                data-pais="{{ date.country_est }}"
+                                data-telefono="{{ date.phone_est }}" 
+                                data-email="{{ date.email_est }}"
+                                data-descripcion="{{ date.description }}" 
+                                data-lat="{{ date.lat_est }}"
+                                data-lng="{{ date.lng_est }}" 
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarEstablecimiento">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger btnEliminarEst " data-id="{{ date.id }}"
+                                data-name="{{ date.name_est }}" data-bs-target="#eliminar_est">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+
     </div>
 
-    <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Pendientes</div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2>{{ resumen.pendientes }}</h2>
+    
+<div class="modal fade" id="modalEditarEstablecimiento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post">
+                {% csrf_token %}
+                <!-- Campo oculto para el ID del establecimiento -->
+                <input type="hidden" id="inputEstablecimientoId" name="establishment_id">
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" id="inputNombre" name="name_est">
                     </div>
-                    <i class="fas fa-hourglass-half fs-1"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 col-sm-6 col-12">
-        <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Canceladas</div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2>{{ resumen.canceladas }}</h2>
+                    <div class="mb-3">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" id="inputDireccion" name="address_est">
                     </div>
-                    <i class="fas fa-times-circle fs-1"></i>
+                    <div class="mb-3">
+                        <label>Ciudad</label>
+                        <input type="text" class="form-control" id="inputCiudad" name="city_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Pais</label>
+                        <input type="text" class="form-control" id="inputPais" name="country_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Telefono</label>
+                        <input type="tel" class="form-control" id="inputTelefono" name="phone_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Correo</label>
+                        <input type="email" class="form-control" id="inputCorreo" name="email_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Descripción</label>
+                        <input type="text" class="form-control" id="inputDescripcion" name="description">
+                    </div>
+                    <div class="mb-3">
+                        <label>Lat Est</label>
+                        <input type="text" class="form-control" id="inputLat" name="lat_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Lgn Est</label>
+                        <input type="" class="form-control" id="inputLng" name="lng_est">
+                    </div>
+                    <!-- Agrega más inputs para ciudad, país, etc. -->
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-
-    </div>
-
-    <!-- Filtros -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form class="row gy-2 gx-3 align-items-center">
-                <div class="col-md-3">
-                    <label class="form-label">Fecha</label>
-                    <input type="date" class="form-control" name="fecha" value="{{ fecha_actual }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Barbero</label>
-                    <select class="form-select" name="barbero">
-                        <option value="">Todos</option>
-                        {% for barbero in barberos %}
-                        <option value="{{ barbero.id }}">{{ barbero.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
-                        <option value="">Todos</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="confirmada">Confirmada</option>
-                        <option value="cancelada">Cancelada</option>
-                        <option value="completada">Completada</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Cliente</label>
-                    <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
                 </div>
             </form>
         </div>
     </div>
+</div>
 
-    <!-- Tabla de Citas -->
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Hora</th>
-                    <th>Cliente</th>
-                    <th>Barbero</th>
-                    <th>Servicio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cita in citas %}
-                <tr>
-                    <td>{{ cita.hora }}</td>
-                    <td>{{ cita.cliente }}</td>
-                    <td>{{ cita.barbero }}</td>
-                    <td>{{ cita.servicio }}</td>
-                    <td>
-                        <span class="badge bg-{{ cita.estado|lower }}">{{ cita.estado|title }}</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#modalDetalle{{ cita.id }}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-primary btn-edit"><i class="fas fa-edit"></i></button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 
-    <!-- Modales de Detalle de cada Cita -->
-    {% for cita in citas %}
-    <div class="modal fade" id="modalDetalle{{ cita.id }}" tabindex="-1"
-        aria-labelledby="modalDetalleLabel{{ cita.id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+<div class="modal fade" id="modalEliminarEst" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formEliminarEst" method="POST">
+            {% csrf_token %}
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalDetalleLabel{{ cita.id }}">Detalle de la Cita</h5>
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Cliente:</strong> {{ cita.cliente }}</p>
-                    <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
-                    <p><strong>Hora:</strong> {{ cita.hora }}</p>
-                    <p><strong>Barbero:</strong> {{ cita.barbero }}</p>
-                    <p><strong>Servicio:</strong> {{ cita.servicio }}</p>
-                    <p><strong>Estado:</strong> {{ cita.estado }}</p>
-                    <p><strong>Notas:</strong> {{ cita.notas|default:"Sin notas" }}</p>
+                    <p>¿Estás seguro que deseas eliminar <strong id="labelEstName"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-    {% endfor %}
-    {% endblock %}
+</div>
+
+<!-- JavaScript para el panel de administración -->
+<script>
+    $(document).ready(function () {
+        // Inicializar Tabla de Establecimientos
+        $('#tablaEstablecimientos').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+            },
+            dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 10,
+        });
+
+
+
+        $('.btnActualizarEst').on('click', function () {
+            // Leer datos del botón
+            const id = $(this).data('id');
+            const nombre = $(this).data('nombre');
+            const direccion = $(this).data('direccion');
+            const ciudad = $(this).data('ciudad');
+            const pais = $(this).data('pais');
+            const telefono = $(this).data('telefono');
+            const email = $(this).data('email');
+            const descripcion = $(this).data('descripcion');
+            const lat = $(this).data('lat');
+            const lng = $(this).data('lng');
+
+            // Asignar valores a los campos del formulario
+            $('#inputEstablecimientoId').val(id);
+            $('#inputNombre').val(nombre);
+            $('#inputDireccion').val(direccion);
+            $('#inputCiudad').val(ciudad);
+            $('#inputPais').val(pais);
+            $('#inputTelefono').val(telefono);
+            $('#inputCorreo').val(email);
+            $('#inputDescripcion').val(descripcion);
+            $('#inputLat').val(lat);
+            $('#inputLng').val(lng);
+        });
+
+
+        // Boton para eliminar establecimiento
+        $('.btnEliminarEst').on('click', function () {
+            var btn = $(this);
+            var id = btn.data('id');
+            var estName = btn.data('name');
+            $('#labelEstName').text(estName);
+            $('#formEliminarEst').attr('action', `../eliminar_est/${id}/`);
+
+            var modalEliminarEst = new bootstrap.Modal(document.getElementById('modalEliminarEst'));
+            modalEliminardate.show();
+        });
+    });
+
+
+    $('#abrir-formulario').on('click', function () {
+        // Limpias contenido previo y puedes mostrar loader
+        $('#modal-body-content').html('<p>Cargando formulario...</p>');
+
+        // Abrir modal con Bootstrap 5 JS API
+        var myModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+        myModal.show();
+
+        // Petición AJAX para traer el formulario
+        $.ajax({
+            url: '../registro_est/',  // Cambia esta URL a la tuya
+            method: 'GET',
+            success: function (data) {
+                $('#modal-body-content').html(data);  // Inserta el formulario en el modal
+            },
+            error: function () {
+                $('#modal-body-content').html('<p>Error al cargar el formulario.</p>');
+            }
+        });
+    });
+
+
+
+    // Mostrar/ocultar horario de domingos según checkbox
+    document.getElementById('abiertoDomingo').addEventListener('change', function () {
+        document.getElementById('domingoHorario').style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Función para nuevo usuario
+    function nuevoUsuario() {
+        var usuarioModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+        usuarioModal.show();
+    }
+
+    // Función para nuevo barbero
+    function nuevoBarbero() {
+        alert('Funcionalidad para agregar nuevo barbero');
+
+    }
+
+    // Función para nuevo servicio
+    function nuevoServicio() {
+        alert('Funcionalidad para agregar nuevo servicio');
+    }
+</script>
+
+
+{% endblock %}

@@ -1,7 +1,7 @@
 # admin_modulo/utils/mixins.py
 from django.urls import reverse
 
-class BreadcrumbMixin:
+class BreadcrumbMixins:
     breadcrumb = []
 
     def get_breadcrumb(self):
@@ -11,7 +11,7 @@ class BreadcrumbMixin:
         context = super().get_context_data(**kwargs)
 # admin_module/utils/mixins.py
 
-class BreadcrumbMixin:
+class BreadcrumbMixins:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

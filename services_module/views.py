@@ -1,4 +1,4 @@
-from django.shortcuts import render 
+from django.shortcuts import render, redirect
 from django.contrib import admin
 from django.http import JsonResponse
 from django.conf import settings
@@ -6,17 +6,19 @@ from django.views import View
 from urllib.request import urlopen, Request
 import json
 from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
-from .utils.mixins import BreadcrumbMixin
+from .utils.mixins import BreadcrumbMixins
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.views import LogoutView
+from datetime import date, time
+from django.utils import timezone
 
 
 
 # Create your views here.
 
-class HomeServicesView(BreadcrumbMixin, TemplateView):
-    """Vista Principal Modulo Barber"""
+class HomeServicesView(BreadcrumbMixins, TemplateView):
+    """Vista Principal Modulo Services"""
     template_name = 'services_module/main.html'
     login_url = '/login_module/login/'
     
@@ -27,43 +29,14 @@ class HomeServicesView(BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({
-            'user': self.request.user,
-            'today': timezone.now(),
-            'citas_hoy': 8,
-            'ingresos_hoy': 420.00,
-            'barberos_activos': 3,
-            'bajo_stock': 2,
-            'proximas_citas': [
-                {'hora': '10:00', 'cliente': 'Carlos Pérez', 'servicio': 'Corte', 'barbero': 'Andrés'},
-                {'hora': '11:00', 'cliente': 'Luis Soto', 'servicio': 'Barba', 'barbero': 'Miguel'}
-            ],
-            'labels': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
-            'ingresos_data': [100, 200, 150, 300, 250],
-            'servicios_labels': ['Corte', 'Barba', 'Corte + Barba'],
-            'servicios_data': [10, 5, 8],
-            'notificaciones': [
-                'Hay 2 productos con stock bajo.',
-                'Un barbero no ha iniciado su turno.',
-            ]
-        })
-
-        return context
-
-#class ServicesView(TemplateView):
- #   template_name = 'historial_servicios.html'
    
-class ServicesCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
+class ServicesCitasView(BreadcrumbMixins, TemplateView):
     template_name = 'citas_cliente.html'
 
-    def test_func(self):
-        return self.request.user.groups.filter(name='Administrator').exists()
-
-    def handle_no_permission(self):
-        return redirect('not_in_group')
     
+ 
     def get_breadcrumb(self):
-        return [{'label': 'Citas Barbero', 'url': reverse('services_module:citas_clientes')}]
+        return [{'label': 'Citas Agendadas', 'url': reverse('services_module:citas_cliente')}]
 
 
     def get_context_data(self, **kwargs):
@@ -153,19 +126,19 @@ def getPlacesBySearch(request):
     return JsonResponse(data)
 
 
-class SeguridadView(BreadcrumbMixin, TemplateView):
+class SeguridadView(BreadcrumbMixins, TemplateView):
      template_name= 'seguridad.html'
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('services_module:seguridad')}]
 
 
-class SoporteView(BreadcrumbMixin, TemplateView):
+class SoporteView(BreadcrumbMixins, TemplateView):
      template_name= 'soporte.html'
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('services_module:soporte')}]
 
 
-class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
+class PerfilUsuarioView(BreadcrumbMixins, TemplateView):
      template_name ='perfil_usuario.html'
      def get_breadcrumb(self):
         return [{'label': 'Perfil', 'url': reverse('services_module:perfil_usuario')}]
@@ -187,5 +160,5 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
     
-class LogoutView(BreadcrumbMixin, TemplateView):
+class LogoutView(BreadcrumbMixins, TemplateView):
     template_name='core/login.html'

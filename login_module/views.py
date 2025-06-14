@@ -34,7 +34,7 @@ class CustomLoginView(LoginView):
             return '/admin_module/'
         else:
             #Si no es barbero o administrador su rol es como cliente
-            return '/services/'
+            return '/services_module/'
         
 class RolSelectView(TemplateView):
     template_name='rol_actual.html'
