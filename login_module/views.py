@@ -119,7 +119,7 @@ class ResetPasswordConfirmView(PasswordResetConfirmView):
     form_class = SetPasswordForm
 
     def get_success_url(self):
-        return 'reset/done/'
+        return '/login_module/reset/done/'
 
 class ResetPasswordCompleteView(PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
