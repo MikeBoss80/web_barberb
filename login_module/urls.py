@@ -15,6 +15,7 @@ from login_module.views import (
     ResetPasswordConfirmView,
     ResetPasswordCompleteView,
     RolSelectView
+    
 )
 
 urlpatterns = [
@@ -32,5 +33,6 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', ResetPasswordCompleteView.as_view(), name='password_reset_complete'),
     path('rol_actual/', RolSelectView.as_view(), name='rol_actual'),
+  
 
 ]

@@ -3,18 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>BarberB - Inicio</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/Style.css' %}">
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light text-center p-5">
-    <h1 class="mb-4">Bienvenido a BarberB</h1>
-    <div class="d-grid gap-2 col-6 mx-auto">
-        <a class="btn btn-primary" href="/admin_module/">Administrar Barberia</a>
-        <a class="btn btn-primary" href="/services/">Gestionar Citas</a>
-        <!-- Actualiza este enlace para que redirija al dashboard de barberos -->
-        <a class="btn btn-secondary" href="/barber_module/">Gestionar Barberos</a>
-        <a class="btn btn-success" href="/inventario/">Gestionar Inventario</a>
-        <a class="btn btn-warning" href="/reportes/">Ver Reportes</a>
-        <a class="btn btn-danger" href="{% url 'login' %}">Login</a>
+<body>
+    
+
+
+  <section class="hero">
+    <img src="/static/login_module/img/logobarberb2.png" alt="LogoB2" class="Logo">
+    <h1>Tu estilo, nuestra pasión</h1>
+    <p>Transformamos tu look con profesionalismo, precisión y actitud.</p>
+    <a href="{% url 'login' %}" class="boton">Inicio</a>
+  </section>
+
+  <section class="barberias">
+    <h2>Nuestros Servicios</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="/static/core/css/img/1.jpg" alt="Barbería Centro">
+        <h3>Cortes</h3>
+        <p>Explora estilos únicos y barberos de confianza, recomendados por cientos de clientes satisfechos.</p>
+      </div>
+      <div class="card">
+        <img src="/static/core/css/img/4.jpg" alt="Barbería Norte">
+        <h3>Mascarillas</h3>
+        <p>Descubre dónde hacerte mascarillas faciales con total seguridad y cuidado profesional. </p>
+      </div>
+      <div class="card">
+        <img src="/static/core/css/img/3.jpg" alt="Barbería Sur">
+        <h3>Perfilados</h3>
+        <p>Encuentra expertos en perfilado de barba y cejas para un look impecable.
+
+ </p>
+      </div>
     </div>
+  </section>
+
+  <footer>
+    <p>Barber B 2025 terminos y condiciones</p>
+  </footer>
 </body>
 </html>
