@@ -1,5 +1,14 @@
 # web_barberb
 
+# 🚀 Guía para Contribuir al Proyecto
+
+## 1. Clona el repositorio
+
+Abre una terminal y ejecuta el siguiente comando:
+
+```bash
+git clone https://github.com/MikeBoss80/web_barberb.git
+
 ✅ Clases → PascalCase
     Se usan para modelos, vistas, formularios, etc.
     Empiezan con mayúscula y cada palabra en mayúscula.

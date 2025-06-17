@@ -2,24 +2,26 @@
 from django import forms
 from .models import Product, Establishment
 
-class ProductoForm(forms.ModelForm):
+class CreateProductForm(forms.ModelForm):
+    name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
+    description_product = forms.CharField(max_length=80, required=True)
+    amount = forms.IntegerField(max_value=20, required=True, initial=0)
+    minimun_stock = forms.IntegerField(required=True, initial=0)
+    price_product = forms.IntegerField(required=True, initial=0)
+
     class Meta:
         model = Product
-        fields = '__all__'
-        widgets = {
-            'nombre': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ej: Gel Fijador'
-            }),
-            'descripcion': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 2,
-                'placeholder': 'Descripción opcional...'
-            }),
-        }
-        labels = {
-            'stock_minimo': 'Stock Mínimo (alerta)',
-        }
+        # exclude=["id_admin_id"]
+        fields = ("name_product", "description_product", "amount", "minimun_stock", "price_product")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        product=super().save(commit=False)
+        if commit:
+            product.save()
+        return product
 
 class CreateEstablishmentForm(forms.ModelForm):
     name_est = forms.CharField(max_length=50, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del establecimiento'}))

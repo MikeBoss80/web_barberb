@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import ProductoForm, CreateEstablishmentForm
+from .forms import CreateProductForm, CreateEstablishmentForm
 from django.views.generic.edit import FormView
 
 
@@ -202,43 +202,45 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
 
      
 class InventarioView(BreadcrumbMixin, TemplateView):
-     template_name= 'inventario/inventario.html'
-     def get_breadcrumb(self):
+    template_name= 'inventario/inventario.html'
+    def get_breadcrumb(self):
         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario')}]
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['products'] = Product.objects.all()
+        return context
 
 class InventarioListView(ListView):
-    model = Product
+    # product = Product
     template_name = 'inventario/inventario.html'
-    context_object_name = 'productos'
-    paginate_by = 10
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Estadísticas para el dashboard
-        context['productos_activos'] = self.model.objects.filter(activo=True).count()
-        context['productos_inactivos'] = self.model.objects.filter(activo=False).count()
-        context['productos_bajo_stock'] = self.model.objects.filter(
-            cantidad__lte=('stock_minimo')
-        ).count()
+
+        context['products'] = Product.objects.all()
         return context
 
 class ProductoCreateView(SuccessMessageMixin, CreateView):
-    model = Product
-    form_class = ProductoForm
-    template_name = 'establecimiento/modal_producto.html'
-    success_url = reverse_lazy('inventario')
-    success_message = "Producto creado exitosamente"
+    template_name = 'inventario/add_product.html'
+    form_class = CreateProductForm
     
+    def get_success_url(self):
+        return '/admin_module/inventario/'
+
     def form_valid(self, form):
-        form.instance.creado_por = self.request.user
+        product=form.save(commit=False)
+        # product.id_admin_id=self.request.user.id
+        product.save()
         return super().form_valid(form)
 
 class ProductoUpdateView(SuccessMessageMixin, UpdateView):
     model = Product
-    form_class = ProductoForm
-    template_name = 'establecimiento/modal_producto.html'
-    success_url = reverse_lazy('inventario')
-    success_message = "Producto actualizado exitosamente"
+    # form_class = ProductoForm
+    # template_name = 'establecimiento/modal_producto.html'
+    # success_url = reverse_lazy('inventario')
+    # success_message = "Producto actualizado exitosamente"
 
 class ProductoDeleteView(DeleteView):
     model = Product
@@ -316,7 +318,6 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
     def get_breadcrumb(self):
         return [{'label': 'Registro Establecimiento', 'url': reverse('admin_module:registro_est')}]
 
- 
 class DeleteEstablishmentView(DeleteView):
     
     def get_success_url(self):
