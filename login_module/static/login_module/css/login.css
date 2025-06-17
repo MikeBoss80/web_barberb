@@ -84,66 +84,48 @@ form input::placeholder {
   color: #8a2be2;
 }
 
-/* === BOTÓN LOGIN === */
+/* === BOTÓN LOGIN CENTRADO Y MÁS PEQUEÑO === */
 .btn-login {
   background: linear-gradient(145deg, #8a2be2, #0033aa);
   border: none;
-  padding: 12px;
-  width: 100%;
-  border-radius: 30px;
+  padding: 15px;
+  width: 40%;
+  margin: 0 auto; 
+  border-radius: 10px;
   color: #000;
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  display: block;
 }
 
 .btn-login:hover {
   background: linear-gradient(145deg, #b000e6, #002d8a);
   transform: scale(1.03);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 25px rgba(132, 0, 255, 0.485);
 }
 
-/* === LOGIN SOCIAL FACEBOOK === */
-.social-login .btn-facebook {
-  background-color: transparent;
-  border: 1px solid #3b5998;
-  color: #3b5998;
-  padding: 10px;
-  width: 100%;
-  border-radius: 30px;
-  font-size: 14px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.social-login .btn-facebook:hover {
-  background-color: #3b5998;
-  color: #fff;
-}
-
-/* === REGISTRO EN MÓVIL === */
-.registrar-mobile {
-  display: none;
-  margin-top: 20px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.registrar-mobile a {
+/* === BOTÓN SIGNUP CENTRADO Y MÁS PEQUEÑO === */
+.btn-signup {
+  border: 1px solid #8a2be2;
+  padding: 10px 20px;
+  border-radius: 100px;
+  background: transparent;
   color: #8a2be2;
+  font-weight: bold;
   text-decoration: none;
+  transition: 0.3s;
+  display: inline-block;
+  font-size: 20px;
+  margin: 0 auto;
 }
 
-.registrar-mobile a:hover {
-  text-decoration: underline;
+.btn-signup:hover {
+  background: #8a2be2;
+  color: #000;
 }
-
 /* === PANEL DERECHO CON IMAGEN === */
 .side-panel {
   flex: 1;
@@ -181,7 +163,7 @@ form input::placeholder {
 .btn-signup {
   border: 1px solid #8a2be2;
   padding: 12px 24px;
-  border-radius: 30px;
+  border-radius: 10px;
   background: transparent;
   color: #8a2be2;
   font-weight: bold;
