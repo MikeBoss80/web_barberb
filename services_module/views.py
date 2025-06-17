@@ -127,13 +127,13 @@ def getPlacesBySearch(request):
 
 
 class SeguridadView(BreadcrumbMixins, TemplateView):
-     template_name= 'seguridad.html'
+     template_name= 'serv_seguridad.html'
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('services_module:seguridad')}]
 
 
 class SoporteView(BreadcrumbMixins, TemplateView):
-     template_name= 'soporte.html'
+     template_name= 'serv_soporte.html'
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('services_module:soporte')}]
 

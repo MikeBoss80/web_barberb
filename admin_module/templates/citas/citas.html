@@ -82,98 +82,204 @@
 
     </div>
 
-    <!-- Filtros -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form class="row gy-2 gx-3 align-items-center">
-                <div class="col-md-3">
-                    <label class="form-label">Fecha</label>
-                    <input type="date" class="form-control" name="fecha" value="{{ fecha_actual }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Barbero</label>
-                    <select class="form-select" name="barbero">
-                        <option value="">Todos</option>
-                        {% for barbero in barberos %}
-                        <option value="{{ barbero.id }}">{{ barbero.nombre }}</option>
+    <!-- DATATABLE -->
+    <div class="tab-content" id="adminTabsContent">
+        <!-- Pestaña de Usuarios -->
+        <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+            <div class="d-flex justify-content-between mb-3">
+                <h4><i class="fas fa-users-cog"></i> Gestión de Establecimiento</h4>
+                <button class="btn btn-primary" id="abrir-formulario">
+                    <i class="fas fa-plus"></i> Agregar Cita Rapida
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover display" id="tabladates">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Barbero</th>
+                            <th>Servicios</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date in dates %}
+                        <tr>
+                            <td>{{ date.date }}</td>
+                            <td>{{ date.customer_id }}</td>
+                            <td>{{ date.barber_id}}</td>
+                            <td>{{ date.service_id }}</td>
+                            <td>{{ date.price_total }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning btnActualizarDate" data-id="{{ date.id }}"
+                                    data-date="{{ date.date }}" data-customer_id="{{ date.customer_id }}"
+                                    data-barber_id="{{ date.barber_id }}" data-service_id="{{ date.service_id }}"
+                                    data-price_total="{{ date.price_total }}" data-status="{{ date.status }}"
+                                    data-comments="{{ date.comments }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarDate">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <!--    
+                                <button class="btn btn-sm btn-danger btnEliminarDate " data-id="{{ date.id }}"
+                                    data-name="{{ date.name_est }}" data-bs-target="#eliminar_est">
+                                    <i class="fas fa-trash"></i>
+                                </button>-->
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
-                        <option value="">Todos</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="confirmada">Confirmada</option>
-                        <option value="cancelada">Cancelada</option>
-                        <option value="completada">Completada</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Cliente</label>
-                    <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
-                </div>
-            </form>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-    </div>
 
-    <!-- Tabla de Citas -->
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Hora</th>
-                    <th>Cliente</th>
-                    <th>Barbero</th>
-                    <th>Servicio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cita in citas %}
-                <tr>
-                    <td>{{ cita.hora }}</td>
-                    <td>{{ cita.cliente }}</td>
-                    <td>{{ cita.barbero }}</td>
-                    <td>{{ cita.servicio }}</td>
-                    <td>
-                        <span class="badge bg-{{ cita.estado|lower }}">{{ cita.estado|title }}</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#modalDetalle{{ cita.id }}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-primary btn-edit"><i class="fas fa-edit"></i></button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        <div class="modal fade" id="modalEditarDate" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post">
+                        {% csrf_token %}
+                        <!-- Campo oculto para el ID del establecimiento -->
+                        <input type="hidden" id="inputDateId" name="date_id">
 
-    <!-- Modales de Detalle de cada Cita -->
-    {% for cita in citas %}
-    <div class="modal fade" id="modalDetalle{{ cita.id }}" tabindex="-1"
-        aria-labelledby="modalDetalleLabel{{ cita.id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDetalleLabel{{ cita.id }}">Detalle de la Cita</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Cliente:</strong> {{ cita.cliente }}</p>
-                    <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
-                    <p><strong>Hora:</strong> {{ cita.hora }}</p>
-                    <p><strong>Barbero:</strong> {{ cita.barbero }}</p>
-                    <p><strong>Servicio:</strong> {{ cita.servicio }}</p>
-                    <p><strong>Estado:</strong> {{ cita.estado }}</p>
-                    <p><strong>Notas:</strong> {{ cita.notas|default:"Sin notas" }}</p>
+                        <div class="modal-body">
+
+                            <div class="mb-3">
+                                <label>Barbero</label>
+                                <input type="text" class="form-control" id="inputBarbero" name="barber_id">
+                            </div>
+                            <div class="mb-3">
+                                <label>Servicios</label>
+                                <input type="text" class="form-control" id="inputServicios" name="service_id">
+                            </div>
+
+                            <!-- Agrega más inputs para ciudad, país, etc. -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar Cita</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+
+        <div class="modal fade" id="modalEliminarDate" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="formEliminarDate" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirmar Eliminación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Estás seguro que deseas eliminar <strong id="labelDate"></strong>?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- JavaScript para el panel de administración -->
+        <script>
+            $(document).ready(function () {
+                // Inicializar Tabla de dates
+                $('#tabladates').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+                    },
+                    dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ],
+                    pageLength: 10,
+                });
+
+                $('.btnActualizarDate').on('click', function () {
+                    // Leer datos del botón
+                    const id = $(this).data('id');
+                    const fecha = $(this).data('date');
+                    const cliente = $(this).data('customer_id');
+                    const barbero = $(this).data('barber_id');
+                    const servicios = $(this).data('service_id');
+                    const precio = $(this).data('price_total');
+
+                    // Asignar valores a los campos del formulario
+                    $('#inputBarbero').val(barbero);
+                    $('#inputServicios').val(servicios);
+
+                });
+
+
+                // Boton para eliminar establecimiento
+                $('.btnEliminarDate').on('click', function () {
+                    var btn = $(this);
+                    var id = btn.data('id');
+                    var estName = btn.data('name');
+                    $('#labelDate').text(estName);
+                    $('#formEliminarDate').attr('action', `../eliminar_date/${id}/`);
+
+                    var modalEliminarDate = new bootstrap.Modal(document.getElementById('modalEliminarDate'));
+                    modalEliminarDate.show();
+                });
+            });
+
+
+            $('#abrir-formulario').on('click', function () {
+                // Limpias contenido previo y puedes mostrar loader
+                $('#modal-body-content').html('<p>Cargando formulario...</p>');
+
+                // Abrir modal con Bootstrap 5 JS API
+                var myModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+                myModal.show();
+
+                // Petición AJAX para traer el formulario
+                $.ajax({
+                    url: '../registro_date/',  // Cambia esta URL a la tuya
+                    method: 'GET',
+                    success: function (data) {
+                        $('#modal-body-content').html(data);  // Inserta el formulario en el modal
+                    },
+                    error: function () {
+                        $('#modal-body-content').html('<p>Error al cargar el formulario.</p>');
+                    }
+                });
+            });
+
+
+
+        </script>
+
+
+
+        </select>
     </div>
-    {% endfor %}
-    {% endblock %}
+    <div class="col-md-3">
+        <label class="form-label">Estado</label>
+        <select class="form-select" name="estado">
+            <option value="">Todos</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="cancelada">Cancelada</option>
+            <option value="completada">Completada</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Cliente</label>
+        <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
+    </div>
+    </form>
+</div>
+</div>
+
+
+
+{% endblock %}

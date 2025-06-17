@@ -136,7 +136,7 @@ class BarberReportesView(BreadcrumbMixin, TemplateView):
 
 
 
-class SeguridadView(BreadcrumbMixin, TemplateView):
+class BarberSeguridadView(BreadcrumbMixin, TemplateView):
      template_name= 'seguridad.html'
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('barber_module:seguridad')}]

@@ -7,6 +7,9 @@ from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from .models import Product, Establishment
+from services_module.models import ServiceDate
+from django.contrib.auth.models import User
+
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .forms import ProductoForm, CreateEstablishmentForm
@@ -67,54 +70,35 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        hoy = date.today()
-        #citas = Cita.objects.filter(fecha=hoy)
-        citas = [
-            {
-                'id': 1,
-                'cliente': 'Juan Pérez',
-                'fecha': date.today(),
-                'hora': time(10, 00),
-                'barbero': 'Carlos',
-                'servicio': 'Corte de cabello',
-                'estado': 'completada',
-                'notas': 'Cliente puntual',
-            },
-            {
-                'id': 2,
-                'cliente': 'Laura Gómez',
-                'fecha': date.today(),
-                'hora': time(11, 30),
-                'barbero': 'Luis',
-                'servicio': 'Barba + Corte',
-                'estado': 'pendiente',
-                'notas': '',
-            },
-            {
-                'id': 3,
-                'cliente': 'Andrés Ramírez',
-                'fecha': date.today(),
-                'hora': time(13, 00),
-                'barbero': 'Carlos',
-                'servicio': 'Color y corte',
-                'estado': 'cancelada',
-                'notas': 'Canceló por WhatsApp',
-            },
-        ]
 
-     
-        resumen = {
-            'total_citas': len(citas),
-            'completadas': len([c for c in citas if c['estado'] == 'completada']),
-            'pendientes': len([c for c in citas if c['estado'] == 'pendiente']),
-            'canceladas': len([c for c in citas if c['estado'] == 'cancelada']),
-        }
+        # Cargar citas relacionadas con los establecimientos administrados por el usuario
+       # admin_establishment  = self.request.user.admin_est.all()
 
-        context['citas'] = citas
-        context['resumen'] = resumen
-        context['fecha_actual'] = date.today()
+        """ ids_est =[]        
+        for establishment in admin_establishment:
+            ids_est.append(establishment.id) """
 
+        """ response=[]
+        dates_est = ServiceDate.objects.select_related('customer', 'barber', 'service')
+        for date in dates_est:
+            customer_info=User.objects.filter(id=date.customer_id)
+            response.append({
+                "date" : date.date,
+                "customer_id": date.customer_id.customer_dates.first_name,
+                "barber_id" : "date.barber_id.first_name",
+                "service_id": "date.service_id.name_service",
+                "price_total":"date.price_total",
+            }) """
+
+        context['dates'] = ServiceDate.objects.select_related('customer', 'barber', 'service')
+
+
+
+    # Puedes pasar un formulario vacío si quieres editar desde modal
+    #    context['form'] = AppointmentForm()
         return context
+
+
 
 
 class BarberosView(BreadcrumbMixin, TemplateView):  
