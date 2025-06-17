@@ -238,7 +238,7 @@ class InventarioListView(ListView):
         context['products'] = Product.objects.all()
         return context
 
-class ProductoCreateView(SuccessMessageMixin, CreateView):
+class ProductCreateView(SuccessMessageMixin, CreateView):
     template_name = 'inventario/add_product.html'
     form_class = CreateProductForm
     
@@ -258,14 +258,13 @@ class ProductoUpdateView(SuccessMessageMixin, UpdateView):
     # success_url = reverse_lazy('inventario')
     # success_message = "Producto actualizado exitosamente"
 
-class ProductoDeleteView(DeleteView):
+class ProductDeleteView(DeleteView):
     model = Product
-    success_url = reverse_lazy('inventario')
+    success_url = reverse_lazy('admin_module:inventario')
     
-    def delete(self, request, *args, **kwargs):
-        response = super().delete(request, *args, **kwargs)
-        # Puedes añadir mensajes o lógica adicional aquí
-        return response    
+    # Filtrar o determinar por aquello que si puedo eliminar y si no cumple pues lanzar error
+    # def get_queryset(self):
+    #     return Product.objects.filter(id_admin_id=self.request.user.id)   
      
 class ReportesView(BreadcrumbMixin, TemplateView):
      template_name= 'reportes/reportes.html'
