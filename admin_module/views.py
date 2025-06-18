@@ -91,6 +91,7 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
             }) """
 
         context['dates'] = ServiceDate.objects.select_related('customer', 'barber', 'service')
+        context['barberos'] = User.objects.filter(groups__name='Barber')
 
 
 
@@ -98,7 +99,20 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     #    context['form'] = AppointmentForm()
         return context
 
+class ActualizarCitaView(View):
+    def post(self, request):
+        cita_id = request.POST.get('date_id')
+        nuevo_barbero_id = request.POST.get('barber_id')
+        nuevo_estado = request.POST.get('status')
 
+        cita = get_object_or_404(ServiceDate, id=cita_id)
+
+        # Actualizar campos permitidos
+        cita.barber_id = nuevo_barbero_id
+        cita.status = nuevo_estado
+        cita.save()
+
+        return redirect('admin_module:citas')  # o a donde estés redirigiendo luego
 
 
 class BarberosView(BreadcrumbMixin, TemplateView):  

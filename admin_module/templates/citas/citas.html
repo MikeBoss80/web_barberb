@@ -98,10 +98,13 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Fecha</th>
+                            <th>Hora</th>
                             <th>Cliente</th>
                             <th>Barbero</th>
                             <th>Servicios</th>
                             <th>Precio</th>
+                            <th>Barberia</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -109,17 +112,22 @@
                         {% for date in dates %}
                         <tr>
                             <td>{{ date.date }}</td>
-                            <td>{{ date.customer_id }}</td>
-                            <td>{{ date.barber_id}}</td>
-                            <td>{{ date.service_id }}</td>
+                            <td>{{date.date.time}}</td>
+                            <td>{{ date.customer.first_name }} {{ date.customer.last_name }}</td>
+                            <td>{{ date.barber.first_name }} {{ date.barber.last_name }}</td>
+                            <td>{{ date.service.service.name_service }}</td>
                             <td>{{ date.price_total }}</td>
+                            <td>{{ date.service.establishment.name_est }}</td>
+                            <td> {{ date.status }} </td>
                             <td>
                                 <button class="btn btn-sm btn-warning btnActualizarDate" data-id="{{ date.id }}"
-                                    data-date="{{ date.date }}" data-customer_id="{{ date.customer_id }}"
-                                    data-barber_id="{{ date.barber_id }}" data-service_id="{{ date.service_id }}"
-                                    data-price_total="{{ date.price_total }}" data-status="{{ date.status }}"
-                                    data-comments="{{ date.comments }}" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditarDate">
+                                    data-date="{{ date.date }}"
+                                    data-customer_id="{{ date.customer.first_name }} {{date.customer.first_name }}"
+                                    data-barber_id="{{ date.barber.first_name }} {{ date.barber.last_name }}"
+                                    data-service_id="{{ date.service.name_service }}"
+                                    data-price_total="{{ date.price_total }} {{ date.barber.last_name }}"
+                                    data-status="{{ date.status }}" data-comments="{{ date.comments }}"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditarDate">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <!--    
@@ -139,7 +147,7 @@
         <div class="modal fade" id="modalEditarDate" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="post">
+                    <form method="post" action="{% url 'admin_module:actualizar_cita' %}">
                         {% csrf_token %}
                         <!-- Campo oculto para el ID del establecimiento -->
                         <input type="hidden" id="inputDateId" name="date_id">
@@ -148,11 +156,22 @@
 
                             <div class="mb-3">
                                 <label>Barbero</label>
-                                <input type="text" class="form-control" id="inputBarbero" name="barber_id">
+                                <select class="form-select" id="inputBarbero" name="barber_id">
+                                    {% for barbero in barberos %}
+                                    <option value="{{ barbero.id }}">{{ barbero.first_name }} {{ barbero.last_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="mb-3">
-                                <label>Servicios</label>
-                                <input type="text" class="form-control" id="inputServicios" name="service_id">
+                                <label>Estado</label>
+                                <select class="form-select" id="inputestado" name="status">
+                                    <option value="">Todos</option>
+                                    <option value="pendiente">Agendada</option>
+                                    <option value="confirmada">Inicializada</option>
+                                    <option value="cancelada">Cancelada</option>
+                                    <option value="completada">Completada</option>
+                                </select>
                             </div>
 
                             <!-- Agrega más inputs para ciudad, país, etc. -->
@@ -204,18 +223,13 @@
                 });
 
                 $('.btnActualizarDate').on('click', function () {
-                    // Leer datos del botón
                     const id = $(this).data('id');
-                    const fecha = $(this).data('date');
-                    const cliente = $(this).data('customer_id');
                     const barbero = $(this).data('barber_id');
-                    const servicios = $(this).data('service_id');
-                    const precio = $(this).data('price_total');
+                    const estado = $(this).data('status');
 
-                    // Asignar valores a los campos del formulario
+                    $('#inputDateId').val(id);  // Aquí guardamos el ID de la cita
                     $('#inputBarbero').val(barbero);
-                    $('#inputServicios').val(servicios);
-
+                    $('#inputestado').val(estado);
                 });
 
 
@@ -266,8 +280,8 @@
         <label class="form-label">Estado</label>
         <select class="form-select" name="estado">
             <option value="">Todos</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="confirmada">Confirmada</option>
+            <option value="pendiente">Agendada</option>
+            <option value="confirmada">Inicializada</option>
             <option value="cancelada">Cancelada</option>
             <option value="completada">Completada</option>
         </select>

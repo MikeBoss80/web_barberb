@@ -1,5 +1,5 @@
 from django.urls import path
-from admin_module.views import CitasView,InventarioListView,ProductoCreateView,ProductoUpdateView,ProductoDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView
+from admin_module.views import CitasView,InventarioListView,ProductoCreateView,ProductoUpdateView,ProductoDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView,ActualizarCitaView
 from django.contrib.auth.views import LogoutView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
@@ -25,5 +25,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
+    path('actualizar_cita/', ActualizarCitaView.as_view(), name='actualizar_cita'),
 
 ]   
