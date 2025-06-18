@@ -1,53 +1,56 @@
-/* tipo_rol.css (Estilo dark) */
 
 body {
-    background-color: #121212;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    font-family: ‘Inter’, sans,serif;
+    background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
+    color: #ffffff;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: start;
-    min-height: 100vh;
+    height: 100vh;
 }
 
-.Rol {
-    margin-top: 40px;
+/* Contenedor principal */
+.container {
+    background-color: #2b2d31;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 100%;
     text-align: center;
 }
 
-.LogoB2 {
-    width: 150px;
-    height: auto;
-    margin-bottom: 20px;
+/* Títulos */
+.container h2 {
+    margin-bottom: 16px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #f2f3f5;
 }
 
-h1 {
-    font-size: 2em;
-    color: #e0e0e0;
-    margin-bottom: 30px;
+.container p {
+    font-size: 14px;
+    color: #b5bac1;
+    margin-bottom: 24px;
 }
 
-.button {
-    background-color: #1f1f1f;
-    color: #ffffff;
-    border: 2px solid #ffffff30;
-    padding: 12px 25px;
-    font-size: 1rem;
-    border-radius: 10px;
+/* Botones */
+form button {
+    background-color: #b483d3;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px #00000050;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    margin-bottom: 12px;
 }
 
-.button:hover {
-    background-color: #333333;
-    border-color: #ffffff;
-    transform: scale(1.05);
-}
-
-a {
-    text-decoration: none;
+form button:hover {
+    background-color: #b483d3;
 }

@@ -1,4 +1,3 @@
-
 {% extends "admin_module/base_admin.html" %}
 {% load static %}
 
@@ -6,49 +5,49 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-  <div class="d-flex justify-content-between mb-3">
-      <h4><i class="fas fa-users-cog"></i> Productos</h4>
-      <button class="btn btn-primary" id="btnModalAddProduct">
-          <i class="fas fa-plus"></i> Agregar
-      </button>
-  </div>
+    <div class="d-flex justify-content-between mb-3">
+        <h4><i class="fas fa-users-cog"></i> Productos</h4>
+        <button class="btn btn-primary" id="btnModalAddProduct">
+            <i class="fas fa-plus"></i> Agregar
+        </button>
+    </div>
 
-  <div class="table-responsive">
-      <table class="table table-striped table-hover display" id="tblInventory">
-          <thead class="table-dark">
-              <tr>
-                  <th>Nombre</th>
-                  <th>Descripcion</th>
-                  <th>Stock</th>
-                  <th>Precio</th>
-                  <th>Acciones</th>
-              </tr>
-          </thead>
-          <tbody>
-              {% for product in products %}
-              <tr>
-                  <td>{{ product.name_product }}</td>
-                  <td>{{ product.description_product }}</td>
-                  <td>{{ product.amount }}</td>
-                  <td>{{ product.price_product }}</td>
-                  <td>
-                      <button class="btn btn-sm btn-warning btnActualizarEst"
-                           
-                          data-bs-toggle="modal"
-                          data-bs-target="#modalEditarEstablecimiento">
-                          <i class="fas fa-edit"></i>
-                      </button>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover display" id="tblInventory">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name_product }}</td>
+                        <td>{{ product.description_product }}</td>
+                        <td>{{ product.amount }}</td>
+                        <td>{{ product.price_product }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning btnActualizarEst"
+                                
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarEstablecimiento">
+                                <i class="fas fa-edit"></i>
+                            </button>
 
-                      <button class="btn btn-sm btn-danger btnEliminarEst " data-id="{{ product.id }}"
-                          data-name="{{ product.name_product }}" data-bs-target="#eliminar_est">
-                          <i class="fas fa-trash"></i>
-                      </button>
-                  </td>
-              </tr>
-              {% endfor %}
-          </tbody>
-      </table>
-  </div>
+                            <button class="btn btn-sm btn-danger btnDeleteProduct " data-id="{{ product.id }}"
+                                data-name="{{ product.name_product }}" data-bs-target="#modalDeleteProduct">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal Agregar Producto -->
@@ -71,130 +70,72 @@
     </div>
 </div>
 
-<!-- Modal Editar Producto (similar al de agregar pero con datos precargados) -->
 <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-hidden="true">
   <!-- Contenido similar al modal de agregar pero con datos precargados -->
 </div>
 
-<!-- Scripts -->
+<div class="modal fade" id="modalDeleteProduct" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formDeleteProduct" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar el producto <strong id="lblProductName"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
-  $(document).ready(function() {
-    $('#tblInventory').DataTable({
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
-        },
-        dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
-        pageLength: 10,
-    });
+    $(document).ready(function() {
 
-    $('#btnModalAddProduct').on('click', function() {
-        $('#modalBodyAddProduct').html('<p>Cargando formulario...</p>');
-        $('#modalAddProduct').modal('show');
-
-        $.ajax({
-            url: '../producto/agregar/',
-            method: 'GET',
-            success: function (data) {
-                $('#modalBodyAddProduct').html(data);
+        $('#tblInventory').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
             },
-            error: function () {
-                $('#modalBodyAddProduct').html('<p>Error al cargar el formulario.</p>');
-            }
+            dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 10,
         });
-    });
-  })
 
-  // Función para confirmar eliminación
-  // function confirmarEliminacion(nombre, id) {
-  //   Swal.fire({
-  //     title: `¿Eliminar "${nombre}"?`,
-  //     text: "Esta acción no se puede deshacer",
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#dc3545',
-  //     cancelButtonColor: '#6c757d',
-  //     confirmButtonText: 'Sí, eliminar',
-  //     cancelButtonText: 'Cancelar'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       window.location.href = `/inventario/eliminar/${id}/`;
-  //     }
-  //   });
-  // }
+        $('#btnModalAddProduct').on('click', function() {
+            $('#modalBodyAddProduct').html('<p>Cargando formulario...</p>');
+            $('#modalAddProduct').modal('show');
 
-  // Filtrado de productos
-  // function filtrarProductos() {
-  //   const texto = document.getElementById('buscarProducto').value.toLowerCase();
-  //   const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
-  //   const estado = document.getElementById('filtroEstado').value;
+            $.ajax({
+                url: '../producto/agregar/',
+                method: 'GET',
+                success: function (data) {
+                    $('#modalBodyAddProduct').html(data);
+                },
+                error: function () {
+                    $('#modalBodyAddProduct').html('<p>Error al cargar el formulario.</p>');
+                }
+            });
+        });
 
-  //   let contador = 0;
+        $('.btnDeleteProduct').on('click', function() {
+            let btn = $(this);
+            let productId = btn.data('id');
+            let productName = btn.data('name');
+            $('#lblProductName').text(productName);
+            $('#formDeleteProduct').attr('action', `../producto/eliminar/${productId}/`);
+            
+            $('#modalDeleteProduct').modal('show');
+        });
 
-  //   document.querySelectorAll('#tablaInventario tbody tr').forEach(tr => {
-  //     const nombre = tr.querySelector('td:first-child').textContent.toLowerCase();
-  //     const trCategoria = tr.getAttribute('data-categoria');
-  //     const trEstado = tr.getAttribute('data-estado');
-
-  //     const coincideTexto = nombre.includes(texto);
-  //     const coincideCategoria = categoria === '' || trCategoria === categoria;
-  //     const coincideEstado = estado === '' || trEstado === estado;
-
-  //     if (coincideTexto && coincideCategoria && coincideEstado) {
-  //       tr.style.display = '';
-  //       contador++;
-  //     } else {
-  //       tr.style.display = 'none';
-  //     }
-  //   });
-
-  //   document.getElementById('productosMostrados').textContent = contador;
-  // }
-
-  // Resetear filtros
-  // function resetearFiltros() {
-  //   document.getElementById('buscarProducto').value = '';
-  //   document.getElementById('filtroCategoria').value = '';
-  //   document.getElementById('filtroEstado').value = '';
-  //   filtrarProductos();
-  // }
-
-  // Exportar inventario
-  // function exportarInventario() {
-  //   // Lógica para exportar el inventario a Excel/PDF
-  //   Swal.fire({
-  //     title: 'Exportar Inventario',
-  //     text: 'Seleccione el formato de exportación',
-  //     icon: 'question',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Excel',
-  //     cancelButtonText: 'PDF',
-  //     showDenyButton: true,
-  //     denyButtonText: 'Cancelar'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       window.location.href = '/inventario/exportar/excel/';
-  //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-  //       window.location.href = '/inventario/exportar/pdf/';
-  //     }
-  //   });
-  // }
-
-  // Event listeners
-  // document.getElementById('buscarProducto').addEventListener('input', filtrarProductos);
-  // document.getElementById('filtroCategoria').addEventListener('change', filtrarProductos);
-  // document.getElementById('filtroEstado').addEventListener('change', filtrarProductos);
-
-  // Cargar datos en modal de edición
-  // document.getElementById('modalEditarProducto').addEventListener('show.bs.modal', function (event) {
-    // const button = event.relatedTarget;
-    // const productoId = button.getAttribute('data-producto-id');
-
-    // Aquí iría la lógica para cargar los datos del producto
-    // mediante una petición AJAX o similar
-  // });
+    })
 </script>
 
 {% endblock %}

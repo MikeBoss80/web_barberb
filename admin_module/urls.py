@@ -1,5 +1,7 @@
 from django.urls import path
-from admin_module.views import CitasView,InventarioListView,ProductoCreateView,ProductoUpdateView,ProductoDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView,ActualizarCitaView
+
+from admin_module.views import CitasView,InventarioListView,ProductCreateView,ProductoUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, ActualizarCitaView
+
 from django.contrib.auth.views import LogoutView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
@@ -18,10 +20,9 @@ urlpatterns = [
     path('barberos/<int:barbero_id>/calendario/', CalendarioBarberoView.as_view(), name='calendario_barbero'),
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
-    # path('inventario/', InventarioListView.as_view(), name='inventario'),
-    path('producto/agregar/', ProductoCreateView.as_view(), name='producto_create'),
+    path('producto/agregar/', ProductCreateView.as_view(), name='producto_create'),
     path('producto/editar/<int:pk>/', ProductoUpdateView.as_view(), name='producto_update'),
-    path('producto/eliminar/<int:pk>/', ProductoDeleteView.as_view(), name='producto_delete'),
+    path('producto/eliminar/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
