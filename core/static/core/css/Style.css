@@ -4,11 +4,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Rubik', sans-serif;
+  font-family: ‘Inter’, sans,serif;
 }
 
 body {
-  background: black;
+  background: rgb(247, 244, 244);
   color: #ffffff;
   line-height: 1.6;
 }
@@ -21,8 +21,8 @@ a {
 .hero { 
 background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
   text-align: center;
-  padding: 30px 20px;
-  border-bottom: 1px solid #adb3b8;
+  padding: 10px 20px;
+  border-bottom: 1px solid #f8fafc;
 }
 
 .hero h1 {
@@ -43,7 +43,7 @@ background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1rem;
   transition: background-color 0.2s ease, transform 0.15s ease;
   display: inline-block;
@@ -80,10 +80,10 @@ background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
 }
 
 .card {
-  background-color: #23272a;
+  background-color: #f9fafa;
   border-radius: 12px;
   padding: 20px;
-  width: 300px;
+  width: 250px;
   box-shadow: 0 0 20px rgba(55, 1, 99, 0.3);
   transition: transform 0.3s ease;
 }
@@ -105,7 +105,7 @@ background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
 }
 
 .card p {
-  color: #300050;
+  color: #73c409;
   font-size: 0.95rem;
 }
 
@@ -126,4 +126,32 @@ footer {
   display: block;
   margin: 0 0 20px 0; /* margen solo abajo */
   text-align: left;
+}
+
+.hero2 { 
+background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
+  text-align: center;
+  padding: 30px 20px;
+    border-bottom: 1px solid #f8fafc;
+     }
+
+
+.hero2 h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.hero2 p {
+  color: #c3cedd;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.card1 img {
+  width: 30%;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  align-items: center;
+  gap: 10px;
 }
