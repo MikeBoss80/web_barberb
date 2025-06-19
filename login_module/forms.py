@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from .models import Profile
 
 class UserProfileForm(UserCreationForm):
@@ -13,6 +13,12 @@ class UserProfileForm(UserCreationForm):
     address = forms.CharField(max_length=80, required=True)
     birth_date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
     document = forms.CharField(max_length=80, required=True)
+    type_group = forms.ModelChoiceField(
+        queryset=Group.objects.all(),
+        empty_label="Seleccione un grupo",
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label="Grupo"
+    )
     # establishment = forms.ModelChoiceField(queryset=None, required=False)
 
     class Meta:

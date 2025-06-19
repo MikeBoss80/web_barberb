@@ -57,7 +57,7 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     template_name = 'citas/citas.html'
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Administrator').exists()
+        return self.request.user.groups.filter(name='Administrador').exists()
 
     def handle_no_permission(self):
         return redirect('not_in_group')
@@ -326,7 +326,7 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
 
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Administrator').exists()
+        return self.request.user.groups.filter(name='Administrador').exists()
         
     def handle_no_permission(self):
         return redirect('not_in_group')
