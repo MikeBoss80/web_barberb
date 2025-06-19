@@ -1,0 +1,39 @@
+{% extends "barber_module/base_barber.html" %}  
+{% load static %}
+
+{% block title %}Nueva Solicitud{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Nueva Solicitud</h2>
+
+    <form method="post" class="needs-validation">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            <label for="{{ form.tipo.id_for_label }}" class="form-label">Tipo de Solicitud</label>
+            {{ form.tipo }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">Fecha de Inicio</label>
+            {{ form.fecha_inicio }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">Fecha de Fin</label>
+            {{ form.fecha_fin }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.comentario.id_for_label }}" class="form-label">Comentario</label>
+            {{ form.comentario }}
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        <a href="{% url 'barber_module:solicitud_barbero' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -8,6 +8,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from login_module.models import Profile  # Si tienes relación barbero <-> establecimiento en Profile
+from .models import BarberRequest
+from .forms import BarberRequestForm
 
 
 from django.views.generic import TemplateView
@@ -117,6 +120,34 @@ class BarberCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
         context['fecha_actual'] = date.today()
 
         return context
+
+class BarberRequestCreateView(LoginRequiredMixin, CreateView):
+
+    model = BarberRequest  # Modelo a crear
+    form_class = BarberRequestForm  # Formulario personalizado
+    template_name = 'requets/barber_request_form.html'  # HTML a renderizar
+    success_url = reverse_lazy('barber_module:solicitud_barbero')  # Redirección tras guardar
+
+    def get_breadcrumb(self):
+        return [{'label': 'Solicitudes', 'url': reverse('barber_module:solicitud_barbero')}]
+
+
+    def form_valid(self, form):
+        """
+        Este método se ejecuta si el formulario es válido.
+        Aquí se asignan automáticamente el barbero y el establecimiento.
+        """
+        user = self.request.user  # Barbero autenticado
+
+        form.instance.barber = user  # Asigna el barbero automáticamente
+
+        # Asignar el establecimiento al que pertenece este barbero
+        # Si usas un modelo Profile, y allí está la relación con el establecimiento:
+        perfil = Profile.objects.get(user=user)
+        form.instance.establecimiento = perfil.establishment  # Asegúrate que esto esté definido en Profile
+
+        return super().form_valid(form)
+
 
 class BarberContenidosView(BreadcrumbMixin, TemplateView):
      template_name= 'contenidos_barbero.html'

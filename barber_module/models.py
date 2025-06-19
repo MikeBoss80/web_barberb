@@ -1,41 +1,48 @@
 # Create your models here.
 from django.db import models
+from admin_module.models import Establishment
+from django.contrib.auth.models import User
 
 
+# Tipos de solicitud
+TIPO_SOLICITUD_CHOICES = [
+    ('permiso', 'Permiso Personal'),
+    ('vacaciones', 'Vacaciones'),
+    ('incapacidad', 'Incapacidad Médica'),
+    ('licencia', 'Licencia (ej. luto u otras razones)'),
+]
 
+# Estados posibles de la solicitud
+ESTADO_SOLICITUD_CHOICES = [
+    ('pendiente', 'Pendiente'),
+    ('aprobada', 'Aprobada'),
+    ('rechazada', 'Rechazada'),
+]
 
-""" 
-class HorarioBarbero(models.Model):
-    barbero = models.ForeignKey(Barbero, on_delete=models.CASCADE)
-    dia_semana = models.IntegerField(choices=[(i, dia) for i, dia in enumerate(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'])])
-    hora_inicio = models.TimeField()
-    hora_fin = models.TimeField()
-
-    def __str__(self):
-        return f"{self.barbero.usuario.username} - {self.get_dia_semana_display()}"
-
-class SolicitudCambioHorario(models.Model):
-    barbero = models.ForeignKey(Barbero, on_delete=models.CASCADE)
+class BarberRequest(models.Model):
+    # Relación con el barbero que hace la solicitud
+    barber = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_barbero')
+    # Relación con el establecimiento donde trabaja el barbero
+    establecimiento = models.ForeignKey(Establishment, on_delete=models.CASCADE, related_name='solicitudes_barbero')
+    # Tipo de solicitud (permiso, vacaciones, etc.)
+    tipo = models.CharField(max_length=20, choices=TIPO_SOLICITUD_CHOICES)
+    # Fechas de inicio y fin de la solicitud
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    # Comentario del barbero (opcional)
+    comentario = models.TextField(blank=True, null=True)
+    # Estado de la solicitud
+    estado = models.CharField(max_length=20, choices=ESTADO_SOLICITUD_CHOICES, default=ESTADO_SOLICITUD_CHOICES[0][0])
+    # Fecha de creación y respuesta
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
-    motivo = models.TextField(blank=True, null=True)
-    nuevo_horario = models.TextField(help_text="Formato sugerido: día: inicio-fin;...", blank=True, null=True)
+    fecha_respuesta = models.DateTimeField(blank=True, null=True)
+    # Respuesta del administrador
+    respuesta_admin = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Solicitud de cambio de horario - {self.barbero.usuario.username}"
+        return f"Solicitud de {self.barber.first_name} {self.barber.last_name} - {self.get_tipo_display()} ({self.get_estado_display()})"
 
-class PerfilBarbero(models.Model):
-    barbero = models.OneToOneField(Barbero, on_delete=models.CASCADE)
-    descripcion = models.TextField(blank=True, null=True)
-    experiencia = models.PositiveIntegerField(help_text="Años de experiencia", blank=True, null=True)
-
-    def __str__(self):
-        return f"Perfil de {self.barbero.usuario.username}"
-
-class SeguridadBarbero(models.Model):
-    barbero = models.OneToOneField(Barbero, on_delete=models.CASCADE)
-    pregunta_seguridad = models.CharField(max_length=255, blank=True, null=True)
-    respuesta_seguridad = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return f"Seguridad - {self.barbero.usuario.username}"
- """
+    class Meta:
+        verbose_name = "Solicitud de Barbero"
+        verbose_name_plural = "Solicitudes de Barberos"
+        ordering = ['-fecha_solicitud']
