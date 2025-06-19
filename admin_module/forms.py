@@ -6,7 +6,7 @@ from services_module.models import ServiceDate
 class CreateProductForm(forms.ModelForm):
     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
     description_product = forms.CharField(max_length=80, required=True)
-    amount = forms.IntegerField(max_value=20, required=True, initial=0)
+    amount = forms.IntegerField(required=True, initial=0)
     minimun_stock = forms.IntegerField(required=True, initial=0)
     price_product = forms.IntegerField(required=True, initial=0)
 

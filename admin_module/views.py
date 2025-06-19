@@ -243,11 +243,9 @@ class InventarioListView(ListView):
         return context
 
 class ProductCreateView(SuccessMessageMixin, CreateView):
-    template_name = 'inventario/add_product.html'
+    template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
-    
-    def get_success_url(self):
-        return '/admin_module/inventario/'
+    success_url = reverse_lazy('admin_module:inventario')
 
     def form_valid(self, form):
         product=form.save(commit=False)
@@ -255,12 +253,11 @@ class ProductCreateView(SuccessMessageMixin, CreateView):
         product.save()
         return super().form_valid(form)
 
-class ProductoUpdateView(SuccessMessageMixin, UpdateView):
+class ProductUpdateView(SuccessMessageMixin, UpdateView):
     model = Product
-    # form_class = ProductoForm
-    # template_name = 'establecimiento/modal_producto.html'
-    # success_url = reverse_lazy('inventario')
-    # success_message = "Producto actualizado exitosamente"
+    template_name = 'inventario/form_product.html'
+    form_class = CreateProductForm
+    success_url = reverse_lazy('admin_module:inventario')
 
 class ProductDeleteView(DeleteView):
     model = Product
