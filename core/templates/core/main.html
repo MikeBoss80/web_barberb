@@ -1,60 +1,90 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <title>BarberB - Inicio</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'core/css/Style.css' %}">
-
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>BarberB - Inicio</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-    
 
-
-  <section class="hero">
-    <img src="/static/login_module/img/logobarberb2.png" alt="LogoB2" class="Logo">
-    <h1>Tu estilo, nuestra pasión</h1>
-    <p>Transformamos tu look con profesionalismo, precisión y actitud.</p>
-    <a href="{% url 'login' %}" class="boton">Inicio</a>
-  </section>
-
-  <section class="hero2">
-    <h1>Conocenos</h1>
-     <div class="card1">
-        <img src="/static/core/css/img/6.jpg" alt="Barbería Norte">
-        <h3>Busca la barberia mas cercanas</h3>
-      </div>
-    <p>Hacemos que tengas un mayor alcance, que llegues a mas usuarios nuevos</p>
-   
-
-
-  <section class="barberias">
-    <h2>Nuestros Servicios</h2>
-    <div class="cards">
-      <div class="card">
-        <img src="/static/core/css/img/1.jpg" alt="Barbería Centro">
-        <h3>Cortes</h3>
-        <p>Explora estilos únicos y barberos de confianza, recomendados por cientos de clientes satisfechos.</p>
-      </div>
-      <div class="card">
-        <img src="/static/core/css/img/4.jpg" alt="Barbería Norte">
-        <h3>Mascarillas</h3>
-        <p>Descubre dónde hacerte mascarillas faciales con total seguridad y cuidado profesional. </p>
-      </div>
-      <div class="card">
-        <img src="/static/core/css/img/3.jpg" alt="Barbería Sur">
-        <h3>Perfilados</h3>
-        <p>Encuentra expertos en perfilado de barba y cejas para un look impecable.
-
- </p>
-      </div>
+  <header class="header">
+    <div class="logo">
+      <img src="/static/login_module/img/logobarberb2.png" alt="Logo BarberB" width="150">
     </div>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#">Desarrolladores</a>
+      <a href="#">Términos</a>
+      <a href="#">Contactos</a>
+      <a href="#">Barberías</a>
+      <a href="#">Soporte</a>
+      <a class="login-button" href="{% url 'login' %}">Log In</a>
+    </nav>
+  </header>
+
+  <!-- Sección principal -->
+  <section class="hero">
+    
+    <div class="hero-text">
+      <h1><strong>"Mejora tu imagen, impulsa tu barbería."</strong></h1>
+      <p>
+        Lleva tu barbería al siguiente nivel.
+        Regístrate, llega a más usuarios y destaca con tus servicios y reseñas.
+      </p>
+    </div>
+
+    
+    <div id="barberCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="/static/login_module/img/20.jpg" class="d-block w-100" alt="Barbería 1">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Barbería Clásica</h5>
+            <p>Estilo tradicional con un toque moderno.</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="/static/login_module/img/1.jpg" class="d-block w-100" alt="Barbería 2">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Barbería Urbana</h5>
+            <p>Para un look más fresco y contemporáneo.</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="/static/login_module/img/2.jpg" class="d-block w-100" alt="Barbería 3">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Barbería Premium</h5>
+            <p>Experiencia de lujo y servicio personalizado.</p>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#barberCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#barberCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+    </div>
+
+    
+    
   </section>
 
+  <!-- Footer -->
   <footer>
-    <p> © 2025 BarberB somos un meta buscardor dedicado a la busqueda de barberias mas cercanas a ti</p>
+    <div class="footer">
+      <p>© 2025 BarberB Somos un metabuscador dedicado a la búsqueda de barberías más cercanas a ti.</p>
+    </div>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>
