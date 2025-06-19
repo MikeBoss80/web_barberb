@@ -60,7 +60,7 @@ class BarberCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     template_name = 'citas_barbero.html'
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Administrator').exists()
+        return self.request.user.groups.filter(name='Administrador').exists()
 
     def handle_no_permission(self):
         return redirect('not_in_group')

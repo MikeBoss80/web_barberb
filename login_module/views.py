@@ -24,13 +24,13 @@ class CustomLoginView(LoginView):
         user_groups = user.groups.values_list('name', flat=True)
 
         #Validacion si esta en los grupos Barberos y administrator
-        if 'Barber' in user_groups and 'Administrator' in user_groups:
+        if 'Barbero' in user_groups and 'Administrador' in user_groups:
             return '/login_module/rol_actual/' 
 
         #Si solo esta en un grupo se dirige segun el grupo
-        elif 'Barber' in user_groups:
+        elif 'Barbero' in user_groups:
             return '/barber_module/' 
-        elif 'Administrator' in user_groups:
+        elif 'Administrador' in user_groups:
             return '/admin_module/'
         else:
             #Si no es barbero o administrador su rol es como cliente
@@ -88,7 +88,9 @@ class RegistroUsuarioView(FormView):
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
-        form.save()
+        user = form.save()
+        group = form.cleaned_data['type_group']
+        user.groups.add(group) 
         return super().form_valid(form)
 
 class TerminosYCondicionesView(TemplateView):

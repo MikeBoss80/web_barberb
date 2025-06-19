@@ -9,25 +9,8 @@
         <h2 class="mb-4">Registro</h2>
 
         <form method="post">
-
-            <select required>
-                <option value="" disabled selected>Tipo de Rol</option>
-                <option value="cc">Cliente</option>
-                <option value="ti">Barbero</option>
-                <option value="ce">Administrador Establecimiento</option>
-                            </select>
             {% csrf_token %}
-
-
-
             {{ form.as_p }}
-            <select required>
-                <option value="" disabled selected>Tipo de Documento</option>
-                <option value="cc">Cédula de Ciudadanía</option>
-                <option value="ti">Tarjeta de Identidad</option>
-                <option value="ce">Cédula de Extranjería</option>
-                <option value="nit">NIT</option>
-            </select>
             <button type="submit">Registrarse</button>
         </form>
 
