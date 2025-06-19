@@ -24,11 +24,11 @@
 
     <div class="col-md-3 col-sm-6 col-12">
         <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Citas del Dia</div>
+            <div class="card-header">Total Citas</div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h2>{{ resumen.total_citas }}</h2>
+                        <h2>{{ resumen.total_dates }}</h2>
                     </div>
                     <i class="fas fa-calendar-check fs-1"></i>
                 </div>
@@ -52,11 +52,11 @@
 
     <div class="col-md-3 col-sm-6 col-12">
         <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Pendientes</div>
+            <div class="card-header">Agendadas</div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h2>{{ resumen.pendientes }}</h2>
+                        <h2>{{ resumen.agendadas }}</h2>
                     </div>
                     <i class="fas fa-hourglass-half fs-1"></i>
                 </div>
@@ -84,8 +84,8 @@
 
     <!-- DATATABLE -->
     <div class="tab-content" id="adminTabsContent">
-        <!-- Pestaña de Usuarios -->
-        <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+        <!-- Pestaña de citas -->
+        <div class="tab-pane fade show active" id="citas" role="tabpanel">
             <div class="d-flex justify-content-between mb-3">
                 <h4><i class="fas fa-users-cog"></i> Gestión de Establecimiento</h4>
                 <button class="btn btn-primary" id="abrir-formulario">
@@ -111,8 +111,8 @@
                     <tbody>
                         {% for date in dates %}
                         <tr>
-                            <td>{{ date.date }}</td>
-                            <td>{{date.date.time}}</td>
+                            <td>{{ date.date.date }}</td>
+                            <td>{{ date.date.time }}</td>
                             <td>{{ date.customer.first_name }} {{ date.customer.last_name }}</td>
                             <td>{{ date.barber.first_name }} {{ date.barber.last_name }}</td>
                             <td>{{ date.service.service.name_service }}</td>
@@ -121,20 +121,19 @@
                             <td> {{ date.status }} </td>
                             <td>
                                 <button class="btn btn-sm btn-warning btnActualizarDate" data-id="{{ date.id }}"
-                                    data-date="{{ date.date }}"
-                                    data-customer_id="{{ date.customer.first_name }} {{date.customer.first_name }}"
-                                    data-barber_id="{{ date.barber.first_name }} {{ date.barber.last_name }}"
-                                    data-service_id="{{ date.service.name_service }}"
-                                    data-price_total="{{ date.price_total }} {{ date.barber.last_name }}"
-                                    data-status="{{ date.status }}" data-comments="{{ date.comments }}"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditarDate">
+                                    data-barber_id="{{ date.barber.id }}"
+                                    data-barber_name="{{ date.barber.first_name }} {{ date.barber.last_name }}"
+                                    data-service_id="{{ date.service.name_service }}" data-status="{{ date.status }}"
+                                    data-comments="{{ date.comments }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarDate">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <!--    
-                                <button class="btn btn-sm btn-danger btnEliminarDate " data-id="{{ date.id }}"
-                                    data-name="{{ date.name_est }}" data-bs-target="#eliminar_est">
-                                    <i class="fas fa-trash"></i>
-                                </button>-->
+
+                                <button class="btn btn-sm btn-danger btnCancelDate " data-id="{{ date.id }}"
+                                    data-status="{{ date.status }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalCancelDate">
+                                    <i class="">Cancelar</i>
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -167,10 +166,9 @@
                                 <label>Estado</label>
                                 <select class="form-select" id="inputestado" name="status">
                                     <option value="">Todos</option>
-                                    <option value="pendiente">Agendada</option>
-                                    <option value="confirmada">Inicializada</option>
-                                    <option value="cancelada">Cancelada</option>
-                                    <option value="completada">Completada</option>
+                                    <option value="Agendada">Agendada</option>
+                                    <option value="Cancelada">Cancelada</option>
+                                    <option value="Completada">Completada</option>
                                 </select>
                             </div>
 
@@ -185,27 +183,48 @@
         </div>
 
 
-        <div class="modal fade" id="modalEliminarDate" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modalCancelDate" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
-                <form id="formEliminarDate" method="POST">
+                <form id="formCancelDate" method="POST" action="{% url 'admin_module:cancelar-cita' %}">
                     {% csrf_token %}
                     <div class="modal-content">
+                        <input type="hidden" name="date_id" id="cancelDateId">
                         <div class="modal-header">
-                            <h5 class="modal-title">Confirmar Eliminación</h5>
+                            <h5 class="modal-title">Confirmar Cancelacion</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
-                            <p>¿Estás seguro que deseas eliminar <strong id="labelDate"></strong>?</p>
+                            <p>¿Estás seguro que deseas cancelar la cita?</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-danger">Estoy Seguro</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+
+
+        <!-- Modal Crear Cita -->
+        <div class="modal fade" id="modalCrearCita" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formCrearCita" method="post" action="{% url 'admin_module:crear_cita' %}">
+                        {% csrf_token %}
+                        <div class="modal-body" id="modal-body-content">
+                            <!-- Aquí se carga el formulario con AJAX -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar Cita</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
 
         <!-- JavaScript para el panel de administración -->
         <script>
@@ -234,33 +253,25 @@
 
 
                 // Boton para eliminar establecimiento
-                $('.btnEliminarDate').on('click', function () {
-                    var btn = $(this);
-                    var id = btn.data('id');
-                    var estName = btn.data('name');
-                    $('#labelDate').text(estName);
-                    $('#formEliminarDate').attr('action', `../eliminar_date/${id}/`);
+                $('.btnCancelDate').on('click', function () {
+                    const id = $(this).data('id');
+                    const estado = $(this).data('status');
 
-                    var modalEliminarDate = new bootstrap.Modal(document.getElementById('modalEliminarDate'));
-                    modalEliminarDate.show();
+                    $('#cancelDateId').val(id);
+
                 });
             });
 
 
             $('#abrir-formulario').on('click', function () {
-                // Limpias contenido previo y puedes mostrar loader
-                $('#modal-body-content').html('<p>Cargando formulario...</p>');
+                const modal = new bootstrap.Modal(document.getElementById('modalCrearCita'));
+                modal.show();
 
-                // Abrir modal con Bootstrap 5 JS API
-                var myModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
-                myModal.show();
-
-                // Petición AJAX para traer el formulario
                 $.ajax({
-                    url: '../registro_date/',  // Cambia esta URL a la tuya
-                    method: 'GET',
+                    url: "{% url 'admin_module:crear_cita_form' %}",
+                    type: "GET",
                     success: function (data) {
-                        $('#modal-body-content').html(data);  // Inserta el formulario en el modal
+                        $('#modal-body-content').html(data); // insertar formulario
                     },
                     error: function () {
                         $('#modal-body-content').html('<p>Error al cargar el formulario.</p>');
@@ -274,22 +285,9 @@
 
 
 
-        </select>
+
     </div>
-    <div class="col-md-3">
-        <label class="form-label">Estado</label>
-        <select class="form-select" name="estado">
-            <option value="">Todos</option>
-            <option value="pendiente">Agendada</option>
-            <option value="confirmada">Inicializada</option>
-            <option value="cancelada">Cancelada</option>
-            <option value="completada">Completada</option>
-        </select>
-    </div>
-    <div class="col-md-3">
-        <label class="form-label">Cliente</label>
-        <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
-    </div>
+
     </form>
 </div>
 </div>

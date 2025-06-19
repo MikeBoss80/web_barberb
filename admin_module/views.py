@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm
 from django.views.generic.edit import FormView
 
 
@@ -53,7 +53,6 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
 
         return context
 
-
 class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     template_name = 'citas/citas.html'
 
@@ -66,40 +65,33 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     def get_breadcrumb(self):
         return [{'label': 'Citas', 'url': reverse('admin_module:citas')}]
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-
-        # Cargar citas relacionadas con los establecimientos administrados por el usuario
-       # admin_establishment  = self.request.user.admin_est.all()
-
-        """ ids_est =[]        
-        for establishment in admin_establishment:
-            ids_est.append(establishment.id) """
-
-        """ response=[]
-        dates_est = ServiceDate.objects.select_related('customer', 'barber', 'service')
-        for date in dates_est:
-            customer_info=User.objects.filter(id=date.customer_id)
-            response.append({
-                "date" : date.date,
-                "customer_id": date.customer_id.customer_dates.first_name,
-                "barber_id" : "date.barber_id.first_name",
-                "service_id": "date.service_id.name_service",
-                "price_total":"date.price_total",
-            }) """
-
         context['dates'] = ServiceDate.objects.select_related('customer', 'barber', 'service')
         context['barberos'] = User.objects.filter(groups__name='Barber')
+ 
+        resumen = {
+            'total_dates': len(context['dates']),
+            'completadas': len([c for c in context['dates'] if c.status == 'Completada']),
+            'agendadas': len([c for c in context['dates'] if c.status == 'Agendada']),
+            'canceladas': len([c for c in context['dates'] if c.status == 'Cancelada']),
+        }
 
+        context['resumen'] = resumen
+        context['total_dates'] = date.today()
 
-
-    # Puedes pasar un formulario vacío si quieres editar desde modal
-    #    context['form'] = AppointmentForm()
         return context
 
-class ActualizarCitaView(View):
+def cancelar_cita(request):
+    if request.method == "POST":
+        date_id = request.POST.get("date_id")
+        date = get_object_or_404(ServiceDate, id=date_id)
+        date.status = 'Cancelada'
+        date.save()
+    return redirect('admin_module:citas')
+
+class ActualizarCitaView(UpdateView):
     def post(self, request):
         cita_id = request.POST.get('date_id')
         nuevo_barbero_id = request.POST.get('barber_id')
@@ -107,14 +99,28 @@ class ActualizarCitaView(View):
 
         cita = get_object_or_404(ServiceDate, id=cita_id)
 
-        # Actualizar campos permitidos
+        # Actualizamos campos permitidos
         cita.barber_id = nuevo_barbero_id
         cita.status = nuevo_estado
         cita.save()
 
         return redirect('admin_module:citas')  # o a donde estés redirigiendo luego
 
+class CrearCitaRapidaView(CreateView):
+    model = ServiceDate
+    form_class = ServiceDateForm
+    template_name = 'partials/form_crear_cita.html'
+    success_url = reverse_lazy('admin_module:citas')  # Ajusta al nombre de tu vista de listado.
 
+    def form_valid(self, form):
+        form.instance.price_total = form.instance.service.service_id.name_service  # si quieres calcularlo automáticamente
+        return super().form_valid(form)
+    
+class CrearCitaFormView(View):
+    def get(self, request, *args, **kwargs):
+        form = ServiceDateForm()
+        return render(request, 'partials/form_crear_cita.html', {'form': form})
+    
 class BarberosView(BreadcrumbMixin, TemplateView):  
      template_name= 'barberos/barberos.html'
      

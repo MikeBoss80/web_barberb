@@ -1,6 +1,7 @@
 # admin_module/forms.py
 from django import forms
 from .models import Product, Establishment
+from services_module.models import ServiceDate
 
 class CreateProductForm(forms.ModelForm):
     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
@@ -48,3 +49,10 @@ class CreateEstablishmentForm(forms.ModelForm):
             establishment.save()
         return establishment
 
+class ServiceDateForm(forms.ModelForm):
+    class Meta:
+        model = ServiceDate
+        fields = ['customer', 'barber', 'service', 'date', 'status']
+        widgets = {
+            'date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
