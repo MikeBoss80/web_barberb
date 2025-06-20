@@ -42,7 +42,7 @@
           </p>
         </div>
         <div class="card-footer d-flex flex-column align-items-start gap-2">
-          <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({{ barbero.id }})">📅 Ver
+          <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({ barberoid })">📅 Ver
             Calendario</button>
           <div class="d-flex w-100 justify-content-between">
             <a href="#" class="btn btn-sm btn-outline-secondary">✏️ Editar</a>
@@ -103,5 +103,21 @@
       cerrarCalendario();
     }
   }
+</script>
+<script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '685388ff4fde8f0ba4fec507' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
 </script>
 {% endblock %}
