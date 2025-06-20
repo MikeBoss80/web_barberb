@@ -1,0 +1,69 @@
+{% extends "barber_module/base_barber.html" %}
+{% block title %}Detalle de Solicitud{% endblock %}
+
+{% block content %}
+
+<style>
+    .timeline-status .circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        line-height: 40px;
+        text-align: center;
+        font-weight: bold;
+        margin: 0 auto 5px;
+    }
+</style>
+
+
+<div class="container mt-4">
+    <h2 class="mb-4">Detalle de la Solicitud</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ solicitud.get_tipo_display }}</h5>
+            <p class="card-text"><strong>Estado:</strong>
+                <span class="badge 
+                    {% if solicitud.estado == 'aprobada' %} bg-success
+                    {% elif solicitud.estado == 'rechazada' %} bg-danger
+                    {% else %} bg-secondary {% endif %}">
+                    {{ solicitud.get_estado_display }}
+                </span>
+            </p>
+            <p class="card-text"><strong>Fecha de Solicitud:</strong> {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</p>
+            <p class="card-text"><strong>Rango de Fechas:</strong> {{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</p>
+            <p class="card-text"><strong>Comentario del barbero:</strong> {{ solicitud.comentario|default:"--" }}</p>
+            <p class="card-text"><strong>Respuesta del administrador:</strong> {{ solicitud.respuesta_admin|default:"--" }}</p>
+        </div>
+        <hr>
+
+        <h6>Progreso de la Solicitud</h6>
+        <div class="d-flex justify-content-between align-items-center mt-3 timeline-status">
+
+            <div class="text-center flex-fill">
+                <div class="circle bg-success text-white">1</div>
+                <small>Enviada<br>{{ solicitud.fecha_solicitud|date:"d/m/Y" }}</small>
+            </div>
+
+            <div class="flex-fill border-top mx-2"></div>
+
+            <div class="text-center flex-fill">
+                <div class="circle {% if solicitud.estado == 'pendiente' %}bg-secondary{% else %}bg-success text-white{% endif %}">2</div>
+                <small>{% if solicitud.estado == 'pendiente' %}En revisión{% else %}Revisada<br>{{ solicitud.fecha_respuesta|date:"d/m/Y" }}{% endif %}</small>
+            </div>
+
+            {% if solicitud.estado == 'aprobada' or solicitud.estado == 'rechazada' %}
+                <div class="flex-fill border-top mx-2"></div>
+
+                <div class="text-center flex-fill">
+                    <div class="circle {% if solicitud.estado == 'aprobada' %}bg-success{% else %}bg-danger{% endif %} text-white">3</div>
+                    <small>{{ solicitud.get_estado_display }}</small>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <a href="{% url 'barber_module:barber_solicitudes_list' %}" class="btn btn-secondary mt-3">Volver al Historial</a>
+</div>
+{% endblock %}

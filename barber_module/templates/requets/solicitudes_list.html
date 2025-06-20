@@ -1,0 +1,79 @@
+{% extends "barber_module/base_barber.html" %}
+
+{% load static %}
+
+{% block title %}Mis Solicitudes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Mis Solicitudes</h2>
+
+
+
+    <table id="tablaSolicitudes" class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Tipo</th>
+                <th>Fechas</th>
+                <th>Estado</th>
+                <th>Respuesta</th>
+                <th>Fecha de Solicitud</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for solicitud in solicitudes %}
+            <tr>
+                <td>{{ solicitud.get_tipo_display }}</td>
+                <td>{{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</td>
+                <td>
+                    <span class="badge 
+                        {% if solicitud.estado == 'aprobada' %} bg-success
+                        {% elif solicitud.estado == 'rechazada' %} bg-danger
+                        {% else %} bg-secondary {% endif %}">
+                        {{ solicitud.get_estado_display }}
+                    </span>
+                </td>
+                <td>{{ solicitud.respuesta_admin|default:"--" }}</td>
+                <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'barber_module:barber_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-info">
+                        Ver Detalles
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'barber_module:solicitud_barbero' %}" class="btn btn-primary mt-3">Nueva Solicitud</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#tablaSolicitudes').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            },
+            order: [[4, 'desc']]  // Ordena por fecha de solicitud descendente
+        });
+
+
+        // Filtro personalizado por estado
+        $('#filtroEstado').on('change', function () {
+            const estado = $(this).val();
+            tabla.column(2).search(estado).draw();  // La columna 2 es la de "Estado"
+        });
+    });
+</script>
+{% endblock %}

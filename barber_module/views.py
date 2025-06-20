@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
+from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView ,DetailView
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
@@ -121,12 +121,12 @@ class BarberCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
 
         return context
 
-class BarberRequestCreateView(LoginRequiredMixin, CreateView):
+class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
 
     model = BarberRequest  # Modelo a crear
     form_class = BarberRequestForm  # Formulario personalizado
     template_name = 'requets/barber_request_form.html'  # HTML a renderizar
-    success_url = reverse_lazy('barber_module:solicitud_barbero')  # Redirección tras guardar
+    success_url = reverse_lazy('barber_module:barber_solicitudes_list')  # Redirección tras guardar
 
     def get_breadcrumb(self):
         return [{'label': 'Solicitudes', 'url': reverse('barber_module:solicitud_barbero')}]
@@ -147,6 +147,32 @@ class BarberRequestCreateView(LoginRequiredMixin, CreateView):
         form.instance.establecimiento = perfil.establishment  # Asegúrate que esto esté definido en Profile
 
         return super().form_valid(form)
+
+class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
+    model = BarberRequest
+    template_name ='requets/solicitudes_list.html' #plantilla html
+    success_url = reverse_lazy('barber_module:barber_solicitudes_list')  # Redirección tras guardar
+    context_object_name = 'solicitudes' #nombre variable en el template
+    paginate_by = 10 #paginar de 10
+
+    def get_queryset(self):
+        
+        #Filtra las solicitudes para que el barbero solo vea las suyas,
+        #ordenadas por fecha descendente.
+    
+        return BarberRequest.objects.filter(barber=self.request.user).order_by('-fecha_solicitud')
+
+
+class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
+    model = BarberRequest
+    template_name = 'requets/solicitudes_detail.html'
+    context_object_name = 'solicitud'
+
+    def get_queryset(self):
+        """
+        Asegura que el barbero solo pueda ver sus propias solicitudes.
+        """
+        return BarberRequest.objects.filter(barber=self.request.user)
 
 
 class BarberContenidosView(BreadcrumbMixin, TemplateView):
