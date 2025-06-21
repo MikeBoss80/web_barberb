@@ -1,9 +1,5 @@
-{% for field in form %}
-  <div class="mb-3">
-    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-    {{ field }}
-    {% if field.errors %}
-      <div class="text-danger">{{ field.errors }}</div>
-    {% endif %}
-  </div>
-{% endfor %}
+<form method="post" action="{% url 'admin_module:crear_cita' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Guardar</button>
+</form>

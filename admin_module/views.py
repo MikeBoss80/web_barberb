@@ -69,7 +69,7 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['dates'] = ServiceDate.objects.select_related('customer', 'barber', 'service')
-        context['barberos'] = User.objects.filter(groups__name='Barber')
+        context['barberos'] = User.objects.filter(groups__name='Barbero')
  
         resumen = {
             'total_dates': len(context['dates']),
@@ -110,15 +110,16 @@ class CrearCitaRapidaView(CreateView):
     model = ServiceDate
     form_class = ServiceDateForm
     template_name = 'partials/form_crear_cita.html'
-    success_url = reverse_lazy('admin_module:citas')  # Ajusta al nombre de tu vista de listado.
+    success_url = reverse_lazy('admin_module:citas')
 
     def form_valid(self, form):
-        form.instance.price_total = form.instance.service.service_id.name_service  # si quieres calcularlo automáticamente
+        # Asignar precio automático desde el servicio
+        form.instance.price_total = form.instance.service.service.price_service
         return super().form_valid(form)
     
 class CrearCitaFormView(View):
-    def get(self, request, *args, **kwargs):
-        form = ServiceDateForm()
+     def get(self, request, *args, **kwargs):
+        form = ServiceDateForm
         return render(request, 'partials/form_crear_cita.html', {'form': form})
     
 class BarberosView(BreadcrumbMixin, TemplateView):  

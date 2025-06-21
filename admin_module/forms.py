@@ -1,7 +1,8 @@
 # admin_module/forms.py
 from django import forms
 from .models import Product, Establishment
-from services_module.models import ServiceDate
+from services_module.models import ServiceDate,EstablishmentService
+from django.contrib.auth.models import User
 
 class CreateProductForm(forms.ModelForm):
     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
@@ -56,3 +57,23 @@ class ServiceDateForm(forms.ModelForm):
         widgets = {
             'date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['barber'].queryset = User.objects.filter(groups__name='Barbero')
+        self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+
+        self.fields['customer'].queryset = User.objects.filter(groups__name='Cliente')
+        self.fields['customer'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+
+        #Filtramo los servicios segun el establecimiento vinculado al usuario ya sea barbero o administrador
+        
+
+
+        # Mostrar nombre y precio del servicio
+        self.fields['service'].queryset = EstablishmentService.objects.select_related('service')
+        self.fields['service'].label_from_instance = lambda obj: f"{obj.service.name_service} - ${obj.service.price_service}"
+
+        # Opcional: valor por defecto del estado
+        self.fields['status'].initial = 'Agendada'

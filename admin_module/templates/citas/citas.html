@@ -157,8 +157,7 @@
                                 <label>Barbero</label>
                                 <select class="form-select" id="inputBarbero" name="barber_id">
                                     {% for barbero in barberos %}
-                                    <option value="{{ barbero.id }}">{{ barbero.first_name }} {{ barbero.last_name }}
-                                    </option>
+                                    <option value="{{ barbero.id }}">{{ barbero.first_name }} {{ barbero.last_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -215,9 +214,6 @@
                         {% csrf_token %}
                         <div class="modal-body" id="modal-body-content">
                             <!-- Aquí se carga el formulario con AJAX -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Guardar Cita</button>
                         </div>
                     </form>
                 </div>
