@@ -53,9 +53,12 @@ class CreateEstablishmentForm(forms.ModelForm):
 class ServiceDateForm(forms.ModelForm):
     class Meta:
         model = ServiceDate
-        fields = ['customer', 'barber', 'service', 'date', 'status']
+        fields = ['customer', 'barber', 'service', 'date']
         widgets = {
-            'date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'customer': forms.Select(attrs={'class': 'form-control select2'}),
+            'barber': forms.Select(attrs={'class': 'form-control'}),
+            'service': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         }
     
     def __init__(self, *args, **kwargs):
@@ -71,16 +74,19 @@ class ServiceDateForm(forms.ModelForm):
         self.fields['customer'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
         #Filtramo los servicios segun el establecimiento vinculado al usuario ya sea barbero o administrador
-        
-
 
         # Mostrar nombre y precio del servicio
         self.fields['service'].queryset = EstablishmentService.objects.select_related('service')
         self.fields['service'].label_from_instance = lambda obj: f"{obj.service.name_service} - ${obj.service.price_service}"
 
         # Opcional: valor por defecto del estado
-        self.fields['status'].initial = 'Agendada'
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.status = 'Agendada'  # 👈 Valor por defecto interno
+        if commit:
+            instance.save()
+        return instance
 
 class EditarBarberoEstadoForm(forms.ModelForm):
     class Meta:
@@ -102,10 +108,15 @@ class EditarBarberoEstadoForm(forms.ModelForm):
             except:
                 self.fields['barber'].queryset = User.objects.none()
 
+        #Trae nombre y apellido del barbero
         self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
-        self.fields['status'].widget = forms.Select(choices=[
-            ('Agendada', 'Agendada'),
-            ('Cancelada', 'Cancelada'),
-            ('Completada', 'Completada'),
-        ])
+        self.fields['barber'].widget.attrs.update({'class': 'form-select'})
+        self.fields['status'].widget = forms.Select(
+            choices=[
+                ('Agendada', 'Agendada'),
+                ('Cancelada', 'Cancelada'),
+                ('Completada', 'Completada'),
+            ],
+            attrs={'class': 'form-select'}
+        )
