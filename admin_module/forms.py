@@ -59,7 +59,10 @@ class ServiceDateForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+        #debemos extraer el request enviado desde la vista 
+        request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
+
 
         self.fields['barber'].queryset = User.objects.filter(groups__name='Barbero')
         self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"

@@ -56,21 +56,53 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
 class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     template_name = 'citas/citas.html'
 
+    # Validación: solo los usuarios en el grupo 'Administrador' pueden acceder
     def test_func(self):
         return self.request.user.groups.filter(name='Administrador').exists()
 
+    # Redirección si no tiene permiso
     def handle_no_permission(self):
         return redirect('not_in_group')
     
+    # Breadcrumb (navegación)
     def get_breadcrumb(self):
         return [{'label': 'Citas', 'url': reverse('admin_module:citas')}]
 
+    # Contexto que se pasa a la plantilla
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['dates'] = ServiceDate.objects.select_related('customer', 'barber', 'service')
-        context['barberos'] = User.objects.filter(groups__name='Barbero')
- 
+        # Obtener el usuario actual
+        user = self.request.user
+
+        # Buscar el establecimiento que administra este usuario
+        try: 
+            establecimiento = Establishment.objects.get(id_admin=user)
+        except Establishment.DoesNotExist:
+            establecimiento = None
+
+        # Si el establecimiento existe, filtramos las citas por ese establecimiento
+        if establecimiento:
+            # select_related permite hacer joins para mejorar eficiencia en las relaciones FK
+            citas=ServiceDate.objects.select_related(
+                'service',                # FK a EstablishmentService
+                'service__establishment',# FK a Establishment
+                'barber',                # FK a User (barbero)
+                'customer'               # FK a User (cliente)
+            ).filter(service__establishment=establecimiento)
+        else:
+            citas = ServiceDate.objects.none()# Si no administra ningún establecimiento, no ve citas
+
+        # Agregar las citas filtradas al contexto
+        context['dates'] = citas
+
+        # Obtener los barberos que pertenecen al mismo establecimiento (usando profile si aplica)
+        context['barberos'] = User.objects.filter(
+            groups__name='Barbero', 
+            profile__establishment=establecimiento
+            )
+
+        # resumen de estado de las citas
         resumen = {
             'total_dates': len(context['dates']),
             'completadas': len([c for c in context['dates'] if c.status == 'Completada']),
@@ -78,6 +110,7 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
             'canceladas': len([c for c in context['dates'] if c.status == 'Cancelada']),
         }
 
+        # Pasar resumen y fecha actual al contexto
         context['resumen'] = resumen
         context['total_dates'] = date.today()
 
@@ -92,6 +125,8 @@ def cancelar_cita(request):
     return redirect('admin_module:citas')
 
 class ActualizarCitaView(UpdateView):
+
+    
     def post(self, request):
         cita_id = request.POST.get('date_id')
         nuevo_barbero_id = request.POST.get('barber_id')
