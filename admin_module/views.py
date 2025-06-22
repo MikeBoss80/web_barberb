@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm
 from django.views.generic.edit import FormView
 
 
@@ -124,22 +124,16 @@ def cancelar_cita(request):
         date.save()
     return redirect('admin_module:citas')
 
-class ActualizarCitaView(UpdateView):
+class EditarBarberoEstadoView(UpdateView):
+    model = ServiceDate
+    form_class = EditarBarberoEstadoForm
+    template_name = 'partials/form_editar_barbero_estado.html'
+    success_url = reverse_lazy('admin_module:citas')
 
-    
-    def post(self, request):
-        cita_id = request.POST.get('date_id')
-        nuevo_barbero_id = request.POST.get('barber_id')
-        nuevo_estado = request.POST.get('status')
-
-        cita = get_object_or_404(ServiceDate, id=cita_id)
-
-        # Actualizamos campos permitidos
-        cita.barber_id = nuevo_barbero_id
-        cita.status = nuevo_estado
-        cita.save()
-
-        return redirect('admin_module:citas')  # o a donde estés redirigiendo luego
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 class CrearCitaRapidaView(CreateView):
     model = ServiceDate

@@ -80,3 +80,32 @@ class ServiceDateForm(forms.ModelForm):
 
         # Opcional: valor por defecto del estado
         self.fields['status'].initial = 'Agendada'
+
+
+class EditarBarberoEstadoForm(forms.ModelForm):
+    class Meta:
+        model = ServiceDate
+        fields = ['barber', 'status']
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+        if request:
+            user = request.user
+            try:
+                est = user.profile.establishment
+                self.fields['barber'].queryset = User.objects.filter(
+                    groups__name='Barbero',
+                    profile__establishment=est
+                )
+            except:
+                self.fields['barber'].queryset = User.objects.none()
+
+        self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+
+        self.fields['status'].widget = forms.Select(choices=[
+            ('Agendada', 'Agendada'),
+            ('Cancelada', 'Cancelada'),
+            ('Completada', 'Completada'),
+        ])

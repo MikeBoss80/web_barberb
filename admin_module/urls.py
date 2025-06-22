@@ -1,6 +1,6 @@
 from django.urls import path
 
-from admin_module.views import CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, ActualizarCitaView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita
+from admin_module.views import CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita
 
 from django.contrib.auth.views import LogoutView
 
@@ -26,7 +26,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
-    path('actualizar_cita/', ActualizarCitaView.as_view(), name='actualizar_cita'),
+    path('citas/editar-rapido/<int:pk>/', EditarBarberoEstadoView.as_view(), name='editar_barbero_estado'),
     path('crear_cita_form/', CrearCitaFormView.as_view(), name='crear_cita_form'),  # para cargar
     path('crear_cita/', CrearCitaRapidaView.as_view(), name='crear_cita'),  # para guardar
     path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para guardar

@@ -120,14 +120,13 @@
                             <td>{{ date.service.establishment.name_est }}</td>
                             <td> {{ date.status }} </td>
                             <td>
-                                <button class="btn btn-sm btn-warning btnActualizarDate" data-id="{{ date.id }}"
-                                    data-barber_id="{{ date.barber.id }}"
-                                    data-barber_name="{{ date.barber.first_name }} {{ date.barber.last_name }}"
-                                    data-service_id="{{ date.service.name_service }}" data-status="{{ date.status }}"
-                                    data-comments="{{ date.comments }}" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditarDate">
-                                    <i class="fas fa-edit"></i>
+                                <button class="btn btn-warning btnEditarBarberoEstado"
+                                    data-url="{% url 'admin_module:editar_barbero_estado' date.id %}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarBarberoEstado">
+                                    Editar
                                 </button>
+
 
                                 <button class="btn btn-sm btn-danger btnCancelDate " data-id="{{ date.id }}"
                                     data-status="{{ date.status }}" data-bs-toggle="modal"
@@ -143,44 +142,13 @@
 
         </div>
 
-        <div class="modal fade" id="modalEditarDate" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form method="post" action="{% url 'admin_module:actualizar_cita' %}">
-                        {% csrf_token %}
-                        <!-- Campo oculto para el ID del establecimiento -->
-                        <input type="hidden" id="inputDateId" name="date_id">
-
-                        <div class="modal-body">
-
-                            <div class="mb-3">
-                                <label>Barbero</label>
-                                <select class="form-select" id="inputBarbero" name="barber_id">
-                                    {% for barbero in barberos %}
-                                    <option value="{{ barbero.id }}">{{ barbero.first_name }} {{ barbero.last_name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label>Estado</label>
-                                <select class="form-select" id="inputestado" name="status">
-                                    <option value="">Todos</option>
-                                    <option value="Agendada">Agendada</option>
-                                    <option value="Cancelada">Cancelada</option>
-                                    <option value="Completada">Completada</option>
-                                </select>
-                            </div>
-
-                            <!-- Agrega más inputs para ciudad, país, etc. -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Guardar Cita</button>
-                        </div>
-                    </form>
-                </div>
+      <div class="modal fade" id="modalEditarBarberoEstado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modalEditarBarberoEstadoContent">
+            <!-- Aquí se cargará el formulario AJAX -->
             </div>
         </div>
+      </div>
 
 
         <div class="modal fade" id="modalCancelDate" tabindex="-1" aria-hidden="true">
@@ -224,6 +192,24 @@
             </div>
         </div>
 
+
+        <!---JS para la edicion de barbero o estado de la reserva-->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('modalEditarBarberoEstado');
+
+                modal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const url = button.getAttribute('data-url');
+
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('modalEditarBarberoEstadoContent').innerHTML = html;
+                        });
+                });
+            });
+        </script>
 
 
         <!-- JavaScript para el panel de administración -->

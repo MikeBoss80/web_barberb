@@ -1,0 +1,9 @@
+<form method="post" action="{% url 'admin_module:editar_barbero_estado' object.pk %}">
+    {% csrf_token %}
+    <div class="modal-body">
+        {{ form.as_p }}
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </div>
+</form>
