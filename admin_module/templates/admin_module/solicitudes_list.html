@@ -1,0 +1,46 @@
+{% extends "admin_module/base_admin.html" %}
+{% load static %}
+
+{% block title %}Solicitudes de Barberos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Solicitudes Recibidas</h2>
+
+    <table id="tablaSolicitudes" class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Barbero</th>
+                <th>Tipo</th>
+                <th>Fechas</th>
+                <th>Estado</th>
+                <th>Fecha de Solicitud</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for solicitud in solicitudes %}
+            <tr>
+                <td>{{ solicitud.barber.get_full_name }}</td>
+                <td>{{ solicitud.get_tipo_display }}</td>
+                <td>{{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</td>
+                <td>
+                    <span class="badge 
+                        {% if solicitud.estado == 'aprobada' %} bg-success
+                        {% elif solicitud.estado == 'rechazada' %} bg-danger
+                        {% else %} bg-secondary {% endif %}">
+                        {{ solicitud.get_estado_display }}
+                    </span>
+                </td>
+                <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'admin_module:admin_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-primary">
+                        Ver y Responder
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

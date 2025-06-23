@@ -332,10 +332,11 @@
             class="fas fa-scissors me-2"></i>Servicios</a>
         <a class="nav-link text-white" href="{% url 'admin_module:inventario' %}"><i
             class="fas fa-boxes me-2"></i>Inventario</a>
+        <a class="nav-link text-white d-flex justify-content-between align-items-center" href="{% url   'admin_module:admin_solicitudes_list' %}"> <span><i class="fas fa-file-alt me-2"></i>Solicitudes</span>
+          {% if solicitudes_pendientes_count > 0 %}<span class="badge bg-danger ms-2">{{ solicitudes_pendientes_count }}</span>
+          {% endif %}</a>
         <a class="nav-link text-white" href="{% url 'admin_module:contenidos' %}"><i
             class="fas fa-photo-video me-2"></i>Contenido</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:reportes' %}"><i
-            class="fas fa-chart-line me-2"></i>Reportes</a>
         <a class="nav-link text-white" href="{% url 'admin_module:soporte' %}"><i
             class="fas fa-headset me-2"></i>Soporte</a>
         <br>

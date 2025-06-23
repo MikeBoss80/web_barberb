@@ -94,6 +94,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'admin_module.context_processors.solicitudes_pendientes', #funcionalidad para notificaciones de solicitudes barberos
 
             ],
         },

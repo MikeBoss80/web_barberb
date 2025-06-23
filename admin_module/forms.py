@@ -3,6 +3,7 @@ from django import forms
 from .models import Product, Establishment
 from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
+from barber_module.models import BarberRequest
 
 class CreateProductForm(forms.ModelForm):
     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
@@ -120,3 +121,14 @@ class EditarBarberoEstadoForm(forms.ModelForm):
             ],
             attrs={'class': 'form-select'}
         )
+
+class BarberRequestAdminResponseForm(forms.ModelForm):
+    class Meta:
+        model = BarberRequest
+        fields = ['respuesta_admin']  # Solo permite escribir respuesta
+        widgets = {
+            'respuesta_admin': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
+        labels = {
+            'respuesta_admin': 'Respuesta del Administrador',
+        }

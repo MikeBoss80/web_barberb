@@ -1,0 +1,37 @@
+{% extends "admin_module/base_admin.html" %}
+{% block title %}Responder Solicitud{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Responder Solicitud de {{ solicitud.barber.get_full_name }}</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Tipo:</strong> {{ solicitud.get_tipo_display }}</p>
+            <p><strong>Fechas:</strong> {{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</p>
+            <p><strong>Comentario del Barbero:</strong> {{ solicitud.comentario|default:"--" }}</p>
+            <p><strong>Estado actual:</strong>
+                <span class="badge 
+                    {% if solicitud.estado == 'aprobada' %} bg-success
+                    {% elif solicitud.estado == 'rechazada' %} bg-danger
+                    {% else %} bg-secondary {% endif %}">
+                    {{ solicitud.get_estado_display }}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="mb-3">
+            {{ form.respuesta_admin.label_tag }}
+            {{ form.respuesta_admin }}
+        </div>
+
+        <button type="submit" name="accion_estado" value="aprobada" class="btn btn-success">Aprobar</button>
+        <button type="submit" name="accion_estado" value="rechazada" class="btn btn-danger">Rechazar</button>
+        <a href="{% url 'admin_module:admin_solicitudes_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

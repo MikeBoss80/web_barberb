@@ -9,10 +9,11 @@ from django.urls import reverse, reverse_lazy
 from .models import Product, Establishment
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User
-
+from barber_module.models import BarberRequest
+from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm
 from django.views.generic.edit import FormView
 
 
@@ -208,7 +209,6 @@ class CalendarioBarberoView(View):
             'nombre_barbero': 'Carlos Pérez',  # Lo puedes modificar según el barbero
         }
         return render(request, 'calendario_barbero.html', context)
-    
 
 class ServiciosView(BreadcrumbMixin, TemplateView):
      template_name= 'establecimiento\servicios.html'
@@ -249,7 +249,6 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
         context = self.get_context_data(instance=establishment)
         context['form'] = form
         return self.render_to_response(context)
-
      
 class InventarioView(BreadcrumbMixin, TemplateView):
     template_name= 'inventario/inventario.html'
@@ -302,19 +301,15 @@ class ReportesView(BreadcrumbMixin, TemplateView):
      def get_breadcrumb(self):
         return [{'label': 'Reportes', 'url': reverse('admin_module:reportes')}]
 
-
-
 class SeguridadView(BreadcrumbMixin, TemplateView):
      template_name= 'perfil/seguridad.html'
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('admin_module:seguridad')}]
 
-
 class SoporteView(BreadcrumbMixin, TemplateView):
      template_name= 'perfil/soporte.html'
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('admin_module:soporte')}]
-
 
 class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
      template_name ='perfil/perfil_usuario.html'
@@ -372,3 +367,36 @@ class DeleteEstablishmentView(DeleteView):
     def get_queryset(self):
         return Establishment.objects.filter(id_admin_id=self.request.user.id)
     
+#Solicitudes Barberos
+class AdminSolicitudesListView(LoginRequiredMixin, ListView):
+    model = BarberRequest
+    template_name = 'admin_module/solicitudes_list.html'
+    context_object_name = 'solicitudes'
+
+    def get_queryset(self):
+        """
+        Muestra solo las solicitudes de barberos que pertenecen
+        al establecimiento del administrador actual.
+        """
+        user = self.request.user
+        perfil_admin = Profile.objects.get(user=user)
+        establecimiento = perfil_admin.establishment
+        return BarberRequest.objects.filter(establecimiento=establecimiento).order_by('-fecha_solicitud')
+    
+class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
+    model = BarberRequest
+    form_class = BarberRequestAdminResponseForm
+    template_name = 'admin_module/solicitudes_detail.html'
+    context_object_name = 'solicitud'
+
+    def form_valid(self, form):
+        # Estado enviado en POST (desde los botones)
+        estado_nuevo = self.request.POST.get('accion_estado')
+
+        if estado_nuevo in ['aprobada', 'rechazada']:
+            form.instance.estado = estado_nuevo
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('admin_module:admin_solicitudes_list')    
