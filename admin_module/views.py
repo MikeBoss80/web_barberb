@@ -6,7 +6,8 @@ from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
-from .models import Product, Establishment
+from django.db.models import Sum
+from .models import Product, Establishment,Inventory
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
@@ -31,25 +32,62 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # Obtener el establecimiento del admin
+        perfil=Profile.objects.get(user=self.request.user)
+        establecimiento = perfil.establishment
+
+        today=timezone.localtime().date()
+
+        #Citas del dia
+        citas_hoy=ServiceDate.objects.filter(
+            date=today,
+            service__establishment=establecimiento
+        ).count()
+
+        #Barberos activos
+        barberos_activos = Profile.objects.filter(
+            establishment=establecimiento,
+            user__is_active=True,
+            user__groups__name='Barbero'  
+        ).count()
+
+        #Productos bajo stock
+        bajo_stock= Inventory.objects.filter(
+            establishment=establecimiento,
+            product=5
+        #Revisar aca quedamos  
+        ).count()
+
+        # Ingresos del día
+        ingresos_hoy = ServiceDate.objects.filter(
+            date=today,
+            service__establishment=establecimiento
+        ).aggregate(total=Sum('price_total'))['total'] or 0
+
+        # Próximas citas (de hoy en adelante)
+        proximas_citas = ServiceDate.objects.filter(
+            date__gte=today,
+            service__establishment=establecimiento
+        ).order_by('date', 'date')[:5]
+
+        # Notificaciones del sistema (ejemplo: solicitudes pendientes)
+        solicitudes_pendientes = BarberRequest.objects.filter(
+            establecimiento=establecimiento,
+            estado='pendiente'
+        ).count()
+
+        notificaciones = []
+        if solicitudes_pendientes:
+            notificaciones.append(f"Tienes {solicitudes_pendientes} solicitudes de barberos pendientes por revisar.")
+
         context.update({
-            'user': self.request.user,
-            'today': timezone.now(),
-            'citas_hoy': 8,
-            'ingresos_hoy': 420.00,
-            'barberos_activos': 3,
-            'bajo_stock': 2,
-            'proximas_citas': [
-                {'hora': '10:00', 'cliente': 'Carlos Pérez', 'servicio': 'Corte', 'barbero': 'Andrés'},
-                {'hora': '11:00', 'cliente': 'Luis Soto', 'servicio': 'Barba', 'barbero': 'Miguel'}
-            ],
-            'labels': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
-            'ingresos_data': [100, 200, 150, 300, 250],
-            'servicios_labels': ['Corte', 'Barba', 'Corte + Barba'],
-            'servicios_data': [10, 5, 8],
-            'notificaciones': [
-                'Hay 2 productos con stock bajo.',
-                'Un barbero no ha iniciado su turno.',
-            ]
+            'today': today,
+            'citas_hoy': citas_hoy,
+            'barberos_activos': barberos_activos,
+            'bajo_stock': bajo_stock,
+            'ingresos_hoy': ingresos_hoy,
+            'proximas_citas': proximas_citas,
+            'notificaciones': notificaciones,
         })
 
         return context

@@ -1,0 +1,146 @@
+/* ========= FONDO Y FUENTE GENERAL ========= */
+body {
+    background-color: #f4f5fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* ========= CONTENEDOR PRINCIPAL ========= */
+.container-fluid {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+/* ========= ENCABEZADO ========= */
+h4 {
+    font-weight: 600;
+    color: #2d2d2d;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    background-color: #440055e5;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #5e50ee;
+}
+
+/* ========= TABLA ========= */
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#tblInventory {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+#tblInventory thead {
+    background-color: #7367f0;
+}
+
+#tblInventory th,
+#tblInventory td {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+#tblInventory th {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+#tblInventory tbody td {
+    color: #333;
+}
+
+/* ========= HOVER EN FILA ========= */
+#tblInventory tbody tr:hover {
+    background-color: rgba(115, 103, 240, 0.1);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+/* ========= BOTONES DE ACCIONES (EDITAR / ELIMINAR) ========= */
+.btn-sm {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    font-size: 1rem;
+    color: #555;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 6px;
+}
+
+/* Hover sobre los botones */
+.btn-sm:hover {
+    background-color: rgba(115, 103, 240, 0.15);
+    color: #4433ff;
+}
+
+/* Botón eliminar hover más claro */
+.btn-danger:hover {
+    background-color: rgba(244, 67, 54, 0.15);
+    color: #f44336;
+}
+
+/* Botón editar hover más claro */
+.btn-warning:hover {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+/* ========= MODAL ========= */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    background-color: #ffffff;
+}
+
+.modal-header {
+    background-color: #7367f0;
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e5e5;
+}
+
+/* ========= FORMULARIOS BONITOS ========= */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9fc;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #7367f0;
+    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.2);
+}
+
