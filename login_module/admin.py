@@ -5,4 +5,4 @@ from .models import Profile
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'phone', 'document', 'establishment', 'data_complete', 'qa_average')
     search_fields = ('user__username', 'document')
-    list_filter = ('data_complete',)
+    list_filter = ('data_complete',) 
