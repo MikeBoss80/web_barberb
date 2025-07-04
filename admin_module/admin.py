@@ -27,9 +27,9 @@ class ScheduleAssignmentAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name_product', 'amount', 'minimum_stock', 'price_product', 'last_update')
+    list_display = ('id', 'name_product', 'amount', 'minimum_stock', 'price_product', 'updated_at')
     search_fields = ('name_product',)
-    list_filter = ('last_update',)
+    list_filter = ('updated_at',)
 
 @admin.register(Establishment)
 class EstablishmentAdmin(admin.ModelAdmin):

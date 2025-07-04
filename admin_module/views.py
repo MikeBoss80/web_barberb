@@ -316,7 +316,8 @@ class ProductCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         product=form.save(commit=False)
-        # product.id_admin_id=self.request.user.id
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
         product.save()
         return super().form_valid(form)
 
@@ -325,6 +326,10 @@ class ProductUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
     success_url = reverse_lazy('admin_module:inventario')
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
 
 class ProductDeleteView(DeleteView):
     model = Product
