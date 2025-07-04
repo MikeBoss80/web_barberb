@@ -132,3 +132,6 @@ class BarberRequestAdminResponseForm(forms.ModelForm):
         labels = {
             'respuesta_admin': 'Respuesta del Administrador',
         }
+
+class UploadServiceFile(forms.Form):
+    file = forms.FileField(label = "Subir carta de servicios (PDF o Imagen)")

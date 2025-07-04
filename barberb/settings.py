@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'barber_module',
     'login_module.apps.LoginModuleConfig',
     'widget_tweaks',
+    'calendar_module',
 
     ]
 

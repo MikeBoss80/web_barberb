@@ -42,130 +42,478 @@
   .search-bar {
     margin-top: 10px;
   }
+
+  :root {
+    --primary-color: #3e1a4e;
+    /* Morado profesional */
+    --secondary-color: #6c757d;
+    /* Gris para textos */
+    --success-color: #28a745;
+    /* Verde para completadas */
+    --warning-color: #ffc107;
+    /* Amarillo para pendientes */
+    --danger-color: #dc3545;
+    /* Rojo para canceladas */
+    --info-color: #17a2b8;
+    /* Azul para confirmadas */
+    --light-bg: #f8f9fa;
+    /* Fondo claro */
+    --dark-text: #212529;
+    /* Texto oscuro */
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--light-bg);
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    text-align: center;
+    color: var(--dark-text);
+    margin-bottom: 20px;
+  }
+
+  .search-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .search-bar input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+    transition: border 0.3s;
+  }
+
+  .search-bar input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+
+  .barber-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+
+  .barber-item {
+    position: relative;
+    padding: 15px;
+    border-radius: 8px;
+    background: url('https://via.placeholder.com/250') no-repeat center center/cover;
+    /* Imagen de fondo */
+    color: white;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .barber-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .barber-item h3 {
+    margin: 0;
+    background: rgba(0, 0, 0, 0.5);
+    /* Fondo oscuro para el texto */
+    padding: 5px;
+    border-radius: 4px;
+  }
+
+  .map {
+    height: 200px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .barber-options {
+    margin-top: 20px;
+  }
+
+  .barber-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .barber-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .barber-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .date-carousel {
+    display: flex;
+    overflow-x: auto;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+
+  .date-item {
+    background: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+    flex: none;
+    min-width: 60px;
+    text-align: center;
+    transition: background 0.3s;
+  }
+
+  .date-item:hover {
+    background: #2b0f3b;
+  }
+
+  .time-options {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .time-button {
+    background: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+    flex: 1 0 30%;
+    text-align: center;
+    transition: background 0.3s;
+  }
+
+  .time-button:hover {
+    background: #2b0f3b;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .btn:hover {
+    background-color: #2b0f3b;
+  }
 </style>
 
-<body>
 
-  <div class="container-fluid">
-    <div class="row g-2">
-      <!-- Mapa y buscador -->
-      <div class="col-md-9 map-section">
-        <div id="map"></div>
-        <div class="d-flex gap-2 search-bar">
-          <input type="text" class="form-control" id="inputSearch" placeholder="Buscar en el mapa...">
-          <button class="btn btn-outline-secondary" type="button" id="btnSearch">Buscar</button>
-        </div>
-      </div>
 
-      <!-- Lista de lugares -->
-      <div class="col-md-3 results-section">
-        <div id="listPlaces"></div>
-      </div>
-    </div>
+<div class="container">
+  <h1>Agendar Cita en Barbería</h1>
+
+  <div id="map"></div>
+  <div class="d-flex gap-2 search-bar">
+    <input type="text" class="form-control" id="inputSearch" placeholder="Buscar en el mapa...">
+    <button class="btn btn-outline-secondary" type="button" id="btnSearch">Buscar</button>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Tu script personalizado (incluye toda la lógica del mapa y búsqueda) -->
-  <script>
-    // Aquí pega el código JavaScript completo que me compartiste, tal cual.
-    // (No lo repito por extensión, pero ya sabes cuál es).
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch('http://127.0.0.1:8000/services_module/getmap/').then(response => {
-        if (response.ok) {
-          response.json().then(data => {
-            (g => {
-              var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window;
-              b = b[c] || (b[c] = {});
-              var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => {
-                await (a = m.createElement("script"));
-                e.set("libraries", [...r] + "");
-                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-                e.set("callback", c + ".maps." + q);
-                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-                d[q] = f;
-                a.onerror = () => h = n(Error(p + " could not load."));
-                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-                m.head.append(a)
-              }));
-              d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-            })({
-              key: data.mapApiKey,
-              v: "weekly"
-            });
-            initMap();
-          });
-        }
-      });
+  <ul class="barber-list">
+    <li class="barber-item"
+      style="background: url('https://d375139ucebi94.cloudfront.net/region2/es/126246/biz_photo/5e0e38ef9af34dfeae554fb19e2348-barbershop-melvin-stilo-plaza--biz-photo-97d6148b5a454d78af4eb82d6da2ea-booksy.jpeg?size=640x427') no-repeat center center/cover;"
+      onclick="selectBarber('Barbería Estilo', ['Juan', 'Carlos'], ['Lunes', 'Martes'], ['10:00 AM', '11:00 AM'])">
+      <h3>Barbería Estilo</h3>
+      <p>Barberos: Juan, Carlos</p>
+    </li>
+    <li class="barber-item"
+      style="background: url('https://gentleman.com.mx/wp-content/uploads/2019/02/barberias-ciudad-de-mexico.jpg') no-repeat center center/cover;"
+      onclick="selectBarber('Corte Perfecto', ['Pedro', 'Luis'], ['Miércoles', 'Jueves'], ['2:00 PM', '3:00 PM'])">
+      <h3>Corte Perfecto</h3>
+      <p>Barberos: Pedro, Luis</p>
+    </li>
+    <li class="barber-item"
+      style="background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIIHl4l4ehTRjP_uk6z0sBw1LPj8bnx6gQAQ&s') no-repeat center center/cover;"
+      onclick="selectBarber('Barbería Moderna', ['Andrés', 'Fernando'], ['Viernes'], ['4:00 PM', '5:00 PM'])">
+      <h3>Barbería Moderna</h3>
+      <p>Barberos: Andrés, Fernando</p>
+    </li>
+  </ul>
+
+
+  <div id="service-options" class="service-options" style="display:none;">
+    <h2>Selecciona un Servicio:</h2>
+    <div id="available-services"></div>
+  </div>
+
+  <div id="barber-options" class="barber-options" style="display:none;">
+    <h2>Selecciona a tu Barbero: <span id="barber-name"></span></h2>
+    <h3>Barberos Disponibles:</h3>
+    <div id="available-barbers"></div>
+
+    <h3>Selecciona una Fecha:</h3>
+    <div class="date-carousel" id="date-carousel"></div>
+
+    <h3>Horarios Disponibles:</h3>
+    <div id="time-options" class="time-options"></div>
+    <button class="btn" onclick="confirmAppointment()">Confirmar Cita</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>Cita Confirmada</h2>
+    <p>Recuerda llegar puntual. La cita es un turno y si no llegas a tiempo, podrías perderla.</p>
+    <button class="btn" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+
+<script>
+  function selectService(barberName, barbers, days, times) {
+    document.getElementById('barber-name').innerText = barberName;
+    const availableServicesDiv = document.getElementById('available-services');
+    availableServicesDiv.innerHTML = '';
+
+    // Simulación de servicios disponibles
+    const services = [
+      { name: "Corte de Cabello", duration: "30 min" },
+      { name: "Afeitado", duration: "15 min" },
+      { name: "Corte y Afeitado", duration: "45 min" }
+    ];
+
+    services.forEach(service => {
+      const serviceCard = document.createElement('div');
+      serviceCard.className = 'service-card';
+      serviceCard.onclick = () => {
+        selectBarber(barberName, barbers, days, times);
+        console.log(`Seleccionaste el servicio: ${service.name}`);
+      };
+      serviceCard.innerHTML = `
+                <div>${service.name} - ${service.duration}</div>
+            `;
+      availableServicesDiv.appendChild(serviceCard);
     });
 
-    let map;
+    document.getElementById('service-options').style.display = 'block';
+  }
 
-    async function initMap() {
-      const { Map } = await google.maps.importLibrary("maps");
-      const { PlacesService } = await google.maps.importLibrary("places");
-      let ubicationUser = new google.maps.LatLng(4.679531063698843, -74.04015630448359);
+  function selectBarber(barberName, barbers, days, times) {
+    const availableBarbersDiv = document.getElementById('available-barbers');
+    availableBarbersDiv.innerHTML = '';
+    barbers.forEach(barber => {
+      const barberCard = document.createElement('div');
+      barberCard.className = 'barber-card';
+      barberCard.onclick = () => console.log(`Seleccionaste al barbero: ${barber}`);
+      barberCard.innerHTML = `
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBkbWdLjn0f5czHenHIcsiZ5E6MWtFGQsABA&s" alt="${barber}">
+                <div>${barber}</div>
+            `;
+      availableBarbersDiv.appendChild(barberCard);
+    });
+    document.getElementById('barber-options').style.display = 'block';
+    populateDates(days);
+    populateTimes(times);
+  }
 
-      map = new Map(document.getElementById("map"), {
-        center: ubicationUser,
-        zoom: 15,
-      });
+  function populateDates(days) {
+    const dateCarousel = document.getElementById('date-carousel');
+    dateCarousel.innerHTML = '';
+    const currentDate = new Date();
+    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
 
-      let inputSearch = document.getElementById("inputSearch");
-      document.getElementById("btnSearch").addEventListener("click", function () {
-        let searchValue = inputSearch.value;
-        if (searchValue) {
-          const request = {
-            location: '4.679531063698843,-74.04015630448359',
-            query: searchValue,
-            radius: 500
-          };
-          getPlacesList(request);
-        } else {
-          alert("Por favor ingrese un lugar a buscar");
-        }
-      });
+    // Generar fechas del mes actual
+    for (let i = 1; i <= 30; i++) {
+      const dateItem = document.createElement('div');
+      dateItem.className = 'date-item';
+      dateItem.innerHTML = `<div>${monthNames[month]}</div><div>${i}</div>`;
+      dateItem.onclick = () => selectDate(i);
+      dateCarousel.appendChild(dateItem);
     }
+  }
 
-    function createMarker(place) {
-      if (!place.geometry || !place.geometry.location) return;
+  function selectDate(day) {
+    console.log(`Fecha seleccionada: ${day}`);
+  }
 
-      const marker = new google.maps.Marker({
-        map,
-        position: place.geometry.location,
-      });
+  function populateTimes(times) {
+    const timeOptions = document.getElementById('time-options');
+    timeOptions.innerHTML = '';
+    times.forEach(time => {
+      const timeButton = document.createElement('button');
+      timeButton.className = 'time-button';
+      timeButton.innerText = time;
+      timeButton.onclick = () => selectTime(time);
+      timeOptions.appendChild(timeButton);
+    });
+  }
 
-      google.maps.event.addListener(marker, "click", () => {
-        infowindow.setContent(place.name || "");
-        infowindow.open(map);
-      });
-    }
+  function selectTime(time) {
+    console.log(`Hora seleccionada: ${time}`);
+  }
 
-    function getPlacesList(params) {
-      let url = 'http://127.0.0.1:8000/services_module/getplacesbysearch';
-      url += `?query=${params.query}&location=${params.location}&radius=${params.radius}`;
-      fetch(url).then(response => {
-        if (response.ok) {
-          response.json().then(data => {
-            for (let i = 0; i < data.results.length; i++) {
-              createMarker(data.results[i]);
-            }
-            loadPlacesList(data.results);
-            map.setCenter(data.results[0].geometry.location);
+  function confirmAppointment() {
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
+</script>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Tu script personalizado (incluye toda la lógica del mapa y búsqueda) -->
+<script>
+  // Aquí pega el código JavaScript completo que me compartiste, tal cual.
+  // (No lo repito por extensión, pero ya sabes cuál es).
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('http://127.0.0.1:8000/services_module/getmap/').then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+          (g => {
+            var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window;
+            b = b[c] || (b[c] = {});
+            var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => {
+              await (a = m.createElement("script"));
+              e.set("libraries", [...r] + "");
+              for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+              e.set("callback", c + ".maps." + q);
+              a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+              d[q] = f;
+              a.onerror = () => h = n(Error(p + " could not load."));
+              a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+              m.head.append(a)
+            }));
+            d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+          })({
+            key: data.mapApiKey,
+            v: "weekly"
           });
-        }
-      });
-    }
+          initMap();
+        });
+      }
+    });
+  });
 
-    function loadPlacesList(dataPlaces) {
-      let list = document.getElementById("listPlaces");
-      list.innerHTML = '';
-      dataPlaces.forEach((place) => {
-        const card = document.createElement('div');
-        card.className = 'card mb-2';
-        card.style.width = '100%';
-        card.innerHTML = `
+  let map;
+
+  async function initMap() {
+    const { Map } = await google.maps.importLibrary("maps");
+    const { PlacesService } = await google.maps.importLibrary("places");
+    let ubicationUser = new google.maps.LatLng(4.679531063698843, -74.04015630448359);
+
+    map = new Map(document.getElementById("map"), {
+      center: ubicationUser,
+      zoom: 15,
+    });
+
+    let inputSearch = document.getElementById("inputSearch");
+    document.getElementById("btnSearch").addEventListener("click", function () {
+      let searchValue = inputSearch.value;
+      if (searchValue) {
+        const request = {
+          location: '4.679531063698843,-74.04015630448359',
+          query: searchValue,
+          radius: 500
+        };
+        getPlacesList(request);
+      } else {
+        alert("Por favor ingrese un lugar a buscar");
+      }
+    });
+  }
+
+  function createMarker(place) {
+    if (!place.geometry || !place.geometry.location) return;
+
+    const marker = new google.maps.Marker({
+      map,
+      position: place.geometry.location,
+    });
+
+    google.maps.event.addListener(marker, "click", () => {
+      infowindow.setContent(place.name || "");
+      infowindow.open(map);
+    });
+  }
+
+  function getPlacesList(params) {
+    let url = 'http://127.0.0.1:8000/services_module/getplacesbysearch';
+    url += `?query=${params.query}&location=${params.location}&radius=${params.radius}`;
+    fetch(url).then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+          for (let i = 0; i < data.results.length; i++) {
+            createMarker(data.results[i]);
+          }
+          loadPlacesList(data.results);
+          map.setCenter(data.results[0].geometry.location);
+        });
+      }
+    });
+  }
+
+  function loadPlacesList(dataPlaces) {
+    let list = document.getElementById("listPlaces");
+    list.innerHTML = '';
+    dataPlaces.forEach((place) => {
+      const card = document.createElement('div');
+      card.className = 'card mb-2';
+      card.style.width = '100%';
+      card.innerHTML = `
                 <img src="https://placehold.co/100x50" class="card-img-top" alt="${place.name}">
                 <div class="card-body">
                     <h6 class="card-title">${place.name}</h6>
@@ -181,22 +529,21 @@
                     </div>
                 </div>
             `;
-        list.appendChild(card);
-      });
-    }
-  </script>
+      list.appendChild(card);
+    });
+  }
+</script>
 
 
-  {% block extra_js %}
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
-  <script src="../static/js/map-services.js"></script>
-  <script src="../static/js/map.js"></script>
-  {% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<script src="../static/js/map-services.js"></script>
+<script src="../static/js/map.js"></script>
+{% endblock %}
 
-  <!-- Modales de Detalle de cada Cita -->
+<!-- Modales de Detalle de cada Cita -->
 
-  {% for cita in citas %}
-  {% endfor %}
-  {% endblock %}
+{% for cita in citas %}
+{% endfor %}
+{% endblock %}
