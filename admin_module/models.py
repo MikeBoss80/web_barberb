@@ -23,6 +23,16 @@ class ScheduleAssignment(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
 
+      # tabla de categoria de producto
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
+
 # Tabla: admin_module_products
 class Product(models.Model):
     name_product = models.CharField(max_length=30)
@@ -31,9 +41,13 @@ class Product(models.Model):
     minimum_stock = models.IntegerField(default=0)
     price_product = models.DecimalField(max_digits=8, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name="productos", default=1)
 
     def __str__(self):
         return self.name_product
+
+  
+    
 
 # Tabla: admin_module_establishment
 class Establishment(models.Model):
@@ -63,6 +77,7 @@ class Service(models.Model):
     price_service = models.DecimalField(max_digits=8, decimal_places=2)
     duration = models.PositiveSmallIntegerField()
     active = models.BooleanField(default=True)
+   
 
     def __str__(self):
         return self.name_service
@@ -76,3 +91,6 @@ class EstablishmentService(models.Model):
 class Inventory(models.Model):
     establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+
