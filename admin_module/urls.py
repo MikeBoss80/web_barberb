@@ -4,6 +4,9 @@ from admin_module.views import CitasView,InventarioListView,ProductCreateView,Pr
 
 from django.contrib.auth.views import LogoutView
 
+from . import views
+
+
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
 app_name = 'admin_module'
 
@@ -32,6 +35,9 @@ urlpatterns = [
     path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para guardar
     path('solicitudes/barberos/', AdminSolicitudesListView.as_view(), name='admin_solicitudes_list'),
     path('solicitudes/barberos/<int:pk>/', AdminSolicitudesDetailView.as_view(), name='admin_solicitud_detalle'),
-
+    path('servicios/', views.ServiciosView.as_view(), name='servicios'),
+    path('servicio/agregar/', views.agregar_servicio, name='agregar_servicio'),
+    path('servicio/editar/<int:id>/', views.editar_servicio, name='editar_servicio'),
+    path('servicio/eliminar/<int:id>/', views.eliminar_servicio, name='eliminar_servicio'),
 
 ]   

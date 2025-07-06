@@ -7,15 +7,22 @@ from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from .models import Product, Establishment,Inventory
+from .models import Product, Establishment,Inventory, Service, Category
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm
 from django.views.generic.edit import FormView
+from collections import defaultdict
+from admin_module.models import Category 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
+
 
 
 
@@ -248,10 +255,47 @@ class CalendarioBarberoView(View):
         }
         return render(request, 'calendario_barbero.html', context)
 
-class ServiciosView(BreadcrumbMixin, TemplateView):
-     template_name= 'establecimiento\servicios.html'
-     def get_breadcrumb(self):
-        return [{'label': 'Servicios', 'url': reverse('admin_module:servicios')}]
+# Vista para mostrar servicios
+class ServiciosView(View):
+    def get(self, request):
+        servicios = Service.objects.all().select_related('category')
+        return render(request, 'admin_module/servicios.html', {'servicios': servicios})
+
+# Agregar servicio
+def agregar_servicio(request):
+    if request.method == 'POST':
+        form = CreateServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_module:servicios')
+        else:
+            # Aquí se imprime en consola si hay errores
+            print("⚠️ Errores del formulario:", form.errors)
+    else:
+        form = CreateServiceForm()
+    
+    return render(request, 'admin_module/form_servicio.html', {
+    'form': form,
+    'action_url': reverse('admin_module:agregar_servicio')
+})# Editar servicio
+def editar_servicio(request, id):
+    servicio = get_object_or_404(Service, id=id)
+    if request.method == 'POST':
+        form = CreateServiceForm(request.POST, instance=servicio)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_module:servicios')
+    else:
+        form = CreateServiceForm(instance=servicio)
+        return render(request, 'admin_module/form_servicio.html', {
+    'form': form,
+    'action_url': reverse('admin_module:editar_servicio', args=[servicio.id])
+})
+# Eliminar servicio
+def eliminar_servicio(request, id):
+    servicio = get_object_or_404(Service, id=id)
+    servicio.delete()
+    return redirect('admin_module:servicios')
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
@@ -441,5 +485,6 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-    def get_success_url(self):
+def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')    
+    
