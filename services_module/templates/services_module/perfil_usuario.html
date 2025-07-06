@@ -1,4 +1,3 @@
-
 {% extends "services_module/base_services.html" %}
 {% load static %}
 
@@ -69,32 +68,19 @@
         font-weight: bold;
         margin: 0;
     }
-
-    .modal-body::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb {
-        background-color: #888;
-        border-radius: 10px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb:hover {
-        background-color: #555;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-4 px-5">
+<div class="container mt-5">
     <h2 class="mb-4">Mi Perfil</h2>
 
     <div id="mensaje-alerta"></div>
 
     <div class="row">
         <!-- Columna Izquierda -->
-        <div class="col-lg-6 mb-4">
-            <div class="card p-4 shadow-sm rounded h-100">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm rounded">
                 <div class="perfil-img-container">
                     <img src="{% static 'barber_module/img/default_profile.jpg' %}" alt="Foto de perfil" id="vista-previa" class="perfil-img">
                 </div>
@@ -104,7 +90,6 @@
                 <p><strong>Apellido:</strong> <span id="apellido-usuario">{{ usuario.last_name }}</span></p>
                 <p><strong>Correo:</strong> <span id="correo-usuario">{{ usuario.email }}</span></p>
                 <p><strong>Teléfono:</strong> <span id="telefono-usuario">{{ usuario.telefono }}</span></p>
-                <p><strong>Dirección:</strong> <span id="direccion-usuario">{{ usuario.direccion }}</span></p>
                 <p><strong>Contraseña:</strong> 
                     <input type="password" id="password-oculta" class="form-control d-inline-block" style="width:auto; display:inline-block;" value="********" readonly>
                     <button type="button" class="btn btn-sm btn-outline-dark ml-2" onclick="togglePassword()">Mostrar</button>
@@ -117,8 +102,8 @@
         </div>
 
         <!-- Columna Derecha -->
-        <div class="col-lg-6 mb-4">
-            <div class="card p-4 shadow-sm rounded h-100">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm rounded">
                 <h4>Citas Agendadas</h4>
 
                 <div class="card bg-light p-3 mb-3">
@@ -137,7 +122,7 @@
     </div>
 
     <!-- Tarjeta Unificada de Estadísticas -->
-    <div class="card mt-2 p-4 shadow-sm rounded">
+    <div class="card mt-4 p-4 shadow-sm rounded">
         <div class="stats-container">
             <div class="stats-item">
                 <h5>Citas Completadas</h5>
@@ -161,35 +146,17 @@
 
 <!-- Modal Editar Perfil -->
 <div class="modal fade" id="editarPerfilModal" tabindex="-1" role="dialog" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 400px;">
+    <div class="modal-dialog" role="document">
         <form id="formEditarPerfil">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Editar Perfil</h5>
                     <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
-
-                <div class="modal-body" style="max-height: 45vh; overflow-y: auto;">
-                    <style>
-                        .modal-body .form-group {
-                            margin-bottom: 0.6rem;
-                        }
-                        .modal-body .form-control {
-                            padding: 0.3rem 0.6rem;
-                            font-size: 0.9rem;
-                        }
-                        .modal-body .perfil-img {
-                            width: 100px;
-                            height: 100px;
-                            object-fit: cover;
-                            border-radius: 50%;
-                            border: 2px solid #3e1a4e;
-                        }
-                    </style>
-
+                <div class="modal-body">
                     <div class="form-group text-center">
-                        <img src="{% static 'barber_module/img/default_profile.jpg' %}" alt="Vista previa" id="preview-editar" class="perfil-img mb-2">
-                        <input type="file" class="form-control mt-2" id="fotoPerfil">
+                        <img src="{% static 'barber_module/img/default_profile.jpg' %}" alt="Vista previa" id="preview-editar" class="perfil-img mb-3">
+                        <input type="file" class="form-control" id="fotoPerfil">
                     </div>
                     <div class="form-group">
                         <label for="username">Usuario</label>
@@ -236,7 +203,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-morado">Guardar Cambios</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -245,7 +211,6 @@
         </form>
     </div>
 </div>
-
 
 <!-- Modal Cambiar Contraseña -->
 <div class="modal fade" id="cambiarContrasenaModal" tabindex="-1" role="dialog" aria-labelledby="cambiarContrasenaModalLabel" aria-hidden="true">
@@ -295,14 +260,12 @@ $(document).ready(function () {
         const correo = $('#email').val();
         const telefono = $('#telefono').val();
         const username = $('#username').val();
-        const direccion = $('#direccion').val();
 
         $('#nombre-usuario').text(nombre);
         $('#apellido-usuario').text(apellido);
         $('#correo-usuario').text(correo);
         $('#telefono-usuario').text(telefono);
         $('#username-usuario').text(username);
-        $('#direccion-usuario').text(direccion);
 
         const fileInput = $('#fotoPerfil')[0];
         if (fileInput.files && fileInput.files[0]) {
@@ -332,5 +295,3 @@ $(document).ready(function () {
 });
 </script>
 {% endblock %}
-
-
