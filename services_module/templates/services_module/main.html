@@ -2,17 +2,17 @@
 
 {% load static %}
 
-
 {% block title %}Agenda de Citas{% endblock %}
-
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'services_module/css/map.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
   integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-{% endblock %}
+<!-- Flatpickr CSS -->
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
+{% endblock %}
 
 {% block content %}
 
@@ -24,14 +24,25 @@
     padding: 0;
   }
 
+  .map-container {
+    padding: 20px;
+    /* Espacio interno para evitar que todo esté pegado */
+  }
+
   #map {
-    width: 100%;
-    height: 100%;
-    min-height: 400px;
+    width: 650px;
+    height: 380px;
+    margin: 0 auto;
+    /* centra horizontalmente */
+    border: 1px solid #ccc;
+    /* opcional, solo para ver el borde */
+    display: block;
+    /* asegura que margin: auto funcione */
   }
 
   .map-section {
-    height: 80vh;
+    height: auto;
+    /* Cambiado para que el mapa ocupe menos espacio */
   }
 
   .results-section {
@@ -39,8 +50,28 @@
     overflow-y: auto;
   }
 
+  .search-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
   .search-bar {
-    margin-top: 10px;
+    width: 800px;
+    /* Puedes ajustar este ancho */
+  }
+
+  #subtitle h1 {
+    color: #6f42c1;
+    /* morado Bootstrap */
+    font-weight: bold;
+    font-size: 3rem;
+    margin: 0;
+    text-shadow:
+      1px 1px 2px white,
+      /* sombra blanca suave */
+      2px 2px 6px rgba(0, 0, 0, 0.6);
+    /* sombra negra más marcada */
   }
 
   :root {
@@ -66,16 +97,22 @@
     font-family: 'Roboto', sans-serif;
     background-color: var(--light-bg);
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    /* Eliminado padding alrededor del body */
   }
 
   .container {
-    max-width: 800px;
-    margin: auto;
+    max-width: 100%;
+    /* Cambiado para ocupar todo el ancho */
+    margin: 0;
+    /* Eliminado margen */
+    padding: 10px;
+    /* Padding reducido */
     background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    /* Sin bordes redondeados */
+    box-shadow: none;
+    /* Sin sombra */
   }
 
   h1 {
@@ -106,15 +143,17 @@
 
   .barber-list {
     list-style: none;
-    padding: 0;
+    padding: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 15px;
   }
 
   .barber-item {
+    width: 400px;
+    height: 110px;
     position: relative;
-    padding: 15px;
+    padding: 0px;
     border-radius: 8px;
     background: url('https://via.placeholder.com/250') no-repeat center center/cover;
     /* Imagen de fondo */
@@ -137,11 +176,17 @@
     border-radius: 4px;
   }
 
-  .map {
-    height: 200px;
-    background-color: #e0e0e0;
-    border-radius: 8px;
-    margin: 20px 0;
+  .service-card {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .service-card:hover {
+    background: #f0f0f0;
   }
 
   .barber-options {
@@ -253,60 +298,189 @@
   .btn:hover {
     background-color: #2b0f3b;
   }
+
+  #calendario {
+    max-width: 300px;
+    margin: 40px auto;
+    align-self: center;
+  }
+
+  .flatpickr-calendar {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 16px;
+    margin: 0 auto;
+  }
+
+
+
+/* Mejora responsiva en barber-item */
+.barber-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: none; /* Quitar borde */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+/* Estilo personalizado del acordeón */
+.accordion-button {
+  background-color: #f1f1f1;
+  color: #333;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #e2e3e5; /* gris claro al expandir */
+  color: #000;
+  box-shadow: none;
+}
+
+.accordion-item {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.accordion-body {
+  background-color: #fff;
+  padding: 1rem;
+}
+
+/* Botón acordeón al pasar el cursor */
+.accordion-button:hover {
+  background-color: #e8e9ea;
+}
+
 </style>
-
-
 
 <div class="container">
   <h1>Agendar Cita en Barbería</h1>
 
-  <div id="map"></div>
-  <div class="d-flex gap-2 search-bar">
-    <input type="text" class="form-control" id="inputSearch" placeholder="Buscar en el mapa...">
-    <button class="btn btn-outline-secondary" type="button" id="btnSearch">Buscar</button>
+  <div class="accordion" id="miAccordion">
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingUno">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUno"
+          aria-expanded="true" aria-controls="collapseUno">
+          Establecimientos
+        </button>
+      </h2>
+      <div id="collapseUno" class="accordion-collapse collapse show" aria-labelledby="headingUno"
+        data-bs-parent="#miAccordion">
+        <div class="accordion-body">
+          <div class="map-container">
+            <div class="search-wrapper">
+              <div class="d-flex gap-2 search-bar">
+                <input type="text" class="form-control" id="inputSearch" placeholder="Buscar barberias cercanas...">
+                <button class="btn btn-outline-secondary" type="button" id="btnSearch">Buscar</button>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-4"> <!-- Flex row aquí -->
+              <div id="subtitle">
+                <ul class="barber-list">
+                  <li class="barber-item"
+                    style="background: url('https://d375139ucebi94.cloudfront.net/region2/es/126246/biz_photo/5e0e38ef9af34dfeae554fb19e2348-barbershop-melvin-stilo-plaza--biz-photo-97d6148b5a454d78af4eb82d6da2ea-booksy.jpeg?size=640x427') no-repeat center center/cover;"
+                    onclick="selectService('Barbería Estilo', ['Juan', 'Carlos'], ['Lunes', 'Martes'], ['10:00 AM', '11:00 AM'])">
+                    <h3>Barbería Estilo</h3>
+                    <p>Barberos: Juan, Carlos</p>
+                  </li>
+                  <li class="barber-item"
+                    style="background: url('https://gentleman.com.mx/wp-content/uploads/2019/02/barberias-ciudad-de-mexico.jpg') no-repeat center center/cover;"
+                    onclick="selectService('Corte Perfecto', ['Pedro', 'Luis'], ['Miércoles', 'Jueves'], ['2:00 PM', '3:00 PM'])">
+                    <h3>Corte Perfecto</h3>
+                    <p>Barberos: Pedro, Luis</p>
+                  </li>
+                  <li class="barber-item"
+                    style="background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIIHl4l4ehTRjP_uk6z0sBw1LPj8bnx6gQAQ&s') no-repeat center center/cover;"
+                    onclick="selectService('Barbería Moderna', ['Andrés', 'Fernando'], ['Viernes'], ['4:00 PM', '5:00 PM'])">
+                    <h3>Barbería Moderna</h3>
+                    <p>Barberos: Andrés, Fernando</p>
+                  </li>
+                </ul>
+              </div>
+              <div id="map"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingDos">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDos"
+          aria-expanded="false" aria-controls="collapseDos">
+          Servicios
+        </button>
+      </h2>
+      <div id="collapseDos" class="accordion-collapse collapse" aria-labelledby="headingDos"
+        data-bs-parent="#miAccordion">
+        <div class="accordion-body">
+          <div id="service-options" class="service-options" style="display:none;">
+            <h2>Selecciona un Servicio:</h2>
+            <div id="available-services"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTres">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseTres" aria-expanded="false" aria-controls="collapseTres">
+          Barberos
+        </button>
+      </h2>
+      <div id="collapseTres" class="accordion-collapse collapse" aria-labelledby="headingTres"
+        data-bs-parent="#miAccordion">
+        <div class="accordion-body">
+          <div id="barber-options" class="barber-options" style="display:none;">
+            <h2>Selecciona a tu Barbero: <span id="barber-name"></span></h2>
+            <h3>Barberos Disponibles:</h3>
+            <div id="available-barbers"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingHorarios">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseHorarios" aria-expanded="false" aria-controls="collapseHorarios">
+          Horarios
+        </button>
+      </h2>
+      <div id="collapseHorarios" class="accordion-collapse collapse" aria-labelledby="headingHorarios"
+        data-bs-parent="#miAccordion">
+        <div class="accordion-body">
+          <div class="row">
+
+            <div class="col-md-6">
+              <h3 class="text-center">Selecciona una fecha</h3>
+              <div id="calendario" class="bg-light p-3 rounded shadow-sm"></div>
+            </div>
+
+            <!-- Horarios (Izquierda) -->
+            <div class="col-md-6">
+              <h3>Horarios disponibles:</h3>
+              <div id="time-options" class="time-options"> </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-
-  <ul class="barber-list">
-    <li class="barber-item"
-      style="background: url('https://d375139ucebi94.cloudfront.net/region2/es/126246/biz_photo/5e0e38ef9af34dfeae554fb19e2348-barbershop-melvin-stilo-plaza--biz-photo-97d6148b5a454d78af4eb82d6da2ea-booksy.jpeg?size=640x427') no-repeat center center/cover;"
-      onclick="selectBarber('Barbería Estilo', ['Juan', 'Carlos'], ['Lunes', 'Martes'], ['10:00 AM', '11:00 AM'])">
-      <h3>Barbería Estilo</h3>
-      <p>Barberos: Juan, Carlos</p>
-    </li>
-    <li class="barber-item"
-      style="background: url('https://gentleman.com.mx/wp-content/uploads/2019/02/barberias-ciudad-de-mexico.jpg') no-repeat center center/cover;"
-      onclick="selectBarber('Corte Perfecto', ['Pedro', 'Luis'], ['Miércoles', 'Jueves'], ['2:00 PM', '3:00 PM'])">
-      <h3>Corte Perfecto</h3>
-      <p>Barberos: Pedro, Luis</p>
-    </li>
-    <li class="barber-item"
-      style="background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIIHl4l4ehTRjP_uk6z0sBw1LPj8bnx6gQAQ&s') no-repeat center center/cover;"
-      onclick="selectBarber('Barbería Moderna', ['Andrés', 'Fernando'], ['Viernes'], ['4:00 PM', '5:00 PM'])">
-      <h3>Barbería Moderna</h3>
-      <p>Barberos: Andrés, Fernando</p>
-    </li>
-  </ul>
-
-
-  <div id="service-options" class="service-options" style="display:none;">
-    <h2>Selecciona un Servicio:</h2>
-    <div id="available-services"></div>
-  </div>
-
-  <div id="barber-options" class="barber-options" style="display:none;">
-    <h2>Selecciona a tu Barbero: <span id="barber-name"></span></h2>
-    <h3>Barberos Disponibles:</h3>
-    <div id="available-barbers"></div>
-
-    <h3>Selecciona una Fecha:</h3>
-    <div class="date-carousel" id="date-carousel"></div>
-
-    <h3>Horarios Disponibles:</h3>
-    <div id="time-options" class="time-options"></div>
-    <button class="btn" onclick="confirmAppointment()">Confirmar Cita</button>
-  </div>
+  <button class="btn" onclick="confirmAppointment()">Confirmar Cita</button>
 </div>
+</div>
+
+
 
 <div class="modal" id="modal">
   <div class="modal-content">
@@ -315,7 +489,6 @@
     <button class="btn" onclick="closeModal()">Cerrar</button>
   </div>
 </div>
-
 
 <script>
   function selectService(barberName, barbers, days, times) {
@@ -411,14 +584,11 @@
   }
 </script>
 
-
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Tu script personalizado (incluye toda la lógica del mapa y búsqueda) -->
 <script>
-  // Aquí pega el código JavaScript completo que me compartiste, tal cual.
-  // (No lo repito por extensión, pero ya sabes cuál es).
   document.addEventListener('DOMContentLoaded', function () {
     fetch('http://127.0.0.1:8000/services_module/getmap/').then(response => {
       if (response.ok) {
@@ -534,7 +704,6 @@
   }
 </script>
 
-
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
@@ -542,7 +711,16 @@
 <script src="../static/js/map.js"></script>
 {% endblock %}
 
-<!-- Modales de Detalle de cada Cita -->
+<!-- JS de Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  flatpickr("#calendario", {
+    inline: true,
+    dateFormat: "Y-m-d",
+    defaultDate: "today"
+  });
+</script>
+
 
 {% for cita in citas %}
 {% endfor %}
