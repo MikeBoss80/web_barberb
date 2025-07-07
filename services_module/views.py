@@ -12,6 +12,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.views import LogoutView
 from datetime import date, time
 from django.utils import timezone
+from admin_module.models import Establishment, EstablishmentService, Service , Schedule, ScheduleAssignment
 
 
 
@@ -21,13 +22,20 @@ class HomeServicesView(BreadcrumbMixins, TemplateView):
     """Vista Principal Modulo Services"""
     template_name = 'services_module/main.html'
     login_url = '/login_module/login/'
-    
+    context_object_name = 'barberias'
+
     def get_breadcrumb(self):
         return []
 
-    #DATPS TEMPORALES
+    def get_queryset(self):
+        # Filtramos solo establecimientos que sean barberías
+        # Asumiendo que tienes un campo 'type' o similar en Establishment
+        return Establishment.objects.get()  # Ajusta según tu modelo
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Puedes agregar más contexto si lo necesitas
+        return context
 
    
 class ServicesCitasView(BreadcrumbMixins, TemplateView):

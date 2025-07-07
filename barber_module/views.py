@@ -11,6 +11,8 @@ from django.contrib import messages
 from login_module.models import Profile  # Si tienes relación barbero <-> establecimiento en Profile
 from .models import BarberRequest
 from .forms import BarberRequestForm
+from admin_module.utils.mixins import CitasQuerysetMixin
+
 
 
 from django.views.generic import TemplateView
@@ -56,7 +58,7 @@ class HomeBarberView(BreadcrumbMixin, TemplateView):
 class barberView(TemplateView):
     template_name = 'historial_servicios.html'
     
-class BarberCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
+class BarberCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView,CitasQuerysetMixin):
     template_name = 'citas_barbero.html'
 
     def test_func(self):
@@ -68,58 +70,11 @@ class BarberCitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
     def get_breadcrumb(self):
         return [{'label': 'Citas Barbero', 'url': reverse('barber_module:citas_barbero')}]
 
+    context_object_name = 'dates'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
+        return self.get_citas_queryset(user=self.request.user, filter_by_barber=True)
 
-        hoy = date.today()
-        #citas = Cita.objects.filter(fecha=hoy)
-        citas = [
-            {
-                'id': 1,
-                'cliente': 'Juan Pérez',
-                'fecha': date.today(),
-                'hora': time(10, 00),
-                'barbero': 'Carlos',
-                'servicio': 'Corte de cabello',
-                'estado': 'completada',
-                'notas': 'Cliente puntual',
-            },
-            {
-                'id': 2,
-                'cliente': 'Laura Gómez',
-                'fecha': date.today(),
-                'hora': time(11, 30),
-                'barbero': 'Luis',
-                'servicio': 'Barba + Corte',
-                'estado': 'pendiente',
-                'notas': '',
-            },
-            {
-                'id': 3,
-                'cliente': 'Andrés Ramírez',
-                'fecha': date.today(),
-                'hora': time(13, 00),
-                'barbero': 'Carlos',
-                'servicio': 'Color y corte',
-                'estado': 'cancelada',
-                'notas': 'Canceló por WhatsApp',
-            },
-        ]
-
-     
-        resumen = {
-            'total_citas': len(citas),
-            'completadas': len([c for c in citas if c['estado'] == 'completada']),
-            'pendientes': len([c for c in citas if c['estado'] == 'pendiente']),
-            'canceladas': len([c for c in citas if c['estado'] == 'cancelada']),
-        }
-
-        context['citas'] = citas
-        context['resumen'] = resumen
-        context['fecha_actual'] = date.today()
-
-        return context
 
 class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
 
