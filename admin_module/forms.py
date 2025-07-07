@@ -145,3 +145,7 @@ class CreateServiceForm(forms.ModelForm):
             'duration': forms.NumberInput(attrs={'class': 'form-control'}),
             'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+
+class UploadServiceFile(forms.Form):
+    file = forms.FileField(label = "Subir carta de servicios (PDF o Imagen)")

@@ -23,6 +23,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
+from admin_module.utils.mixins import CitasQuerysetMixin
+
 
 
 
@@ -99,7 +101,7 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
 
         return context
 
-class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
+class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQuerysetMixin):
     template_name = 'citas/citas.html'
 
     # Validación: solo los usuarios en el grupo 'Administrador' pueden acceder
@@ -161,6 +163,11 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
         context['total_dates'] = date.today()
 
         return context
+    
+    context_object_name = 'dates'
+
+    def get_queryset(self):
+        return self.get_citas_queryset()
 
 def cancelar_cita(request):
     if request.method == "POST":
@@ -344,6 +351,8 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         return context
 
 class InventarioListView(ListView):
+
+    
     # product = Product
     template_name = 'inventario/inventario.html'
     
