@@ -300,6 +300,8 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         return context
 
 class InventarioListView(ListView):
+
+    
     # product = Product
     template_name = 'inventario/inventario.html'
     

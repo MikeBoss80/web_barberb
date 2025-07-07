@@ -2,17 +2,12 @@
 
 {% load static %}
 
-
 {% block title %}Agenda de Citas{% endblock %}
-
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
 {% endblock %}
-
 
 {% block content %}
 
@@ -123,18 +118,17 @@
                             <td>{{ date.service.establishment.name_est }}</td>
                             <td> {{ date.status }} </td>
                             <td>
-                                <button class="btn btn-warning btnEditarBarberoEstado"
+                                <button class="btn-editar btnEditarBarberoEstado"
                                     data-url="{% url 'admin_module:editar_barbero_estado' date.id %}"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalEditarBarberoEstado">
-                                    Editar
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
-
-                                <button class="btn btn-sm btn-danger btnCancelDate " data-id="{{ date.id }}"
+                                <button class="btn-cancelar btnCancelDate " data-id="{{ date.id }}"
                                     data-status="{{ date.status }}" data-bs-toggle="modal"
                                     data-bs-target="#modalCancelDate">
-                                    <i class="">Cancelar</i>
+                                    <i class="fas fa-times"></i>
                                 </button>
                             </td>
                         </tr>
@@ -268,19 +262,9 @@
                 });
             });
 
-            
-
         </script>
 
-
-
-
     </div>
-
-    </form>
 </div>
-</div>
-
-
 
 {% endblock %}
