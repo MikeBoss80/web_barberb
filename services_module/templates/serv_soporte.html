@@ -1,336 +1,231 @@
 
+
 {% extends "services_module/base_services.html" %}
+
 {% load static %}
 
-{% block title %}Perfil de Usuario{% endblock %}
+
+{% block title %}Soporte{% endblock %}
+
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'barber_module/css/perfilusuario.css' %}">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-<style>
-    .btn-morado {
-        background: linear-gradient(45deg, #3e1a4e, #212121);
-        color: white;
-        border: none;
-    }
-
-    .btn-morado:hover {
-        background: linear-gradient(45deg, #2c0b3d, #111);
-        color: #fff;
-    }
-
-    .perfil-img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid #3e1a4e;
-    }
-
-    .perfil-img-container {
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-
-    .card {
-        background-color: #ffffff;
-        border: 1px solid #ccc;
-    }
-
-    .form-control {
-        border-radius: 8px;
-    }
-
-    .stats-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .stats-item {
-        flex: 1;
-        min-width: 150px;
-        background-color: #f5f5f5;
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        border: 1px solid #ccc;
-    }
-
-    .stats-item h5 {
-        font-size: 1rem;
-        color: #333;
-    }
-
-    .stats-item p {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .modal-body::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb {
-        background-color: #888;
-        border-radius: 10px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb:hover {
-        background-color: #555;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'services_module/css/soporte.css' %}">
 {% endblock %}
 
+
 {% block content %}
-<div class="container-fluid mt-4 px-5">
-    <h2 class="mb-4">Mi Perfil</h2>
 
-    <div id="mensaje-alerta"></div>
 
-    <div class="row">
-        <!-- Columna Izquierda -->
-        <div class="col-lg-6 mb-4">
-            <div class="card p-4 shadow-sm rounded h-100">
-                <div class="perfil-img-container">
-                    <img src="{% static 'barber_module/img/default_profile.jpg' %}" alt="Foto de perfil" id="vista-previa" class="perfil-img">
-                </div>
-                <h4 class="text-center">Datos Personales</h4>
-                <p><strong>Usuario:</strong> <span id="username-usuario">{{ usuario.username }}</span></p>
-                <p><strong>Nombre:</strong> <span id="nombre-usuario">{{ usuario.first_name }}</span></p>
-                <p><strong>Apellido:</strong> <span id="apellido-usuario">{{ usuario.last_name }}</span></p>
-                <p><strong>Correo:</strong> <span id="correo-usuario">{{ usuario.email }}</span></p>
-                <p><strong>Teléfono:</strong> <span id="telefono-usuario">{{ usuario.telefono }}</span></p>
-                <p><strong>Dirección:</strong> <span id="direccion-usuario">{{ usuario.direccion }}</span></p>
-                <p><strong>Contraseña:</strong> 
-                    <input type="password" id="password-oculta" class="form-control d-inline-block" style="width:auto; display:inline-block;" value="********" readonly>
-                    <button type="button" class="btn btn-sm btn-outline-dark ml-2" onclick="togglePassword()">Mostrar</button>
-                </p>
-                <div class="text-center mt-3">
-                    <button class="btn btn-morado mr-2" data-toggle="modal" data-target="#editarPerfilModal">Editar Perfil</button>
-                    <button class="btn btn-secondary" data-toggle="modal" data-target="#cambiarContrasenaModal">Cambiar Contraseña</button>
+
+<div class="container mt-4 p-4" style="background-color: #f8f5fa; border-radius: 10px;">
+    <div class="mb-4" style="background-color: #343434; padding: 15px; border-radius: 8px;">
+        <h2 class="text-white mb-0"><i class="fas fa-headset"></i> Soporte Técnico</h2>
+    </div>
+
+    <!-- DATOS DE CONTACTO -->
+    <div class="mb-4">
+        <h4 class="text-dark">📞 Datos de Contacto</h4>
+        <p><strong>Correo electrónico:</strong> soporte@barberia.com</p>
+        <p><strong>Teléfono:</strong> +57 300 123 4567</p>
+        <p><strong>Dirección:</strong> Calle 123 #45-67, Bogotá, Colombia</p>
+        <p><strong>Horario de atención:</strong> Lunes a Sábado, 9:00 a.m. - 6:00 p.m.</p>
+    </div>
+
+    <!-- FAQ -->
+    <div class="mb-4">
+        <h4 class="text-dark">❓ Preguntas Frecuentes (FAQ)</h4>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                        ¿Cómo agendo una cita?
+                    </button>
+                </h2>
+                <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Dirígete a la sección de <strong>Citas</strong> en el menú lateral y sigue los pasos para seleccionar servicio, fecha y horario.
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Columna Derecha -->
-        <div class="col-lg-6 mb-4">
-            <div class="card p-4 shadow-sm rounded h-100">
-                <h4>Citas Agendadas</h4>
-
-                <div class="card bg-light p-3 mb-3">
-                    <h5 class="text-dark">Citas Activas</h5>
-                    <p>- Corte con Barbero Juan, 05/07/2025 - 3:00 PM</p>
-                    <p>- Afeitado con Barbero Camilo, 10/07/2025 - 2:00 PM</p>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                        ¿Puedo cancelar una cita?
+                    </button>
+                </h2>
+                <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Sí, ve a la sección de citas agendadas y haz clic en <strong>Cancelar</strong> junto a la cita correspondiente.
+                    </div>
                 </div>
-
-                <div class="card bg-light p-3">
-                    <h5 class="text-dark">Historial de Citas</h5>
-                    <p>- Corte clásico con Barbero Pedro, 20/06/2025 - 1:00 PM</p>
-                    <p>- Diseño con Barbero Luis, 15/06/2025 - 12:00 PM</p>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                        ¿Cómo actualizo mi perfil?
+                    </button>
+                </h2>
+                <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Haz clic en tu foto de perfil (arriba a la derecha), selecciona <strong>Perfil</strong> y luego edita la información deseada.
+                    </div>
+                </div>
+            </div>
+            <!-- Nuevas preguntas frecuentes añadidas -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                        ¿Qué métodos de pago aceptan?
+                    </button>
+                </h2>
+                <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Aceptamos efectivo, tarjetas de crédito/débito y transferencias bancarias.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq5">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                        ¿Cómo cambio mi contraseña?
+                    </button>
+                </h2>
+                <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Ve a Configuración > Seguridad > Cambiar contraseña y sigue las instrucciones.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq6">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6">
+                        ¿Ofrecen servicios a domicilio?
+                    </button>
+                </h2>
+                <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Actualmente solo ofrecemos servicios en nuestro local, pero estamos evaluando implementar este servicio próximamente.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tarjeta Unificada de Estadísticas -->
-    <div class="card mt-2 p-4 shadow-sm rounded">
-        <div class="stats-container">
-            <div class="stats-item">
-                <h5>Citas Completadas</h5>
-                <p>12</p>
+    <!-- PROCESO DE RESOLUCIÓN -->
+    <div class="mb-4">
+        <h4 class="text-dark">🛠️ Guías y Resolución de Problemas</h4>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Sistema de Citas</h5>
+                        <p class="card-text">Guía completa para agendar, modificar y cancelar citas.</p>
+                        <button class="btn btn-outline-danger w-100" onclick="mostrarGuia('citas')">Ver Guía</button>
+                    </div>
+                </div>
             </div>
-            <div class="stats-item">
-                <h5>Citas Canceladas</h5>
-                <p>3</p>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Configuración de Cuenta</h5>
+                        <p class="card-text">Cómo personalizar tu perfil y ajustes de privacidad.</p>
+                        <button class="btn btn-outline-danger w-100" onclick="mostrarGuia('configuracion')">Ver Guía</button>
+                    </div>
+                </div>
             </div>
-            <div class="stats-item">
-                <h5>Más Solicitado</h5>
-                <p>Corte Degradado</p>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Errores Comunes</h5>
+                        <p class="card-text">Soluciones a problemas frecuentes del sistema.</p>
+                        <button class="btn btn-outline-danger w-100" onclick="mostrarGuia('errores')">Ver Soluciones</button>
+                    </div>
+                </div>
             </div>
-            <div class="stats-item">
-                <h5>Última Cita</h5>
-                <p>01/07/2025</p>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Recuperación de Acceso</h5>
+                        <p class="card-text">Qué hacer si olvidaste tu contraseña o usuario.</p>
+                        <button class="btn btn-outline-danger w-100" onclick="mostrarGuia('recuperacion')">Ver Pasos</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Nuevas guías añadidas -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Métodos de Pago</h5>
+                        <p class="card-text">Cómo configurar y usar diferentes formas de pago.</p>
+                        <button class="btn btn-outline-danger w-100" onclick="mostrarGuia('pagos')">Ver Opciones</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Servicios Disponibles</h5>
+                        <p class="card-text">Catálogo completo de servicios que ofrecemos.</p>
+                        <button class="btn btn-outline-danger w-100" onclick="mostrarGuia('servicios')">Explorar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT EN VIVO INTEGRADO -->
+    <div>
+        <h4 class="text-dark">💬 Soporte en Línea</h4>
+        <p>¿Necesitas ayuda personalizada? Escribe tu consulta directamente en el chat:</p>
+
+        <div id="chatBox" style="border:1px solid #ddd; border-radius: 5px; padding:10px; height:300px; overflow-y:auto; background:#fff; margin-bottom: 10px;">
+            <div class="text-muted"><strong>Soporte:</strong> ¡Hola! ¿En qué podemos ayudarte hoy?</div>
+            <div id="chatMessages"></div>
+            <div class="input-group mt-3" style="position: sticky; bottom: 0; background: #fff; padding-top: 10px;">
+                <input type="text" id="chatInput" class="form-control" placeholder="Escribe tu mensaje aquí..." 
+                onkeypress="if(event.keyCode === 13) enviarMensaje()">
+                <button class="btn btn-danger" onclick="enviarMensaje()">Enviar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Editar Perfil -->
-<div class="modal fade" id="editarPerfilModal" tabindex="-1" role="dialog" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 400px;">
-        <form id="formEditarPerfil">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Perfil</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                </div>
-
-                <div class="modal-body" style="max-height: 45vh; overflow-y: auto;">
-                    <style>
-                        .modal-body .form-group {
-                            margin-bottom: 0.6rem;
-                        }
-                        .modal-body .form-control {
-                            padding: 0.3rem 0.6rem;
-                            font-size: 0.9rem;
-                        }
-                        .modal-body .perfil-img {
-                            width: 100px;
-                            height: 100px;
-                            object-fit: cover;
-                            border-radius: 50%;
-                            border: 2px solid #3e1a4e;
-                        }
-                    </style>
-
-                    <div class="form-group text-center">
-                        <img src="{% static 'barber_module/img/default_profile.jpg' %}" alt="Vista previa" id="preview-editar" class="perfil-img mb-2">
-                        <input type="file" class="form-control mt-2" id="fotoPerfil">
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Usuario</label>
-                        <input type="text" class="form-control" id="username" value="{{ usuario.username }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="first_name">Nombre</label>
-                        <input type="text" class="form-control" id="first_name" value="{{ usuario.first_name }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="last_name">Apellido</label>
-                        <input type="text" class="form-control" id="last_name" value="{{ usuario.last_name }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Correo</label>
-                        <input type="email" class="form-control" id="email" value="{{ usuario.email }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefono">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" value="{{ usuario.telefono }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="direccion">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" value="{{ usuario.direccion }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="tema">Tema</label>
-                        <select class="form-control" id="tema">
-                            <option value="claro">Claro</option>
-                            <option value="oscuro">Oscuro</option>
-                        </select>
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="notificaciones" {% if usuario.notificaciones %}checked{% endif %}>
-                        <label class="form-check-label" for="notificaciones">Recibir notificaciones por correo</label>
-                    </div>
-                    <div class="form-group">
-                        <label for="preferencias">Sugerencias (cortes/barberos favoritos)</label>
-                        <select multiple class="form-control" id="preferencias">
-                            <option>Corte degradado</option>
-                            <option>Corte clásico</option>
-                            <option>Barbero Juan</option>
-                            <option>Barbero Camilo</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-morado">Guardar Cambios</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-<!-- Modal Cambiar Contraseña -->
-<div class="modal fade" id="cambiarContrasenaModal" tabindex="-1" role="dialog" aria-labelledby="cambiarContrasenaModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form id="formCambiarContrasena">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cambiar Contraseña</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="new_password1">Nueva Contraseña</label>
-                        <input type="password" class="form-control" name="new_password1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="new_password2">Confirmar Contraseña</label>
-                        <input type="password" class="form-control" name="new_password2" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-morado">Guardar Contraseña</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- JavaScript para chat y guías -->
 <script>
-function togglePassword() {
-    const passInput = document.getElementById("password-oculta");
-    const type = passInput.type === "password" ? "text" : "password";
-    passInput.type = type;
-}
-
-$(document).ready(function () {
-    $('#formEditarPerfil').submit(function (e) {
-        e.preventDefault();
-
-        const nombre = $('#first_name').val();
-        const apellido = $('#last_name').val();
-        const correo = $('#email').val();
-        const telefono = $('#telefono').val();
-        const username = $('#username').val();
-        const direccion = $('#direccion').val();
-
-        $('#nombre-usuario').text(nombre);
-        $('#apellido-usuario').text(apellido);
-        $('#correo-usuario').text(correo);
-        $('#telefono-usuario').text(telefono);
-        $('#username-usuario').text(username);
-        $('#direccion-usuario').text(direccion);
-
-        const fileInput = $('#fotoPerfil')[0];
-        if (fileInput.files && fileInput.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                $('#vista-previa').attr('src', e.target.result);
-                $('#preview-editar').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(fileInput.files[0]);
+    // Función para el chat
+    function enviarMensaje() {
+        const input = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        
+        if (input.value.trim() !== '') {
+            // Mensaje del usuario
+            const userMessage = document.createElement('div');
+            userMessage.innerHTML = `<strong>Tú:</strong> ${input.value}`;
+            userMessage.style.marginBottom = '10px';
+            chatMessages.appendChild(userMessage);
+            
+            // Simular respuesta automática después de 1 segundo
+            setTimeout(() => {
+                const botMessage = document.createElement('div');
+                botMessage.innerHTML = `<strong>Soporte:</strong> Hemos recibido tu mensaje. Un agente te responderá en breve.`;
+                botMessage.style.marginBottom = '10px';
+                botMessage.style.color = '#6c757d';
+                chatMessages.appendChild(botMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+            
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+    }
 
-        $('#editarPerfilModal').modal('hide');
-        $('#mensaje-alerta').html('<div class="alert alert-success mt-3">¡Perfil actualizado correctamente!</div>');
-        setTimeout(() => {
-            $('.alert').fadeOut(500, function () { $(this).remove(); });
-        }, 2500);
-    });
-
-    $('#formCambiarContrasena').submit(function (e) {
-        e.preventDefault();
-        $('#cambiarContrasenaModal').modal('hide');
-        $('#mensaje-alerta').html('<div class="alert alert-success mt-3">¡Contraseña actualizada correctamente!</div>');
-        setTimeout(() => {
-            $('.alert').fadeOut(500, function () { $(this).remove(); });
-        }, 2500);
-    });
-});
+    // Función para las guías (simulada)
+    function mostrarGuia(tipo) {
+        alert(`Mostrando guía de ${tipo}. En una implementación real, esto abriría un PDF o mostraría más detalles.`);
+    }
 </script>
+
+
 {% endblock %}
 
 
