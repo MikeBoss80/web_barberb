@@ -7,15 +7,23 @@ from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from .models import Product, Establishment,Inventory
+from .models import Product, Establishment,Inventory, Service, Category
+from workflows.models import FlowInstance
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm
 from django.views.generic.edit import FormView
+from collections import defaultdict
+from admin_module.models import Category 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
+
 from admin_module.utils.mixins import CitasQuerysetMixin
 
 
@@ -203,48 +211,42 @@ class BarberosView(BreadcrumbMixin, TemplateView):
      def get_breadcrumb(self):
         return [{'label': 'Barberos', 'url': reverse('admin_module:barberos')}]
 
-     #DATOS TEMPORALES
      def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['barberos'] = [
-            {
-                'id': 1,
-                'nombre': 'Miguel Bolivar',
-                'foto_url': 'https://via.placeholder.com/150',
-                'especialidades': 'Cortes Masculinos, Tinte',
-                'horario': 'Lunes a Miércoles, 9am - 5pm',
-                'ingresos_generados': 1500.00,  # Ejemplo de otro barbero
-                'rating': 4.9,
-            },
-            {
-                'id': 2,
-                'nombre': 'Carlos Pérez',
-                'foto_url': 'https://via.placeholder.com/150',
-                'especialidades': 'Cortes modernos, Barba',
-                'horario': 'Lunes a Viernes, 10am - 6pm',
-                'ingresos_generados': 450.00,  # Aquí van los ingresos estáticos
-                'rating': 4.8,
-            },
-            {
-                'id': 3,
-                'nombre': 'Luis Martínez',
-                'foto_url': 'https://via.placeholder.com/150',
-                'especialidades': 'Afeitados, Degradados',
-                'horario': 'Martes a Sábado, 12pm - 8pm',
-                'ingresos_generados': 320.00,  # Ingresos estáticos también
-                'rating': 4.5,
-            },
-            {
-                'id': 4,
-                'nombre': 'Ana Gómez',
-                'foto_url': 'https://via.placeholder.com/150',
-                'especialidades': 'Cortes femeninos, Tinte',
-                'horario': 'Lunes a Miércoles, 9am - 5pm',
-                'ingresos_generados': 500.00,  # Ejemplo de otro barbero
-                'rating': 4.9,
-            },
-        ]
+        instances = FlowInstance.objects.filter(workflow_type_id=1)
+        context['requests'] = instances
+        estab_ids = self.request.user.admin_est.all().values_list('id', flat=True)
+        users_team = User.objects.filter(profile__establishment_id__in=estab_ids)
+        context['team'] = users_team
+
         return context
+
+class CreateVinculationView(SuccessMessageMixin, CreateView):
+    template_name = 'barberos/solicitudes_barbero.html'
+    form_class = VinculationForm
+    success_url = reverse_lazy('admin_module:barberos')
+
+    def form_valid(self, form):
+        documento = form.cleaned_data.get('document')
+        instance=form.save(commit=False)
+        instance.created_by = self.request.user
+        instance.updated_by = self.request.user
+
+        try:
+            colaborator = User.objects.get(profile__document=documento)
+            instance.status_id =  4
+            instance.recipient = colaborator  # lo vinculamos si existe
+            # messages.success(self.request, "Colaborador encontrado, solicitud enviada.")
+        except User.DoesNotExist:
+            instance.status_id =  4
+            instance.recipient = self.request.user  # o dejar el campo nulo
+
+        instance.save()
+        return super().form_valid(form)
+    
+class VinculationDeleteView(DeleteView):
+    model = FlowInstance
+    success_url = reverse_lazy('admin_module:barberos')
      
 class CalendarioBarberoView(View):
     def get(self, request, barbero_id):
@@ -255,10 +257,47 @@ class CalendarioBarberoView(View):
         }
         return render(request, 'calendario_barbero.html', context)
 
-class ServiciosView(BreadcrumbMixin, TemplateView):
-     template_name= 'establecimiento\servicios.html'
-     def get_breadcrumb(self):
-        return [{'label': 'Servicios', 'url': reverse('admin_module:servicios')}]
+# Vista para mostrar servicios
+class ServiciosView(View):
+    def get(self, request):
+        servicios = Service.objects.all().select_related('category')
+        return render(request, 'admin_module/servicios.html', {'servicios': servicios})
+
+# Agregar servicio
+def agregar_servicio(request):
+    if request.method == 'POST':
+        form = CreateServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_module:servicios')
+        else:
+            # Aquí se imprime en consola si hay errores
+            print("⚠️ Errores del formulario:", form.errors)
+    else:
+        form = CreateServiceForm()
+    
+    return render(request, 'admin_module/form_servicio.html', {
+    'form': form,
+    'action_url': reverse('admin_module:agregar_servicio')
+})# Editar servicio
+def editar_servicio(request, id):
+    servicio = get_object_or_404(Service, id=id)
+    if request.method == 'POST':
+        form = CreateServiceForm(request.POST, instance=servicio)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_module:servicios')
+    else:
+        form = CreateServiceForm(instance=servicio)
+        return render(request, 'admin_module/form_servicio.html', {
+    'form': form,
+    'action_url': reverse('admin_module:editar_servicio', args=[servicio.id])
+})
+# Eliminar servicio
+def eliminar_servicio(request, id):
+    servicio = get_object_or_404(Service, id=id)
+    servicio.delete()
+    return redirect('admin_module:servicios')
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
@@ -307,6 +346,8 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         return context
 
 class InventarioListView(ListView):
+
+    
     # product = Product
     template_name = 'inventario/inventario.html'
     
@@ -448,5 +489,6 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-    def get_success_url(self):
+def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')    
+    

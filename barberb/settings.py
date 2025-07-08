@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'login_module.apps.LoginModuleConfig',
     'widget_tweaks',
     'calendar_module',
-
+    'workflows',
     ]
 
 

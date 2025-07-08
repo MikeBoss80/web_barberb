@@ -3,6 +3,9 @@ from django.db import models
 # from login_module.models import Profile
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User, Group
+from django import forms
+
+
 
 
 # Tabla: admin_module_days
@@ -73,15 +76,16 @@ class Establishment(models.Model):
 
 # Tabla: admin_module_services
 class Service(models.Model):
-    name_service = models.CharField(max_length=60)
-    description_service = models.CharField(max_length=100, null=True)
-    price_service = models.DecimalField(max_digits=8, decimal_places=2)
-    duration = models.PositiveSmallIntegerField()
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    duration = models.IntegerField()
     active = models.BooleanField(default=True)
-   
+    
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name_service
+        return self.name
 
 # Relación muchos a muchos entre establecimiento y servicios
 class EstablishmentService(models.Model):
@@ -92,6 +96,7 @@ class EstablishmentService(models.Model):
 class Inventory(models.Model):
     establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
 
 
 

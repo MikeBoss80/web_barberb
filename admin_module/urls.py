@@ -1,8 +1,11 @@
 from django.urls import path
 
-from admin_module.views import CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView
 
 from django.contrib.auth.views import LogoutView
+
+from . import views
+
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
 app_name = 'admin_module'
@@ -11,6 +14,8 @@ urlpatterns = [
     path('', HomeadminView.as_view(), name='admin_main'),
     path('citas/', CitasView.as_view(), name='citas'),
     path('barberos/', BarberosView.as_view(), name='barberos'),
+    path('barberos/vinculation/', CreateVinculationView.as_view(), name='vinculation_request'),
+    path('barberos/vinculation/eliminar/<int:pk>/', VinculationDeleteView.as_view(), name='vinculation_delete'),
     path('servicios/', ServiciosView.as_view(), name='servicios'),
     path('inventario/', InventarioView.as_view(), name='inventario'),
     path('reportes/', ReportesView.as_view(), name='reportes'),
@@ -32,6 +37,9 @@ urlpatterns = [
     path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para guardar
     path('solicitudes/barberos/', AdminSolicitudesListView.as_view(), name='admin_solicitudes_list'),
     path('solicitudes/barberos/<int:pk>/', AdminSolicitudesDetailView.as_view(), name='admin_solicitud_detalle'),
-
+    path('servicios/', views.ServiciosView.as_view(), name='servicios'),
+    path('servicio/agregar/', views.agregar_servicio, name='agregar_servicio'),
+    path('servicio/editar/<int:id>/', views.editar_servicio, name='editar_servicio'),
+    path('servicio/eliminar/<int:id>/', views.eliminar_servicio, name='eliminar_servicio'),
 
 ]   
