@@ -1,7 +1,11 @@
+from django.utils import timezone
 from django.db import models
 # from login_module.models import Profile
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User, Group
+from django import forms
+
+
 
 
 # Tabla: admin_module_days
@@ -23,6 +27,15 @@ class ScheduleAssignment(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
 
+
+# tabla de categoria de producto
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 # Tabla: admin_module_products
 class Product(models.Model):
     name_product = models.CharField(max_length=30)
@@ -30,7 +43,12 @@ class Product(models.Model):
     amount = models.IntegerField(default=0)
     minimum_stock = models.IntegerField(default=0)
     price_product = models.DecimalField(max_digits=8, decimal_places=2)
-    last_update = models.DateTimeField(auto_now=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name="productos", default=1)
+    created_by = models.ForeignKey(User, related_name='products_created', on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='products_updated', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name_product
@@ -58,14 +76,16 @@ class Establishment(models.Model):
 
 # Tabla: admin_module_services
 class Service(models.Model):
-    name_service = models.CharField(max_length=60)
-    description_service = models.CharField(max_length=100, null=True)
-    price_service = models.DecimalField(max_digits=8, decimal_places=2)
-    duration = models.PositiveSmallIntegerField()
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    duration = models.IntegerField()
     active = models.BooleanField(default=True)
+    
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name_service
+        return self.name
 
 # Relación muchos a muchos entre establecimiento y servicios
 class EstablishmentService(models.Model):
@@ -76,3 +96,7 @@ class EstablishmentService(models.Model):
 class Inventory(models.Model):
     establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+
+

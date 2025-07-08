@@ -6,7 +6,8 @@ from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
-from .models import Product, Establishment
+from django.db.models import Sum
+from .models import Product, Establishment,Inventory, Service, Category
 from workflows.models import FlowInstance
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User
@@ -14,8 +15,17 @@ from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, VinculationForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm
 from django.views.generic.edit import FormView
+from collections import defaultdict
+from admin_module.models import Category 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
+
+from admin_module.utils.mixins import CitasQuerysetMixin
+
 
 
 
@@ -32,30 +42,67 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # Obtener el establecimiento del admin
+        perfil=Profile.objects.get(user=self.request.user)
+        establecimiento = perfil.establishment
+
+        today=timezone.localtime().date()
+
+        #Citas del dia
+        citas_hoy=ServiceDate.objects.filter(
+            date=today,
+            service__establishment=establecimiento
+        ).count()
+
+        #Barberos activos
+        barberos_activos = Profile.objects.filter(
+            establishment=establecimiento,
+            user__is_active=True,
+            user__groups__name='Barbero'  
+        ).count()
+
+        #Productos bajo stock
+        bajo_stock= Inventory.objects.filter(
+            establishment=establecimiento,
+            product=5
+        #Revisar aca quedamos  
+        ).count()
+
+        # Ingresos del día
+        ingresos_hoy = ServiceDate.objects.filter(
+            date=today,
+            service__establishment=establecimiento
+        ).aggregate(total=Sum('price_total'))['total'] or 0
+
+        # Próximas citas (de hoy en adelante)
+        proximas_citas = ServiceDate.objects.filter(
+            date__gte=today,
+            service__establishment=establecimiento
+        ).order_by('date', 'date')[:5]
+
+        # Notificaciones del sistema (ejemplo: solicitudes pendientes)
+        solicitudes_pendientes = BarberRequest.objects.filter(
+            establecimiento=establecimiento,
+            estado='pendiente'
+        ).count()
+
+        notificaciones = []
+        if solicitudes_pendientes:
+            notificaciones.append(f"Tienes {solicitudes_pendientes} solicitudes de barberos pendientes por revisar.")
+
         context.update({
-            'user': self.request.user,
-            'today': timezone.now(),
-            'citas_hoy': 8,
-            'ingresos_hoy': 420.00,
-            'barberos_activos': 3,
-            'bajo_stock': 2,
-            'proximas_citas': [
-                {'hora': '10:00', 'cliente': 'Carlos Pérez', 'servicio': 'Corte', 'barbero': 'Andrés'},
-                {'hora': '11:00', 'cliente': 'Luis Soto', 'servicio': 'Barba', 'barbero': 'Miguel'}
-            ],
-            'labels': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
-            'ingresos_data': [100, 200, 150, 300, 250],
-            'servicios_labels': ['Corte', 'Barba', 'Corte + Barba'],
-            'servicios_data': [10, 5, 8],
-            'notificaciones': [
-                'Hay 2 productos con stock bajo.',
-                'Un barbero no ha iniciado su turno.',
-            ]
+            'today': today,
+            'citas_hoy': citas_hoy,
+            'barberos_activos': barberos_activos,
+            'bajo_stock': bajo_stock,
+            'ingresos_hoy': ingresos_hoy,
+            'proximas_citas': proximas_citas,
+            'notificaciones': notificaciones,
         })
 
         return context
 
-class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
+class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQuerysetMixin):
     template_name = 'citas/citas.html'
 
     # Validación: solo los usuarios en el grupo 'Administrador' pueden acceder
@@ -117,6 +164,11 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView):
         context['total_dates'] = date.today()
 
         return context
+    
+    context_object_name = 'dates'
+
+    def get_queryset(self):
+        return self.get_citas_queryset()
 
 def cancelar_cita(request):
     if request.method == "POST":
@@ -205,10 +257,47 @@ class CalendarioBarberoView(View):
         }
         return render(request, 'calendario_barbero.html', context)
 
-class ServiciosView(BreadcrumbMixin, TemplateView):
-     template_name= 'establecimiento\servicios.html'
-     def get_breadcrumb(self):
-        return [{'label': 'Servicios', 'url': reverse('admin_module:servicios')}]
+# Vista para mostrar servicios
+class ServiciosView(View):
+    def get(self, request):
+        servicios = Service.objects.all().select_related('category')
+        return render(request, 'admin_module/servicios.html', {'servicios': servicios})
+
+# Agregar servicio
+def agregar_servicio(request):
+    if request.method == 'POST':
+        form = CreateServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_module:servicios')
+        else:
+            # Aquí se imprime en consola si hay errores
+            print("⚠️ Errores del formulario:", form.errors)
+    else:
+        form = CreateServiceForm()
+    
+    return render(request, 'admin_module/form_servicio.html', {
+    'form': form,
+    'action_url': reverse('admin_module:agregar_servicio')
+})# Editar servicio
+def editar_servicio(request, id):
+    servicio = get_object_or_404(Service, id=id)
+    if request.method == 'POST':
+        form = CreateServiceForm(request.POST, instance=servicio)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_module:servicios')
+    else:
+        form = CreateServiceForm(instance=servicio)
+        return render(request, 'admin_module/form_servicio.html', {
+    'form': form,
+    'action_url': reverse('admin_module:editar_servicio', args=[servicio.id])
+})
+# Eliminar servicio
+def eliminar_servicio(request, id):
+    servicio = get_object_or_404(Service, id=id)
+    servicio.delete()
+    return redirect('admin_module:servicios')
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
@@ -257,6 +346,8 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         return context
 
 class InventarioListView(ListView):
+
+    
     # product = Product
     template_name = 'inventario/inventario.html'
     
@@ -273,7 +364,8 @@ class ProductCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         product=form.save(commit=False)
-        # product.id_admin_id=self.request.user.id
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
         product.save()
         return super().form_valid(form)
 
@@ -282,6 +374,10 @@ class ProductUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
     success_url = reverse_lazy('admin_module:inventario')
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
 
 class ProductDeleteView(DeleteView):
     model = Product
@@ -393,5 +489,6 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-    def get_success_url(self):
+def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')    
+    

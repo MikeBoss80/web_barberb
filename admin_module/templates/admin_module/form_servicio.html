@@ -1,0 +1,66 @@
+<div class="modal-content">
+  <form id="formServicio" method="post" action="{{ action_url }}">
+    {% csrf_token %}
+    <div class="modal-header">
+      <h5 class="modal-title" id="formServicioTitle">Servicio</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="mb-3">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="text-danger">{{ form.name.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.category.label_tag }}
+        {{ form.category }}
+        {% if form.category.errors %}
+          <div class="text-danger">{{ form.category.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.price.label_tag }}
+        {{ form.price }}
+        {% if form.price.errors %}
+          <div class="text-danger">{{ form.price.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.duration.label_tag }}
+        {{ form.duration }}
+        {% if form.duration.errors %}
+          <div class="text-danger">{{ form.duration.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="text-danger">{{ form.description.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-check form-switch">
+        {{ form.active }}
+        {{ form.active.label_tag }}
+        {% if form.active.errors %}
+          <div class="text-danger">{{ form.active.errors }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    </div>
+  </form>
+</div>

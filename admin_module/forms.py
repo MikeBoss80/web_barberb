@@ -1,7 +1,7 @@
 # admin_module/forms.py
 from django import forms
 from workflows.models import FlowInstance
-from .models import Product, Establishment
+from .models import Product, Establishment, Service
 from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
@@ -16,7 +16,7 @@ class CreateProductForm(forms.ModelForm):
     class Meta:
         model = Product
         # exclude=["id_admin_id"]
-        fields = ("name_product", "description_product", "amount", "minimun_stock", "price_product")
+        fields = ("name_product", "description_product", "amount", "minimun_stock", "price_product", "category")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -133,6 +133,23 @@ class BarberRequestAdminResponseForm(forms.ModelForm):
         labels = {
             'respuesta_admin': 'Respuesta del Administrador',
         }
+        
+class CreateServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['name', 'description', 'price', 'category', 'duration', 'active']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'duration': forms.NumberInput(attrs={'class': 'form-control'}),
+            'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class UploadServiceFile(forms.Form):
+    file = forms.FileField(label = "Subir carta de servicios (PDF o Imagen)")
 
 class VinculationForm(forms.ModelForm):
     # comments = forms.CharField(max_length=80, required=True)
