@@ -7,6 +7,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'services_module/css/map.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
   integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 <!-- Flatpickr CSS -->
@@ -15,6 +16,11 @@
 {% endblock %}
 
 {% block content %}
+{{ establishments_data|json_script:"establishmentsData" }}
+
+<script id="establishmentsData" type="application/json">
+    {{ establishments_data_json|safe }}
+</script>
 
 <style>
   html,
@@ -314,54 +320,57 @@
 
 
 
-/* Mejora responsiva en barber-item */
-.barber-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  border: none; /* Quitar borde */
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
-}
+  /* Mejora responsiva en barber-item */
+  .barber-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    /* Quitar borde */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
 
-/* Estilo personalizado del acordeón */
-.accordion-button {
-  background-color: #f1f1f1;
-  color: #333;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
+  /* Estilo personalizado del acordeón */
+  .accordion-button {
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
 
-.accordion-button:not(.collapsed) {
-  background-color: #e2e3e5; /* gris claro al expandir */
-  color: #000;
-  box-shadow: none;
-}
+  .accordion-button:not(.collapsed) {
+    background-color: #e2e3e5;
+    /* gris claro al expandir */
+    color: #000;
+    box-shadow: none;
+  }
 
-.accordion-item {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
+  .accordion-item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
 
-.accordion-body {
-  background-color: #fff;
-  padding: 1rem;
-}
+  .accordion-body {
+    background-color: #fff;
+    padding: 1rem;
+  }
 
-/* Botón acordeón al pasar el cursor */
-.accordion-button:hover {
-  background-color: #e8e9ea;
-}
-
+  /* Botón acordeón al pasar el cursor */
+  .accordion-button:hover {
+    background-color: #e8e9ea;
+  }
 </style>
 
 <div class="container">
+
   <h1>Agendar Cita en Barbería</h1>
 
-  <div class="accordion" id="miAccordion">
 
+  <div class="accordion" id="miAccordion">
+    <!-- Establecimientos -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingUno">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUno"
@@ -372,43 +381,26 @@
       <div id="collapseUno" class="accordion-collapse collapse show" aria-labelledby="headingUno"
         data-bs-parent="#miAccordion">
         <div class="accordion-body">
-          <div class="map-container">
-            <div class="search-wrapper">
-              <div class="d-flex gap-2 search-bar">
-                <input type="text" class="form-control" id="inputSearch" placeholder="Buscar barberias cercanas...">
-                <button class="btn btn-outline-secondary" type="button" id="btnSearch">Buscar</button>
-              </div>
-            </div>
-            <div class="d-flex align-items-start gap-4"> <!-- Flex row aquí -->
-              <div id="subtitle">
-                <ul class="barber-list">
-                  <li class="barber-item"
-                    style="background: url('https://d375139ucebi94.cloudfront.net/region2/es/126246/biz_photo/5e0e38ef9af34dfeae554fb19e2348-barbershop-melvin-stilo-plaza--biz-photo-97d6148b5a454d78af4eb82d6da2ea-booksy.jpeg?size=640x427') no-repeat center center/cover;"
-                    onclick="selectService('Barbería Estilo', ['Juan', 'Carlos'], ['Lunes', 'Martes'], ['10:00 AM', '11:00 AM'])">
-                    <h3>Barbería Estilo</h3>
-                    <p>Barberos: Juan, Carlos</p>
-                  </li>
-                  <li class="barber-item"
-                    style="background: url('https://gentleman.com.mx/wp-content/uploads/2019/02/barberias-ciudad-de-mexico.jpg') no-repeat center center/cover;"
-                    onclick="selectService('Corte Perfecto', ['Pedro', 'Luis'], ['Miércoles', 'Jueves'], ['2:00 PM', '3:00 PM'])">
-                    <h3>Corte Perfecto</h3>
-                    <p>Barberos: Pedro, Luis</p>
-                  </li>
-                  <li class="barber-item"
-                    style="background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIIHl4l4ehTRjP_uk6z0sBw1LPj8bnx6gQAQ&s') no-repeat center center/cover;"
-                    onclick="selectService('Barbería Moderna', ['Andrés', 'Fernando'], ['Viernes'], ['4:00 PM', '5:00 PM'])">
-                    <h3>Barbería Moderna</h3>
-                    <p>Barberos: Andrés, Fernando</p>
-                  </li>
-                </ul>
-              </div>
-              <div id="map"></div>
-            </div>
+          <div class="d-flex align-items-start gap-4">
+            <div id="subtitle">
+              <ul class="barber-list">
+                {% for est in establishments_data %}
+                <li class="barber-item" style="background: url('{{ est.image }}') no-repeat center center/cover;"
+                  onclick="selectService('{{ est.id }}')">
+                  <h3>{{ est.name }}</h3>
+                  <p>{{ est.address }}, {{ est.city }}</p>
+                </li>
+                {% endfor %}
+              </ul>
+            </div class="map-container">
+            <div id="map"></div>
           </div>
         </div>
       </div>
     </div>
 
+
+    <!-- Servicios -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingDos">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDos"
@@ -419,14 +411,15 @@
       <div id="collapseDos" class="accordion-collapse collapse" aria-labelledby="headingDos"
         data-bs-parent="#miAccordion">
         <div class="accordion-body">
-          <div id="service-options" class="service-options" style="display:none;">
+          <div id="service-options" style="display: none;">
             <h2>Selecciona un Servicio:</h2>
-            <div id="available-services"></div>
+            <div id="available-services" class="d-flex flex-wrap gap-2"></div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Barberos -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingTres">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -437,16 +430,15 @@
       <div id="collapseTres" class="accordion-collapse collapse" aria-labelledby="headingTres"
         data-bs-parent="#miAccordion">
         <div class="accordion-body">
-          <div id="barber-options" class="barber-options" style="display:none;">
-            <h2>Selecciona a tu Barbero: <span id="barber-name"></span></h2>
-            <h3>Barberos Disponibles:</h3>
-            <div id="available-barbers"></div>
+          <div id="barber-options" style="display: none;">
+            <h2>Selecciona a tu Barbero:</h2>
+            <div id="available-barbers" class="d-flex flex-wrap gap-2"></div>
           </div>
         </div>
       </div>
     </div>
 
-
+    <!-- Horarios -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingHorarios">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -458,107 +450,164 @@
         data-bs-parent="#miAccordion">
         <div class="accordion-body">
           <div class="row">
-
-            <div class="col-md-6">
+            <div class="col-md-6" >
               <h3 class="text-center">Selecciona una fecha</h3>
-              <div id="calendario" class="bg-light p-3 rounded shadow-sm"></div>
+              <input type="text" id="calendario" class="form-control" placeholder="Selecciona una fecha">
+              <input type="hidden" id="selectedDate" name="selectedDate">
             </div>
-
-            <!-- Horarios (Izquierda) -->
             <div class="col-md-6">
               <h3>Horarios disponibles:</h3>
-              <div id="time-options" class="time-options"> </div>
+              <div id="time-options" class="d-flex flex-wrap gap-2 mt-2"></div>
+              <input type="hidden" id="selectedTime" name="selectedTime">
             </div>
-
-
           </div>
         </div>
       </div>
     </div>
   </div>
-  <button class="btn" onclick="confirmAppointment()">Confirmar Cita</button>
-</div>
 </div>
 
 
+<button class="btn btn-primary mt-3" onclick="confirmAppointment()">Confirmar Cita</button>
+</div>
 
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h2>Cita Confirmada</h2>
-    <p>Recuerda llegar puntual. La cita es un turno y si no llegas a tiempo, podrías perderla.</p>
-    <button class="btn" onclick="closeModal()">Cerrar</button>
+
+<!-- Formulario oculto para enviar la cita -->
+<form id="hiddenAppointmentForm" method="POST" action="{% url 'services_module:create_service_date' %}"
+  style="display: none;">
+  {% csrf_token %}
+  <input type="hidden" name="customer" id="customerInput" value="{{ request.user.id }}">
+  <input type="hidden" name="barber" id="barberInput">
+  <input type="hidden" name="service" id="serviceInput">
+  <input type="hidden" name="date" id="dateInput">
+  <button type="submit" id="submitAppointmentButton"></button>
+</form>
+
+
+<!-- Voucher Modal -->
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-sm rounded-4">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title" id="voucherModalLabel">Confirmar Cita</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Por favor revisa la información antes de confirmar tu cita:</p>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Barbería:</strong> <span id="voucherEstablishment"></span></li>
+          <li class="list-group-item"><strong>Servicio:</strong> <span id="voucherService"></span></li>
+          <li class="list-group-item"><strong>Precio:</strong> $<span id="voucherPrice"></span></li>
+          <li class="list-group-item"><strong>Barbero:</strong> <span id="voucherBarber"></span></li>
+          <li class="list-group-item"><strong>Fecha y hora:</strong> <span id="voucherDate"></span></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary rounded-pill" onclick="submitAppointment()">Confirmar Cita</button>
+      </div>
+    </div>
   </div>
 </div>
 
+
+
+
+<!-- JSON de establecimientos -->
+<script id="establishmentsData" type="application/json">
+{{ establishments_data_json|safe }}
+</script>
+
 <script>
-  function selectService(barberName, barbers, days, times) {
-    document.getElementById('barber-name').innerText = barberName;
-    const availableServicesDiv = document.getElementById('available-services');
-    availableServicesDiv.innerHTML = '';
+  // ================================
+  // VARIABLES GLOBALES
+  // ================================
+  let selectedEstablishmentName = "";
+  let selectedServiceName = "";
+  let selectedPrice = "";
+  let selectedBarberName = "";
+  let selectedDateTime = "";
+  let selectedBarberId = "";
+  let selectedServiceId = "";
 
-    // Simulación de servicios disponibles
-    const services = [
-      { name: "Corte de Cabello", duration: "30 min" },
-      { name: "Afeitado", duration: "15 min" },
-      { name: "Corte y Afeitado", duration: "45 min" }
-    ];
 
-    services.forEach(service => {
-      const serviceCard = document.createElement('div');
-      serviceCard.className = 'service-card';
-      serviceCard.onclick = () => {
-        selectBarber(barberName, barbers, days, times);
-        console.log(`Seleccionaste el servicio: ${service.name}`);
-      };
-      serviceCard.innerHTML = `
-                <div>${service.name} - ${service.duration}</div>
-            `;
-      availableServicesDiv.appendChild(serviceCard);
-    });
 
-    document.getElementById('service-options').style.display = 'block';
+</script>
+
+<!-- Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+
+<script>
+
+  // ================================
+  // HORARIOS SIMULADOS 09:00 - 17:00
+  // ================================
+  const availableSlots = [];
+  const now = new Date();
+  now.setHours(9, 0, 0, 0);
+  for (let i = 0; i < 9; i++) {
+    const slot = new Date(now.getTime() + i * 60 * 60 * 1000);
+    availableSlots.push(slot.toTimeString().slice(0, 5));
   }
 
-  function selectBarber(barberName, barbers, days, times) {
+  // ================================
+  // SELECCIÓN DE ESTABLECIMIENTO
+  // ================================
+  function selectService(estId) {
+    const establishmentsData = JSON.parse(document.getElementById('establishmentsData').textContent);
+    const est = establishmentsData.find(e => e.id === parseInt(estId));
+    console.log("DEBUG est completo:", est);
+    if (!est) return;
+
+    selectedEstablishmentName = est.name;
+    console.log("Establecimiento seleccionado:", selectedEstablishmentName);
+
+    // Mostrar servicios
+    const availableServicesDiv = document.getElementById('available-services');
+    availableServicesDiv.innerHTML = '';
+    est.services.forEach(service => {
+      const serviceCard = document.createElement('div');
+      serviceCard.className = 'service-card';
+      serviceCard.innerHTML = `<div>${service.name_service} - ${service.duration_minutes} min</div>`;
+      serviceCard.onclick = () => {
+        selectedServiceName = service.name_service;
+        selectedServiceId = service.id;
+        selectedPrice = service.price_service;
+        console.log("DEBUG service completo:", service);
+        console.log("Servicio seleccionado:", selectedServiceName, "ID:", selectedServiceId, "Precio:", selectedPrice);
+      };
+      availableServicesDiv.appendChild(serviceCard);
+    });
+    document.getElementById('service-options').style.display = 'block';
+
+    // Mostrar barberos
     const availableBarbersDiv = document.getElementById('available-barbers');
     availableBarbersDiv.innerHTML = '';
-    barbers.forEach(barber => {
+    est.barbers.forEach(barber => {
       const barberCard = document.createElement('div');
       barberCard.className = 'barber-card';
-      barberCard.onclick = () => console.log(`Seleccionaste al barbero: ${barber}`);
       barberCard.innerHTML = `
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBkbWdLjn0f5czHenHIcsiZ5E6MWtFGQsABA&s" alt="${barber}">
-                <div>${barber}</div>
-            `;
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBkbWdLjn0f5czHenHIcsiZ5E6MWtFGQsABA&s" alt="${barber.first_name}">
+            <div>${barber.first_name}</div>
+        `;
+      barberCard.onclick = () => {
+        selectedBarberName = `${barber.first_name} ${barber.last_name}`;
+        selectedBarberId = barber.id;
+        console.log("Barbero seleccionado:", selectedBarberName, "ID:", selectedBarberId);
+      };
       availableBarbersDiv.appendChild(barberCard);
     });
     document.getElementById('barber-options').style.display = 'block';
-    populateDates(days);
-    populateTimes(times);
+
+    // Poblar horarios simulados
+    populateTimes(availableSlots);
   }
 
-  function populateDates(days) {
-    const dateCarousel = document.getElementById('date-carousel');
-    dateCarousel.innerHTML = '';
-    const currentDate = new Date();
-    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-
-    // Generar fechas del mes actual
-    for (let i = 1; i <= 30; i++) {
-      const dateItem = document.createElement('div');
-      dateItem.className = 'date-item';
-      dateItem.innerHTML = `<div>${monthNames[month]}</div><div>${i}</div>`;
-      dateItem.onclick = () => selectDate(i);
-      dateCarousel.appendChild(dateItem);
-    }
-  }
-
-  function selectDate(day) {
-    console.log(`Fecha seleccionada: ${day}`);
-  }
-
+  // ================================
+  // POBLAR HORARIOS DISPONIBLES
+  // ================================
   function populateTimes(times) {
     const timeOptions = document.getElementById('time-options');
     timeOptions.innerHTML = '';
@@ -571,17 +620,85 @@
     });
   }
 
+  // ================================
+  // SELECCIÓN DE HORA
+  // ================================
   function selectTime(time) {
-    console.log(`Hora seleccionada: ${time}`);
-  }
+    document.getElementById('selectedTime').value = time;
+    console.log("Hora seleccionada:", time);
+    updateSelectedDateTime();
+    }
+  
 
+  // ================================
+  // CONFIRMAR CITA Y MOSTRAR VOUCHER
+  // ================================
   function confirmAppointment() {
-    document.getElementById('modal').style.display = 'flex';
+    if (!selectedDateTime || !selectedBarberName || !selectedServiceName) {
+      alert("Por favor selecciona servicio, barbero, fecha y hora antes de confirmar la cita.");
+      return;
+    }
+
+    document.getElementById('voucherEstablishment').innerText = selectedEstablishmentName;
+    document.getElementById('voucherService').innerText = selectedServiceName;
+    document.getElementById('voucherPrice').innerText = selectedPrice;
+    document.getElementById('voucherBarber').innerText = selectedBarberName;
+    document.getElementById('voucherDate').innerText = selectedDateTime;
+
+    const voucherModal = new bootstrap.Modal(document.getElementById('voucherModal'));
+    voucherModal.show();
   }
 
+  // ================================
+  // CERRAR MODAL
+  // ================================
   function closeModal() {
-    document.getElementById('modal').style.display = 'none';
+    const voucherModal = bootstrap.Modal.getInstance(document.getElementById('voucherModal'));
+    voucherModal.hide();
   }
+
+  // ================================
+  // ENVIAR FORMULARIO FINAL
+  // ================================
+  function submitAppointment() {
+    if (!selectedDateTime || !selectedBarberId || !selectedServiceId) {
+      alert("Faltan datos para agendar la cita correctamente.");
+      return;
+    }
+
+    document.getElementById('barberInput').value = selectedBarberId;
+    document.getElementById('serviceInput').value = selectedServiceId;
+    document.getElementById('dateInput').value = selectedDateTime;
+
+    document.getElementById('submitAppointmentButton').click();
+  }
+
+  // ================================
+  // FLATPICKR PARA CALENDARIO VISUAL
+  // ================================
+    let selectedDate = "";
+
+    document.addEventListener("DOMContentLoaded", function() {
+      flatpickr("#calendario", {
+        inline: true,
+        dateFormat: "Y-m-d",
+        defaultDate: "today",
+        onChange: function(selectedDates, dateStr, instance) {
+            selectedDate = dateStr; // YYYY-MM-DD
+            document.getElementById("selectedDate").value = dateStr; // actualiza input hidden  
+            console.log("Fecha seleccionada en el calendario:", selectedDate);
+            updateSelectedDateTime(); // función para actualizar variable completa
+        }
+      });
+    });  
+    
+
+    function updateSelectedDateTime() {
+      if (selectedDate && document.getElementById("selectedTime").value) {
+          selectedDateTime = `${selectedDate} ${document.getElementById("selectedTime").value}`;
+          console.log("Fecha y hora combinadas en selectedDateTime:", selectedDateTime);
+        }
+    }
 </script>
 
 <!-- Bootstrap JS -->

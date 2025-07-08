@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from login_module.views import (
@@ -32,7 +33,7 @@ urlpatterns = [
     path('password_reset/done/', ResetPasswordDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', ResetPasswordCompleteView.as_view(), name='password_reset_complete'),
-    path('rol_actual/', RolSelectView.as_view(), name='rol_actual'),
-  
+    path('rol_actual/', login_required(RolSelectView.as_view()), name='rol_actual'),
+
 
 ]

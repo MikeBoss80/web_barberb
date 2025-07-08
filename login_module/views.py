@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView
 from django.views.generic.edit import FormView
 from .forms import UserProfileForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class CustomLoginView(LoginView):
@@ -36,11 +37,10 @@ class CustomLoginView(LoginView):
             #Si no es barbero o administrador su rol es como cliente
             return '/services_module/'
         
-class RolSelectView(TemplateView):
+class RolSelectView(LoginRequiredMixin,TemplateView):
     template_name='rol_actual.html'
+    login_url = '/login/' 
         
-        
-
 class LoginView(TemplateView):
     template_name = 'login.html'
 
@@ -96,8 +96,17 @@ class RegistroUsuarioView(FormView):
 class TerminosYCondicionesView(TemplateView):
     template_name = 'terminosycondiciones.html'
 
-class TipoRolView(TemplateView):
+class TipoRolView(LoginRequiredMixin,TemplateView):
     template_name = 'tipo_rol.html'
+    login_url = '/login/'  # Opcional, si no usas settings.LOGIN_URL
+
+    # Validación: solo los usuarios en el grupo 'Administrador' pueden acceder
+    def test_func(self):
+        return self.request.user.groups.filter(name='Administrador').exists()
+
+    # Redirección si no tiene permiso
+    def handle_no_permission(self):
+        return redirect('not_in_group')
 
 class CambiocontraseñaView(TemplateView):
     template_name = 'cambio_contraseña.html'

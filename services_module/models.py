@@ -11,7 +11,7 @@ class ServiceDate(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customer_dates")
     barber = models.ForeignKey(User, on_delete=models.CASCADE, related_name="barber_dates")
     status = models.CharField(max_length=10)
-    comments = models.TextField()
+    comments = models.TextField(blank=True, null=True)
     price_total = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
