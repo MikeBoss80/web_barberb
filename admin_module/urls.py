@@ -1,6 +1,6 @@
 from django.urls import path
 
-from admin_module.views import CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView
 
 from django.contrib.auth.views import LogoutView
 
@@ -14,6 +14,8 @@ urlpatterns = [
     path('', HomeadminView.as_view(), name='admin_main'),
     path('citas/', CitasView.as_view(), name='citas'),
     path('barberos/', BarberosView.as_view(), name='barberos'),
+    path('barberos/vinculation/', CreateVinculationView.as_view(), name='vinculation_request'),
+    path('barberos/vinculation/eliminar/<int:pk>/', VinculationDeleteView.as_view(), name='vinculation_delete'),
     path('servicios/', ServiciosView.as_view(), name='servicios'),
     path('inventario/', InventarioView.as_view(), name='inventario'),
     path('reportes/', ReportesView.as_view(), name='reportes'),

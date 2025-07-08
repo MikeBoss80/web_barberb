@@ -10,49 +10,125 @@
 {% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Barberos del Establecimiento</h2>
 
-<div class="acciones-globales text-end mb-4">
+<!-- <div class="acciones-globales text-end mb-4">
   <button class="btn btn-outline-add_item me-2" onclick="tuFuncion()">
     <i class="fas fa-plus me-1"></i> Agregar Barbero
   </button>
-
-</div>
+</div> -->
 
 <div class="container">
-  <div class="row g-4">
-    {% for barbero in barberos %}
-    <div class="col-md-3 col-sm-6 col-12 d-flex justify-content-center mb-4">
-      <div class="card barbero">
-        <img src="{% static 'admin_module/img/foto_barbero1.png' %}" class="card-img-top"
-          alt="Foto de {{ barbero.nombre }}">
-        <div class="card-body">
-          <h5 class="card-title">{{ barbero.nombre }}</h5>
-          <p class="card-text"><strong>Especialidades:</strong> {{ barbero.especialidades }}</p>
-          <p class="card-text"><strong>Horario:</strong> {{ barbero.horario }}</p>
-          <p class="card-text"><strong>Ingresos:</strong> ${{ barbero.ingresos_generados }}</p>
-          <p class="card-text"><strong>Calificación:</strong> {{ barbero.rating }} ⭐</p>
-          <p class="card-text">
-            <strong>Estado:</strong>
-            {% if barbero.activo %}
-            <span class="text-success">🟢 Activo</span>
-            {% else %}
-            <span class="text-danger">🔴 Inactivo</span>
-            {% endif %}
-          </p>
-        </div>
-        <div class="card-footer d-flex flex-column align-items-start gap-2">
-          <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({ barberoid })">📅 Ver
-            Calendario</button>
-          <div class="d-flex w-100 justify-content-between">
-            <a href="#" class="btn btn-sm btn-outline-secondary">✏️ Editar</a>
-            <a href="#" class="btn btn-sm btn-outline-danger">🛑 Desactivar</a>
+
+  <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="team-tab" data-bs-toggle="tab" data-bs-target="#teamContent" type="button" role="tab">
+        <i class="fas fa-users"></i> Equipo
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="request-tab" data-bs-toggle="tab" data-bs-target="#requestContent" type="button" role="tab">
+        <i class="fas fa-file-alt me-2"></i> Vinculación
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="tabContent">
+
+    <div class="tab-pane fade show active" id="teamContent" role="tabpanel">
+      <div class="row g-4">
+        {% if team %}
+          {% for barbero in team %}
+            <div class="col-md-3 col-sm-6 col-12 d-flex justify-content-center mb-4">
+              <div class="card barbero">
+                <img src="{% static 'admin_module/img/foto_barbero1.png' %}" class="card-img-top" alt="Foto de {{ barbero.nombre }}">
+                <div class="card-body">
+                  <h5 class="card-title">{{ barbero.first_name }} {{ barbero.last_name }}</h5>
+                  <p class="card-text"><strong>Celular:</strong> {{ barbero.profile.phone }}</p>
+                  <p class="card-text"><strong>Calificación:</strong> {{ barbero.profile.qa_average }} ⭐</p>
+                  <p class="card-text"><strong>Cumpleaños:</strong> {{ barbero.profile.birth_date }}</p>
+                  <!-- <p class="card-text"><strong>Horario:</strong> {{ barbero.horario }}</p>
+                  <p class="card-text"><strong>Ingresos:</strong> ${{ barbero.ingresos_generados }}</p>
+                  <p class="card-text">
+                    <strong>Estado:</strong>
+                    {% if barbero.activo %}
+                    <span class="text-success">🟢 Activo</span>
+                    {% else %}
+                    <span class="text-danger">🔴 Inactivo</span>
+                    {% endif %}
+                  </p> -->
+                </div>
+                <div class="card-footer d-flex flex-column align-items-start gap-2">
+                  <p class="card-text">
+                    {% if barbero.activo %}
+                    <span class="text-success">🟢 Activo</span>
+                    {% else %}
+                    <span class="text-danger">🔴 Inactivo</span>
+                    {% endif %}
+                  </p>
+                  <!-- <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({ barberoid })">📅 Ver
+                    Calendario</button>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a href="#" class="btn btn-sm btn-outline-secondary">✏️ Editar</a>
+                    <a href="#" class="btn btn-sm btn-outline-danger">🛑 Desactivar</a>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-12 text-center">
+            <p class="text-muted">No tiene colaboradores vinculados.</p>
+            <button type="button" class="btn" role="tab">
+              <i class="fas fa-plus me-2"></i>Vincular Colaborador
+            </button>
           </div>
-        </div>
+        {% endif %}
       </div>
     </div>
-    {% endfor %}
+
+    <div class="tab-pane fade" id="requestContent" role="tabpanel">
+      <div class="d-flex justify-content-between mb-3">
+            <h4>Gestión de solicitudes</h4>
+            <button class="btn btn-primary" id="btnAddVinculation">
+                <i class="fas fa-plus"></i> Solicitud
+            </button>
+        </div>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover display" id="requestTable">
+          <thead class="table-dark">
+              <tr>
+                  <th>Solicitado Por</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th>Ultima Fecha</th>
+                  <th>Dirigida a</th>
+                  <th>Tipo</th>
+                  <th>Acciones</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for request in requests %}
+              <tr>
+                  <td>{{ request.created_by.username }}</td>
+                  <td>{{ request.status.name }}</td>
+                  <td>{{ request.created_at }}</td>
+                  <td>{{ request.updated_at }}</td>
+                  <td>{{ request.recipient.username }}</td>
+                  <td>{{ request.workflow_type.name }}</td>
+                  <td>
+                      <button class="btn btn-sm btn-danger btnDeleteVinculation" data-id="{{ request.id }}">
+                        Eliminar
+                      </button>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
+
 </div>
 
 {% if messages %}
@@ -81,7 +157,78 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalVinculation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" id="modalFormVinculation">
+        <!-- Se carga el formulario de la solicitud de vinculación aquí por medio de petición GET. -->
+    </div>
+</div>
+
+<div class="modal fade" id="modalDeleteVinculation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formDeleteVinculation" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar la solicitud de vinculación?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+  $(document).ready(function () {
+    $('#requestTable').DataTable({
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+        },
+        dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        pageLength: 10,
+    });
+
+    $('#btnAddVinculation').on('click', function() {
+      $('#modalFormVinculation').html('<p>Cargando formulario...</p>');
+      let btn = $(this);
+      let productId = btn.data('id');
+      
+      $.ajax({
+        url: '../barberos/vinculation/',
+        method: 'GET',
+        success: function (data) {
+          $('#modalFormVinculation').html(data);
+          $('#formVinculationTitle').html("Solicitud de Vinculación");
+          $('#formVinculation').attr('method', 'post');
+          $('#formVinculation').attr('action', `../barberos/vinculation/`);
+          $('#modalVinculation').modal('show');
+        },
+        error: function () {
+          $('#modalFormVinculation').html('<p>Error al cargar el formulario.</p>');
+          $('#modalVinculation').modal('show');
+        }
+      });
+    });
+
+    $('.btnDeleteVinculation').on('click', function() {
+      let btn = $(this);
+      let reqVinculationId = btn.data('id');
+      $('#formDeleteVinculation').attr('action', `../barberos/vinculation/eliminar/${reqVinculationId}/`);
+      $('#modalDeleteVinculation').modal('show');
+    });
+
+  });
+
+
   function mostrarCalendario(barberoId) {
     const modal = document.getElementById('calendario-modal');
     const iframe = document.getElementById('iframe-calendario');
@@ -104,7 +251,7 @@
     }
   }
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   (function(d, t) {
       var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
       v.onload = function() {
@@ -119,5 +266,5 @@
       }
       v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
   })(document, 'script');
-</script>
+</script> -->
 {% endblock %}
