@@ -7,7 +7,10 @@
 
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'barber_module/css/citas.css' %}">
+<link rel="stylesheet" href="{% static 'admin_module/css/citas.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
 {% endblock %}
 
 
@@ -24,11 +27,11 @@
 
     <div class="col-md-3 col-sm-6 col-12">
         <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Citas del Dia</div>
+            <div class="card-header">Total Citas</div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h2>{{ resumen.total_citas }}</h2>
+                        <h2>{{ resumen.total_dates }}</h2>
                     </div>
                     <i class="fas fa-calendar-check fs-1"></i>
                 </div>
@@ -52,11 +55,11 @@
 
     <div class="col-md-3 col-sm-6 col-12">
         <div class="card card-border-color mb-3" style="max-width: 18rem;">
-            <div class="card-header">Pendientes</div>
+            <div class="card-header">Agendadas</div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h2>{{ resumen.pendientes }}</h2>
+                        <h2>{{ resumen.agendadas }}</h2>
                     </div>
                     <i class="fas fa-hourglass-half fs-1"></i>
                 </div>
@@ -82,98 +85,201 @@
 
     </div>
 
-    <!-- Filtros -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form class="row gy-2 gx-3 align-items-center">
-                <div class="col-md-3">
-                    <label class="form-label">Fecha</label>
-                    <input type="date" class="form-control" name="fecha" value="{{ fecha_actual }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Barbero</label>
-                    <select class="form-select" name="barbero">
-                        <option value="">Todos</option>
-                        {% for barbero in barberos %}
-                        <option value="{{ barbero.id }}">{{ barbero.nombre }}</option>
+    <!-- DATATABLE -->
+    <div class="tab-content" id="adminTabsContent">
+        <!-- Pestaña de citas -->
+        <div class="tab-pane fade show active" id="citas" role="tabpanel">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-primary" id="abrir-formulario">
+                    <i class="fas fa-plus"></i> Agregar Cita Rapida
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover display" id="tabladates">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Cliente</th>
+                            <th>Barbero</th>
+                            <th>Servicios</th>
+                            <th>Precio</th>
+                            <th>Barberia</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date in dates %}
+                        <tr>
+                            <td>{{ date.date.date }}</td>
+                            <td>{{ date.date.time }}</td>
+                            <td>{{ date.customer.first_name }} {{ date.customer.last_name }}</td>
+                            <td>{{ date.barber.first_name }} {{ date.barber.last_name }}</td>
+                            <td>{{ date.service.service.name_service }}</td>
+                            <td>{{ date.price_total }}</td>
+                            <td>{{ date.service.establishment.name_est }}</td>
+                            <td> {{ date.status }} </td>
+                            <td>
+                                <button class="btn btn-warning btnEditarBarberoEstado"
+                                    data-url="{% url 'admin_module:editar_barbero_estado' date.id %}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarBarberoEstado">
+                                    Editar
+                                </button>
+
+
+                                <button class="btn btn-sm btn-danger btnCancelDate " data-id="{{ date.id }}"
+                                    data-status="{{ date.status }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalCancelDate">
+                                    <i class="">Cancelar</i>
+                                </button>
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
-                        <option value="">Todos</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="confirmada">Confirmada</option>
-                        <option value="cancelada">Cancelada</option>
-                        <option value="completada">Completada</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Cliente</label>
-                    <input type="text" class="form-control" name="cliente" placeholder="Buscar cliente...">
-                </div>
-            </form>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-    </div>
 
-    <!-- Tabla de Citas -->
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Hora</th>
-                    <th>Cliente</th>
-                    <th>Barbero</th>
-                    <th>Servicio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cita in citas %}
-                <tr>
-                    <td>{{ cita.hora }}</td>
-                    <td>{{ cita.cliente }}</td>
-                    <td>{{ cita.barbero }}</td>
-                    <td>{{ cita.servicio }}</td>
-                    <td>
-                        <span class="badge bg-{{ cita.estado|lower }}">{{ cita.estado|title }}</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#modalDetalle{{ cita.id }}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-primary btn-edit"><i class="fas fa-edit"></i></button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+      <div class="modal fade" id="modalEditarBarberoEstado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modalEditarBarberoEstadoContent">
+            <!-- Aquí se cargará el formulario AJAX -->
+            </div>
+        </div>
+      </div>
 
-    <!-- Modales de Detalle de cada Cita -->
-    {% for cita in citas %}
-    <div class="modal fade" id="modalDetalle{{ cita.id }}" tabindex="-1"
-        aria-labelledby="modalDetalleLabel{{ cita.id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDetalleLabel{{ cita.id }}">Detalle de la Cita</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Cliente:</strong> {{ cita.cliente }}</p>
-                    <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
-                    <p><strong>Hora:</strong> {{ cita.hora }}</p>
-                    <p><strong>Barbero:</strong> {{ cita.barbero }}</p>
-                    <p><strong>Servicio:</strong> {{ cita.servicio }}</p>
-                    <p><strong>Estado:</strong> {{ cita.estado }}</p>
-                    <p><strong>Notas:</strong> {{ cita.notas|default:"Sin notas" }}</p>
+
+        <div class="modal fade" id="modalCancelDate" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="formCancelDate" method="POST" action="{% url 'admin_module:cancelar-cita' %}">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <input type="hidden" name="date_id" id="cancelDateId">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirmar Cancelacion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Estás seguro que deseas cancelar la cita?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-danger">Estoy Seguro</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Modal Crear Cita -->
+        <div class="modal fade" id="modalCrearCita" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formCrearCita" method="post" action="{% url 'admin_module:crear_cita' %}">
+                        {% csrf_token %}
+                        <div class="modal-body" id="modal-body-content">
+                            <!-- Aquí se carga el formulario con AJAX -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar Cita</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+
+        <!---JS para la edicion de barbero o estado de la reserva-->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('modalEditarBarberoEstado');
+
+                modal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const url = button.getAttribute('data-url');
+
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('modalEditarBarberoEstadoContent').innerHTML = html;
+                        });
+                });
+            });
+        </script>
+
+
+        <!-- JavaScript para el panel de administración -->
+        <script>
+            $(document).ready(function () {
+                // Inicializar Tabla de dates
+                $('#tabladates').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+                    },
+                    dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ],
+                    pageLength: 10,
+                });
+
+                $('.btnActualizarDate').on('click', function () {
+                    const id = $(this).data('id');
+                    const barbero = $(this).data('barber_id');
+                    const estado = $(this).data('status');
+
+                    $('#inputDateId').val(id);  // Aquí guardamos el ID de la cita
+                    $('#inputBarbero').val(barbero);
+                    $('#inputestado').val(estado);
+                });
+
+
+                // Boton para eliminar establecimiento
+                $('.btnCancelDate').on('click', function () {
+                    const id = $(this).data('id');
+                    const estado = $(this).data('status');
+
+                    $('#cancelDateId').val(id);
+
+                });
+            });
+
+
+            $('#abrir-formulario').on('click', function () {
+                const modal = new bootstrap.Modal(document.getElementById('modalCrearCita'));
+                modal.show();
+
+                $.ajax({
+                    url: "{% url 'admin_module:crear_cita_form' %}",
+                    type: "GET",
+                    success: function (data) {
+                        $('#modal-body-content').html(data); // insertar formulario
+                    },
+                    error: function () {
+                        $('#modal-body-content').html('<p>Error al cargar el formulario.</p>');
+                    }
+                });
+            });
+
+            
+
+        </script>
+
+
+
+
     </div>
-    {% endfor %}
-    {% endblock %}
+
+    </form>
+</div>
+</div>
+
+
+
+{% endblock %}

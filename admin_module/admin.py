@@ -1,6 +1,7 @@
 
 from django.contrib import admin
-from .models import (
+from .models import  (
+    
     Day,
     Schedule,
     ScheduleAssignment,
@@ -9,7 +10,9 @@ from .models import (
     Service,
     EstablishmentService,
     Inventory,
+    Category,
 )
+
 
 @admin.register(Day)
 class DayAdmin(admin.ModelAdmin):
@@ -27,9 +30,9 @@ class ScheduleAssignmentAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name_product', 'amount', 'minimum_stock', 'price_product', 'last_update')
+    list_display = ('id', 'name_product', 'amount', 'minimum_stock', 'price_product', 'updated_at')
     search_fields = ('name_product',)
-    list_filter = ('last_update',)
+    list_filter = ('updated_at',)
 
 @admin.register(Establishment)
 class EstablishmentAdmin(admin.ModelAdmin):
@@ -39,7 +42,7 @@ class EstablishmentAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name_service', 'price_service', 'duration', 'active')
+    list_display = ('id', 'name', 'price', 'category', 'active')
     search_fields = ('name_service',)
     list_filter = ('active',)
 
@@ -52,3 +55,7 @@ class EstablishmentServiceAdmin(admin.ModelAdmin):
 class InventoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'establishment', 'product')
     list_filter = ('establishment',)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
