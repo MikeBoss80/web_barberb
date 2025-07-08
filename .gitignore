@@ -1,0 +1,7 @@
+.vscode
+env/
+django/
+django_env/
+perfil_gabo/
+.env
+**/__pycache__/
