@@ -1,0 +1,16 @@
+<form id="formVinculation">
+    <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title" id="formVinculationTitle"></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" form="formVinculation" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+</form>

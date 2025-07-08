@@ -1,5 +1,6 @@
 # admin_module/forms.py
 from django import forms
+from workflows.models import FlowInstance
 from .models import Product, Establishment
 from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
@@ -132,3 +133,23 @@ class BarberRequestAdminResponseForm(forms.ModelForm):
         labels = {
             'respuesta_admin': 'Respuesta del Administrador',
         }
+
+class VinculationForm(forms.ModelForm):
+    # comments = forms.CharField(max_length=80, required=True)
+    document = forms.CharField(label='Documento del colaborador', max_length=15, required=True)
+
+    class Meta:
+        model = FlowInstance
+        fields = ['workflow_type']#pendiente comentarios
+        widgets = {
+            'workflow_type': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance=super().save(commit=False)
+        if commit:
+            instance.save()
+        return instance

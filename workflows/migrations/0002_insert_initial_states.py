@@ -3,21 +3,20 @@
 from django.db import migrations
 
 def insert_initial_states(apps, schema_editor):
-    States = apps.get_model('workflows', 'States')
+    States = apps.get_model('workflows', 'FlowStatus')
 
     initial_states = [
         ('Agendada', 'Solicitud programada.'),
         ('Cancelada', 'Solicitud cancelada.'),
         ('Completada', 'Solicitud completada.'),
         ('En espera', 'Solicitud pendiente de atención.'),
-        # Agregados sugeridos:
         ('Reprogramada', 'Solicitud movida a otra fecha.'),
         ('No asistida', 'Solicitud no atendida.'),
         ('Confirmada', 'Solicitud confirmada.'),
     ]
 
     for name, desc in initial_states:
-        States.objects.get_or_create(name=name, defaults={'description': desc})
+        States.objects.get_or_create(name=name, type_flow=None, defaults={'description': desc})
         
 class Migration(migrations.Migration):
 
