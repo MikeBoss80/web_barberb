@@ -233,7 +233,9 @@ class CreateVinculationView(SuccessMessageMixin, CreateView):
         instance.updated_by = self.request.user
 
         try:
-            colaborator = User.objects.get(profile__document=documento)
+            colaborator = User.objects.filter(profile__document=documento).last() #Se toma el ultimo
+            #TODO: Esto debe cambiarse, no deberia existir usuarios con el mismo documento 
+            # o si no, realizar la validacion por algun id unico
             instance.status_id =  4
             instance.recipient = colaborator  # lo vinculamos si existe
             # messages.success(self.request, "Colaborador encontrado, solicitud enviada.")

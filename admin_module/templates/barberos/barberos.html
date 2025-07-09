@@ -48,18 +48,11 @@
                   <p class="card-text"><strong>Cumpleaños:</strong> {{ barbero.profile.birth_date }}</p>
                   <!-- <p class="card-text"><strong>Horario:</strong> {{ barbero.horario }}</p>
                   <p class="card-text"><strong>Ingresos:</strong> ${{ barbero.ingresos_generados }}</p>
-                  <p class="card-text">
-                    <strong>Estado:</strong>
-                    {% if barbero.activo %}
-                    <span class="text-success">🟢 Activo</span>
-                    {% else %}
-                    <span class="text-danger">🔴 Inactivo</span>
-                    {% endif %}
-                  </p> -->
+                   -->
                 </div>
                 <div class="card-footer d-flex flex-column align-items-start gap-2">
                   <p class="card-text">
-                    {% if barbero.activo %}
+                    {% if barbero.is_active %}
                     <span class="text-success">🟢 Activo</span>
                     {% else %}
                     <span class="text-danger">🔴 Inactivo</span>
@@ -108,19 +101,21 @@
           </thead>
           <tbody>
               {% for request in requests %}
-              <tr>
-                  <td>{{ request.created_by.username }}</td>
-                  <td>{{ request.status.name }}</td>
-                  <td>{{ request.created_at }}</td>
-                  <td>{{ request.updated_at }}</td>
-                  <td>{{ request.recipient.username }}</td>
-                  <td>{{ request.workflow_type.name }}</td>
-                  <td>
-                      <button class="btn btn-sm btn-danger btnDeleteVinculation" data-id="{{ request.id }}">
-                        Eliminar
-                      </button>
-                  </td>
-              </tr>
+                <tr>
+                    <td>{{ request.created_by.username }}</td>
+                    <td>{{ request.status.name }}</td>
+                    <td>{{ request.created_at }}</td>
+                    <td>{{ request.updated_at }}</td>
+                    <td>{{ request.recipient.username }}</td>
+                    <td>{{ request.workflow_type.name }}</td>
+                    <td>
+                        {% if request.status.name == "En espera"%}
+                          <button class="btn btn-sm btn-danger btnDeleteVinculation" data-id="{{ request.id }}">
+                            Eliminar
+                          </button>
+                        {% endif %}
+                    </td>
+                </tr>
               {% endfor %}
           </tbody>
         </table>
