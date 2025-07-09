@@ -135,11 +135,13 @@ class BarberRequestAdminResponseForm(forms.ModelForm):
         }
         
 class CreateServiceForm(forms.ModelForm):
+    name_service = forms.CharField(max_length=80, required=True)
+
     class Meta:
         model = Service
-        fields = ['name', 'description', 'price', 'category', 'duration', 'active']
+        fields = ['name_service', 'description_service', 'price_service', 'category', 'duration', 'active']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'name_service': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-select'}),

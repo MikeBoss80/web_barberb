@@ -42,7 +42,7 @@ class EstablishmentAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'category', 'active')
+    list_display = ('id', 'name_service', 'price_service', 'category', 'active')
     search_fields = ('name_service',)
     list_filter = ('active',)
 

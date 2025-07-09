@@ -28,8 +28,8 @@
             <tbody>
                 {% for servicio in servicios %}
                     <tr>
-                        <td>{{ servicio.name }}</td>
-                        <td>{{ servicio.description|linebreaksbr }}</td>
+                        <td>{{ servicio.name_service }}</td>
+                        <td>{{ servicio.description_service|linebreaksbr }}</td>
                         <td>
                             {% if servicio.category %}
                                 {{ servicio.category.name }}
@@ -37,7 +37,7 @@
                                 <span class="text-muted">Sin categoría</span>
                             {% endif %}
                         </td>
-                        <td>${{ servicio.price }}</td>
+                        <td>${{ servicio.price_service }}</td>
                         <td>{{ servicio.duration }} min</td>
                         <td>
                             {% if servicio.active %}

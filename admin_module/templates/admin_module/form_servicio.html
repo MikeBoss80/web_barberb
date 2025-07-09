@@ -9,10 +9,10 @@
     <div class="modal-body">
 
       <div class="mb-3">
-        {{ form.name.label_tag }}
-        {{ form.name }}
+        {{ form.name_service.label_tag }}
+        {{ form.name_service }}
         {% if form.name.errors %}
-          <div class="text-danger">{{ form.name.errors }}</div>
+          <div class="text-danger">{{ form.name_service.errors }}</div>
         {% endif %}
       </div>
 
@@ -25,9 +25,9 @@
       </div>
 
       <div class="mb-3">
-        {{ form.price.label_tag }}
-        {{ form.price }}
-        {% if form.price.errors %}
+        {{ form.price_service.label_tag }}
+        {{ form.price_service }}
+        {% if form.price_service.errors %}
           <div class="text-danger">{{ form.price.errors }}</div>
         {% endif %}
       </div>
@@ -41,9 +41,9 @@
       </div>
 
       <div class="mb-3">
-        {{ form.description.label_tag }}
-        {{ form.description }}
-        {% if form.description.errors %}
+        {{ form.description_service.label_tag }}
+        {{ form.description_service }}
+        {% if form.description_service.errors %}
           <div class="text-danger">{{ form.description.errors }}</div>
         {% endif %}
       </div>

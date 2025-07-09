@@ -76,9 +76,9 @@ class Establishment(models.Model):
 
 # Tabla: admin_module_services
 class Service(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    name_service = models.CharField(max_length=100)
+    description_service = models.TextField()
+    price_service = models.DecimalField(max_digits=10, decimal_places=2)
     duration = models.IntegerField()
     active = models.BooleanField(default=True)
     
