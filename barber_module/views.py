@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView ,DetailView
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
+from admin_module.models import Establishment
+from workflows.models import FlowInstance, FlowStatus
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
@@ -111,12 +113,41 @@ class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
     paginate_by = 10 #paginar de 10
 
     def get_queryset(self):
-        
         #Filtra las solicitudes para que el barbero solo vea las suyas,
         #ordenadas por fecha descendente.
-    
         return BarberRequest.objects.filter(barber=self.request.user).order_by('-fecha_solicitud')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_vinculation = FlowInstance.objects.filter(workflow_type_id=1,recipient=self.request.user).order_by('-created_at')
+        context['requests'] = request_vinculation
 
+        return context
+
+class BarberValidateVinculation(View):
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        value = self.kwargs['value']
+        solicitud = get_object_or_404(FlowInstance, pk=pk)
+
+        if bool(value):
+            new_status = get_object_or_404(FlowStatus, name='Confirmada')
+            vinculation_est = solicitud.created_by.admin_est.first()
+            print(vinculation_est)
+            self.request.user.profile.establishment = vinculation_est
+            profile = self.request.user.profile
+            profile.establishment = vinculation_est
+            profile.save()
+        else:
+            new_status = get_object_or_404(FlowStatus, name='Cancelada')
+        # else:
+        #     messages.error(request, 'Acción no válida.')
+        #     return redirect('admin_module:barberos')  # Ajusta el nombre de redirección
+        solicitud.status = new_status
+        solicitud.save()
+
+        # messages.success(request, f'Solicitud actualizada a {new_status.name}')
+        return redirect('barber_module:barber_solicitudes_list')
 
 class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
     model = BarberRequest

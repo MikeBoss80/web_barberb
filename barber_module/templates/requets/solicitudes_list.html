@@ -10,48 +10,120 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">Mis Solicitudes</h2>
+    <div class="row mb-4">
+        <div class="d-flex justify-content-between mb-3">
+            <h2 class="mb-4">Mis Solicitudes</h2>
+            <a href="{% url 'barber_module:solicitud_barbero' %}" class="btn btn-primary mt-4">Nueva Solicitud</a>
+        </div>
+    
+        <table id="tablaSolicitudes" class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Fechas</th>
+                    <th>Estado</th>
+                    <th>Respuesta</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in solicitudes %}
+                <tr>
+                    <td>{{ solicitud.get_tipo_display }}</td>
+                    <td>{{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if solicitud.estado == 'aprobada' %} bg-success
+                            {% elif solicitud.estado == 'rechazada' %} bg-danger
+                            {% else %} bg-secondary {% endif %}">
+                            {{ solicitud.get_estado_display }}
+                        </span>
+                    </td>
+                    <td>{{ solicitud.respuesta_admin|default:"--" }}</td>
+                    <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'barber_module:barber_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-info">
+                            Ver Detalles
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+    </div>
 
+    <div class="row mt-5 bg-light p-4 rounded border-0 shadow-sm">
+        {% if requests %}
+            <h5 class="mb-4">Vinculaciones Pendientes</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover display" id="tblVinculation">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Solicitado Por</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Ultima Fecha</th>
+                            <th>Dirigida a</th>
+                            <th>Tipo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in requests %}
+                            <tr>
+                                <td>{{ request.created_by.username }}</td>
+                                <td>{{ request.status.name }}</td>
+                                <td>{{ request.created_at }}</td>
+                                <td>{{ request.updated_at }}</td>
+                                <td>{{ request.recipient.username }}</td>
+                                <td>{{ request.workflow_type.name }}</td>
+                                <td>
+                                    {% if request.status.name == "En espera" %}
+                                    <button class="btn btn-sm btn-success btnValidateValidation" data-id="{{ request.id }}" data-value="1">
+                                        Aceptar
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btnValidateValidation" data-id="{{ request.id }}" data-value="0">
+                                        Denegar
+                                    </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <h3 class="mb-4">Vinculación</h3>
+            <p>Si deseas vincular tu cuenta a un establecimiento, por favor contacta al administrador del establecimiento para que realice la solicitud.</p>
+        {% endif %}
 
+    </div>
 
-    <table id="tablaSolicitudes" class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>Tipo</th>
-                <th>Fechas</th>
-                <th>Estado</th>
-                <th>Respuesta</th>
-                <th>Fecha de Solicitud</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for solicitud in solicitudes %}
-            <tr>
-                <td>{{ solicitud.get_tipo_display }}</td>
-                <td>{{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</td>
-                <td>
-                    <span class="badge 
-                        {% if solicitud.estado == 'aprobada' %} bg-success
-                        {% elif solicitud.estado == 'rechazada' %} bg-danger
-                        {% else %} bg-secondary {% endif %}">
-                        {{ solicitud.get_estado_display }}
-                    </span>
-                </td>
-                <td>{{ solicitud.respuesta_admin|default:"--" }}</td>
-                <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'barber_module:barber_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-info">
-                        Ver Detalles
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{% url 'barber_module:solicitud_barbero' %}" class="btn btn-primary mt-3">Nueva Solicitud</a>
 </div>
+
+<div class="modal fade" id="modalValidateVinculation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formValidateVinculation" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Confirmar elección</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalBody"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Continuar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -61,6 +133,28 @@
 
 <script>
     $(document).ready(function () {
+        $('#tblVinculation').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+            },
+            dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+            // buttons: [
+            //     'copy', 'csv', 'excel', 'pdf', 'print'
+            // ],
+            pageLength: 2,
+        });
+
+        $(".btnValidateValidation").on("click", function () {
+            const requestId = $(this).data("id");
+            const value = $(this).data("value");
+            const action = Boolean(value) ? "ACEPTAR" : "DENEGAR";
+            const message = `¿Estás seguro de que deseas ${action} esta solicitud?`;
+
+            $("#modalBody").text(message);
+            $("#formValidateVinculation").attr("action", `../solicitudes/validate/${requestId}/${value}/`);
+            $("#modalValidateVinculation").modal("show");
+        });
+
         $('#tablaSolicitudes').DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'

@@ -1,5 +1,5 @@
 from django.urls import path
-from barber_module.views import barberView, BarberCitasView, BarberReportesView, SoporteView, LogoutView, PerfilUsuarioView, EditarPerfilView, SoporteView, BarberSeguridadView, BarberContenidosView, HomeBarberView,BarberRequestCreateView,BarberRequestListView,BarberRequestDetailView
+from barber_module.views import BarberValidateVinculation, barberView, BarberCitasView, BarberReportesView, SoporteView, LogoutView, PerfilUsuarioView, EditarPerfilView, SoporteView, BarberSeguridadView, BarberContenidosView, HomeBarberView,BarberRequestCreateView,BarberRequestListView,BarberRequestDetailView
 from . import views
 from django.contrib.auth.views import LogoutView
 
@@ -21,6 +21,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('solicitudes/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero'),
     path('solicitudes/', BarberRequestListView.as_view(), name='barber_solicitudes_list'),
+    path('solicitudes/validate/<int:pk>/<int:value>/', BarberValidateVinculation.as_view(), name='barber_vinculation_validate'),
     path('solicitudes/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle')
 
 ]   
