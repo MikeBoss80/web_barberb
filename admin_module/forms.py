@@ -8,15 +8,16 @@ from barber_module.models import BarberRequest
 
 class CreateProductForm(forms.ModelForm):
     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
-    description_product = forms.CharField(max_length=80, required=True)
-    amount = forms.IntegerField(required=True, initial=0)
-    minimun_stock = forms.IntegerField(required=True, initial=0)
-    price_product = forms.IntegerField(required=True, initial=0)
+    description_product = forms.CharField(max_length=80, required=True, label="Descripcion")
+    amount = forms.IntegerField(required=True, initial=0, label="Cantidad")
+    minimun_stock = forms.IntegerField(required=True, initial=0, label="Cantidad Minima")
+    price_product = forms.IntegerField(required=True, initial=0, label="Precio")
 
     class Meta:
         model = Product
         # exclude=["id_admin_id"]
-        fields = ("name_product", "description_product", "amount", "minimun_stock", "price_product", "category")
+        fields = ["name_product", "description_product", "amount", "minimun_stock", "price_product", "category"]
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -135,15 +136,22 @@ class BarberRequestAdminResponseForm(forms.ModelForm):
         }
         
 class CreateServiceForm(forms.ModelForm):
-    name_service = forms.CharField(max_length=80, required=True)
+    name_service = forms.CharField(max_length=80, required=True, label="Nombre Servicio")
 
     class Meta:
         model = Service
         fields = ['name_service', 'description_service', 'price_service', 'category', 'duration', 'active']
+        labels = {
+            'description_service': 'Descripción',
+            'price_service': 'Precio',
+            'category': 'Categoría',
+            'duration': 'Duración',
+            'active': 'Activo',
+        }
         widgets = {
             'name_service': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description_service': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'price_service': forms.NumberInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
             'duration': forms.NumberInput(attrs={'class': 'form-control'}),
             'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
