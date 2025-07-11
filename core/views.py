@@ -59,5 +59,10 @@ class BarberoSolicitudesView(TemplateView):
     #El barbero vea o haga solicitudes, como pedir vacaciones, días libres o cambiar su horario
     template_name = 'barbero/solicitudes.html'
 
+class BaseView(TemplateView):
+    template_name = 'base.html'
+
+class TestView(TemplateView):
+    template_name = 'core/test.html'
 
     

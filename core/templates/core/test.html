@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="mb-4">Bienvenido al Panel de Control</h1>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card text-white bg-primary shadow">
+          <div class="card-body">
+            <h5 class="card-title">Usuarios registrados</h5>
+            <p class="card-text fs-4">128</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card text-white bg-success shadow">
+          <div class="card-body">
+            <h5 class="card-title">Ingresos del mes</h5>
+            <p class="card-text fs-4">$3.450.000</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card text-white bg-warning shadow">
+          <div class="card-body">
+            <h5 class="card-title">Citas pendientes</h5>
+            <p class="card-text fs-4">17</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
