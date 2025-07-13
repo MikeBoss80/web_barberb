@@ -205,11 +205,11 @@ class CrearCitaFormView(View):
         form = ServiceDateForm
         return render(request, 'partials/form_crear_cita.html', {'form': form})
     
-class BarberosView(BreadcrumbMixin, TemplateView):  
-     template_name= 'barberos/barberos.html'
+class CollapsView(BreadcrumbMixin, TemplateView):  
+     template_name= 'collabs/collabs.html'
      
      def get_breadcrumb(self):
-        return [{'label': 'Barberos', 'url': reverse('admin_module:barberos')}]
+        return [{'label': 'Colaboradores', 'url': reverse('admin_module:collabs')}]
 
      def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -222,9 +222,9 @@ class BarberosView(BreadcrumbMixin, TemplateView):
         return context
 
 class CreateVinculationView(SuccessMessageMixin, CreateView):
-    template_name = 'barberos/solicitudes_barbero.html'
+    template_name = 'collabs/solicitudes_barbero.html'
     form_class = VinculationForm
-    success_url = reverse_lazy('admin_module:barberos')
+    success_url = reverse_lazy('admin_module:collabs')
 
     def form_valid(self, form):
         documento = form.cleaned_data.get('document')

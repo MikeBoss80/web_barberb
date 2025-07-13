@@ -15,7 +15,12 @@ def modules_sidebar(user):
     elif user.groups.filter(name='Administrador').exists():
         return [
             ('core:test', 'person-circle' , 'Administrador'),
-            ('admin_module:barberos', 'person-circle' , 'Barberos'),
+            ('admin_module:collabs','people-fill','Colaboradores'),
+            ('admin_module:servicios', 'basket', 'Productos'),
+            ('admin_module:inventario','receipt-cutoff','Inventario'),
+            ('admin_module:admin_solicitudes_list','device-ssd-fill','Solicitudes'),
+            ('admin_module:contenidos','shop','Establecimiento'),
+            ('admin_module:soporte','info-circle','Soporte'),
         ]
     return [
         ('services_module:services_main', 'globe-americas' , 'Mapa'),
