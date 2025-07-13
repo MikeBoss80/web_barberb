@@ -1,7 +1,11 @@
 {% load sidebar_tags %}
 {% modules_sidebar request.user as modules %}
 
-<nav id="sidebar" class="bg-info d-none d-md-block text-white min-vh-100 d-flex flex-column px-3 sidebar-expanded" style="width: 220px; transition: width 0.3s;">
+
+<style>
+</style>
+<nav id="sidebar" class="bg-info d-none d-md-block text-white min-vh-100 d-flex flex-column px-3 sidebar-expanded"
+    style="width: 220px; transition: width 0.3s;">
     <div class="d-flex justify-content-end">
         <button id="toggleSidebar" class="btn btn-sm btn-outline-light">
             <i class="bi bi-list"></i>
@@ -9,12 +13,12 @@
     </div>
     <ul class="nav nav-pills flex-column mb-auto">
         {% for url_name, icon, label in modules %}
-            <li class="nav-item">
-                <a class="nav-link text-white d-flex align-items-center" href="{% url url_name %}">
+        <li class="nav-item">
+            <a class="nav-link text-white d-flex align-items-center" href="{% url url_name %}">
                 <i class="bi bi-{{ icon }} me-2"></i>
                 <span class="sidebar-label">{{ label }}</span>
-                </a>
-            </li>
+            </a>
+        </li>
         {% endfor %}
-     </ul>
+    </ul>
 </nav>
