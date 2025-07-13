@@ -40,18 +40,16 @@
     <!-- Es es el header -->
     {% include "components/header.html" %}
 
-    <div class="container-fluid">
-        <div class="row">
+    <div class="d-flex">
         <!-- Este es el sidebar -->
         {% include "components/sidebar.html" %}
 
         <!-- Aqui va el contenido principal que varia o se muestra -->
-        <main class="col">
+        <main class="flex-grow-1 px-3">
             {% block content %}
             <!-- Contenido por defecto -->
             {% endblock %}
         </main>
-        </div>
     </div>
 
     <!-- Bootstrap JS -->

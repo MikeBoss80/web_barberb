@@ -1,20 +1,36 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-  <a class="navbar-brand" href="#">Mi Plataforma</a>
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarContent">
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="">Inicio</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="">Perfil</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-danger" href="">Cerrar sesión</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+{% load static %}
+<style>
+  #header {
+    background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+</style>
+<div id="header">
+  <nav class="navbar navbar-expand-lg px-3 d-flex justify-content-center">
+    <div class="mx-4 d-flex align-items-center justify-content-center" style="height: 40px;">
+      <img src="{% static '/img/logo.png' %}" alt="Logo Barbería" style="max-height: 80px; max-width: 120px;">
+    </div>
+    <button class="navbar-toggler bg-light mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto d-flex align-items-center">
+        <li class="nav-item bg-light me-3 rounded">
+          <a class="nav-link text-black" href="{% url 'admin_module:perfil_usuario' %}">
+            {{ request.user.get_full_name|default:request.user.username }}
+            <i class="bi bi-person-circle"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <form method="post" action="{% url 'admin_module:logout' %}">
+            {% csrf_token %}
+            <button class="btn  btn-light" type="submit">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
