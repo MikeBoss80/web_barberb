@@ -24,7 +24,7 @@ class BreadcrumbMixin:
             breadcrumb = self.breadcrumb
 
         # Insertamos "Inicio" como primer breadcrumb
-        context['breadcrumb'] = [{'label': 'Inicio', 'url': reverse('admin_module:admin_main')}] + breadcrumb
+        context['breadcrumb'] = [{'label': 'Inicio', 'url': reverse('admin_module:main')}] + breadcrumb
         return context
 
 

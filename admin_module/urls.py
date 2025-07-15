@@ -11,7 +11,7 @@ from . import views
 app_name = 'admin_module'
 
 urlpatterns = [
-    path('', HomeadminView.as_view(), name='admin_main'),
+    path('', HomeadminView.as_view(), name='main'),
     path('citas/', CitasView.as_view(), name='citas'),
     path('collaborators/', CollapsView.as_view(), name='collabs'),
     path('barberos/vinculation/', CreateVinculationView.as_view(), name='vinculation_request'),

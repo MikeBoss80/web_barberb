@@ -16,6 +16,12 @@
         #header {
             background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            z-index: 1001;
         }
 
         /* Estilo para el sidebar */
@@ -24,6 +30,7 @@
             /* Ajustar el ancho */
             background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
             overflow-y: auto;
+            width: 220px;
             height: calc(100vh - 60px);
             top: 60px;
             left: 0;
@@ -31,6 +38,7 @@
             transition: width 0.3s;
             /* Transición para el cambio de ancho */
             z-index: 1000;
+            position: fixed;
         }
 
         /* Estilo base de los enlaces en el menú lateral */
@@ -137,6 +145,16 @@
         .btn.btn-light:hover i {
             color: #f8f9fa;
         }
+        #main-content {
+            margin-left: 220px;  /* ancho del sidebar */
+            padding-top: 60px;   /* altura del header */
+            padding-right: 1rem;
+            padding-left: 1rem;  /* opcional si no usas Bootstrap px-3 */
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
     </style>
 </head>
 
@@ -149,7 +167,7 @@
         {% include "components/sidebar.html" %}
 
         <!-- Aqui va el contenido principal que varia o se muestra -->
-        <main class="flex-grow-1 px-3">
+        <main class="flex-grow-1 px-3" id="main-content">
             {% block content %}
             <!-- Contenido por defecto -->
             {% endblock %}
