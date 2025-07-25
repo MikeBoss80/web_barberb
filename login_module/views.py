@@ -40,6 +40,22 @@ class CustomLoginView(LoginView):
 class RolSelectView(LoginRequiredMixin,TemplateView):
     template_name='rol_actual.html'
     login_url = '/login/' 
+
+    def post(self, request, *args, **kwargs):
+        rol_seleccionado = request.POST.get('rol')
+
+        # Validar que el usuario tiene el rol seleccionado
+        user = request.user
+        user_groups = user.groups.values_list('name', flat=True)
+
+        if rol_seleccionado in user_groups:
+            # Guardar en sesión el rol activo
+            request.session['current_role'] = rol_seleccionado
+
+            return redirect('/admin_module/')
+        else:
+            # Si intenta seleccionar un rol que no tiene, redirigir o mostrar error
+            return redirect('/not_authorized/')
         
 class LoginView(TemplateView):
     template_name = 'login.html'

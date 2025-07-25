@@ -15,12 +15,10 @@
         <h2>¿Con que rol quieres ingresar hoy?</h2>
         <p>Seleccione el rol con el que quiere ingresar al sistema, basado en su eleccion sus permisos seran diferentes
         </p>
-        <form method="get" action="/barber_module/">
-            <button type="submit">Barbero</button>
-        </form>
-
-        <form method="get" action="/admin_module/">
-            <button type="submit">Administrador</button>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="rol" value="Administrador">Administrador</button>
+            <button type="submit" name="rol" value="Barbero">Barbero</button>
         </form>
 
     </div>

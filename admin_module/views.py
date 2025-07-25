@@ -107,7 +107,12 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
 
     # Validación: solo los usuarios en el grupo 'Administrador' pueden acceder
     def test_func(self):
-        return self.request.user.groups.filter(name='Administrador').exists()
+        User = self.request.user
+        return (
+            User.groups.filter(name='Administrador').exists() or
+            User.groups.filter(name='Administrador').exists() or 
+            User.groups.filter(name='Administrador').exists()
+        )       
 
     # Redirección si no tiene permiso
     def handle_no_permission(self):
@@ -120,51 +125,96 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
     # Contexto que se pasa a la plantilla
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # Obtener el usuario actual
         user = self.request.user
 
-        # Buscar el establecimiento que administra este usuario
-        try: 
-            establecimiento = Establishment.objects.get(id_admin=user)
-        except Establishment.DoesNotExist:
-            establecimiento = None
 
-        # Si el establecimiento existe, filtramos las citas por ese establecimiento
-        if establecimiento:
-            # select_related permite hacer joins para mejorar eficiencia en las relaciones FK
-            citas=ServiceDate.objects.select_related(
-                'service',                # FK a EstablishmentService
-                'service__establishment',# FK a Establishment
-                'barber',                # FK a User (barbero)
-                'customer'               # FK a User (cliente)
-            ).filter(service__establishment=establecimiento)
+        # Inicialización de establecimiento en None
+        establecimiento = None
+        rol = self.request.session.get('current_role')
+
+
+        # ADMINISTRADOR
+        # Buscar el establecimiento que administra este usuario
+        if rol == 'Administrador':
+
+            try: 
+                establecimiento = Establishment.objects.get(id_admin=user)
+            except Establishment.DoesNotExist:
+                establecimiento = None
+
+            # Si el establecimiento existe, filtramos las citas por ese establecimiento
+            if establecimiento:
+                # select_related permite hacer joins para mejorar eficiencia en las relaciones FK
+                citas=ServiceDate.objects.select_related(
+                    'service',                # FK a EstablishmentService
+                    'service__establishment',# FK a Establishment
+                    'barber',                # FK a User (barbero)
+                    'customer'               # FK a User (cliente)
+                ).filter(service__establishment=establecimiento)
+            else:
+                citas = ServiceDate.objects.none()# Si no administra ningún establecimiento, no ve citas
+
+
+
+        #BARBERO
+        elif rol == 'Barbero':
+            
+            try:
+                establecimiento = user.profile.establishment
+            except:
+                    establecimiento = None
+
+            if establecimiento:
+                citas = ServiceDate.objects.select_related(
+                    'service',
+                    'service__establishment',
+                    'barber',
+                    'customer'
+                ).filter(
+                    service__establishment=establecimiento,
+                    barber=user
+                )
+            else:
+                citas = ServiceDate.objects.none()
+
+        # CLIENTE
+        elif user.groups.filter(name='Cliente').exists():
+            citas = ServiceDate.objects.select_related(
+                'service',
+                'service__establishment',
+                'barber',
+                'customer'
+            ).filter(
+                customer=user
+            )
         else:
-            citas = ServiceDate.objects.none()# Si no administra ningún establecimiento, no ve citas
+            citas = ServiceDate.objects.none()
 
         # Agregar las citas filtradas al contexto
         context['dates'] = citas
-
-        # Obtener los barberos que pertenecen al mismo establecimiento (usando profile si aplica)
-        context['barberos'] = User.objects.filter(
-            groups__name='Barbero', 
-            profile__establishment=establecimiento
+        
+        # Si es administrador, mostramos barberos asociados al establecimiento
+        if user.groups.filter(name='Administrador').exists() and establecimiento:
+            context['barberos'] = User.objects.filter(
+                groups__name='Barbero',
+                profile__establishment=establecimiento
             )
+        else:
+            context['barberos'] = None
 
-        # resumen de estado de las citas
         resumen = {
-            'total_dates': len(context['dates']),
-            'completadas': len([c for c in context['dates'] if c.status == 'Completada']),
-            'agendadas': len([c for c in context['dates'] if c.status == 'Agendada']),
-            'canceladas': len([c for c in context['dates'] if c.status == 'Cancelada']),
+            'total_dates': citas.count(),
+            'completadas': citas.filter(status='Completada').count(),
+            'agendadas': citas.filter(status='Agendada').count(),
+            'canceladas': citas.filter(status='Cancelada').count(),
         }
 
-        # Pasar resumen y fecha actual al contexto
         context['resumen'] = resumen
-        context['total_dates'] = date.today()
+        context['fecha_actual'] = date.today()
 
         return context
-    
+
     context_object_name = 'dates'
 
     def get_queryset(self):

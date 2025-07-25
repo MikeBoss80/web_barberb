@@ -1,6 +1,6 @@
 {% load static %}
 <style>
-  
+
 </style>
 <div id="header">
   <nav class="navbar navbar-expand-lg px-3 d-flex justify-content-center">
@@ -15,7 +15,14 @@
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav ms-auto d-flex align-items-center">
         <li class="nav-item bg-button">
-          <a class="btn  btn-light" href="{% url 'admin_module:perfil_usuario' %}">
+          <a id="rol">
+            {% if request.session.current_role %}
+            <span>{{ request.session.current_role }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item bg-button">
+          <a class="btn  btn-light" href="{% url 'admin_module:perfil_usuario' %} ">
             {{ request.user.get_full_name|default:request.user.username }}
             <i class="bi bi-person-badge"></i>
           </a>
