@@ -9,7 +9,7 @@
       <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <a href="{% url 'password_reset' %}" class="forgot">Olvido contraseña?</a>
+        <a href="{% url 'login_module:password_reset' %}" class="forgot">Olvido contraseña?</a>
         <br>
         <br>
         <button type="submit" class="btn-login">INICIAR</button>
@@ -17,7 +17,7 @@
         
 
         <div class="registrar-mobile">
-          <p><a href="{% url 'tipo_rol' %}"></a></p>
+          <p><a href="{% url 'login_module:tipo_rol' %}"></a></p>
         </div>
       </form>
     </div>
@@ -26,7 +26,7 @@
       <div class="overlay">
         <h3>Registrate</h3>
         <p>Te ayudamos a destacar, conectar y crecer en grande.!</p>
-        <a href="{% url 'registro_usuario' %}" class="btn-signup">REGISTRO</a>
+        <a href="{% url 'login_module:registro_usuario' %}" class="btn-signup">REGISTRO</a>
     </div>
   </div>
 </div>

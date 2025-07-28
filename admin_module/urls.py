@@ -28,7 +28,7 @@ urlpatterns = [
     path('producto/agregar/', ProductCreateView.as_view(), name='producto_create'),
     path('producto/editar/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
     path('producto/eliminar/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='login_module:login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
     path('citas/editar-rapido/<int:pk>/', EditarBarberoEstadoView.as_view(), name='editar_barbero_estado'),

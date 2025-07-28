@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'admin_module',
     'services_module',
     'barber_module',
-    'login_module.apps.LoginModuleConfig',
+    'login_module',
     'widget_tweaks',
     'calendar_module',
     'workflows',
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'core.middleware.CurrentRolMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
