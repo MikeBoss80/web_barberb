@@ -1,5 +1,5 @@
 {% load sidebar_tags %}
-{% modules_sidebar request.user as modules %}
+{% modules_sidebar as sidebar_items %}
 
 
 <style>
@@ -12,7 +12,7 @@
         </button>
     </div>
     <ul class="nav nav-pills flex-column mb-auto">
-        {% for url_name, icon, label in modules %}
+         {% for url_name, icon, label in sidebar_items %}
         <li class="nav-item">
             <a class="nav-link text-white d-flex align-items-center" href="{% url url_name %}">
                 <i class="bi bi-{{ icon }} me-2"></i>

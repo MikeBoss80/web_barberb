@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
+from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView, DetailView
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
@@ -15,16 +15,15 @@ from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm, BarberRequestForm
 from django.views.generic.edit import FormView
 from collections import defaultdict
 from admin_module.models import Category 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-
-
+from workflows.models import FlowInstance, FlowStatus
 from admin_module.utils.mixins import CitasQuerysetMixin
+
 
 
 
@@ -260,6 +259,92 @@ class VinculationDeleteView(DeleteView):
     model = FlowInstance
     success_url = reverse_lazy('admin_module:barberos')
      
+
+class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
+    model = BarberRequest
+    template_name ='requets/solicitudes_list.html' #plantilla html
+    success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
+    context_object_name = 'solicitudes' #nombre variable en el template
+    paginate_by = 10 #paginar de 10
+
+    def get_queryset(self):
+        #Filtra las solicitudes para que el barbero solo vea las suyas,
+        #ordenadas por fecha descendente.
+        return BarberRequest.objects.filter(barber=self.request.user).order_by('-fecha_solicitud')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_vinculation = FlowInstance.objects.filter(workflow_type_id=1,recipient=self.request.user).order_by('-created_at')
+        context['requests'] = request_vinculation
+
+        return context
+
+class BarberValidateVinculation(View):
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        value = self.kwargs['value']
+        solicitud = get_object_or_404(FlowInstance, pk=pk)
+
+        if bool(value):
+            new_status = get_object_or_404(FlowStatus, name='Confirmada')
+            vinculation_est = solicitud.created_by.admin_est.first()
+            print(vinculation_est)
+            self.request.user.profile.establishment = vinculation_est
+            profile = self.request.user.profile
+            profile.establishment = vinculation_est
+            profile.save()
+        else:
+            new_status = get_object_or_404(FlowStatus, name='Cancelada')
+        # else:
+        #     messages.error(request, 'Acción no válida.')
+        #     return redirect('admin_module:barberos')  # Ajusta el nombre de redirección
+        solicitud.status = new_status
+        solicitud.save()
+
+        # messages.success(request, f'Solicitud actualizada a {new_status.name}')
+        return redirect('admin_module:barber_solicitudes_list')
+
+class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
+    model = BarberRequest
+    template_name = 'requets/solicitudes_detail.html'
+    context_object_name = 'solicitud'
+
+    def get_queryset(self):
+        """
+        Asegura que el barbero solo pueda ver sus propias solicitudes.
+        """
+        return BarberRequest.objects.filter(barber=self.request.user)
+
+
+
+class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
+
+    model = BarberRequest  # Modelo a crear
+    form_class = BarberRequestForm  # Formulario personalizado
+    template_name = 'requets/barber_request_form.html'  # HTML a renderizar
+    success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
+
+    def get_breadcrumb(self):
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero')}]
+
+
+    def form_valid(self, form):
+        """
+        Este método se ejecuta si el formulario es válido.
+        Aquí se asignan automáticamente el barbero y el establecimiento.
+        """
+        user = self.request.user  # Barbero autenticado
+
+        form.instance.barber = user  # Asigna el barbero automáticamente
+
+        # Asignar el establecimiento al que pertenece este barbero
+        # Si usas un modelo Profile, y allí está la relación con el establecimiento:
+        perfil = Profile.objects.get(user=user)
+        form.instance.establecimiento = perfil.establishment  # Asegúrate que esto esté definido en Profile
+
+        return super().form_valid(form)
+    
+
 class CalendarioBarberoView(View):
     def get(self, request, barbero_id):
         # Aquí podrías cargar datos específicos del barbero, por ahora lo haremos estático

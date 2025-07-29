@@ -2,8 +2,13 @@ from django import template
 
 register = template.Library()
 
-@register.simple_tag
-def modules_sidebar(user):
+@register.simple_tag(takes_context=True)
+def modules_sidebar(context):
+    request = context['request']
+    user = request.user
+    current_role = request.session.get('current_role')
+
+
     if not user.is_authenticated:
         return []
 
@@ -12,7 +17,7 @@ def modules_sidebar(user):
             # ('admin_dashboard', 'Administrador'),
             # ('usuarios', 'Gestión de usuarios'),
         ]
-    elif user.groups.filter(name='Administrador').exists():
+    if current_role == 'Administrador':
         return [
             ('admin_module:main', 'person-circle' , 'Dashboard'),
             ('admin_module:citas','calendar2-date-fill','Citas'),
@@ -23,11 +28,11 @@ def modules_sidebar(user):
             ('admin_module:contenidos','shop','Establecimiento'),
             ('admin_module:soporte','info-circle','Soporte'),
         ]
-    elif user.groups.filter(name='Barbero').exists():
+    if current_role == 'Barbero':
         return [
             ('admin_module:main', 'person-circle' , 'Dashboard'),
             ('admin_module:citas','calendar2-date-fill','Citas'),
-            ('admin_module:admin_solicitudes_list','device-ssd-fill','Solicitudes'),
+            ('admin_module:barber_solicitudes_list','device-ssd-fill','Solicitudes'),
             ('admin_module:soporte','info-circle','Soporte'),
         ]
     return [

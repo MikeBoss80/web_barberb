@@ -6,6 +6,7 @@ from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
 
+
 class CreateProductForm(forms.ModelForm):
     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
     description_product = forms.CharField(max_length=80, required=True, label="Descripcion")
@@ -180,3 +181,23 @@ class VinculationForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+    
+
+class BarberRequestForm(forms.ModelForm):
+    class Meta:
+        model = BarberRequest
+        fields = ['tipo', 'fecha_inicio', 'fecha_fin', 'comentario',]
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'fecha_inicio': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'fecha_fin': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Puedes personalizar etiquetas aquí si lo deseas
+        self.fields['tipo'].label = "Tipo de Solicitud"
+        self.fields['fecha_inicio'].label = "Fecha de Inicio"
+        self.fields['fecha_fin'].label = "Fecha de Fin"
+        self.fields['comentario'].label = "Comentario"

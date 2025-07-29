@@ -1,4 +1,4 @@
-{% extends "barber_module/base_barber.html" %}  
+{% extends "base.html" %}  
 {% load static %}
 
 {% block title %}Nueva Solicitud{% endblock %}
@@ -33,7 +33,7 @@
 
 
         <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
-        <a href="{% url 'barber_module:barber_solicitudes_list' %}" class="btn btn-secondary">Cancelar</a>
+        <a href="{% url 'admin_module:barber_solicitudes_list' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 {% endblock %}

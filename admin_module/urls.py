@@ -1,6 +1,6 @@
 from django.urls import path
 
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView
 
 from django.contrib.auth.views import LogoutView
 
@@ -41,5 +41,10 @@ urlpatterns = [
     path('servicio/agregar/', views.agregar_servicio, name='agregar_servicio'),
     path('servicio/editar/<int:id>/', views.editar_servicio, name='editar_servicio'),
     path('servicio/eliminar/<int:id>/', views.eliminar_servicio, name='eliminar_servicio'),
+    path('solicitudes/', BarberRequestListView.as_view(), name='barber_solicitudes_list'),
+    path('solicitudes/validate/<int:pk>/<int:value>/', BarberValidateVinculation.as_view(), name='barber_vinculation_validate'),
+    path('solicitudes/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle'),
+    path('solicitudes/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero')
+
 
 ]   
