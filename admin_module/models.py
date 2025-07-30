@@ -6,8 +6,6 @@ from django.contrib.auth.models import User, Group
 from django import forms
 
 
-
-
 # Tabla: admin_module_days
 class Day(models.Model):
     name = models.CharField(max_length=50)
@@ -30,7 +28,7 @@ class ScheduleAssignment(models.Model):
 
 # tabla de categoria de producto
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
 
     def __str__(self):
@@ -85,7 +83,7 @@ class Service(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.name_service
 
 # Relación muchos a muchos entre establecimiento y servicios
 class EstablishmentService(models.Model):
