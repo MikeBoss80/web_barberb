@@ -12,7 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    
+
 
     <!-- jQuery y DataTables -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -27,8 +27,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    
-    
+
+
     {% block extra_css %}
     {% endblock %}
     <style>
@@ -54,7 +54,7 @@
             top: 60px;
             left: 0;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: width 0.3s;
+            transition: width 0.3s ease;
             /* Transición para el cambio de ancho */
             z-index: 1000;
             position: fixed;
@@ -79,7 +79,7 @@
         }
 
 
-        
+
         .nav-link.text-white:hover {
             background-color: #3e1a4e;
             font-weight: 600;
@@ -142,9 +142,10 @@
             display: flex;
             align-items: center;
             transition: background-color 0.3s, padding 0.3s;
-            margin-left: 10px; /* Espacio entre este botón y el siguiente */
+            margin-left: 10px;
+            /* Espacio entre este botón y el siguiente */
             border-color: #e7e5e5;
-            border-width: 1.2px; 
+            border-width: 1.2px;
 
 
         }
@@ -167,18 +168,75 @@
         .btn.btn-light:hover i {
             color: #f8f9fa;
         }
+
         #main-content {
-            margin-left: 220px;  /* ancho del sidebar */
-            padding-top: 60px;   /* altura del header */
+            margin-left: 220px;
+            /* ancho del sidebar */
+            padding-top: 60px;
+            /* altura del header */
             padding-right: 1rem;
-            padding-left: 1rem;  /* opcional si no usas Bootstrap px-3 */
+            padding-left: 1rem;
+            /* opcional si no usas Bootstrap px-3 */
             background-color: #f8f9fa;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: margin-left 0.3s ease;
+
         }
+
         #rol {
             color: white;
             font-weight: bold;
+        }
+
+        #main-content {
+            border: 2px dashed red;
+        }
+
+        #sidebar {
+            border: 2px dashed blue;
+        }
+
+        @media (max-width: 768px) {
+            #main-content {
+                transition: margin-left 0.3s ease;
+                margin-left: 80px !important;
+                display: block !important;
+
+            }
+
+            /* Menú colapsado en móvil */
+            .navbar-collapse {
+                background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+                padding: 0.5rem 1rem;
+                border-radius: 0 0 6px 6px;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+
+            /* Estilo para los links dentro del navbar */
+            .navbar-collapse .nav-link {
+                color: white;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                transition: background-color 0.3s ease;
+            }
+
+            /* Hover para los links */
+            .navbar-collapse .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #ffc107;
+            }
+
+
+        }
+
+
+        .navbar-toggler {
+            background-color: transparent;
+            border: none;
+            outline: none;
         }
     </style>
 </head>
@@ -192,7 +250,7 @@
         {% include "components/sidebar.html" %}
 
         <!-- Aqui va el contenido principal que varia o se muestra -->
-        <main class="flex-grow-1 px-3" id="main-content">
+        <main class="flex-grow-1" id="main-content">
             {% block content %}
             <!-- Contenido por defecto -->
             {% endblock %}
@@ -205,10 +263,19 @@
     <script>
         const toggleBtn = document.getElementById('toggleSidebar');
         const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        // Colapsar automáticamente si la pantalla es pequeña al cargar
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('sidebar-collapsed');
+            mainContent.style.marginLeft = '80px';
+        }
 
         toggleBtn?.addEventListener('click', () => {
-            sidebar.classList.toggle('sidebar-collapsed');
+            const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.style.marginLeft = isCollapsed ? '80px' : '220px';
         });
+
     </script>
 </body>
 
