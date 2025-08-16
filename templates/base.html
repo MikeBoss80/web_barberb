@@ -78,8 +78,6 @@
 
         }
 
-
-
         .nav-link.text-white:hover {
             background-color: #3e1a4e;
             font-weight: 600;
@@ -132,10 +130,10 @@
 
         /* Estilo para el botón btn-light */
         .btn.btn-light {
-            background: transparent;
+            background: #3e1a4e;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             color: white;
-            padding: 0.5rem 1rem;
+            padding-top: 0.5rem 1rem;
             border-radius: 4px;
             font-size: 1rem;
             text-decoration: none;
@@ -174,8 +172,6 @@
             /* ancho del sidebar */
             padding-top: 60px;
             /* altura del header */
-            padding-right: 1rem;
-            padding-left: 1rem;
             /* opcional si no usas Bootstrap px-3 */
             background-color: #f8f9fa;
             min-height: 100vh;
@@ -185,51 +181,9 @@
         }
 
         #rol {
+            background-color: #3e1a4e;
             color: white;
             font-weight: bold;
-        }
-
-        #main-content {
-            border: 2px dashed red;
-        }
-
-        #sidebar {
-            border: 2px dashed blue;
-        }
-
-        @media (max-width: 768px) {
-            #main-content {
-                transition: margin-left 0.3s ease;
-                margin-left: 80px !important;
-                display: block !important;
-
-            }
-
-            /* Menú colapsado en móvil */
-            .navbar-collapse {
-                background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
-                padding: 0.5rem 1rem;
-                border-radius: 0 0 6px 6px;
-                padding-top: 1rem;
-                padding-bottom: 1rem;
-            }
-
-            /* Estilo para los links dentro del navbar */
-            .navbar-collapse .nav-link {
-                color: white;
-                font-weight: 500;
-                padding: 0.5rem 1rem;
-                border-radius: 4px;
-                transition: background-color 0.3s ease;
-            }
-
-            /* Hover para los links */
-            .navbar-collapse .nav-link:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: #ffc107;
-            }
-
-
         }
 
 
@@ -238,6 +192,71 @@
             border: none;
             outline: none;
         }
+
+        @media (max-width: 991.98px) {
+            .navbar-collapse.show {
+                background: rgba(255, 255, 255, 0.25);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                padding: 1rem;
+                margin-top: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                position: absolute;
+                top: 60px;
+                /* Ajusta según la altura de tu navbar */
+                left: 10px;
+                right: 10px;
+                z-index: 999;
+            }
+
+            .navbar-collapse.show .nav-item {
+                margin: 0.5rem 0;
+            }
+
+            .navbar-collapse.show .nav-item a,
+            .navbar-collapse.show .nav-item .btn {
+                background-color: rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(5px);
+                border-radius: 8px;
+                color: #000;
+                text-align: center;
+                display: block;
+                width: 100%;
+            }
+
+            #rol {
+                background-color: rgba(255, 255, 255, 0.6);
+                color: #000;
+                font-weight: bold;
+                padding: 4px 10px;
+                border-radius: 6px;
+                display: inline-block;
+            }
+        }
+
+        .breadcrumb-container {
+            background: rgba(237, 64, 211, 0.07);
+            backdrop-filter: blur(4px);
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            font-weight: bold;
+            color: #000 !important;
+        }
+
+
+        .breadcrumb-container a {
+            color: #000 !important;
+            /* color del enlace normal */
+            text-decoration: none;
+            /* opcional: eliminar subrayado */
+        }
+
+        .breadcrumb-container a:hover {
+            color: #3e1a4e !important;
+            /* efecto hover tipo morado de tu paleta */
+        }
     </style>
 </head>
 
@@ -245,15 +264,31 @@
     <!-- Es es el header -->
     {% include "components/header.html" %}
 
+
+
     <div class="d-flex">
         <!-- Este es el sidebar -->
         {% include "components/sidebar.html" %}
 
         <!-- Aqui va el contenido principal que varia o se muestra -->
         <main class="flex-grow-1" id="main-content">
-            {% block content %}
-            <!-- Contenido por defecto -->
-            {% endblock %}
+            {% if breadcrumb %}
+            <div class="breadcrumb-container text-white py-2 px-3">
+                {% for crumb in breadcrumb %}
+                {% if not forloop.last %}
+                <a href="{{ crumb.url }}" class="text-white text-decoration-none">{{ crumb.label }}</a> /
+                {% else %}
+                <span>{{ crumb.label }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="px-4 pt-3"> <!-- Aplica aquí márgenes o paddings al contenido -->
+
+                {% block content %}
+                <!-- Contenido por defecto -->
+                {% endblock %}
+            </div>
         </main>
     </div>
 

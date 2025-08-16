@@ -1,0 +1,21 @@
+.breadcrumb-container {
+    background: rgba(237, 64, 211, 0.07);
+    backdrop-filter: blur(4px);
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-weight: bold;
+    color: #000 !important;
+}
+
+
+.breadcrumb-container a {
+    color: #000 !important;
+    /* color del enlace normal */
+    text-decoration: none;
+    /* opcional: eliminar subrayado */
+}
+
+.breadcrumb-container a:hover {
+    color: #3e1a4e !important;
+    /* efecto hover tipo morado de tu paleta */
+}

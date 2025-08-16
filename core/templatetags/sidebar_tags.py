@@ -25,7 +25,7 @@ def modules_sidebar(context):
             ('admin_module:servicios', 'basket', 'Productos'),
             ('admin_module:inventario','receipt-cutoff','Inventario'),
             ('admin_module:admin_solicitudes_list','device-ssd-fill','Solicitudes'),
-            ('admin_module:contenidos','shop','Establecimiento'),
+            ('admin_module:establecimiento','shop','Establecimiento'),
             ('admin_module:soporte','info-circle','Soporte'),
         ]
     if current_role == 'Barbero':

@@ -355,11 +355,16 @@ class CalendarioBarberoView(View):
         return render(request, 'calendario_barbero.html', context)
 
 # Vista para mostrar servicios
-class ServiciosView(View):
-    def get(self, request):
-        servicios = Service.objects.all().select_related('category')
-        return render(request, 'admin_module/servicios.html', {'servicios': servicios})
+class ServiciosView(BreadcrumbMixin, TemplateView):
+    template_name = 'admin_module/servicios.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['servicios'] = Service.objects.select_related('category').all()
+        return context
+
+    def get_breadcrumb(self):
+        return [{'label': 'Productos & Servicios', 'url': reverse('admin_module:servicios')}]
 # Agregar servicio
 def agregar_servicio(request):
     if request.method == 'POST':
@@ -398,8 +403,9 @@ def eliminar_servicio(request, id):
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
+    
     def get_breadcrumb(self):
-        return [{'label': 'Contenidos', 'url': reverse('admin_module:contenidos')}]
+        return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento')}]
      
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -556,10 +562,14 @@ class DeleteEstablishmentView(DeleteView):
         return Establishment.objects.filter(id_admin_id=self.request.user.id)
     
 #Solicitudes Barberos
-class AdminSolicitudesListView(LoginRequiredMixin, ListView):
+class AdminSolicitudesListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
     model = BarberRequest
     template_name = 'admin_module/solicitudes_list.html'
     context_object_name = 'solicitudes'
+
+    # Breadcrumb (navegación)
+    def get_breadcrumb(self):
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:admin_solicitudes_list')}]
 
     def get_queryset(self):
         """
