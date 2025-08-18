@@ -23,6 +23,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from workflows.models import FlowInstance, FlowStatus
 from admin_module.utils.mixins import CitasQuerysetMixin
+import logging
 
 
 
@@ -209,10 +210,14 @@ class CrearCitaRapidaView(CreateView):
         form.instance.price_total = form.instance.service.service.price_service
         return super().form_valid(form)
     
-class CrearCitaFormView(View):
-     def get(self, request, *args, **kwargs):
-        form = ServiceDateForm
-        return render(request, 'partials/form_crear_cita.html', {'form': form})
+class CrearCitaFormView(FormView):
+    form_class = ServiceDateForm
+    template_name = 'partials/form_crear_cita.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request # Pasar el request al formulario    
+        return kwargs
     
 class CollapsView(BreadcrumbMixin, TemplateView):  
      template_name= 'collabs/collabs.html'
@@ -358,13 +363,30 @@ class CalendarioBarberoView(View):
 class ServiciosView(BreadcrumbMixin, TemplateView):
     template_name = 'admin_module/servicios.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['servicios'] = Service.objects.select_related('category').all()
-        return context
-
     def get_breadcrumb(self):
         return [{'label': 'Productos & Servicios', 'url': reverse('admin_module:servicios')}]
+    
+    
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # Obtienes el establecimiento de ese usuario admin
+        establecimiento = Establishment.objects.get(id_admin=user)
+
+        # Traer solo los servicios relacionados al establecimiento por la tabla intermedia
+        servicios = (
+            Service.objects.filter(establishmentservice__establishment=establecimiento)
+            .select_related('category')
+            .distinct()
+        )
+
+        context['servicios'] = servicios
+        return context
+
+
+    
 # Agregar servicio
 def agregar_servicio(request):
     if request.method == 'POST':
@@ -530,7 +552,7 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
 class LogoutView(BreadcrumbMixin, TemplateView):
     template_name='core/login.html'
 
-class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
+class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
     template_name = 'establecimiento/registro_est.html'
     form_class = CreateEstablishmentForm
 

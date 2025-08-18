@@ -2,6 +2,7 @@
 from django import forms
 from workflows.models import FlowInstance
 from .models import Product, Establishment, Service
+from login_module.models import Profile 
 from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
@@ -58,6 +59,12 @@ class ServiceDateForm(forms.ModelForm):
     class Meta:
         model = ServiceDate
         fields = ['customer', 'barber', 'service', 'date']
+        labels = {
+            'customer': 'Cliente',
+            'barber': 'Barbero',
+            'service': 'Servicio',
+            'date': 'Fecha y Hora',
+        }
         widgets = {
             'customer': forms.Select(attrs={'class': 'form-control select2'}),
             'barber': forms.Select(attrs={'class': 'form-control'}),
@@ -66,24 +73,47 @@ class ServiceDateForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-        #debemos extraer el request enviado desde la vista 
         request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
+        establishment = None
+        if request:
+            user = request.user
 
-        self.fields['barber'].queryset = User.objects.filter(groups__name='Barbero')
+            # Si es barbero
+            if user.groups.filter(name='Barbero').exists():
+                establishment = getattr(user.profile, 'establishment_id', None)
+
+            # Si es administrador
+            elif user.groups.filter(name='Administrador').exists():
+                try:
+                    establishment = Establishment.objects.get(admin_id=user).id
+                except Establishment.DoesNotExist:
+                    establishment = None
+
+        # 1) BARBEROS solo del establecimiento
+        queryset_barberos = User.objects.none()
+        if establishment:
+            queryset_barberos = User.objects.filter(
+                groups__name='Barbero',
+                profile__establishment_id=establishment
+            )
+        self.fields['barber'].queryset = queryset_barberos
         self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
-        self.fields['customer'].queryset = User.objects.filter(groups__name='Cliente')
-        self.fields['customer'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
-
-        #Filtramo los servicios segun el establecimiento vinculado al usuario ya sea barbero o administrador
-
-        # Mostrar nombre y precio del servicio
-        self.fields['service'].queryset = EstablishmentService.objects.select_related('service')
+        # 2) SERVICIOS por tabla intermedia
+        queryset_servicios = EstablishmentService.objects.none()
+        if establishment:
+            queryset_servicios = EstablishmentService.objects.filter(
+                establishment_id=establishment,
+                service__active=True
+            )
+        self.fields['service'].queryset = queryset_servicios
         self.fields['service'].label_from_instance = lambda obj: f"{obj.service.name_service} - ${obj.service.price_service}"
 
-        # Opcional: valor por defecto del estado
+        # 3) CLIENTES (puedes filtrar por establecimiento si también los tienes asociados)
+        self.fields['customer'].queryset = User.objects.filter(groups__name='Cliente')
+        self.fields['customer'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -137,12 +167,12 @@ class BarberRequestAdminResponseForm(forms.ModelForm):
         }
         
 class CreateServiceForm(forms.ModelForm):
-    name_service = forms.CharField(max_length=80, required=True, label="Nombre Servicio")
 
     class Meta:
         model = Service
         fields = ['name_service', 'description_service', 'price_service', 'category', 'duration', 'active']
         labels = {
+            'name_service':'Nombre',
             'description_service': 'Descripción',
             'price_service': 'Precio',
             'category': 'Categoría',
@@ -157,7 +187,6 @@ class CreateServiceForm(forms.ModelForm):
             'duration': forms.NumberInput(attrs={'class': 'form-control'}),
             'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
-
 
 class UploadServiceFile(forms.Form):
     file = forms.FileField(label = "Subir carta de servicios (PDF o Imagen)")
@@ -182,7 +211,6 @@ class VinculationForm(forms.ModelForm):
             instance.save()
         return instance
     
-
 class BarberRequestForm(forms.ModelForm):
     class Meta:
         model = BarberRequest

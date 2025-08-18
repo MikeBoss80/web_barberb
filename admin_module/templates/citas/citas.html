@@ -356,7 +356,7 @@
                 modal.show();
 
                 $.ajax({
-                    url: "{% url 'admin_module:crear_cita_form' %}",
+                    url: '../crear_cita_form/', // URL para obtener el formulario
                     type: "GET",
                     success: function (data) {
                         $('#modal-body-content').html(data); // insertar formulario
