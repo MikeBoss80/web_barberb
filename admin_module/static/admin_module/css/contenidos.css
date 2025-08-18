@@ -19,3 +19,82 @@
     color: #3e1a4e !important;
     /* efecto hover tipo morado de tu paleta */
 }
+
+
+  /* Estilo general de tarjetas de perfil */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.profile-card .card-header {
+    padding: 0.5rem 1rem;
+}
+
+.profile-card .card-body {
+    flex: 1 1 auto;
+    overflow: visible;
+    padding: 1rem;
+}
+
+  /* Inputs y selects ocupan todo el ancho */
+.profile-card input,
+.profile-card textarea,
+.profile-card select {
+    width: 100%;
+}
+
+  /* Fila de días con espacio entre selects */
+.days-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.days-row select {
+    flex: 1 1 48%;
+}
+
+  /* Compactar espacios entre tarjetas */
+#perfil .row.g-4 {
+    row-gap: 1rem;
+    column-gap: 1rem;
+}
+
+  /* Responsive: tablets y móviles */
+@media (max-width: 768px) {
+    #perfil .row > div.col-lg-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    }
+
+    .profile-card .card-body {
+    padding: 0.75rem;
+    }
+
+    .profile-card {
+    margin-bottom: 0.75rem;
+    }
+
+    .days-row select {
+    flex: 1 1 100%;
+    }
+
+    /* Ajustes de tamaño de texto opcional */
+    #perfil h4,
+    #perfil h6,
+    #perfil label {
+    font-size: 0.95rem;
+    }
+
+    #perfil textarea,
+    #perfil input,
+    #perfil select {
+    font-size: 0.95rem;
+    }
+}
+
+
+
+

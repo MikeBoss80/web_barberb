@@ -30,6 +30,7 @@ import logging
 
 
 
+
 class HomeadminView(BreadcrumbMixin, TemplateView):
     """Vista Principal Modulo Admin"""
     template_name = 'admin_module/main.html'
@@ -621,3 +622,34 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
 def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')    
     
+    
+    
+    
+    
+class ContenidosView(View):
+    def get(self, request):
+        dias = [
+            ("lunes", "Lunes"),
+            ("martes", "Martes"),
+            ("miercoles", "Miércoles"),
+            ("jueves", "Jueves"),
+            ("viernes", "Viernes"),
+            ("sabado", "Sábado"),
+        ]
+        return render(request, "establecimiento/contenidos.html", {
+            "dias": dias,
+        })
+        
+
+
+class ContenidosView(TemplateView):
+    template_name = "establecimiento/contenidos.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Generar lista de horas desde 06:00 hasta 20:00
+        horas = [f"{h:02d}" for h in range(6, 21)]
+        context["horas"] = horas
+
+        return context
