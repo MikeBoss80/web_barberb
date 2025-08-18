@@ -1,6 +1,6 @@
 from django.urls import path
 
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView
 
 from django.contrib.auth.views import LogoutView
 
@@ -32,9 +32,8 @@ urlpatterns = [
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
     path('citas/editar-rapido/<int:pk>/', EditarBarberoEstadoView.as_view(), name='editar_barbero_estado'),
-    path('crear_cita_form/', CrearCitaFormView.as_view(), name='crear_cita_form'),  # para cargar
-    path('crear_cita/', CrearCitaRapidaView.as_view(), name='crear_cita'),  # para guardar
-    path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para guardar
+    path('crear_cita_form/', CrearCitaRapidaView.as_view(), name='crear_cita'),  # para cargar y guardar una cita
+    path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para cancelar una cita
     path('solicitudes/barberos/', AdminSolicitudesListView.as_view(), name='admin_solicitudes_list'),
     path('solicitudes/barberos/<int:pk>/', AdminSolicitudesDetailView.as_view(), name='admin_solicitud_detalle'),
     path('servicios/', views.ServiciosView.as_view(), name='servicios'),

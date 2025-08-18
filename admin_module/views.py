@@ -210,10 +210,6 @@ class CrearCitaRapidaView(CreateView):
         form.instance.price_total = form.instance.service.service.price_service
         return super().form_valid(form)
     
-class CrearCitaFormView(FormView):
-    form_class = ServiceDateForm
-    template_name = 'partials/form_crear_cita.html'
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request # Pasar el request al formulario    
