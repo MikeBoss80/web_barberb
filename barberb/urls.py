@@ -16,17 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.views.generic import RedirectView
 from decorator_include import decorator_include
 
-decorators = [never_cache, login_required]
+decorators = [never_cache]  # Quitamos login_required
 
 urlpatterns = [
+    # Redirección de la raíz directamente al login
+    path('', RedirectView.as_view(url='/login_module/login/', permanent=False), name='home'),
+
     path('admin/', admin.site.urls),
     path('core/', include('core.urls')),
-    path('admin_module/', decorator_include(decorators, ('admin_module.urls', "admin_module"), namespace='admin_module')),  # Rutas del módulo admin
-    path('services_module/', decorator_include(decorators, 'services_module.urls')),  # Rutas del módulo de servicios
-    path('login_module/', include('login_module.urls')),  # Rutas del módulo Login
-    path('barber_module/', decorator_include(login_required, 'barber_module.urls')),  # Rutas del módulo Barber
+    path('admin_module/', decorator_include(decorators, ('admin_module.urls', "admin_module"), namespace='admin_module')),
+    path('services_module/', decorator_include(decorators, 'services_module.urls')),
+    path('login_module/', include('login_module.urls')),
+    path('barber_module/', include('barber_module.urls')),  # también sin login_required
 ]
