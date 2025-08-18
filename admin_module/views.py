@@ -47,7 +47,7 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
         perfil=Profile.objects.get(user=self.request.user)
         establecimiento = perfil.establishment
 
-        today=timezone.localtime().date()
+        today=timezone.now().date()
 
         #Citas del dia
         citas_hoy=ServiceDate.objects.filter(
