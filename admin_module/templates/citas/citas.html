@@ -25,7 +25,7 @@
                     <div>
                         <h2>{{ resumen.total_dates }}</h2>
                     </div>
-                    <i class="fas fa-calendar-check fs-1"></i>
+                    <i class="bi bi-calendar3-week-fill fs-3"></i>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <div>
                         <h2>{{ resumen.completadas }}</h2>
                     </div>
-                    <i class="fas fa-check-circle fs-1"></i>
+                    <i class="bi bi-calendar2-check-fill fs-3"></i>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                     <div>
                         <h2>{{ resumen.agendadas }}</h2>
                     </div>
-                    <i class="fas fa-hourglass-half fs-1"></i>
+                    <i class="bi bi-calendar-event-fill fs-3"></i>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                     <div>
                         <h2>{{ resumen.canceladas }}</h2>
                     </div>
-                    <i class="fas fa-times-circle fs-1"></i>
+                    <i class="bi bi-calendar2-x-fill fs-3"></i>
                 </div>
             </div>
         </div>
@@ -131,13 +131,13 @@
                                 <button class="btn-editar btnEditarBarberoEstado"
                                     data-url="{% url 'admin_module:editar_barbero_estado' date.id %}"
                                     data-bs-toggle="modal" data-bs-target="#modalEditarBarberoEstado">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
 
                                 <button class="btn-cancelar btnCancelDate " data-id="{{ date.id }}"
                                     data-status="{{ date.status }}" data-bs-toggle="modal"
                                     data-bs-target="#modalCancelDate">
-                                    <i class="fas fa-times"></i>
+                                    <i class="bi bi-trash3-fill"></i>
                                 </button>
                             </td>
                         </tr>
