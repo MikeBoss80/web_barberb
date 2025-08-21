@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.db import models
+from django.contrib.auth.models import User, Group
 from admin_module.models import Establishment
 import datetime
 
