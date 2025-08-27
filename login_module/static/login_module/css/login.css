@@ -1,42 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: ‘Inter’, sans,serif;
+  font-family: 'Inter', sans-serif;
 }
 
 body {
-  background: linear-gradient(135deg, #b483d3 30%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #3e1a4e, #1a1a1a 100%);
   height: 100vh;
   color: #eaeaea;
-  overflow: hidden;
-}
-
-.container {
   display: flex;
-  height: 100vh;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* === FORMULARIO LOGIN DARK MOD === */
+/* === CONTENEDOR PRINCIPAL === */
+.container {
+  position: relative;
+  display: flex;
+  width: 85%;
+  max-width: 1000px;
+  min-height: 550px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 1s ease forwards;
+}
+
+/* Animación del borde externo */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #8a2be2, #b483d3, #1a1a1a, #8a2be2);
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: borderFlow 6s linear infinite;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+}
+
+/* === PANEL IZQUIERDO (LOGIN) === */
 .login-form {
   flex: 1;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(12px);
-  padding: 80px 60px;
+  padding: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .login-form h2 {
-  font-size: 30px;
+  font-size: 28px;
   margin-bottom: 12px;
   color: #8a2be2;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .login-form .subtitle {
@@ -45,98 +74,147 @@ body {
   color: #aaa;
 }
 
-/* === CAMPOS DEL FORMULARIO === */
+/* === LOGO === */
+.login-form .LogoB2,
+.register-form .LogoB2 {
+  width: 140px;
+  height: auto;
+  display: block;
+  margin: 0 auto 25px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px #8a2be2);
+}
+
+/* === CAMPOS DEL FORMULARIO CON BORDE ANIMADO === */
 form p {
   display: flex;
   flex-direction: column;
   margin-bottom: 16px;
+  position: relative;
 }
 
 form input {
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid #1a1a1a;
-  background-color: #151515;
+  border: none;
+  background-color: rgba(21, 21, 21, 0.9);
   color: #fff;
   font-size: 14px;
-  transition: border 0.3s, box-shadow 0.3s;
-}
-
-form input:focus {
-  border-color: #8a2be2;
-  outline: none;
-  box-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+  position: relative;
+  z-index: 1;
 }
 
 form input::placeholder {
   color: #666;
 }
 
-/* === ENLACE OLVIDASTE CONTRASEÑA === */
-.forgot {
-  font-size: 13px;
-  color: #666;
-  text-decoration: none;
-  margin: -8px 0 20px;
+/* Animación de borde en inputs */
+form input::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #8a2be2, #b483d3, #1a1a1a, #8a2be2);
+  background-size: 300% 300%;
+  animation: borderFlow 6s linear infinite;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: -1;
 }
 
-.forgot:hover {
-  color: #8a2be2;
-}
-
-/* === BOTÓN LOGIN CENTRADO Y MÁS PEQUEÑO === */
+/* === BOTÓN LOGIN === */
 .btn-login {
-  background: linear-gradient(145deg, #8a2be2, #0033aa);
+  background: rgba(0, 0, 0, 0.8);
   border: none;
   padding: 15px;
-  width: 40%;
-  margin: 0 auto; 
+  width: 50%;
+  margin: 20px auto;
   border-radius: 10px;
-  color: #000;
+  color: #fff;
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-login::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #8a2be2, #b483d3, #1a1a1a, #8a2be2);
+  background-size: 300% 300%;
+  animation: borderFlow 6s linear infinite;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: -1;
 }
 
 .btn-login:hover {
-  background: linear-gradient(145deg, #b000e6, #002d8a);
-  transform: scale(1.03);
-  box-shadow: 0 0 25px rgba(132, 0, 255, 0.485);
+  transform: scale(1.05);
 }
 
-/* === BOTÓN SIGNUP CENTRADO Y MÁS PEQUEÑO === */
+/* === BOTÓN SIGNUP === */
 .btn-signup {
-  border: 1px solid #8a2be2;
-  padding: 10px 20px;
-  border-radius: 100px;
-  background: transparent;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.6);
   color: #8a2be2;
   font-weight: bold;
   text-decoration: none;
-  transition: 0.3s;
-  display: inline-block;
-  font-size: 20px;
+  font-size: 18px;
   margin: 0 auto;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
 }
 
-.btn-signup:hover {
-  background: #8a2be2;
-  color: #000;
+.btn-signup::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #8a2be2, #b483d3, #1a1a1a, #8a2be2);
+  background-size: 300% 300%;
+  animation: borderFlow 6s linear infinite;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: -1;
 }
-/* === PANEL DERECHO CON IMAGEN === */
+
+/* === PANEL DERECHO CON IMAGEN (REGISTRO) === */
 .side-panel {
   flex: 1;
-  background-image: url("/static/login_module/img/barber02.jpg");
+  background-image: url("/static/login_module/img/img10.jpeg");
   background-size: cover;
   background-position: center;
   position: relative;
   box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
 }
 
-/* === CAPA OSCURA SOBRE LA IMAGEN === */
 .overlay {
   background-color: rgba(0, 0, 0, 0.65);
   height: 100%;
@@ -145,64 +223,15 @@ form input::placeholder {
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  border-radius: 16px;
+  position: relative;
+  z-index: 1;
 }
 
-.overlay h3 {
-  font-size: 30px;
-  margin-bottom: 15px;
-  color: #8a2be2;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.overlay p {
-  font-size: 16px;
-  color: #aaa;
-  margin-bottom: 30px;
-}
-
-.btn-signup {
-  border: 1px solid #8a2be2;
-  padding: 12px 24px;
-  border-radius: 10px;
-  background: transparent;
-  color: #8a2be2;
-  font-weight: bold;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.btn-signup:hover {
-  background: #8a2be2;
-  color: #000;
-}
-
-/* === MENSAJE DE ERROR === */
-form p[style="color: red;"] {
-  text-align: center;
-  color: #ff4d4d;
-  margin-top: 15px;
-}
-
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .side-panel {
-    display: none;
-  }
-
-  .registrar-mobile {
-    display: block;
-  }
-}
-
-/* === LOGO === */
-.login-form .LogoB2 {
-  width: 160px;
-  height: auto;
-  display: block;
-  margin: 0 auto 30px;
-  filter: drop-shadow(0 0 10px #8a2be2);
-}
+/* Animación igual al login */
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 1
