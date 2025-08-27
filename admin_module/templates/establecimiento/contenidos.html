@@ -7,43 +7,43 @@
 <link rel="stylesheet" href="{% static 'admin_module/css/contenidos.css' %}">
 
 <style>
-  /* Estilos optimizados para los cuadros */
-  .profile-card {
-    min-height: auto;
-    margin-bottom: 1rem;
-  }
-  
-  .profile-card .card-header {
-    padding: 0.5rem 1rem;
-    font-size: 0.95rem;
-  }
-  
-  .profile-card .card-body {
-    padding: 1rem;
-  }
-  
-  /* Ajustes específicos para campos de texto */
-  textarea.form-control {
-    min-height: 100px;
-    resize: vertical;
-  }
-  
-  /* Optimización del espacio en pantallas pequeñas */
-  @media (max-width: 992px) {
+    /* Estilos optimizados para los cuadros */
     .profile-card {
-      margin-bottom: 1.5rem;
+        min-height: auto;
+        margin-bottom: 1rem;
     }
-  }
-  
-  /* Estilo para los selectores de días */
-  .days-row {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .days-row .form-select {
-    flex: 1;
-  }
+
+    .profile-card .card-header {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .profile-card .card-body {
+        padding: 1rem;
+    }
+
+    /* Ajustes específicos para campos de texto */
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Optimización del espacio en pantallas pequeñas */
+    @media (max-width: 992px) {
+        .profile-card {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    /* Estilo para los selectores de días */
+    .days-row {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .days-row .form-select {
+        flex: 1;
+    }
 </style>
 {% endblock %}
 
@@ -61,417 +61,517 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 <div class="mb-4" style="background-color: #343a40; padding: 15px; border-radius: 8px;">
-<h2 class="text-white mb-0"><i class="fas fa-cogs"></i> Panel de Administración</h2>
+    <h2 class="text-white mb-0"><i class="fas fa-cogs"></i> Panel de Administración</h2>
 </div>
 
 <!-- Menú de Navegación -->
 <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
-<li class="nav-item" role="presentation">
-    <button class="nav-link active" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button" role="tab">
-    <i class="fas fa-users"></i> Gestión de establecimientos
-    </button>
-</li>
-<li class="nav-item" role="presentation">
-    <button class="nav-link" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab">
-    <i class="fas fa-id-card"></i> Perfil barbería
-    </button>
-</li>
-<li class="nav-item" role="presentation">
-    <button class="nav-link" id="configuracion-tab" data-bs-toggle="tab" data-bs-target="#configuracion" type="button" role="tab">
-    <i class="fas fa-cog"></i> Resumen Perfil Barbería
-    </button>
-</li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button"
+            role="tab">
+            <i class="fas fa-users"></i> Gestión de establecimientos
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="perfil_info-tab" data-bs-toggle="tab" data-bs-target="#perfil_info" type="button"
+            role="tab">
+            <i class="fas fa-id-card"></i> Informacion barbería
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab">
+            <i class="fas fa-id-card"></i> Perfil barbería
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="configuracion-tab" data-bs-toggle="tab" data-bs-target="#configuracion"
+            type="button" role="tab">
+            <i class="fas fa-cog"></i> Resumen Perfil Barbería
+        </button>
+    </li>
 </ul>
 
 <div class="tab-content" id="adminTabsContent">
 
-<!-- Gestión de Establecimientos -->
-<div class="tab-pane fade show active" id="usuarios" role="tabpanel">
-    <div class="d-flex justify-content-between mb-3">
-    <h4><i class="fas fa-users-cog"></i> Gestión de Establecimientos</h4>
-    <button class="btn btn-primary" id="btnAbrirAgregarEstablecimiento" data-bs-toggle="modal" data-bs-target="#modalAgregarEstablecimiento">
-        <i class="fas fa-plus"></i> Agregar nuevo establecimiento
-    </button>
-    </div>
-
-    <div class="table-responsive">
-    <table class="table table-striped table-hover display" id="tablaEstablecimientos">
-        <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Ciudad</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for est in establecimientos %}
-        <tr data-id="{{ est.id }}">
-            <td>{{ est.name_est }}</td>
-            <td>{{ est.address_est }}</td>
-            <td>{{ est.city_est }}</td>
-            <td>{{ est.phone_est }}</td>
-            <td>
-            <button class="btn btn-sm btn-warning btnActualizarEst"
-                    data-id="{{ est.id }}"
-                    data-nombre="{{ est.name_est }}"
-                    data-direccion="{{ est.address_est }}"
-                    data-ciudad="{{ est.city_est }}"
-                    data-pais="{{ est.country_est }}"
-                    data-telefono="{{ est.phone_est }}"
-                    data-email="{{ est.email_est }}"
-                    data-descripcion="{{ est.description }}"
-                    data-lat="{{ est.lat_est }}"
-                    data-lng="{{ est.lng_est }}"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalEditarEstablecimiento"
-                    title="Editar">
-                <i class="fas fa-edit"></i>
+    <!-- Gestión de Establecimientos -->
+    <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+        <div class="d-flex justify-content-between mb-3">
+            <h4><i class="fas fa-users-cog"></i> Gestión de Establecimientos</h4>
+            <button class="btn btn-primary" id="btnAbrirAgregarEstablecimiento" data-bs-toggle="modal"
+                data-bs-target="#modalAgregarEstablecimiento">
+                <i class="fas fa-plus"></i> Agregar nuevo establecimiento
             </button>
+        </div>
 
-            <button class="btn btn-sm btn-danger btnEliminarEst"
-                    data-id="{{ est.id }}"
-                    data-name="{{ est.name_est }}"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalEliminarEst"
-                    title="Eliminar">
-                <i class="fas fa-trash"></i>
-            </button>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover display" id="tablaEstablecimientos">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for est in establecimientos %}
+                    <tr data-id="{{ est.id }}">
+                        <td>{{ est.name_est }}</td>
+                        <td>{{ est.address_est }}</td>
+                        <td>{{ est.city_est }}</td>
+                        <td>{{ est.phone_est }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning btnActualizarEst" data-id="{{ est.id }}"
+                                data-nombre="{{ est.name_est }}" data-direccion="{{ est.address_est }}"
+                                data-ciudad="{{ est.city_est }}" data-pais="{{ est.country_est }}"
+                                data-telefono="{{ est.phone_est }}" data-email="{{ est.email_est }}"
+                                data-descripcion="{{ est.description }}" data-lat="{{ est.lat_est }}"
+                                data-lng="{{ est.lng_est }}" data-bs-toggle="modal"
+                                data-bs-target="#modalEditarEstablecimiento" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger btnEliminarEst" data-id="{{ est.id }}"
+                                data-name="{{ est.name_est }}" data-bs-toggle="modal" data-bs-target="#modalEliminarEst"
+                                title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<!-- Perfil barbería: dos columnas (ajustado) -->
-<div class="tab-pane fade" id="perfil" role="tabpanel">
-    <h4 class="mb-3"><i class="fas fa-id-card"></i> Perfil de la barbería</h4>
+    <!-- Informacion barbería: dos columnas (ajustado) -->
+    <div class="tab-pane fade" id="perfil_info" role="tabpanel">
+        <h4 class="mb-3"><i class="fas fa-id-card"></i> Perfil de la barbería</h4>
 
-    <form id="formPerfilBarberia">
-    <div class="row g-3">  <!-- Reducido el gap entre filas -->
-        <!-- Izquierda: Información básica + Descripción -->
-        <div class="col-lg-6">
-        <div class="card profile-card">
-            <div class="card-header bg-dark text-white">
-            <h6 class="mb-0">Información básica</h6>
-            </div>
-            <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="pf_nombre" name="nombre_barberia" placeholder="Nombre del establecimiento">
-            </div>
-            <div class="row g-2">  <!-- Reducido el gap entre columnas -->
-                <div class="col-md-6">
-                <label class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" id="pf_telefono" name="telefono_barberia" placeholder="+57 3xx xxx xxxx">
+        <form id="formPerfilBarberia">
+            <div class="row g-3"> <!-- Reducido el gap entre filas -->
+                <!-- Izquierda: Información básica + Descripción -->
+                <div class="col-lg-6">
+                    <div class="card profile-card">
+                        <div class="card-header bg-dark text-white">
+                            <h6 class="mb-0">Información básica</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="pf_nombre" name="nombre_barberia"
+                                    placeholder="Nombre del establecimiento">
+                            </div>
+                            <div class="row g-2"> <!-- Reducido el gap entre columnas -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="pf_telefono" name="telefono_barberia"
+                                        placeholder="+57 3xx xxx xxxx">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Ciudad</label>
+                                    <input type="text" class="form-control" id="pf_ciudad" name="ciudad_barberia"
+                                        placeholder="Bogotá">
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <label class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="pf_direccion" name="direccion_barberia"
+                                    placeholder="Calle 123 #45-67">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card profile-card mt-3"> <!-- Añadido margen superior -->
+                        <div class="card-header bg-dark text-white">
+                            <h6 class="mb-0">Descripción del lugar</h6>
+                        </div>
+                        <div class="card-body">
+                            <textarea class="form-control" id="pf_descripcion" name="descripcion_barberia" rows="5"
+                                placeholder="Describe tu barbería: ambiente, servicios, ubicación, etc."></textarea>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                <label class="form-label">Ciudad</label>
-                <input type="text" class="form-control" id="pf_ciudad" name="ciudad_barberia" placeholder="Bogotá">
-                </div>
-            </div>
-            <div class="mt-2">
-                <label class="form-label">Dirección</label>
-                <input type="text" class="form-control" id="pf_direccion" name="direccion_barberia" placeholder="Calle 123 #45-67">
-            </div>
-            </div>
-        </div>
 
-        <div class="card profile-card mt-3">  <!-- Añadido margen superior -->
-            <div class="card-header bg-dark text-white">
-            <h6 class="mb-0">Descripción del lugar</h6>
-            </div>
-            <div class="card-body">
-            <textarea class="form-control" id="pf_descripcion" name="descripcion_barberia" rows="5"
-                        placeholder="Describe tu barbería: ambiente, servicios, ubicación, etc."></textarea>
-            </div>
-        </div>
-        </div>
+                <!-- Derecha: Misión/Visión + Inicio laboral -->
+                <div class="col-lg-6">
+                    <div class="card profile-card">
+                        <div class="card-header bg-dark text-white">
+                            <h6 class="mb-0">Misión y Visión</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Misión</label>
+                                <textarea class="form-control" id="pf_mision" name="mision_barberia" rows="3"
+                                    placeholder="Escribe la misión de la barbería"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Visión</label>
+                                <textarea class="form-control" id="pf_vision" name="vision_barberia" rows="3"
+                                    placeholder="Escribe la visión de la barbería"></textarea>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Derecha: Misión/Visión + Inicio laboral -->
-        <div class="col-lg-6">
-        <div class="card profile-card">
-            <div class="card-header bg-dark text-white">
-            <h6 class="mb-0">Misión y Visión</h6>
-            </div>
-            <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label">Misión</label>
-                <textarea class="form-control" id="pf_mision" name="mision_barberia" rows="3" placeholder="Escribe la misión de la barbería"></textarea>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Visión</label>
-                <textarea class="form-control" id="pf_vision" name="vision_barberia" rows="3" placeholder="Escribe la visión de la barbería"></textarea>
-            </div>
-            </div>
-        </div>
+                    <div class="card profile-card mt-3"> <!-- Añadido margen superior -->
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Horario laboral</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Días de atención</label>
+                                <div class="days-row">
+                                    <select id="pf_start_day" class="form-select" aria-label="Día inicio">
+                                        <option value="lunes">Lunes</option>
+                                        <option value="martes">Martes</option>
+                                        <option value="miercoles">Miércoles</option>
+                                        <option value="jueves">Jueves</option>
+                                        <option value="viernes">Viernes</option>
+                                        <option value="sabado">Sábado</option>
+                                        <option value="domingo">Domingo</option>
+                                    </select>
+                                    <select id="pf_end_day" class="form-select" aria-label="Día fin">
+                                        <option value="lunes">Lunes</option>
+                                        <option value="martes">Martes</option>
+                                        <option value="miercoles">Miércoles</option>
+                                        <option value="jueves">Jueves</option>
+                                        <option value="viernes">Viernes</option>
+                                        <option value="sabado">Sábado</option>
+                                        <option value="domingo">Domingo</option>
+                                    </select>
+                                </div>
+                            </div>
 
-        <div class="card profile-card mt-3">  <!-- Añadido margen superior -->
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h6 class="mb-0">Horario laboral</h6>
-            </div>
-            <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label">Días de atención</label>
-                <div class="days-row">
-                <select id="pf_start_day" class="form-select" aria-label="Día inicio">
-                    <option value="lunes">Lunes</option>
-                    <option value="martes">Martes</option>
-                    <option value="miercoles">Miércoles</option>
-                    <option value="jueves">Jueves</option>
-                    <option value="viernes">Viernes</option>
-                    <option value="sabado">Sábado</option>
-                    <option value="domingo">Domingo</option>
-                </select>
-                <select id="pf_end_day" class="form-select" aria-label="Día fin">
-                    <option value="lunes">Lunes</option>
-                    <option value="martes">Martes</option>
-                    <option value="miercoles">Miércoles</option>
-                    <option value="jueves">Jueves</option>
-                    <option value="viernes">Viernes</option>
-                    <option value="sabado">Sábado</option>
-                    <option value="domingo">Domingo</option>
-                </select>
-                </div>
-            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <label for="pf_open" class="form-label">Hora de apertura</label>
+                                    <select id="pf_open" class="form-select">
+                                        <option value="06:00">06:00</option>
+                                        <option value="07:00">07:00</option>
+                                        <option value="08:00">08:00</option>
+                                        <option value="09:00" selected>09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="pf_close" class="form-label">Hora de cierre</label>
+                                    <select id="pf_close" class="form-select">
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00" selected>18:00</option>
+                                        <option value="19:00">19:00</option>
+                                        <option value="20:00">20:00</option>
+                                    </select>
+                                </div>
+                            </div>
 
-            <div class="row g-2">
-                <div class="col-md-6">
-                <label for="pf_open" class="form-label">Hora de apertura</label>
-                <select id="pf_open" class="form-select">
-                    <option value="06:00">06:00</option>
-                    <option value="07:00">07:00</option>
-                    <option value="08:00">08:00</option>
-                    <option value="09:00" selected>09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="12:00">12:00</option>
-                </select>
-                </div>
-                <div class="col-md-6">
-                <label for="pf_close" class="form-label">Hora de cierre</label>
-                <select id="pf_close" class="form-select">
-                    <option value="12:00">12:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
-                    <option value="18:00" selected>18:00</option>
-                    <option value="19:00">19:00</option>
-                    <option value="20:00">20:00</option>
-                </select>
+                            <div class="text-muted small mt-2">
+                                Seleccione el rango de días y horario de atención.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="text-muted small mt-2">
-                Seleccione el rango de días y horario de atención.
+            <div class="d-flex justify-content-end mt-3">
+                <button type="button" id="btnGuardarPerfil" class="btn btn-success">
+                    <i class="fas fa-save me-1"></i> Guardar Perfil
+                </button>
             </div>
+        </form>
+    </div>
+
+    <!-- Informacion barbería: dos columnas (ajustado) -->
+    <div class="tab-pane fade" id="perfil" role="tabpanel">
+        <h4 class="mb-3"><i class="fas fa-id-card"></i> Perfil Barbería</h4>
+        <!-- Perfil de la Barbería -->
+        <!-- Perfil de la Barbería -->
+        <div class="barberia-perfil-container">
+
+            <!-- Hero / Encabezado (solo imagen) -->
+            <section class="barberia-hero">
+                <img src="{% static 'admin_module/img/fondo_barberia.png' %}" alt="Foto de la barbería" class="barberia-foto">
+            </section>
+
+            <!-- Información básica -->
+            <section class="barberia-info">
+                <h1 class="barberia-nombre">Barbería Ejemplo</h1>
+                <p class="barberia-slogan">“Estilo clásico con un toque moderno”</p>
+                <ul>
+                    <li><strong>Dirección:</strong> Calle 123 #45-67, Bogotá</li>
+                    <li><strong>Horario:</strong> Lun - Sáb: 9:00am - 8:00pm</li>
+                    <li><strong>Teléfono:</strong> +57 300 123 4567</li>
+                </ul>
+                <p class="descripcion">Somos una barbería especializada en cortes clásicos y modernos. Nuestro equipo de
+                    barberos está listo para darte la mejor experiencia.</p>
+
+                <!-- Botón para volver a la vista de reservas -->
+                <a href="javascript:history.back()" class="btn-reserva">Reservar cita</a>
+            </section>
+
+            <!-- Barberos -->
+            <section class="barberia-barberos">
+                <h2>Nuestros Barberos</h2>
+                <div class="barberos-lista">
+                    <div class="barbero-card">
+                        <img src="barbero1.jpg" alt="Barbero Juan">
+                        <h3>Juan Pérez</h3>
+                        <p>Especialista en cortes modernos</p>
+                        <p>⭐ 4.8 (120 reseñas)</p>
+                        <a href="#" class="btn-ver-perfil">Ver perfil</a>
+                    </div>
+                    <div class="barbero-card">
+                        <img src="barbero2.jpg" alt="Barbero Carlos">
+                        <h3>Carlos Gómez</h3>
+                        <p>Experto en barbas y afeitados</p>
+                        <p>⭐ 4.9 (98 reseñas)</p>
+                        <a href="#" class="btn-ver-perfil">Ver perfil</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Servicios -->
+            <section id="servicios" class="barberia-servicios">
+                <h2>Servicios</h2>
+                <div class="servicios-lista">
+                    <div class="servicio-card">
+                        <h3>Corte Clásico</h3>
+                        <p>Duración: 30 min</p>
+                        <p>Precio: $25.000</p>
+                    </div>
+                    <div class="servicio-card">
+                        <h3>Afeitado Tradicional</h3>
+                        <p>Duración: 20 min</p>
+                        <p>Precio: $15.000</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Opiniones rápidas -->
+            <section class="barberia-opiniones">
+                <h2>Opiniones</h2>
+                <blockquote>
+                    “Excelente atención y cortes impecables.” <br> <strong>- Andrés M.</strong>
+                </blockquote>
+                <blockquote>
+                    “Ambiente muy agradable, recomendado.” <br> <strong>- Laura G.</strong>
+                </blockquote>
+                <a href="#" class="btn-ver-mas">Ver todas las reseñas</a>
+            </section>
+
+            <!-- Ubicación -->
+            <section class="barberia-ubicacion">
+                <h2>¿Cómo llegar?</h2>
+                <!-- Mapa embebido de Google Maps -->
+                <div class="mapa">
+                    <iframe src="https://www.google.com/maps/embed?pb=TU_LINK_GENERADO_AQUI" width="100%" height="300"
+                        style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <a href="https://goo.gl/maps/TU_LINK_AQUI" target="_blank" class="btn-maps">Abrir en Google Maps</a>
+            </section>
+
+        </div>
+
+
+    </div>
+
+    <!-- Resumen Perfil Barbería -->
+    <div class="tab-pane fade" id="configuracion" role="tabpanel">
+        <h4><i class="fas fa-cog"></i> Resumen Perfil Barbería</h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Información de la Barbería</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-1"><strong>Nombre:</strong> <span id="confNombre">—</span></p>
+                        <p class="mb-1"><strong>Dirección:</strong> <span id="confDireccion">—</span></p>
+                        <p class="mb-1"><strong>Teléfono:</strong> <span id="confTelefono">—</span></p>
+                        <p class="mb-1"><strong>Ciudad:</strong> <span id="confCiudad">—</span></p>
+
+                        <p class="mb-1 mt-3"><strong>Descripción:</strong></p>
+                        <div class="p-2 border rounded" id="confDescripcion">—</div>
+
+                        <p class="mb-1 mt-3"><strong>Misión:</strong></p>
+                        <div class="p-2 border rounded" id="confMision">—</div>
+
+                        <p class="mb-1 mt-3"><strong>Visión:</strong></p>
+                        <div class="p-2 border rounded" id="confVision">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Horarios de Atención</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="confHorarios">
+                            <em>No hay horarios configurados.</em>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
     </div>
-
-    <div class="d-flex justify-content-end mt-3">
-        <button type="button" id="btnGuardarPerfil" class="btn btn-success">
-        <i class="fas fa-save me-1"></i> Guardar Perfil
-        </button>
-    </div>
-    </form>
-</div>
-
-<!-- Resumen Perfil Barbería -->
-<div class="tab-pane fade" id="configuracion" role="tabpanel">
-    <h4><i class="fas fa-cog"></i> Resumen Perfil Barbería</h4>
-
-    <div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Información de la Barbería</h5>
-        </div>
-        <div class="card-body">
-            <p class="mb-1"><strong>Nombre:</strong> <span id="confNombre">—</span></p>
-            <p class="mb-1"><strong>Dirección:</strong> <span id="confDireccion">—</span></p>
-            <p class="mb-1"><strong>Teléfono:</strong> <span id="confTelefono">—</span></p>
-            <p class="mb-1"><strong>Ciudad:</strong> <span id="confCiudad">—</span></p>
-
-            <p class="mb-1 mt-3"><strong>Descripción:</strong></p>
-            <div class="p-2 border rounded" id="confDescripcion">—</div>
-
-            <p class="mb-1 mt-3"><strong>Misión:</strong></p>
-            <div class="p-2 border rounded" id="confMision">—</div>
-
-            <p class="mb-1 mt-3"><strong>Visión:</strong></p>
-            <div class="p-2 border rounded" id="confVision">—</div>
-        </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="card mb-4">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Horarios de Atención</h5>
-        </div>
-        <div class="card-body">
-            <div id="confHorarios">
-            <em>No hay horarios configurados.</em>
-            </div>
-        </div>
-        </div>
-    </div>
-    </div>
-</div>
 
 </div> <!-- /tab-content -->
 
 <!-- Modal: Agregar nuevo establecimiento -->
 <div class="modal fade" id="modalAgregarEstablecimiento" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-    <form id="formAgregarEst" method="post" action="../registro_est/">
-    {% csrf_token %}
-    <div class="modal-content">
-        <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title">Agregar nuevo establecimiento</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-        <div class="mb-2">
-            <label class="form-label">Nombre</label>
-            <input type="text" class="form-control" name="name_est" id="add_name_est" required>
-        </div>
-        <div class="mb-2">
-            <label class="form-label">Dirección</label>
-            <input type="text" class="form-control" name="address_est" id="add_address_est" required>
-        </div>
-        <div class="mb-2">
-            <label class="form-label">Ciudad</label>
-            <input type="text" class="form-control" name="city_est" id="add_city_est" required>
-        </div>
-        <div class="mb-2">
-            <label class="form-label">Teléfono</label>
-            <input type="tel" class="form-control" name="phone_est" id="add_phone_est">
-        </div>
-        <div class="mb-2">
-            <label class="form-label">Correo</label>
-            <input type="email" class="form-control" name="email_est" id="add_email_est">
-        </div>
-        <div class="mb-2">
-            <label class="form-label">Descripción</label>
-            <input type="text" class="form-control" name="description" id="add_description">
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar establecimiento</button>
-        </div>
+    <div class="modal-dialog">
+        <form id="formAgregarEst" method="post" action="../registro_est/">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Agregar nuevo establecimiento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" name="name_est" id="add_name_est" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-control" name="address_est" id="add_address_est" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" name="city_est" id="add_city_est" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" name="phone_est" id="add_phone_est">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-control" name="email_est" id="add_email_est">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Descripción</label>
+                        <input type="text" class="form-control" name="description" id="add_description">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar establecimiento</button>
+                </div>
+            </div>
+        </form>
     </div>
-    </form>
-</div>
 </div>
 
 <!-- Modal: Editar establecimiento -->
 <div class="modal fade" id="modalEditarEstablecimiento" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-    <div class="modal-content">
-    <form id="formEditarEst" method="post" action="../actualizar_est/">
-        {% csrf_token %}
-        <input type="hidden" id="inputEstablecimientoId" name="establishment_id">
-        <div class="modal-header">
-        <h5 class="modal-title">Editar Establecimiento</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formEditarEst" method="post" action="../actualizar_est/">
+                {% csrf_token %}
+                <input type="hidden" id="inputEstablecimientoId" name="establishment_id">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Establecimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" id="inputNombre" name="name_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" id="inputDireccion" name="address_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Ciudad</label>
+                        <input type="text" class="form-control" id="inputCiudad" name="city_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Teléfono</label>
+                        <input type="tel" class="form-control" id="inputTelefono" name="phone_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Correo</label>
+                        <input type="email" class="form-control" id="inputCorreo" name="email_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Descripción</label>
+                        <input type="text" class="form-control" id="inputDescripcion" name="description">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-body">
-        <div class="mb-3">
-            <label>Nombre</label>
-            <input type="text" class="form-control" id="inputNombre" name="name_est">
-        </div>
-        <div class="mb-3">
-            <label>Dirección</label>
-            <input type="text" class="form-control" id="inputDireccion" name="address_est">
-        </div>
-        <div class="mb-3">
-            <label>Ciudad</label>
-            <input type="text" class="form-control" id="inputCiudad" name="city_est">
-        </div>
-        <div class="mb-3">
-            <label>Teléfono</label>
-            <input type="tel" class="form-control" id="inputTelefono" name="phone_est">
-        </div>
-        <div class="mb-3">
-            <label>Correo</label>
-            <input type="email" class="form-control" id="inputCorreo" name="email_est">
-        </div>
-        <div class="mb-3">
-            <label>Descripción</label>
-            <input type="text" class="form-control" id="inputDescripcion" name="description">
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        </div>
-    </form>
     </div>
-</div>
 </div>
 
 <!-- Modal: Eliminar establecimiento -->
 <div class="modal fade" id="modalEliminarEst" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-    <form id="formEliminarEst" method="POST">
-    {% csrf_token %}
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title">Confirmar Eliminación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-        <p>¿Estás seguro que deseas eliminar <strong id="labelEstName"></strong>?</p>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        </div>
+    <div class="modal-dialog">
+        <form id="formEliminarEst" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar <strong id="labelEstName"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </form>
     </div>
-    </form>
-</div>
 </div>
 
 <!-- JavaScript -->
 <script>
-$(document).ready(function () {
-    // Inicializar DataTable sin botones de exportación
-    var table = $('#tablaEstablecimientos').DataTable({
-    language: { url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json' },
-    dom: '<"d-flex justify-content-between mb-2"f>rt<"d-flex justify-content-between mt-2"lip>',
-    pageLength: 10,
-    columnDefs: [{ orderable: false, targets: -1 }]
-    });
+    $(document).ready(function () {
+        // Inicializar DataTable sin botones de exportación
+        var table = $('#tablaEstablecimientos').DataTable({
+            language: { url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json' },
+            dom: '<"d-flex justify-content-between mb-2"f>rt<"d-flex justify-content-between mt-2"lip>',
+            pageLength: 10,
+            columnDefs: [{ orderable: false, targets: -1 }]
+        });
 
-    // Helper: cerrar modal (Bootstrap 5)
-    function closeModal(modalId) {
-    const el = document.getElementById(modalId);
-    const bs = bootstrap.Modal.getInstance(el);
-    if (bs) bs.hide();
-    }
+        // Helper: cerrar modal (Bootstrap 5)
+        function closeModal(modalId) {
+            const el = document.getElementById(modalId);
+            const bs = bootstrap.Modal.getInstance(el);
+            if (bs) bs.hide();
+        }
 
-    // ---------- AGREGAR establecimiento (cliente) ----------
-    $('#formAgregarEst').on('submit', function (e) {
-    e.preventDefault();
-    const name = $('#add_name_est').val().trim() || '—';
-    const address = $('#add_address_est').val().trim() || '—';
-    const city = $('#add_city_est').val().trim() || '—';
-    const phone = $('#add_phone_est').val().trim() || '—';
-    const email = $('#add_email_est').val().trim() || '';
-    const description = $('#add_description').val().trim() || '';
-    const newId = 'tmp-' + Date.now();
+        // ---------- AGREGAR establecimiento (cliente) ----------
+        $('#formAgregarEst').on('submit', function (e) {
+            e.preventDefault();
+            const name = $('#add_name_est').val().trim() || '—';
+            const address = $('#add_address_est').val().trim() || '—';
+            const city = $('#add_city_est').val().trim() || '—';
+            const phone = $('#add_phone_est').val().trim() || '—';
+            const email = $('#add_email_est').val().trim() || '';
+            const description = $('#add_description').val().trim() || '';
+            const newId = 'tmp-' + Date.now();
 
-    const safe = txt => $('<div>').text(txt).html();
+            const safe = txt => $('<div>').text(txt).html();
 
-    const actionsHtml = `
+            const actionsHtml = `
         <button class="btn btn-sm btn-warning btnActualizarEst"
                 data-id="${newId}"
                 data-nombre="${safe(name)}"
@@ -496,48 +596,48 @@ $(document).ready(function () {
         </button>
     `;
 
-    const newRowNode = table.row.add([name, address, city, phone, actionsHtml]).draw(false).node();
-    $(newRowNode).attr('data-id', newId);
+            const newRowNode = table.row.add([name, address, city, phone, actionsHtml]).draw(false).node();
+            $(newRowNode).attr('data-id', newId);
 
-    closeModal('modalAgregarEstablecimiento');
-    this.reset();
+            closeModal('modalAgregarEstablecimiento');
+            this.reset();
 
-    $('<div class="alert alert-success flash-msg">Establecimiento agregado (temporalmente en cliente).</div>')
-        .insertBefore('#adminTabs').delay(2200).fadeOut(400, function(){ $(this).remove(); });
-    });
+            $('<div class="alert alert-success flash-msg">Establecimiento agregado (temporalmente en cliente).</div>')
+                .insertBefore('#adminTabs').delay(2200).fadeOut(400, function () { $(this).remove(); });
+        });
 
-    // ---------- EDITAR: delegación para abrir modal con datos ----------
-    $(document).on('click', '.btnActualizarEst', function () {
-    const btn = $(this);
-    $('#inputEstablecimientoId').val(btn.data('id'));
-    $('#inputNombre').val(btn.data('nombre') || '');
-    $('#inputDireccion').val(btn.data('direccion') || '');
-    $('#inputCiudad').val(btn.data('ciudad') || '');
-    $('#inputTelefono').val(btn.data('telefono') || '');
-    $('#inputCorreo').val(btn.data('email') || '');
-    $('#inputDescripcion').val(btn.data('descripcion') || '');
-     // mostrar modal (en caso de que data-bs-toggle no funcione por JS)
-    const modalEl = document.getElementById('modalEditarEstablecimiento');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modal.show();
-    });
+        // ---------- EDITAR: delegación para abrir modal con datos ----------
+        $(document).on('click', '.btnActualizarEst', function () {
+            const btn = $(this);
+            $('#inputEstablecimientoId').val(btn.data('id'));
+            $('#inputNombre').val(btn.data('nombre') || '');
+            $('#inputDireccion').val(btn.data('direccion') || '');
+            $('#inputCiudad').val(btn.data('ciudad') || '');
+            $('#inputTelefono').val(btn.data('telefono') || '');
+            $('#inputCorreo').val(btn.data('email') || '');
+            $('#inputDescripcion').val(btn.data('descripcion') || '');
+            // mostrar modal (en caso de que data-bs-toggle no funcione por JS)
+            const modalEl = document.getElementById('modalEditarEstablecimiento');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        });
 
-    // ---------- GUARDAR EDICIÓN: actualizar fila cliente ----------
-    $('#formEditarEst').on('submit', function (e) {
-    e.preventDefault();
-    const id = $('#inputEstablecimientoId').val();
-    const name = $('#inputNombre').val().trim() || '—';
-    const address = $('#inputDireccion').val().trim() || '—';
-    const city = $('#inputCiudad').val().trim() || '—';
-    const phone = $('#inputTelefono').val().trim() || '—';
-    const email = $('#inputCorreo').val().trim() || '';
-    const description = $('#inputDescripcion').val().trim() || '';
+        // ---------- GUARDAR EDICIÓN: actualizar fila cliente ----------
+        $('#formEditarEst').on('submit', function (e) {
+            e.preventDefault();
+            const id = $('#inputEstablecimientoId').val();
+            const name = $('#inputNombre').val().trim() || '—';
+            const address = $('#inputDireccion').val().trim() || '—';
+            const city = $('#inputCiudad').val().trim() || '—';
+            const phone = $('#inputTelefono').val().trim() || '—';
+            const email = $('#inputCorreo').val().trim() || '';
+            const description = $('#inputDescripcion').val().trim() || '';
 
-    const $tr = $(`#tablaEstablecimientos tbody tr[data-id="${id}"]`);
-    if ($tr.length) {
-        const row = table.row($tr);
-        const safe = txt => $('<div>').text(txt).html();
-        const actionsHtml = `
+            const $tr = $(`#tablaEstablecimientos tbody tr[data-id="${id}"]`);
+            if ($tr.length) {
+                const row = table.row($tr);
+                const safe = txt => $('<div>').text(txt).html();
+                const actionsHtml = `
         <button class="btn btn-sm btn-warning btnActualizarEst"
                 data-id="${id}"
                 data-nombre="${safe(name)}"
@@ -561,87 +661,87 @@ $(document).ready(function () {
             <i class="fas fa-trash"></i>
         </button>
         `;
-        row.data([name, address, city, phone, actionsHtml]).invalidate().draw(false);
-    }
+                row.data([name, address, city, phone, actionsHtml]).invalidate().draw(false);
+            }
 
-    closeModal('modalEditarEstablecimiento');
-    $('<div class="alert alert-success flash-msg">Establecimiento actualizado (cliente).</div>')
-        .insertBefore('#adminTabs').delay(1800).fadeOut(400, function(){ $(this).remove(); });
+            closeModal('modalEditarEstablecimiento');
+            $('<div class="alert alert-success flash-msg">Establecimiento actualizado (cliente).</div>')
+                .insertBefore('#adminTabs').delay(1800).fadeOut(400, function () { $(this).remove(); });
+        });
+
+        // ---------- ELIMINAR: preparar modal ----------
+        $(document).on('click', '.btnEliminarEst', function () {
+            const id = $(this).data('id');
+            const name = $(this).data('name') || '';
+            $('#labelEstName').text(name);
+            $('#formEliminarEst').data('deleteId', id);
+            // mostrar modal
+            const modalEl = document.getElementById('modalEliminarEst');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        });
+
+        // ---------- Confirmar eliminación ----------
+        $('#formEliminarEst').on('submit', function (e) {
+            e.preventDefault();
+            const id = $(this).data('deleteId');
+            if (!id) { closeModal('modalEliminarEst'); return; }
+            const $tr = $(`#tablaEstablecimientos tbody tr[data-id="${id}"]`);
+            if ($tr.length) {
+                table.row($tr).remove().draw(false);
+            }
+            closeModal('modalEliminarEst');
+            $('<div class="alert alert-warning flash-msg">Establecimiento eliminado (cliente).</div>')
+                .insertBefore('#adminTabs').delay(1800).fadeOut(400, function () { $(this).remove(); });
+        });
+
+        // ---------- PERFIL: Guardar y reflejar en Resumen ----------
+        $('#btnGuardarPerfil').on('click', function () {
+            const nombre = $('#pf_nombre').val().trim() || '—';
+            const direccion = $('#pf_direccion').val().trim() || '—';
+            const telefono = $('#pf_telefono').val().trim() || '—';
+            const ciudad = $('#pf_ciudad').val().trim() || '—';
+            const descripcion = $('#pf_descripcion').val().trim() || '—';
+            const mision = $('#pf_mision').val().trim() || '—';
+            const vision = $('#pf_vision').val().trim() || '—';
+            const startDay = $('#pf_start_day').val();
+            const endDay = $('#pf_end_day').val();
+            const open = $('#pf_open').val();
+            const close = $('#pf_close').val();
+
+            // Reflejar datos
+            $('#confNombre').text(nombre);
+            $('#confDireccion').text(direccion);
+            $('#confTelefono').text(telefono);
+            $('#confCiudad').text(ciudad);
+            $('#confDescripcion').text(descripcion);
+            $('#confMision').text(mision);
+            $('#confVision').text(vision);
+
+            // Horario resumido
+            const confHorarios = $('#confHorarios');
+            confHorarios.empty();
+
+            const dayMap = {
+                lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles',
+                jueves: 'Jueves', viernes: 'Viernes', sabado: 'Sábado', domingo: 'Domingo'
+            };
+            const startText = dayMap[startDay] || startDay || '—';
+            const endText = dayMap[endDay] || endDay || '—';
+
+            const $h = $('<h6>').text(`Días laborales: ${startText} — ${endText}`);
+            const $p = $('<p>').text(`Horario: ${open} - ${close}`);
+            confHorarios.append($h).append($p);
+
+            // Cambiar a pestaña Resumen
+            const tab = new bootstrap.Tab(document.querySelector('#configuracion-tab'));
+            tab.show();
+
+            $('<div class="alert alert-success flash-msg">Perfil guardado y reflejado en Resumen Perfil Barbería.</div>')
+                .insertBefore('#adminTabs').delay(2200).fadeOut(400, function () { $(this).remove(); });
+        });
+
     });
-
-    // ---------- ELIMINAR: preparar modal ----------
-    $(document).on('click', '.btnEliminarEst', function () {
-    const id = $(this).data('id');
-    const name = $(this).data('name') || '';
-    $('#labelEstName').text(name);
-    $('#formEliminarEst').data('deleteId', id);
-      // mostrar modal
-    const modalEl = document.getElementById('modalEliminarEst');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modal.show();
-    });
-
-    // ---------- Confirmar eliminación ----------
-    $('#formEliminarEst').on('submit', function (e) {
-    e.preventDefault();
-    const id = $(this).data('deleteId');
-    if (!id) { closeModal('modalEliminarEst'); return; }
-    const $tr = $(`#tablaEstablecimientos tbody tr[data-id="${id}"]`);
-    if ($tr.length) {
-        table.row($tr).remove().draw(false);
-    }
-    closeModal('modalEliminarEst');
-    $('<div class="alert alert-warning flash-msg">Establecimiento eliminado (cliente).</div>')
-        .insertBefore('#adminTabs').delay(1800).fadeOut(400, function(){ $(this).remove(); });
-    });
-
-    // ---------- PERFIL: Guardar y reflejar en Resumen ----------
-    $('#btnGuardarPerfil').on('click', function () {
-    const nombre = $('#pf_nombre').val().trim() || '—';
-    const direccion = $('#pf_direccion').val().trim() || '—';
-    const telefono = $('#pf_telefono').val().trim() || '—';
-    const ciudad = $('#pf_ciudad').val().trim() || '—';
-    const descripcion = $('#pf_descripcion').val().trim() || '—';
-    const mision = $('#pf_mision').val().trim() || '—';
-    const vision = $('#pf_vision').val().trim() || '—';
-    const startDay = $('#pf_start_day').val();
-    const endDay = $('#pf_end_day').val();
-    const open = $('#pf_open').val();
-    const close = $('#pf_close').val();
-
-      // Reflejar datos
-    $('#confNombre').text(nombre);
-    $('#confDireccion').text(direccion);
-    $('#confTelefono').text(telefono);
-    $('#confCiudad').text(ciudad);
-    $('#confDescripcion').text(descripcion);
-    $('#confMision').text(mision);
-    $('#confVision').text(vision);
-
-      // Horario resumido
-    const confHorarios = $('#confHorarios');
-    confHorarios.empty();
-
-    const dayMap = {
-        lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles',
-        jueves: 'Jueves', viernes: 'Viernes', sabado: 'Sábado', domingo: 'Domingo'
-    };
-    const startText = dayMap[startDay] || startDay || '—';
-    const endText = dayMap[endDay] || endDay || '—';
-
-    const $h = $('<h6>').text(`Días laborales: ${startText} — ${endText}`);
-    const $p = $('<p>').text(`Horario: ${open} - ${close}`);
-    confHorarios.append($h).append($p);
-
-      // Cambiar a pestaña Resumen
-    const tab = new bootstrap.Tab(document.querySelector('#configuracion-tab'));
-    tab.show();
-
-    $('<div class="alert alert-success flash-msg">Perfil guardado y reflejado en Resumen Perfil Barbería.</div>')
-        .insertBefore('#adminTabs').delay(2200).fadeOut(400, function(){ $(this).remove(); });
-    });
-
-});
 </script>
 
 {% endblock %}

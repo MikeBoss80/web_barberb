@@ -261,7 +261,6 @@ class VinculationDeleteView(DeleteView):
     model = FlowInstance
     success_url = reverse_lazy('admin_module:barberos')
      
-
 class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
     model = BarberRequest
     template_name ='requets/solicitudes_list.html' #plantilla html
@@ -317,8 +316,6 @@ class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
         """
         return BarberRequest.objects.filter(barber=self.request.user)
 
-
-
 class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
 
     model = BarberRequest  # Modelo a crear
@@ -346,7 +343,6 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
 
         return super().form_valid(form)
     
-
 class CalendarioBarberoView(View):
     def get(self, request, barbero_id):
         # Aquí podrías cargar datos específicos del barbero, por ahora lo haremos estático
@@ -382,8 +378,6 @@ class ServiciosView(BreadcrumbMixin, TemplateView):
         context['servicios'] = servicios
         return context
 
-
-    
 # Agregar servicio
 def agregar_servicio(request):
     if request.method == 'POST':
@@ -425,17 +419,27 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
     
     def get_breadcrumb(self):
         return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento')}]
-     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        user = self.request.user
+
+        establecimiento = Establishment.objects.get(id_admin=user)
+
         # Cargar todos los establecimientos (o el actual del admin, si aplica)
-        context['establecimientos'] = self.request.user.admin_est.all()
+        context['establecimiento'] = establecimiento
 
         # Si se quiere pasar un formulario vacío para registrar o editar desde modal
         context['form'] = CreateEstablishmentForm()
+
+        # Generar lista de horas desde 06:00 hasta 20:00
+        horas = [f"{h:02d}" for h in range(6, 21)]
+        
+        context["horas"] = horas
+        
         return context
-    
+
     def post(self, request, *args, **kwargs):
         # Captura del establecimiento a editar (por ejemplo, con un input hidden)
         establishment_id = request.POST.get('establishment_id')
@@ -469,7 +473,6 @@ class InventarioView(BreadcrumbMixin, TemplateView):
 
 class InventarioListView(ListView):
 
-    
     # product = Product
     template_name = 'inventario/inventario.html'
     
@@ -622,30 +625,4 @@ def get_success_url(self):
     
     
     
-class ContenidosView(View):
-    def get(self, request):
-        dias = [
-            ("lunes", "Lunes"),
-            ("martes", "Martes"),
-            ("miercoles", "Miércoles"),
-            ("jueves", "Jueves"),
-            ("viernes", "Viernes"),
-            ("sabado", "Sábado"),
-        ]
-        return render(request, "establecimiento/contenidos.html", {
-            "dias": dias,
-        })
-        
 
-
-class ContenidosView(TemplateView):
-    template_name = "establecimiento/contenidos.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Generar lista de horas desde 06:00 hasta 20:00
-        horas = [f"{h:02d}" for h in range(6, 21)]
-        context["horas"] = horas
-
-        return context

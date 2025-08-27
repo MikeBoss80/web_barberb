@@ -28,7 +28,7 @@
 
   <!-- Sección principal -->
   <section class="hero">
-    
+
     <div class="hero-text">
       <h1><strong>"Mejora tu imagen, impulsa tu barbería."</strong></h1>
       <p>
@@ -37,7 +37,7 @@
       </p>
     </div>
 
-    
+
     <div id="barberCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
@@ -72,9 +72,170 @@
       </button>
     </div>
 
-    
-    
   </section>
+
+  <!-- Sección ¿Qué es BarberB? -->
+  <section class="about py-5 text-center mb-4">
+    <div class="container glass-card text-center">
+      <h2 class="mb-4">¿Qué es BarberB?</h2>
+      <p class="lead">
+        BarberB es un aplicativo diseñado para conectar barberías con clientes de manera sencilla y rápida.
+        Nuestro objetivo es impulsar a los negocios locales y ofrecer a los usuarios una experiencia práctica para
+        reservar,
+        calificar y descubrir nuevos estilos.
+      </p>
+    </div>
+  </section>
+
+ <!-- Sección Beneficios -->
+<section class="benefits py-5 text-center">
+  <div class="container-fluid">
+    <h2 class="mb-4">Beneficios de usar esta plataforma</h2>
+
+    <div id="benefitsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+      <div class="carousel-inner">
+
+        <!-- Grupo 1 -->
+        <div class="carousel-item active">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Gestión de citas</h5>
+                <p class="card-text">Reserva, administra y organiza citas fácilmente desde cualquier dispositivo.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Reseñas reales</h5>
+                <p class="card-text">Conoce las opiniones de clientes y posiciona tu barbería con calificaciones auténticas.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Ubicación fácil</h5>
+                <p class="card-text">Encuentra barberías cercanas a tu ubicación con solo un clic.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grupo 2 -->
+        <div class="carousel-item">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Control de ingresos</h5>
+                <p class="card-text">Administra fácilmente pagos y finanzas de tu barbería.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Gestión de barberos</h5>
+                <p class="card-text">Asigna barberos a servicios, administra horarios y solicitudes.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Reportes automáticos</h5>
+                <p class="card-text">Obtén métricas claras sobre citas, clientes y rendimiento del negocio.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grupo 3 -->
+        <div class="carousel-item">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Promociones</h5>
+                <p class="card-text">Crea descuentos y promociones para fidelizar clientes.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Inventario</h5>
+                <p class="card-text">Lleva el control de productos y suministros en tu barbería.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100 p-4">
+                <h5 class="card-title">Notificaciones</h5>
+                <p class="card-text">Mantén a tus clientes informados con recordatorios y avisos automáticos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controles -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#benefitsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#benefitsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- Sección Desarrolladores -->
+  <section class="developers py-5 text-center">
+    <div class="container">
+      <h2 class="mb-4">Equipo De Desarrolladores</h2>
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-5 mb-4">
+          <div class="card shadow-sm h-100">
+            <img src="{% static 'core/img/rocky.jpg' %}" class="card-img-top" alt="Desarrollador 1">
+            <div class="card-body">
+              <h5 class="card-title">Miguel Bolívar</h5>
+              <p class="card-text">Desarrollador Full-Stack - Fundador de BarberB.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5 mb-4">
+          <div class="card shadow-sm h-100">
+            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Desarrollador 2">
+            <div class="card-body">
+              <h5 class="card-title">Jose Danilo Santos</h5>
+              <p class="card-text">Desarrollador Full-Stack - Fundador de BarberB</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Desarrollador 3">
+            <div class="card-body">
+              <h5 class="card-title">Elizabeth Ariza</h5>
+              <p class="card-text">Desarrollador Front-End</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Desarrollador 4">
+            <div class="card-body">
+              <h5 class="card-title">Johan Mauricio Perez</h5>
+              <p class="card-text">Desarrollador Back-End</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Desarrollador 5">
+            <div class="card-body">
+              <h5 class="card-title">Gabriel Delgado</h5>
+              <p class="card-text">Desarrollador Front-End</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- Footer -->
   <footer>
