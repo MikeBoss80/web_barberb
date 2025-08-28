@@ -416,30 +416,19 @@ def eliminar_servicio(request, id):
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
-    
     def get_breadcrumb(self):
         return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento')}]
-    
+     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user = self.request.user
-
-        establecimiento = Establishment.objects.get(id_admin=user)
-
         # Cargar todos los establecimientos (o el actual del admin, si aplica)
-        context['establecimiento'] = establecimiento
+        context['establecimientos'] = self.request.user.admin_est.all()
 
         # Si se quiere pasar un formulario vacío para registrar o editar desde modal
         context['form'] = CreateEstablishmentForm()
-
-        # Generar lista de horas desde 06:00 hasta 20:00
-        horas = [f"{h:02d}" for h in range(6, 21)]
-        
-        context["horas"] = horas
-        
         return context
-
+    
     def post(self, request, *args, **kwargs):
         # Captura del establecimiento a editar (por ejemplo, con un input hidden)
         establishment_id = request.POST.get('establishment_id')
@@ -453,7 +442,7 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
 
         if form.is_valid():
             form.save()
-            return redirect('/admin_module/contenidos/')  # o el name de tu url para esta vista
+            return redirect('/admin_module/establecimiento/')  # o el name de tu url para esta vista
 
         # Si hay errores, recarga la página con el mismo contexto
         context = self.get_context_data(instance=establishment)
@@ -557,7 +546,7 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
     form_class = CreateEstablishmentForm
 
     def get_success_url(self):
-        return '/admin_module/contenidos/'
+        return '/admin_module/establecimiento/'
 
     def form_valid(self, form):
         establishment=form.save(commit=False)
@@ -578,7 +567,7 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
 class DeleteEstablishmentView(DeleteView):
     
     def get_success_url(self):
-        return '/admin_module/contenidos/'
+        return '/admin_module/establecimiento/'
     
     def get_queryset(self):
         return Establishment.objects.filter(id_admin_id=self.request.user.id)
