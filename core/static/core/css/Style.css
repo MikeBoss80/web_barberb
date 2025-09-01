@@ -288,3 +288,10 @@ margin: 0 auto;            /* 🔑 centra el bloque en su contenedor */
   flex-direction: column;
   justify-content: space-between;
 }
+
+section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  /* Opcional: centra el contenido verticalmente */
+}

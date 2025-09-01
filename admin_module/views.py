@@ -26,11 +26,6 @@ from admin_module.utils.mixins import CitasQuerysetMixin
 import logging
 
 
-
-
-
-
-
 class HomeadminView(BreadcrumbMixin, TemplateView):
     """Vista Principal Modulo Admin"""
     template_name = 'admin_module/main.html'
@@ -408,6 +403,7 @@ def editar_servicio(request, id):
     'form': form,
     'action_url': reverse('admin_module:editar_servicio', args=[servicio.id])
 })
+
 # Eliminar servicio
 def eliminar_servicio(request, id):
     servicio = get_object_or_404(Service, id=id)
