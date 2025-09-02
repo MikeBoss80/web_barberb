@@ -29,4 +29,5 @@ urlpatterns = [
     path('services_module/', decorator_include(decorators, 'services_module.urls')),  # Rutas del módulo de servicios
     path('login_module/', include('login_module.urls')),  # Rutas del módulo Login
     path('barber_module/', decorator_include(login_required, 'barber_module.urls')),  # Rutas del módulo Barber
+    path('analytics/', decorator_include(decorators, 'analytics.urls', namespace='analytics')),
 ]

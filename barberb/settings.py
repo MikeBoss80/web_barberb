@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'calendar_module',
     'workflows',
+    'analytics',
     ]
 
 
