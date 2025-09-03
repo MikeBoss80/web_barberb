@@ -11,6 +11,7 @@ from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, P
 from django.views.generic.edit import FormView
 from .forms import UserProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView, View
 
 
 class CustomLoginView(LoginView):
@@ -151,4 +152,53 @@ class ResetPasswordConfirmView(PasswordResetConfirmView):
 class ResetPasswordCompleteView(PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
+##Vista para completar perfil despues del registro con google
+class FillProfileView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    template_name = "login_module/fill_profile.html"
+    fields = ["phone", "address", "birth_date", "document"]  
+    success_url = reverse_lazy("admin_module:main")  # Redirige a home después de guardar
 
+    def get_object(self, queryset=None):
+        """
+        Se asegura de que el perfil editado siempre sea el del usuario autenticado.
+        """
+        return self.request.user.profile
+
+    def form_valid(self, form):
+        """
+        Antes de guardar, valida si el perfil está completo para marcar `data_complete=True`.
+        """
+        profile = form.save(commit=False)
+
+        # Validamos si todos los campos requeridos están diligenciados
+        if profile.phone and profile.address and profile.birth_date and profile.document:
+            profile.data_complete = True
+        else:
+            profile.data_complete = False
+
+        profile.save()
+        return super().form_valid(form)
+
+
+class PostLoginRedirectView(LoginRequiredMixin, View):
+    """
+    Punto único de entrada después del login (Google o clásico).
+    - Si el perfil NO está completo -> redirige a FillProfileView.
+    - Si está completo           -> redirige al dashboard ('main').
+    - Si hay 'next' y el perfil está completo, respeta 'next'.
+    """
+    def get(self, request, *args, **kwargs):
+        # Garantiza que exista Profile (por si es su primer login social)
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+
+        # ¿perfil completo?
+        if not profile.data_complete:
+            return redirect('fill_profile')
+
+        # Respeta ?next=/ruta si existe y el perfil está completo
+        next_url = request.GET.get('next')
+        if next_url:
+            return redirect(next_url)
+
+        return redirect('main')

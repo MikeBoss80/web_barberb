@@ -3,6 +3,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from login_module.views import (
     LoginView,
+    PostLoginRedirectView,
+    FillProfileView,
     RegistroAdministradorView,
     RegistroBarberoView,
     RegistroUsuarioView,
@@ -24,6 +26,8 @@ app_name = 'login_module'
 
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('redirect-after-login/', PostLoginRedirectView.as_view(), name='redirect_after_login'),
+    path("fill-profile/", FillProfileView.as_view(), name="fill_profile"),
     path('registro/administrador/', RegistroAdministradorView.as_view(), name='registroadministrador'),
     path('registro/barbero/', RegistroBarberoView.as_view(), name='registro_Barbero'),
     path('registro/usuario/', RegistroUsuarioView.as_view(), name='registro_usuario'),

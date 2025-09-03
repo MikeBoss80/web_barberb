@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
+from django.urls import reverse_lazy
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,8 +46,11 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
+#Data of Google Social Auth
+CLIENT_ID_DE_GOOGLE = config('CLIENT_ID_DE_GOOGLE') 
+CLIENT_SECRET_DE_GOOGLE = config('CLIENT_SECRET_DE_GOOGLE')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -57,6 +62,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
+    # Sitios → usado para identificar el dominio actual (necesario para allauth)
+    'django.contrib.sites',
+
+    # django-allauth: manejo de cuentas y login social
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # Proveedor Google
+
+    # Apps del proyecto BarberB
     'core', 
     'admin_module',
     'services_module',
@@ -65,6 +82,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'calendar_module',
     'workflows',
+    'login_auth',
     ]
 
 
@@ -78,6 +96,8 @@ MIDDLEWARE = [
     'core.middleware.CurrentRolMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+
 
 ]
 
@@ -121,6 +141,21 @@ DATABASES = {
     
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': CLIENT_ID_DE_GOOGLE,
+            'secret': CLIENT_SECRET_DE_GOOGLE,
+            'key': ''
+        }
+    }
+}
+
+#Envia directamente al proveedor de autenticación social, es decir nos envia en este caso a Google directamente
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+
+ACCOUNT_ADAPTER = "login_module.adapters.CustomAccountAdapter"
 
 
 # Password validation
@@ -140,6 +175,27 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Necesario para django-allauth, identifica el "sitio" en el que corre la app
+# Django utiliza esta referencia en la tabla django_site para saber si
+# se está ejecutando en localhost o en un dominio en producción.
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    # 1. Backend por defecto de Django (usuario + contraseña en BD local)
+    'django.contrib.auth.backends.ModelBackend',
+
+    # 2. Backend de django-allauth (permite autenticación social)
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# URL de redirección después de un login exitoso
+LOGIN_REDIRECT_URL = 'redirect_after_login'
+
+# URL de redirección después de un logout
+LOGOUT_REDIRECT_URL = 'login'
+
+ACCOUNT_LOGOUT_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 
 # Internationalization

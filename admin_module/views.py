@@ -537,6 +537,8 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
 class LogoutView(BreadcrumbMixin, TemplateView):
     template_name='core/login.html'
 
+
+
 class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
     template_name = 'establecimiento/registro_est.html'
     form_class = CreateEstablishmentForm

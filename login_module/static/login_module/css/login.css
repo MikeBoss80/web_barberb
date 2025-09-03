@@ -53,13 +53,25 @@ body {
   mask-composite: exclude;
 }
 
+
+label {
+  color: white;
+  margin-bottom: 8px;
+  display: block;
+  font-size: 16px;
+}
+
+
 /* === PANEL IZQUIERDO (LOGIN) === */
 .login-form {
   flex: 1;
-  padding: 60px;
+  padding: 80px 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center; /* Esto centra los elementos horizontalmente */
+
+
 }
 
 .login-form h2 {
@@ -129,12 +141,28 @@ form input::before {
   z-index: -1;
 }
 
+
+.forgot {
+  color: white;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 0px 0 10px 0;
+  display: inline-block;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.forgot:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+
 /* === BOTÓN LOGIN === */
 .btn-login {
   background: rgba(0, 0, 0, 0.8);
   border: none;
   padding: 15px;
-  width: 50%;
   margin: 20px auto;
   border-radius: 10px;
   color: #fff;
@@ -143,6 +171,7 @@ form input::before {
   font-weight: bold;
   position: relative;
   z-index: 1;
+  width: 100%;
 }
 
 .btn-login::before {
@@ -235,3 +264,65 @@ form input::before {
   inset: 0;
   padding: 2px;
   border-radius: 1
+}
+
+.google-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+
+  background-color: #fff;
+  color: #555;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px 20px;
+
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.google-login-btn img {
+  width: 20px;
+  height: 20px;
+
+}
+
+.google-login-btn:hover {
+  background-color: #f8f8f8;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #666;
+}
+
+.separator::before {
+  margin-right: 10px;
+}
+
+.separator::after {
+  margin-left: 10px;
+}
+
+.separator span {
+  color: #ccc;
+  font-weight: 500;
+}

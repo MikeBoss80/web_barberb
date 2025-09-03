@@ -1,32 +1,42 @@
 {% load static %}
+{% load socialaccount %}
+
 <link rel="stylesheet" href="{% static 'login_module/css/login.css' %}">
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 <div class="container">
-    <div class="login-form">
-      <img src="/static/login_module/img/logobarberb2.png" alt="LogoB2" class="LogoB2">
+  <div class="login-form">
+    <img src="/static/login_module/img/logobarberb2.png" alt="LogoB2" class="LogoB2">
 
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <a href="{% url 'login_module:password_reset' %}" class="forgot">Olvido contraseña?</a>
-        <br>
-        <br>
-        <button type="submit" class="btn-login">INICIAR</button>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <a href="{% url 'login_module:password_reset' %}" class="forgot">¿Olvido contraseña?</a>
+      
+  
+      <button type="submit" class="btn-login">Iniciar Sesion</button>
 
-        
 
-        <div class="registrar-mobile">
-          <p><a href="{% url 'login_module:tipo_rol' %}"></a></p>
-        </div>
-      </form>
-    </div>
+      <div class="separator">
+        <span>O</span>
+      </div>
+      <a href="{% provider_login_url 'google' %}" class="google-login-btn">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+        <span> Continuar con Google</span>
+      </a>
 
-    <div class="side-panel">
-      <div class="overlay">
-        <h3>Registrate</h3>
-        <p>Te ayudamos a destacar, conectar y crecer en grande.!</p>
-        <a href="{% url 'login_module:registro_usuario' %}" class="btn-signup">REGISTRO</a>
+
+      <div class="registrar-mobile">
+        <p><a href="{% url 'login_module:tipo_rol' %}"></a></p>
+      </div>
+    </form>
+  </div>
+
+  <div class="side-panel">
+    <div class="overlay">
+      <h3>¿No tienes cuenta?</h3>
+      <br>
+      <a href="{% url 'login_module:registro_usuario' %}" class="btn-signup">Crear Cuenta</a>
     </div>
   </div>
 </div>
