@@ -1,6 +1,6 @@
 from django.urls import path
 
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView
 
 from django.contrib.auth.views import LogoutView
 
@@ -28,7 +28,6 @@ urlpatterns = [
     path('producto/agregar/', ProductCreateView.as_view(), name='producto_create'),
     path('producto/editar/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
     path('producto/eliminar/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),
-    path('logout/', LogoutView.as_view(next_page='login_module:login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
     path('citas/editar-rapido/<int:pk>/', EditarBarberoEstadoView.as_view(), name='editar_barbero_estado'),

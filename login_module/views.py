@@ -12,6 +12,8 @@ from django.views.generic.edit import FormView
 from .forms import UserProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, View
+from django.contrib.auth.views import LogoutView as DjangoLogoutView
+
 
 
 class CustomLoginView(LoginView):
@@ -60,6 +62,33 @@ class RolSelectView(LoginRequiredMixin,TemplateView):
         
 class LoginView(TemplateView):
     template_name = 'login.html'
+    
+class LogoutView(LoginRequiredMixin, DjangoLogoutView):
+    """
+    Vista personalizada para manejar el logout.
+    - Mantiene el comportamiento estándar de Django.
+    - Revoca token de Google si existe.
+    """
+
+    next_page = "login_module:login"  # Redirección tras logout (ajusta según tu proyecto)
+
+    def dispatch(self, request, *args, **kwargs):
+        # 1. Revocar token de Google si existe (django-allauth)
+        if request.user.is_authenticated:
+            social = request.user.socialaccount_set.filter(provider="google").first()
+            if social:
+                token = social.socialtoken_set.first()
+                if token:
+                    # Revocar token en Google
+                    requests.post(
+                        "https://accounts.google.com/o/oauth2/revoke",
+                        params={"token": token.token},
+                        headers={"content-type": "application/x-www-form-urlencoded"},
+                    )
+                    token.delete()  # Eliminar token en la BD
+
+        # 2. Ejecutar el logout estándar de Django
+        return super().dispatch(request, *args, **kwargs)
 
 class RegistroAdministradorView(TemplateView):
     template_name = 'registro_administrador.html'
@@ -179,7 +208,6 @@ class FillProfileView(LoginRequiredMixin, UpdateView):
 
         profile.save()
         return super().form_valid(form)
-
 
 class PostLoginRedirectView(LoginRequiredMixin, View):
     """

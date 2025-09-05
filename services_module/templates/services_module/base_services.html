@@ -293,10 +293,10 @@
           <li>
             <hr class="dropdown-divider">
           </li>
-          <li><a class="dropdown-item text-danger" href="{% url 'services_module:logout' %}">Cerrar sesión</a></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>
         </ul>
       </div>
-      <form method="post" action="{% url 'services_module:logout' %}">
+      <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button class="btn btn-light d-flex align-items-center" type="submit"><i
             class="fas fa-sign-out-alt"></i></button>

@@ -147,6 +147,9 @@ SOCIALACCOUNT_PROVIDERS = {
             'client_id': CLIENT_ID_DE_GOOGLE,
             'secret': CLIENT_SECRET_DE_GOOGLE,
             'key': ''
+        },
+    "AUTH_PARAMS": {
+            "prompt": "select_account"
         }
     }
 }

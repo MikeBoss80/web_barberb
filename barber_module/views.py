@@ -127,6 +127,3 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
-    
-class LogoutView(BreadcrumbMixin, TemplateView):
-    template_name='core/login.html'

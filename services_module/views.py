@@ -76,7 +76,6 @@ class HomeServicesView(BreadcrumbMixins, TemplateView):
 
         return context
 
-
 class ServiceDateCreateView(LoginRequiredMixin, CreateView):
     """
     Vista para crear una cita (ServiceDate) tras la confirmación del voucher.
@@ -129,7 +128,6 @@ class ServiceDateCreateView(LoginRequiredMixin, CreateView):
         print("Errores en el formulario de creación de cita:", form.errors)
         return super().form_invalid(form)
     
-   
 class ServicesCitasView(BreadcrumbMixins, TemplateView):
     template_name = 'citas_cliente.html'
 
@@ -190,7 +188,6 @@ class ServicesCitasView(BreadcrumbMixins, TemplateView):
 
         return context
 
-
 class MapServicesView(TemplateView):
     """Vista Principal Servicios"""
     template_name = 'map_services.html'
@@ -224,18 +221,15 @@ def getPlacesBySearch(request):
         data = json.loads(datos)
     return JsonResponse(data)
 
-
 class SeguridadView(BreadcrumbMixins, TemplateView):
      template_name= 'serv_seguridad.html'
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('services_module:seguridad')}]
 
-
 class SoporteView(BreadcrumbMixins, TemplateView):
      template_name= 'serv_soporte.html'
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('services_module:soporte')}]
-
 
 class PerfilUsuarioView(BreadcrumbMixins, TemplateView):
      template_name ='perfil_usuario.html'
@@ -258,6 +252,4 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
-    
-class LogoutView(BreadcrumbMixins, TemplateView):
-    template_name='core/login.html'
+

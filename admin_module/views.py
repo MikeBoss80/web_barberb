@@ -533,11 +533,6 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
-    
-class LogoutView(BreadcrumbMixin, TemplateView):
-    template_name='core/login.html'
-
-
 
 class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
     template_name = 'establecimiento/registro_est.html'
