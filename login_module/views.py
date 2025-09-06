@@ -11,6 +11,9 @@ from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, P
 from django.views.generic.edit import FormView
 from .forms import UserProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView, View
+from django.contrib.auth.views import LogoutView as DjangoLogoutView
+
 
 
 class CustomLoginView(LoginView):
@@ -59,6 +62,33 @@ class RolSelectView(LoginRequiredMixin,TemplateView):
         
 class LoginView(TemplateView):
     template_name = 'login.html'
+    
+class LogoutView(LoginRequiredMixin, DjangoLogoutView):
+    """
+    Vista personalizada para manejar el logout.
+    - Mantiene el comportamiento estándar de Django.
+    - Revoca token de Google si existe.
+    """
+
+    next_page = "login_module:login"  # Redirección tras logout (ajusta según tu proyecto)
+
+    def dispatch(self, request, *args, **kwargs):
+        # 1. Revocar token de Google si existe (django-allauth)
+        if request.user.is_authenticated:
+            social = request.user.socialaccount_set.filter(provider="google").first()
+            if social:
+                token = social.socialtoken_set.first()
+                if token:
+                    # Revocar token en Google
+                    requests.post(
+                        "https://accounts.google.com/o/oauth2/revoke",
+                        params={"token": token.token},
+                        headers={"content-type": "application/x-www-form-urlencoded"},
+                    )
+                    token.delete()  # Eliminar token en la BD
+
+        # 2. Ejecutar el logout estándar de Django
+        return super().dispatch(request, *args, **kwargs)
 
 class RegistroAdministradorView(TemplateView):
     template_name = 'registro_administrador.html'
@@ -151,4 +181,52 @@ class ResetPasswordConfirmView(PasswordResetConfirmView):
 class ResetPasswordCompleteView(PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
+##Vista para completar perfil despues del registro con google
+class FillProfileView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    template_name = "login_module/fill_profile.html"
+    fields = ["phone", "address", "birth_date", "document"]  
+    success_url = reverse_lazy("admin_module:main")  # Redirige a home después de guardar
 
+    def get_object(self, queryset=None):
+        """
+        Se asegura de que el perfil editado siempre sea el del usuario autenticado.
+        """
+        return self.request.user.profile
+
+    def form_valid(self, form):
+        """
+        Antes de guardar, valida si el perfil está completo para marcar `data_complete=True`.
+        """
+        profile = form.save(commit=False)
+
+        # Validamos si todos los campos requeridos están diligenciados
+        if profile.phone and profile.address and profile.birth_date and profile.document:
+            profile.data_complete = True
+        else:
+            profile.data_complete = False
+
+        profile.save()
+        return super().form_valid(form)
+
+class PostLoginRedirectView(LoginRequiredMixin, View):
+    """
+    Punto único de entrada después del login (Google o clásico).
+    - Si el perfil NO está completo -> redirige a FillProfileView.
+    - Si está completo           -> redirige al dashboard ('main').
+    - Si hay 'next' y el perfil está completo, respeta 'next'.
+    """
+    def get(self, request, *args, **kwargs):
+        # Garantiza que exista Profile (por si es su primer login social)
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+
+        # ¿perfil completo?
+        if not profile.data_complete:
+            return redirect('fill_profile')
+
+        # Respeta ?next=/ruta si existe y el perfil está completo
+        next_url = request.GET.get('next')
+        if next_url:
+            return redirect(next_url)
+
+        return redirect('main')

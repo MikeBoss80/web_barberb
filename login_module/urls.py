@@ -3,6 +3,9 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from login_module.views import (
     LoginView,
+    LogoutView,
+    PostLoginRedirectView,
+    FillProfileView,
     RegistroAdministradorView,
     RegistroBarberoView,
     RegistroUsuarioView,
@@ -24,6 +27,8 @@ app_name = 'login_module'
 
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('redirect-after-login/', PostLoginRedirectView.as_view(), name='redirect_after_login'),
+    path("fill-profile/", FillProfileView.as_view(), name="fill_profile"),
     path('registro/administrador/', RegistroAdministradorView.as_view(), name='registroadministrador'),
     path('registro/barbero/', RegistroBarberoView.as_view(), name='registro_Barbero'),
     path('registro/usuario/', RegistroUsuarioView.as_view(), name='registro_usuario'),
@@ -37,6 +42,8 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', ResetPasswordCompleteView.as_view(), name='password_reset_complete'),
     path('rol_actual/', login_required(RolSelectView.as_view()), name='rol_actual'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+
 
 
 ]

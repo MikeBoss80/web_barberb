@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 from .models import Profile
 
 
-
+# login_module/signals.py
 @receiver(post_save, sender=User)
 def crear_o_actualizar_perfil(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
     else:
         instance.profile.save()
+
+

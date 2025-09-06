@@ -30,9 +30,9 @@
           </a>
         </li>
         <li class="nav-item">
-          <form method="post" action="{% url 'admin_module:logout' %}">
+          <form method="post" action="{% url 'login_module:logout' %}" onsubmit="return confirm('¿Seguro que deseas cerrar sesión?')">
             {% csrf_token %}
-            <button class="btn  btn-light" type="submit">
+            <button class="btn  btn-light" type="submit" title="Cerrar sesión" aria-label="Cerrar sesión">
               <i class="bi bi-box-arrow-right"></i>
             </button>
           </form>

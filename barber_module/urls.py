@@ -1,5 +1,5 @@
 from django.urls import path
-from barber_module.views import  barberView, BarberCitasView, BarberReportesView, SoporteView, LogoutView, PerfilUsuarioView, EditarPerfilView, SoporteView, BarberSeguridadView, BarberContenidosView, HomeBarberView
+from barber_module.views import  barberView, BarberCitasView, BarberReportesView, SoporteView, PerfilUsuarioView, EditarPerfilView, SoporteView, BarberSeguridadView, BarberContenidosView, HomeBarberView
 from . import views
 from django.contrib.auth.views import LogoutView
 
@@ -18,6 +18,5 @@ urlpatterns = [
     path('contenidos/', BarberContenidosView.as_view(), name='contenidos'),
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]   
 
