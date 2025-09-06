@@ -19,7 +19,7 @@ def modules_sidebar(context):
         ]
     if current_role == 'Administrador':
         return [
-            ('admin_module:main', 'person-circle' , 'Dashboard'),
+            ('analytics:dashboard', 'person-circle' , 'Estadisticas'),
             ('admin_module:citas','calendar2-date-fill','Citas'),
             ('admin_module:collabs','people-fill','Colaboradores'),
             ('admin_module:servicios', 'basket', 'Productos'),
@@ -30,7 +30,7 @@ def modules_sidebar(context):
         ]
     if current_role == 'Barbero':
         return [
-            ('admin_module:main', 'person-circle' , 'Dashboard'),
+            ('admin_module:main', 'person-circle' , 'Estadisticas'),
             ('admin_module:citas','calendar2-date-fill','Citas'),
             ('admin_module:barber_solicitudes_list','device-ssd-fill','Solicitudes'),
             ('admin_module:soporte','info-circle','Soporte'),

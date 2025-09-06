@@ -87,7 +87,7 @@ class ServiceDateForm(forms.ModelForm):
             # Si es administrador
             elif user.groups.filter(name='Administrador').exists():
                 try:
-                    establishment = Establishment.objects.get(admin_id=user).id
+                    establishment = Establishment.objects.get(id_admin_id=user).id
                 except Establishment.DoesNotExist:
                     establishment = None
 

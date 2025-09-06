@@ -1,20 +1,17 @@
 <div class="card shadow-sm border-0 h-100 w-100">
-  <div class="card-body d-flex flex-column justify-content-between">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-
-      <h6 class="card-title mb-0 text-truncate overflow-hidden">{{ card.title }}</h6>
-      <div class="text-muted fs-4 ms-2 flex-shrink-0">{{ card.icon|safe }}</div>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h6 class="card-title mb-0 text-truncate overflow-hidden">{{ card.title }}</h6>
+    <div class="text-muted fs-4 ms-2 flex-shrink-0">{{ card.icon|safe }}</div>
+  </div>
+  <div class="card-body d-flex justify-content-between align-items-end">
+    <div class="text-center">
+      <h2 class="fw-bold mb-0 {{ card.theme_class }}">{{ card.value }}</h2>
+      <p class="metric-trend text-muted">
+        <i class="bi bi-dash"></i> Sin cambios
+      </p>
     </div>
-
-    <div class="my-2 flex-grow-1">
-      <h3 class="fw-bold mb-0 {{ card.theme_class }}">{{ card.value }}</h3>
-      
-      {% if card.btn_url %}
-        <div class="mt-2">
-          <a href="{{ card.btn_url }}" class="btn btn-outline-primary btn-sm w-100">Gestión</a>
-        </div>
-      {% endif %}
-    </div>
-
+    {% if card.btn_url %}
+      <a href="{% url card.btn_url %}" class="btn btn-outline-primary btn-sm">Gestión</a>
+    {% endif %}
   </div>
 </div>
