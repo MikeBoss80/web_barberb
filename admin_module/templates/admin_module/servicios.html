@@ -1,4 +1,4 @@
-{% extends "admin_module/base_admin.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Gestión de Servicios{% endblock %}
@@ -49,12 +49,11 @@
                         <td>
                             <button class="btn btn-sm btn-action btn-edit btnModalServicio" data-id="{{ servicio.id }}">
 
-                                <i class="fas fa-edit"></i>
+                                <i class="bi bi-pencil-square"></i>
                             </button>
                             <button class="btn btn-sm btn-action btn-delete btnDeleteServicio"
-
                                     data-id="{{ servicio.id }}" data-name="{{ servicio.name }}">
-                                <i class="fas fa-trash"></i>
+                                <i class="bi bi-trash3-fill"></i>
                             </button>
                         </td>
                     </tr>

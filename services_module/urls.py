@@ -16,6 +16,6 @@ urlpatterns = [
     path('soporte/', SoporteView.as_view(), name='soporte'),
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='login_module:login'), name='logout'),
 
 ]   

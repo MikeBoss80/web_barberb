@@ -30,16 +30,32 @@ class CustomLoginView(LoginView):
 
         #Si solo esta en un grupo se dirige segun el grupo
         elif 'Barbero' in user_groups:
-            return '/barber_module/' 
+            return '/admin_module/' 
         elif 'Administrador' in user_groups:
             return '/admin_module/'
         else:
             #Si no es barbero o administrador su rol es como cliente
-            return '/services_module/'
+            return '/admin_module/'
         
 class RolSelectView(LoginRequiredMixin,TemplateView):
     template_name='rol_actual.html'
     login_url = '/login/' 
+
+    def post(self, request, *args, **kwargs):
+        rol_seleccionado = request.POST.get('rol')
+
+        # Validar que el usuario tiene el rol seleccionado
+        user = request.user
+        user_groups = user.groups.values_list('name', flat=True)
+
+        if rol_seleccionado in user_groups:
+            # Guardar en sesión el rol activo
+            request.session['current_role'] = rol_seleccionado
+
+            return redirect('/admin_module/')
+        else:
+            # Si intenta seleccionar un rol que no tiene, redirigir o mostrar error
+            return redirect('/not_authorized/')
         
 class LoginView(TemplateView):
     template_name = 'login.html'
@@ -74,7 +90,7 @@ class RegistroAdministradorView(TemplateView):
             # agregar demás campos...
         )
 
-        return redirect('login')  # O a un dashboard
+        return redirect('login_module:login')  # O a un dashboard
     
 class RegistroBarberoView(TemplateView):
     template_name = 'registro_barbero.html'
@@ -85,7 +101,7 @@ class RegistroEstablecimientoView(TemplateView):
 class RegistroUsuarioView(FormView):
     template_name = 'registro_usuario.html'
     form_class = UserProfileForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('login_module:login')
 
     def form_valid(self, form):
         user = form.save()

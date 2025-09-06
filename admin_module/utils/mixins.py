@@ -1,18 +1,7 @@
 # admin_modulo/utils/mixins.py
 from django.urls import reverse
 from services_module.models import ServiceDate
-
-
-class BreadcrumbMixin:
-    breadcrumb = []
-
-    def get_breadcrumb(self):
-        return ['Inicio'] + self.breadcrumb
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-# admin_module/utils/mixins.py
-
+ 
 class BreadcrumbMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,9 +13,8 @@ class BreadcrumbMixin:
             breadcrumb = self.breadcrumb
 
         # Insertamos "Inicio" como primer breadcrumb
-        context['breadcrumb'] = [{'label': 'Inicio', 'url': reverse('admin_module:admin_main')}] + breadcrumb
+        context['breadcrumb'] = [{'label': 'Inicio', 'url': reverse('admin_module:main')}] + breadcrumb
         return context
-
 
 class CitasQuerysetMixin:
     def get_citas_queryset(self, user=None, filter_by_barber=False, filter_by_client=False):

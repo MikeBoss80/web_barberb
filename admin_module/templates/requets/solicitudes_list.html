@@ -1,4 +1,4 @@
-{% extends "barber_module/base_barber.html" %}
+{% extends "base.html" %}  
 
 {% load static %}
 
@@ -13,7 +13,7 @@
     <div class="row mb-4">
         <div class="d-flex justify-content-between mb-3">
             <h2 class="mb-4">Mis Solicitudes</h2>
-            <a href="{% url 'barber_module:solicitud_barbero' %}" class="btn btn-primary mt-4">Nueva Solicitud</a>
+            <a href="{% url 'admin_module:solicitud_barbero' %}" class="btn btn-primary mt-4">Nueva Solicitud</a>
         </div>
     
         <table id="tablaSolicitudes" class="table table-bordered table-striped">
@@ -43,7 +43,7 @@
                     <td>{{ solicitud.respuesta_admin|default:"--" }}</td>
                     <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
                     <td>
-                        <a href="{% url 'barber_module:barber_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-info">
+                        <a href="{% url 'admin_module:barber_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-info">
                             Ver Detalles
                         </a>
                     </td>

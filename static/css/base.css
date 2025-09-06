@@ -1,0 +1,125 @@
+    #header {
+        background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Estilo para el sidebar */
+    #sidebar {
+        width: 220px;
+        /* Ajustar el ancho */
+        background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+        overflow-y: auto;
+        height: calc(100vh - 60px);
+        top: 60px;
+        left: 0;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        transition: width 0.3s;
+        /* Transición para el cambio de ancho */
+        z-index: 1000;
+    }
+
+    /* Estilo base de los enlaces en el menú lateral */
+    .nav-link.text-white {
+        background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+        padding: 0.5rem 0.45rem;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        transition: background-color 0.3s, padding 0.3s;
+        /* Transición suave */
+
+    }
+
+
+
+    .nav-link.text-white:hover {
+        background-color: #3e1a4e;
+        font-weight: 600;
+        padding-left: 1rem;
+        /* Desplaza el texto ligeramente a la derecha */
+
+    }
+
+    /* Cambiar el color de los íconos al hacer hover */
+    .nav-link.text-white:hover i {
+        color: #f8f9fa;
+        /* Color claro para los íconos */
+    }
+
+    .sidebar-collapsed {
+        width: 80px !important;
+    }
+
+    .sidebar-collapsed .sidebar-label {
+        display: none;
+    }
+
+    #toggleSidebar {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.75rem;
+    }
+
+    /* Alineación del botón de toggle según el estado de expansión o colapso */
+    #sidebar.sidebar-expanded #toggleSidebar {
+        align-self: flex-end;
+    }
+
+    #sidebar.sidebar-collapsed #toggleSidebar {
+        align-self: center;
+    }
+
+
+    /* Tamaño de los íconos en el sidebar */
+    #sidebar .nav-link i {
+        font-size: 1.2rem;
+    }
+
+    /* Cuando el sidebar se colapsa, los íconos pueden cambiar ligeramente */
+    #sidebar.sidebar-collapsed .nav-link i {
+        transform: scale(1.2);
+        /* Aumenta ligeramente el tamaño de los íconos cuando colapsa */
+    }
+
+    /* Estilo para el botón btn-light */
+    .btn.btn-light {
+        background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 1rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s, padding 0.3s;
+        margin-left: 10px;
+        /* Espacio entre este botón y el siguiente */
+
+    }
+
+    /* Efecto hover para el botón */
+    .btn.btn-light:hover {
+        background-color: #3e1a4e;
+        font-weight: 600;
+        padding-left: 1.2rem;
+        /* Desplaza el botón ligeramente hacia la derecha */
+    }
+
+    /* Efecto hover para los íconos dentro del botón */
+    .btn.btn-light i {
+        font-size: 1.2rem;
+        transition: color 0.3s;
+    }
+
+    /* Cuando el botón está en hover, cambia el color del ícono */
+    .btn.btn-light:hover i {
+        color: #f8f9fa;
+    }

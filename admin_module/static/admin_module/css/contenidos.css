@@ -1,0 +1,294 @@
+.breadcrumb-container {
+    background: rgba(237, 64, 211, 0.07);
+    backdrop-filter: blur(4px);
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-weight: bold;
+    color: #000 !important;
+}
+
+
+.breadcrumb-container a {
+    color: #000 !important;
+    /* color del enlace normal */
+    text-decoration: none;
+    /* opcional: eliminar subrayado */
+}
+
+.breadcrumb-container a:hover {
+    color: #3e1a4e !important;
+    /* efecto hover tipo morado de tu paleta */
+}
+
+
+/* Estilo general de tarjetas de perfil */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.profile-card .card-header {
+    padding: 0.5rem 1rem;
+}
+
+.profile-card .card-body {
+    flex: 1 1 auto;
+    overflow: visible;
+    padding: 1rem;
+}
+
+/* Inputs y selects ocupan todo el ancho */
+.profile-card input,
+.profile-card textarea,
+.profile-card select {
+    width: 100%;
+}
+
+/* Fila de días con espacio entre selects */
+.days-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.days-row select {
+    flex: 1 1 48%;
+}
+
+/* Compactar espacios entre tarjetas */
+#perfil .row.g-4 {
+    row-gap: 1rem;
+    column-gap: 1rem;
+}
+
+/* Responsive: tablets y móviles */
+@media (max-width: 768px) {
+    #perfil .row>div.col-lg-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .profile-card .card-body {
+        padding: 0.75rem;
+    }
+
+    .profile-card {
+        margin-bottom: 0.75rem;
+    }
+
+    .days-row select {
+        flex: 1 1 100%;
+    }
+
+    /* Ajustes de tamaño de texto opcional */
+    #perfil h4,
+    #perfil h6,
+    #perfil label {
+        font-size: 0.95rem;
+    }
+
+    #perfil textarea,
+    #perfil input,
+    #perfil select {
+        font-size: 0.95rem;
+    }
+}
+
+/* --- Contenedor general --- */
+.barberia-perfil-container {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    color: #333;
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* --- Hero --- */
+.barberia-hero {
+    margin-bottom: 30px;
+}
+
+.barberia-foto {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Información básica --- */
+.barberia-info {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.barberia-nombre {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.barberia-slogan {
+    font-size: 1.1rem;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.barberia-info ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+.barberia-info li {
+    margin: 5px 0;
+}
+
+.descripcion {
+    margin: 10px 0 20px;
+    font-style: italic;
+    color: #555;
+}
+
+.btn-reserva {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #d4a017;
+    /* Dorado */
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-reserva:hover {
+    background: #b48912;
+    transform: translateY(-2px);
+}
+
+/* --- Barberos --- */
+.barberia-barberos {
+    margin-bottom: 40px;
+}
+
+.barberia-barberos .barberos-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.barbero-card {
+    flex: 1 1 calc(50% - 20px);
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.barbero-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-ver-perfil {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 15px;
+    background: #111;
+    color: white;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+.btn-ver-perfil:hover {
+    background: #444;
+}
+
+/* --- Servicios --- */
+.barberia-servicios {
+    margin-bottom: 40px;
+}
+
+.servicios-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.servicio-card {
+    flex: 1 1 calc(50% - 20px);
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.servicio-card:hover {
+    transform: translateY(-3px);
+}
+
+/* --- Opiniones --- */
+.barberia-opiniones {
+    margin-bottom: 40px;
+}
+
+.barberia-opiniones blockquote {
+    background: #f1f1f1;
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 5px solid #d4a017;
+    border-radius: 8px;
+    font-style: italic;
+}
+
+.btn-ver-mas {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: #d4a017;
+    color: white;
+    border-radius: 6px;
+}
+
+.btn-ver-mas:hover {
+    background: #b48912;
+}
+
+/* --- Ubicación --- */
+.barberia-ubicacion {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.mapa iframe {
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.btn-maps {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #111;
+    color: white;
+    border-radius: 8px;
+}
+
+.btn-maps:hover {
+    background: #444;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+
+    .barbero-card,
+    .servicio-card {
+        flex: 1 1 100%;
+    }
+}

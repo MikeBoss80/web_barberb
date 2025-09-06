@@ -326,7 +326,7 @@
       <nav>
         <a class="nav-link text-white" href="{% url 'admin_module:citas' %}"><i
             class="fas fa-calendar-alt me-2"></i>Citas</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:barberos' %}"><i
+        <a class="nav-link text-white" href="{% url 'admin_module:collabs' %}"><i
             class="fas fa-user me-2"></i>Colaboradores</a>
         <a class="nav-link text-white" href="{% url 'admin_module:servicios' %}"><i
             class="fas fa-scissors me-2"></i>Servicios</a>
@@ -335,7 +335,7 @@
         <a class="nav-link text-white d-flex justify-content-between align-items-center" href="{% url   'admin_module:admin_solicitudes_list' %}"> <span><i class="fas fa-file-alt me-2"></i>Solicitudes</span>
           {% if solicitudes_pendientes_count > 0 %}<span class="badge bg-danger ms-2">{{ solicitudes_pendientes_count }}</span>
           {% endif %}</a>
-        <a class="nav-link text-white" href="{% url 'admin_module:contenidos' %}"><i
+        <a class="nav-link text-white" href="{% url 'admin_module:establecimiento' %}"><i
             class="fas fa-photo-video me-2"></i>Contenido</a>
         <a class="nav-link text-white" href="{% url 'admin_module:soporte' %}"><i
             class="fas fa-headset me-2"></i>Soporte</a>

@@ -58,7 +58,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 120px 60px 80px; /* espacio extra para evitar que el header tape contenido */
+  padding: 120px 60px 80px;
+  /* espacio extra para evitar que el header tape contenido */
   flex-wrap: wrap;
 }
 
@@ -127,4 +128,170 @@ footer p {
   margin: 0;
   line-height: 1.5;
   max-width: 90%;
+}
+
+/* ================================
+   SECCIÓN ¿QUÉ ES BARBERB?
+   (Glassmorphism)
+================================ */
+.about {
+  background: transparent;
+  padding: 80px 20px;
+  display: flex;
+  justify-content: center !important;
+}
+
+.about .glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  /* fondo translúcido */
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 20px;
+  padding: 50px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  /* Borde translúcido estilo vidrio */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  /* Sombra sutil tipo brillo */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+margin: 0 auto;            /* 🔑 centra el bloque en su contenedor */
+  text-align: center;
+  max-width: 900px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #e3cfff;
+}
+
+.about p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #f1f1f1;
+}
+
+
+/* ================================
+   SECCIÓN BENEFICIOS
+================================ */
+.benefits {
+  background: linear-gradient(135deg, #3e1a4e, #1a1a1a);
+  color: white;
+  padding: 80px 20px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.benefits h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  font-weight: bold;
+  color: #e3cfff;
+}
+
+.benefits .card {
+  background: #111111cd;
+  color: #f5f5f5;
+  border: none;
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 200px;
+}
+
+.benefits .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.benefits .card-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #d6b3ff;
+}
+
+.benefits .card-text {
+  font-size: 1rem;
+  color: #ddd;
+}
+
+
+/* ================================
+   SECCIÓN DESARROLLADORES
+================================ */
+.developers {
+  background: #2c1f38;
+  color: #f5f5f5;
+  padding: 80px 20px;
+}
+
+.developers h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  font-weight: bold;
+  color: #e3cfff;
+}
+
+.developers .card {
+  background: #111111cd;
+  color: #f5f5f5;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.developers .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+}
+
+.developers .card img {
+  height: 350px;
+  object-fit: cover;
+  border-bottom: 4px solid #3e1a4e;
+}
+
+.developers .card-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #d6b3ff;
+}
+
+.developers .card-text {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.card {
+  max-width: 350px;   /* ancho máximo elegante */
+  max-height: 480px;  /* altura total de la tarjeta */
+  border-radius: 16px; /* bordes más modernos */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* sombra suave */
+  overflow: hidden;   /* evita que se desborde */
+}
+
+.card-img-top {
+  height: 280px;      /* altura fija de la imagen */
+  object-fit: cover;  /* recorte moderno */
+}
+
+.card-body {
+  height: 200px;      /* espacio uniforme para texto/botones */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  /* Opcional: centra el contenido verticalmente */
 }

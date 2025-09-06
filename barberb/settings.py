@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'admin_module',
     'services_module',
     'barber_module',
-    'login_module.apps.LoginModuleConfig',
+    'login_module',
     'widget_tweaks',
     'calendar_module',
     'workflows',
@@ -76,6 +76,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'core.middleware.CurrentRolMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -151,7 +152,7 @@ TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, BarberosView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView,CrearCitaFormView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, LogoutView, PerfilUsuarioView, EditarPerfilView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView
 
 from django.contrib.auth.views import LogoutView
 
@@ -11,9 +11,9 @@ from . import views
 app_name = 'admin_module'
 
 urlpatterns = [
-    path('', HomeadminView.as_view(), name='admin_main'),
+    path('', HomeadminView.as_view(), name='main'),
     path('citas/', CitasView.as_view(), name='citas'),
-    path('barberos/', BarberosView.as_view(), name='barberos'),
+    path('collaborators/', CollapsView.as_view(), name='collabs'),
     path('barberos/vinculation/', CreateVinculationView.as_view(), name='vinculation_request'),
     path('barberos/vinculation/eliminar/<int:pk>/', VinculationDeleteView.as_view(), name='vinculation_delete'),
     path('servicios/', ServiciosView.as_view(), name='servicios'),
@@ -21,25 +21,29 @@ urlpatterns = [
     path('reportes/', ReportesView.as_view(), name='reportes'),
     path('seguridad/', SeguridadView.as_view(), name='seguridad'),
     path('soporte/', SoporteView.as_view(), name='soporte'),
-    path('contenidos/', ContenidosView.as_view(), name='contenidos'),
+    path('establecimiento/', ContenidosView.as_view(), name='establecimiento'),
     path('barberos/<int:barbero_id>/calendario/', CalendarioBarberoView.as_view(), name='calendario_barbero'),
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
     path('producto/agregar/', ProductCreateView.as_view(), name='producto_create'),
     path('producto/editar/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
     path('producto/eliminar/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='login_module:login'), name='logout'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
     path('citas/editar-rapido/<int:pk>/', EditarBarberoEstadoView.as_view(), name='editar_barbero_estado'),
-    path('crear_cita_form/', CrearCitaFormView.as_view(), name='crear_cita_form'),  # para cargar
-    path('crear_cita/', CrearCitaRapidaView.as_view(), name='crear_cita'),  # para guardar
-    path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para guardar
+    path('crear_cita_form/', CrearCitaRapidaView.as_view(), name='crear_cita'),  # para cargar y guardar una cita
+    path('cancelar-cita/', cancelar_cita, name='cancelar-cita'),  # para cancelar una cita
     path('solicitudes/barberos/', AdminSolicitudesListView.as_view(), name='admin_solicitudes_list'),
     path('solicitudes/barberos/<int:pk>/', AdminSolicitudesDetailView.as_view(), name='admin_solicitud_detalle'),
     path('servicios/', views.ServiciosView.as_view(), name='servicios'),
     path('servicio/agregar/', views.agregar_servicio, name='agregar_servicio'),
     path('servicio/editar/<int:id>/', views.editar_servicio, name='editar_servicio'),
     path('servicio/eliminar/<int:id>/', views.eliminar_servicio, name='eliminar_servicio'),
+    path('solicitudes/', BarberRequestListView.as_view(), name='barber_solicitudes_list'),
+    path('solicitudes/validate/<int:pk>/<int:value>/', BarberValidateVinculation.as_view(), name='barber_vinculation_validate'),
+    path('solicitudes/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle'),
+    path('solicitudes/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero')
+
 
 ]   

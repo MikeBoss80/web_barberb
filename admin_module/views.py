@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
+from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView, DetailView
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
@@ -15,19 +15,15 @@ from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm
+from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm, BarberRequestForm
 from django.views.generic.edit import FormView
 from collections import defaultdict
 from admin_module.models import Category 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-
-
+from workflows.models import FlowInstance, FlowStatus
 from admin_module.utils.mixins import CitasQuerysetMixin
-
-
-
+import logging
 
 
 class HomeadminView(BreadcrumbMixin, TemplateView):
@@ -46,7 +42,7 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
         perfil=Profile.objects.get(user=self.request.user)
         establecimiento = perfil.establishment
 
-        today=timezone.localtime().date()
+        today=timezone.now().date()
 
         #Citas del dia
         citas_hoy=ServiceDate.objects.filter(
@@ -107,7 +103,12 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
 
     # Validación: solo los usuarios en el grupo 'Administrador' pueden acceder
     def test_func(self):
-        return self.request.user.groups.filter(name='Administrador').exists()
+        User = self.request.user
+        return (
+            User.groups.filter(name='Administrador').exists() or
+            User.groups.filter(name='Barbero').exists() or 
+            User.groups.filter(name='Cliente').exists()
+        )       
 
     # Redirección si no tiene permiso
     def handle_no_permission(self):
@@ -120,55 +121,60 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
     # Contexto que se pasa a la plantilla
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # Obtener el usuario actual
         user = self.request.user
+        establishment = None
+        rol = self.request.session.get('current_role')
 
+
+        # ADMINISTRADOR
         # Buscar el establecimiento que administra este usuario
-        try: 
-            establecimiento = Establishment.objects.get(id_admin=user)
-        except Establishment.DoesNotExist:
-            establecimiento = None
+          # ADMINISTRADOR
+        if rol == 'Administrador':
+            try:
+                establecimiento = Establishment.objects.get(id_admin=user)
+                citas = ServiceDate.objects.select_related(
+                    'service', 'service__establishment', 'barber', 'customer'
+                ).filter(service__establishment=establecimiento)
+            except Establishment.DoesNotExist:
+                pass
 
-        # Si el establecimiento existe, filtramos las citas por ese establecimiento
-        if establecimiento:
-            # select_related permite hacer joins para mejorar eficiencia en las relaciones FK
-            citas=ServiceDate.objects.select_related(
-                'service',                # FK a EstablishmentService
-                'service__establishment',# FK a Establishment
-                'barber',                # FK a User (barbero)
-                'customer'               # FK a User (cliente)
-            ).filter(service__establishment=establecimiento)
-        else:
-            citas = ServiceDate.objects.none()# Si no administra ningún establecimiento, no ve citas
+        # BARBERO
+        elif rol == 'Barbero':
+            establecimiento = getattr(user.profile, 'establishment_id', None)
+            if establecimiento:
+                citas = ServiceDate.objects.select_related(
+                    'service', 'service__establishment', 'barber', 'customer'
+                ).filter(service__establishment=establecimiento, barber=user)
 
-        # Agregar las citas filtradas al contexto
+        # CLIENTE
+        elif rol == 'Cliente':
+            citas = ServiceDate.objects.select_related(
+                'service', 'service__establishment', 'barber', 'customer'
+            ).filter(customer=user)
+
+        # Agregar citas al contexto
         context['dates'] = citas
 
-        # Obtener los barberos que pertenecen al mismo establecimiento (usando profile si aplica)
-        context['barberos'] = User.objects.filter(
-            groups__name='Barbero', 
-            profile__establishment=establecimiento
+        # Mostrar barberos si es administrador con establecimiento
+        if rol == 'Administrador' and establecimiento:
+            context['barberos'] = User.objects.filter(
+                groups__name='Barbero',
+                profile__establishment=establecimiento
             )
+        else:
+            context['barberos'] = None
 
-        # resumen de estado de las citas
-        resumen = {
-            'total_dates': len(context['dates']),
-            'completadas': len([c for c in context['dates'] if c.status == 'Completada']),
-            'agendadas': len([c for c in context['dates'] if c.status == 'Agendada']),
-            'canceladas': len([c for c in context['dates'] if c.status == 'Cancelada']),
+        # Resumen de citas
+        context['resumen'] = {
+            'total_dates': citas.count(),
+            'completadas': citas.filter(status='Completada').count(),
+            'agendadas': citas.filter(status='Agendada').count(),
+            'canceladas': citas.filter(status='Cancelada').count(),
         }
 
-        # Pasar resumen y fecha actual al contexto
-        context['resumen'] = resumen
-        context['total_dates'] = date.today()
-
+        context['fecha_actual'] = date.today()
         return context
-    
-    context_object_name = 'dates'
-
-    def get_queryset(self):
-        return self.get_citas_queryset()
 
 def cancelar_cita(request):
     if request.method == "POST":
@@ -200,16 +206,16 @@ class CrearCitaRapidaView(CreateView):
         form.instance.price_total = form.instance.service.service.price_service
         return super().form_valid(form)
     
-class CrearCitaFormView(View):
-     def get(self, request, *args, **kwargs):
-        form = ServiceDateForm
-        return render(request, 'partials/form_crear_cita.html', {'form': form})
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request # Pasar el request al formulario    
+        return kwargs
     
-class BarberosView(BreadcrumbMixin, TemplateView):  
-     template_name= 'barberos/barberos.html'
+class CollapsView(BreadcrumbMixin, TemplateView):  
+     template_name= 'collabs/collabs.html'
      
      def get_breadcrumb(self):
-        return [{'label': 'Barberos', 'url': reverse('admin_module:barberos')}]
+        return [{'label': 'Colaboradores', 'url': reverse('admin_module:collabs')}]
 
      def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -222,9 +228,9 @@ class BarberosView(BreadcrumbMixin, TemplateView):
         return context
 
 class CreateVinculationView(SuccessMessageMixin, CreateView):
-    template_name = 'barberos/solicitudes_barbero.html'
+    template_name = 'collabs/solicitudes_barbero.html'
     form_class = VinculationForm
-    success_url = reverse_lazy('admin_module:barberos')
+    success_url = reverse_lazy('admin_module:collabs')
 
     def form_valid(self, form):
         documento = form.cleaned_data.get('document')
@@ -250,6 +256,88 @@ class VinculationDeleteView(DeleteView):
     model = FlowInstance
     success_url = reverse_lazy('admin_module:barberos')
      
+class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
+    model = BarberRequest
+    template_name ='requets/solicitudes_list.html' #plantilla html
+    success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
+    context_object_name = 'solicitudes' #nombre variable en el template
+    paginate_by = 10 #paginar de 10
+
+    def get_queryset(self):
+        #Filtra las solicitudes para que el barbero solo vea las suyas,
+        #ordenadas por fecha descendente.
+        return BarberRequest.objects.filter(barber=self.request.user).order_by('-fecha_solicitud')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_vinculation = FlowInstance.objects.filter(workflow_type_id=1,recipient=self.request.user).order_by('-created_at')
+        context['requests'] = request_vinculation
+
+        return context
+
+class BarberValidateVinculation(View):
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        value = self.kwargs['value']
+        solicitud = get_object_or_404(FlowInstance, pk=pk)
+
+        if bool(value):
+            new_status = get_object_or_404(FlowStatus, name='Confirmada')
+            vinculation_est = solicitud.created_by.admin_est.first()
+            print(vinculation_est)
+            self.request.user.profile.establishment = vinculation_est
+            profile = self.request.user.profile
+            profile.establishment = vinculation_est
+            profile.save()
+        else:
+            new_status = get_object_or_404(FlowStatus, name='Cancelada')
+        # else:
+        #     messages.error(request, 'Acción no válida.')
+        #     return redirect('admin_module:barberos')  # Ajusta el nombre de redirección
+        solicitud.status = new_status
+        solicitud.save()
+
+        # messages.success(request, f'Solicitud actualizada a {new_status.name}')
+        return redirect('admin_module:barber_solicitudes_list')
+
+class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
+    model = BarberRequest
+    template_name = 'requets/solicitudes_detail.html'
+    context_object_name = 'solicitud'
+
+    def get_queryset(self):
+        """
+        Asegura que el barbero solo pueda ver sus propias solicitudes.
+        """
+        return BarberRequest.objects.filter(barber=self.request.user)
+
+class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
+
+    model = BarberRequest  # Modelo a crear
+    form_class = BarberRequestForm  # Formulario personalizado
+    template_name = 'requets/barber_request_form.html'  # HTML a renderizar
+    success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
+
+    def get_breadcrumb(self):
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero')}]
+
+
+    def form_valid(self, form):
+        """
+        Este método se ejecuta si el formulario es válido.
+        Aquí se asignan automáticamente el barbero y el establecimiento.
+        """
+        user = self.request.user  # Barbero autenticado
+
+        form.instance.barber = user  # Asigna el barbero automáticamente
+
+        # Asignar el establecimiento al que pertenece este barbero
+        # Si usas un modelo Profile, y allí está la relación con el establecimiento:
+        perfil = Profile.objects.get(user=user)
+        form.instance.establecimiento = perfil.establishment  # Asegúrate que esto esté definido en Profile
+
+        return super().form_valid(form)
+    
 class CalendarioBarberoView(View):
     def get(self, request, barbero_id):
         # Aquí podrías cargar datos específicos del barbero, por ahora lo haremos estático
@@ -260,10 +348,30 @@ class CalendarioBarberoView(View):
         return render(request, 'calendario_barbero.html', context)
 
 # Vista para mostrar servicios
-class ServiciosView(View):
-    def get(self, request):
-        servicios = Service.objects.all().select_related('category')
-        return render(request, 'admin_module/servicios.html', {'servicios': servicios})
+class ServiciosView(BreadcrumbMixin, TemplateView):
+    template_name = 'admin_module/servicios.html'
+
+    def get_breadcrumb(self):
+        return [{'label': 'Productos & Servicios', 'url': reverse('admin_module:servicios')}]
+    
+    
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # Obtienes el establecimiento de ese usuario admin
+        establecimiento = Establishment.objects.get(id_admin=user)
+
+        # Traer solo los servicios relacionados al establecimiento por la tabla intermedia
+        servicios = (
+            Service.objects.filter(establishmentservice__establishment=establecimiento)
+            .select_related('category')
+            .distinct()
+        )
+
+        context['servicios'] = servicios
+        return context
 
 # Agregar servicio
 def agregar_servicio(request):
@@ -295,6 +403,7 @@ def editar_servicio(request, id):
     'form': form,
     'action_url': reverse('admin_module:editar_servicio', args=[servicio.id])
 })
+
 # Eliminar servicio
 def eliminar_servicio(request, id):
     servicio = get_object_or_404(Service, id=id)
@@ -304,7 +413,7 @@ def eliminar_servicio(request, id):
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
     def get_breadcrumb(self):
-        return [{'label': 'Contenidos', 'url': reverse('admin_module:contenidos')}]
+        return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento')}]
      
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -329,7 +438,7 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
 
         if form.is_valid():
             form.save()
-            return redirect('/admin_module/contenidos/')  # o el name de tu url para esta vista
+            return redirect('/admin_module/establecimiento/')  # o el name de tu url para esta vista
 
         # Si hay errores, recarga la página con el mismo contexto
         context = self.get_context_data(instance=establishment)
@@ -349,7 +458,6 @@ class InventarioView(BreadcrumbMixin, TemplateView):
 
 class InventarioListView(ListView):
 
-    
     # product = Product
     template_name = 'inventario/inventario.html'
     
@@ -429,12 +537,12 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
 class LogoutView(BreadcrumbMixin, TemplateView):
     template_name='core/login.html'
 
-class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
+class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
     template_name = 'establecimiento/registro_est.html'
     form_class = CreateEstablishmentForm
 
     def get_success_url(self):
-        return '/admin_module/contenidos/'
+        return '/admin_module/establecimiento/'
 
     def form_valid(self, form):
         establishment=form.save(commit=False)
@@ -455,16 +563,20 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin , FormView):
 class DeleteEstablishmentView(DeleteView):
     
     def get_success_url(self):
-        return '/admin_module/contenidos/'
+        return '/admin_module/establecimiento/'
     
     def get_queryset(self):
         return Establishment.objects.filter(id_admin_id=self.request.user.id)
     
 #Solicitudes Barberos
-class AdminSolicitudesListView(LoginRequiredMixin, ListView):
+class AdminSolicitudesListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
     model = BarberRequest
     template_name = 'admin_module/solicitudes_list.html'
     context_object_name = 'solicitudes'
+
+    # Breadcrumb (navegación)
+    def get_breadcrumb(self):
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:admin_solicitudes_list')}]
 
     def get_queryset(self):
         """
@@ -494,3 +606,8 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
 def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')    
     
+    
+    
+    
+    
+

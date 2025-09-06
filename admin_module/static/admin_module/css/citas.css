@@ -1,55 +1,78 @@
 :root {
-  --primary-color: #3e1a4e;    /* Morado principal */
-  --hover-purple: #341742;     /* Morado oscuro para hover */
-  --danger-color: #dc3545;     /* Rojo Bootstrap */
-  --hover-danger: #b52a37;     /* Rojo más oscuro para hover */
-  --text-color: #333;          /* Color base de texto */
+  --primary-color: #3e1a4e;
+  /* Morado principal */
+  --hover-purple: #341742;
+  --danger-color: #dc3545;
+  --hover-danger: #b52a37;
+  --text-color: #333;
   --border-radius: 6px;
   --transition-speed: 0.3s;
   --font-size-btn: 0.9em;
+  --card-bg: #fff;
+  --card-border: #dcdcdc;
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 /* -----------------------------
-   Botón EDITAR (morado al hover)
+   Botones de Acción (Editar / Cancelar)
 ------------------------------ */
-.btn-editar {
-  background-color: transparent;
-  color: var(--primary-color);
+.btn-editar,
+.btn-cancelar {
   border: none;
-  padding: 0.4rem 0.9rem;
-  border-radius: var(--border-radius);
+  padding: 0.4rem 0.8rem;
   font-weight: 500;
   font-size: var(--font-size-btn);
+  border-radius: var(--border-radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  /* espacio entre icono y texto */
   transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Botón editar*/
+.btn-editar {
+  background-color: #cd72f5;
+  /* azul bootstrap */
+  color: #fff;
 }
 
 .btn-editar:hover {
-  background-color: var(--primary-color);
+  background-color: #5a2371;
+  /* azul más oscuro */
   color: #fff;
 }
 
-/* -----------------------------
-   Botón CANCELAR (rojo al hover)
------------------------------- */
+/* Botón cancelar - rojo */
 .btn-cancelar {
-  background-color: transparent;
-  color: var(--danger-color);
-  border: none;
-  padding: 0.4rem 0.9rem;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  font-size: var(--font-size-btn);
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  background-color: #dc3545;
+  /* rojo bootstrap */
+  color: #fff;
 }
 
 .btn-cancelar:hover {
-  background-color: var(--danger-color);
+  background-color: #a71d2a;
+  /* rojo más oscuro */
   color: #fff;
 }
 
-/* -----------------------------------
-   Botón principal (Agregar cita rápida)
------------------------------------- */
+/* Iconos visibles */
+.btn-editar i,
+.btn-cancelar i {
+  font-size: 1em;
+  transition: color var(--transition-speed);
+}
+
+/* Puedes cambiar el color del icono en hover si quieres */
+.btn-editar:hover i,
+.btn-cancelar:hover i {
+  color: #e6e6e6;
+}
+
+/* -----------------------------
+   Botón Principal (Agregar Cita)
+------------------------------ */
 .btn-primary {
   background-color: var(--primary-color) !important;
   border-color: var(--primary-color) !important;
@@ -63,16 +86,35 @@
   border-color: var(--hover-purple) !important;
 }
 
-/* ----------------------
-   Íconos dentro de botones
------------------------ */
-.btn-editar i,
-.btn-cancelar i {
-  margin-right: 4px;
-  transition: color var(--transition-speed);
+/* -----------------------------
+   Tarjetas informativas
+------------------------------ */
+.card.card-border-color {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease;
 }
 
-.btn-editar:hover i,
-.btn-cancelar:hover i {
+.card.card-border-color:hover {
+  transform: translateY(-2px);
+}
+
+.card.card-border-color .card-header {
+  background-color: var(--primary-color);
   color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.card.card-border-color .card-body h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.card.card-border-color i {
+  color: var(--primary-color);
 }

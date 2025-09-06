@@ -14,8 +14,8 @@
             <button type="submit">Registrarse</button>
         </form>
 
-        <p class="mt-3 legal">¿Ya tienes una cuenta? <a href="{% url 'login' %}">Iniciar sesión</a></p>
-        <p class="mt-3 legal">acepta<a href="{% url 'terminosycondiciones' %}">Terminos y Condiciones</a></p>
+        <p class="mt-3 legal">¿Ya tienes una cuenta? <a href="{% url 'login_module:login' %}">Iniciar sesión</a></p>
+        <p class="mt-3 legal">acepta<a href="{% url 'login_module:terminosycondiciones' %}">Terminos y Condiciones</a></p>
     </div>
 </div>
 {% endblock %}

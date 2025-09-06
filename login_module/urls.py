@@ -19,6 +19,9 @@ from login_module.views import (
     
 )
 
+app_name = 'login_module'
+
+
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('registro/administrador/', RegistroAdministradorView.as_view(), name='registroadministrador'),
