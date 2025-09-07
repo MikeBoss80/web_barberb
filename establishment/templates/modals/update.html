@@ -1,0 +1,55 @@
+<div class="modal fade" id="updEstablishmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Actualizar Establecimiento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formUpdateEstablishment" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" id="inputNombre" name="name_est" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" id="inputDireccion" name="address_est" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Ciudad</label>
+                        <input type="text" class="form-control" id="inputCiudad" name="city_est" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>País</label>
+                        <input type="text" class="form-control" id="inputPais" name="country_est" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Teléfono</label>
+                        <input type="tel" class="form-control" id="inputTelefono" name="phone_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Correo</label>
+                        <input type="email" class="form-control" id="inputCorreo" name="email_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Descripción</label>
+                        <textarea class="form-control" id="inputDescripcion" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Latitud</label>
+                        <input type="" class="form-control" id="inputLat" name="lat_est">
+                    </div>
+                    <div class="mb-3">
+                        <label>Longitud</label>
+                        <input type="" class="form-control" id="inputLng" name="lng_est">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn bg-primary-subtle">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

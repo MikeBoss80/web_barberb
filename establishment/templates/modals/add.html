@@ -1,0 +1,21 @@
+<div class="modal fade" id="addEstablishmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modal-body-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Nuevo Establecimiento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="form-modal-est" method="post" action="{% url 'establishment:add' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn bg-primary-subtle">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

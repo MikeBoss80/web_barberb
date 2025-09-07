@@ -1,0 +1,70 @@
+/* Management Tab Styles */
+.avatar-sm {
+    width: 40px;
+    height: 40px;
+}
+
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.btn-group .btn {
+    transition: all 0.2s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-1px);
+}
+
+.badge {
+    font-weight: 500;
+}
+
+/* Search and Filter Styles */
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Empty State Styles */
+.text-center .bi {
+    color: #ffffff;
+}
+
+/* Stats Cards Animation */
+.card-body i {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-body i {
+    transform: scale(1.1);
+}
+
+/* Table Row Hover Effect */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05) !important;
+}

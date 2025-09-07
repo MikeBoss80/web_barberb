@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Establecimientos{% endblock %}
+
+{% block content %}
+    <!-- Menú de Navegación -->
+    <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="tab-btn nav-link" data-url="{% url 'establishment:management' %}" data-tab="management" type="button" role="tab">
+                <i class="bi bi-briefcase-fill"></i> Gestión
+            </button>
+        </li>
+        <!-- TODO: Agregar las siguientes pestañas cuando estén implementadas 
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button"
+                role="tab">
+                <i class="bi bi-bar-chart-line-fill"></i> Reportes
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="configuracion-tab" data-bs-toggle="tab" data-bs-target="#configuracion"
+                type="button" role="tab">
+                <i class="bi bi-gear-wide-connected"></i> Configuración
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab">
+                <i class="bi bi-person-video2"></i> Perfil
+            </button>
+        </li> -->
+    </ul>
+
+    <div id="tab-content">
+        {% block establishment_content %}
+            <div class="welcome-establishment">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-5">
+                                <i class="bi bi-shop text-info mb-3" style="font-size: 3rem;"></i>
+                                <h2 class="card-title text-info mb-4">¡Bienvenido al Panel de Establecimientos!</h2>
+                                <p class="card-text text-muted mb-4">Administra y controla todos los aspectos de tus establecimientos desde un solo lugar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 text-center mb-4">
+                                        <div class="feature-box">
+                                            <i class="bi bi-briefcase-fill text-info mb-3" style="font-size: 2.5rem;"></i>
+                                            <h5 class="text-info">Gestión</h5>
+                                            <p class="text-muted small">
+                                                Administra la información completa de tus establecimientos: 
+                                                ubicaciones, datos de contacto, servicios disponibles y más. 
+                                                Crea, edita o elimina establecimientos de manera sencilla.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-4">
+                                        <div class="feature-box">
+                                            <i class="bi bi-bar-chart-line-fill text-secondary mb-3" style="font-size: 2.5rem;"></i>
+                                            <h5 class="text-secondary">Reportes</h5>
+                                            <p class="text-muted small">
+                                                Visualiza estadísticas detalladas de rendimiento, 
+                                                análisis de clientes y métricas de negocio. 
+                                                Genera informes personalizados para tomar decisiones informadas.
+                                                <span class="badge bg-warning text-dark ms-2">Próximamente</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-4">
+                                        <div class="feature-box">
+                                            <i class="bi bi-gear-wide-connected text-secondary mb-3" style="font-size: 2.5rem;"></i>
+                                            <h5 class="text-secondary">Configuración</h5>
+                                            <p class="text-muted small">
+                                                Personaliza los ajustes de cada establecimiento, 
+                                                configura horarios de atención, políticas de servicio 
+                                                y preferencias del sistema.
+                                                <span class="badge bg-warning text-dark ms-2">Próximamente</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="d-flex justify-content-center">
+                        <p class="text-muted">
+                            <i class="bi bi-arrow-up"></i> 
+                            Selecciona una pestaña en el menú superior para comenzar
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+
+    <link href="{% static 'css/management.css' %}" rel="stylesheet">
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/tabs/management.js' %}"></script>
+
+{% endblock %}

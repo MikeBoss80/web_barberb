@@ -1,0 +1,21 @@
+<div class="modal fade" id="delEstablishment" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formEliminarEst" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar <strong id="labelEstName"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn bg-primary-subtle">Eliminar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

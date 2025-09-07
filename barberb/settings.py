@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'calendar_module',
     'workflows',
     'login_auth',
+    'establishment',
     ]
 
 
