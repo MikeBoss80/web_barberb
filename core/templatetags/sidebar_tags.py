@@ -38,5 +38,7 @@ def modules_sidebar(context):
     return [
         ('services_module:services_main', 'globe-americas' , 'Reservar'),
         ('admin_module:citas','calendar2-date-fill','Citas'),
+        ('admin_module:soporte','info-circle','Soporte'),
+
 
     ]

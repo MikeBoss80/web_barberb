@@ -6,7 +6,7 @@ from django.contrib.auth.views import LogoutView
 app_name = 'services_module'
 
 urlpatterns = [
-   path('map', MapServicesView.as_view(), name='map_services'),
+    path('map', MapServicesView.as_view(), name='map_services'),
     path('', HomeServicesView.as_view(), name='services_main'),
     path('create/', ServiceDateCreateView.as_view(), name='create_service_date'),
     path('getplacesbysearch/', getPlacesBySearch, name='getplacesbysearch'),

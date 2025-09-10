@@ -27,7 +27,7 @@ from datetime import datetime, timedelta
 
 class HomeServicesView(BreadcrumbMixins, TemplateView):
     """Vista Principal Modulo Services"""
-    template_name = 'services_module/main.html'
+    template_name = 'services_module/service_main.html'
     login_url = '/login_module/login/'
 
     def get_breadcrumb(self):
@@ -42,9 +42,7 @@ class HomeServicesView(BreadcrumbMixins, TemplateView):
         # 2 Preparar datos de cada establecimiento
         establishments_data = []
         for est in establishments:
-            services = Service.objects.filter(establishmentservice__establishment_id=est).annotate(
-            duration_minutes=ExpressionWrapper(F('duration') / 60.0, output_field=FloatField())
-            )
+            services = EstablishmentService.objects.filter(establishment=est).select_related("service")
             grupo =Group.objects.get(name="Barbero")
             barbers = User.objects.filter(
                 groups=grupo,
@@ -59,7 +57,15 @@ class HomeServicesView(BreadcrumbMixins, TemplateView):
                 'address': est.address_est,
                 'city': est.city_est,
                 'image': est.img_est if est.img_est else '/static/img/default_barber.jpg',
-                'services': list(services.values('id', 'name_service', 'price_service', 'duration_minutes')),
+                'services':[
+                    {
+                        'id': s.id,  # 👈 ID correcto: EstablishmentService
+                        'name_service': s.service.name_service,
+                        'price_service': s.service.price_service,
+                        'duration_minutes': s.service.duration,
+                    }
+                    for s in services
+                ],
                 'barbers': list(barbers.values('id', 'first_name', 'last_name', 'profile__qa_average')),
             })
 
@@ -85,7 +91,7 @@ class ServiceDateCreateView(LoginRequiredMixin, CreateView):
     model = ServiceDate
     form_class = ServiceDateForm
     template_name = 'services_module/confirm_appointment.html'
-    success_url = reverse_lazy('services_module:citas_cliente')  # Redirige a ver las citas del cliente
+    success_url = reverse_lazy('admin_module:citas')  # Redirige a ver las citas del cliente
 
     def get_form_kwargs(self):
         """
@@ -100,16 +106,16 @@ class ServiceDateCreateView(LoginRequiredMixin, CreateView):
         """
         Si el formulario es válido, guarda la cita y muestra mensaje de éxito.
         """
-        # ✅ Asigna el precio automáticamente según el servicio seleccionado
+        #Asigna el precio automáticamente según el servicio seleccionado
         form.instance.price_total = form.instance.service.service.price_service
 
 
-        # ✅ Asigna un comentario por defecto si deseas
+        #Asigna un comentario por defecto si deseas
         form.instance.comments = "Agendada desde el portal."
         response = super().form_valid(form)
-        messages.success(self.request, "✅ ¡Tu cita ha sido agendada exitosamente!")
+        messages.success(self.request, "¡Tu cita ha sido agendada exitosamente!")
         
-        print("📌 Creando cita:")
+        print("Creando cita:")
         print(f"Cliente: {form.instance.customer}")
         print(f"Barbero: {form.instance.barber}")
         print(f"Servicio: {form.instance.service}")
@@ -124,7 +130,7 @@ class ServiceDateCreateView(LoginRequiredMixin, CreateView):
         """
         print(form.errors)
 
-        messages.error(self.request, "❌ Hubo un error al agendar tu cita. Por favor revisa los datos.")
+        messages.error(self.request, "Hubo un error al agendar tu cita. Por favor revisa los datos.")
         print("Errores en el formulario de creación de cita:", form.errors)
         return super().form_invalid(form)
     
