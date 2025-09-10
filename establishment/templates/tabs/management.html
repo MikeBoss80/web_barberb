@@ -1,0 +1,198 @@
+{% block establishment_content %}
+{% load static %}
+    <!-- Pestaña de Gestión -->
+    <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="card-title mb-1">
+                                    <i class="bi bi-shop"></i> Mis Establecimientos
+                                </h4>
+                                <p class="card-text text-muted mb-0">Administra y controla todos tus establecimientos</p>
+                            </div>
+                            <button class="btn  bg-primary-subtle btn-md" data-bs-toggle="modal" data-bs-target="#addEstablishmentModal">
+                                <i class="bi bi-plus-circle me-2"></i>Nuevo Establecimiento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building-check text-info" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2 mb-0">{{ establecimientos|length }}</h5>
+                        <p class="card-text text-muted small">Establecimientos Activos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-geo-alt text-info" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2 mb-0">{{ establecimientos|length }}</h5>
+                        <p class="card-text text-muted small">Ubicaciones Registradas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-telephone text-info" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2 mb-0">{% for est in establecimientos %}{% if est.phone_est %}1{% endif %}{% empty %}0{% endfor %}</h5>
+                        <p class="card-text text-muted small">Con Teléfono</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-envelope text-info" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2 mb-0">{% for est in establecimientos %}{% if est.email_est %}1{% endif %}{% empty %}0{% endfor %}</h5>
+                        <p class="card-text text-muted small">Con Email</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Table Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="bi bi-table me-2"></i>Lista de Establecimientos
+                    </h6>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="tablaEstablecimientos">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="border-0">
+                                    <i class="bi bi-building me-1"></i>Establecimiento
+                                </th>
+                                <th class="border-0">
+                                    <i class="bi bi-geo-alt me-1"></i>Ubicación
+                                </th>
+                                <th class="border-0">
+                                    <i class="bi bi-telephone me-1"></i>Contacto
+                                </th>
+                                <th class="border-0">
+                                    <i class="bi bi-info-circle me-1"></i>Estado
+                                </th>
+                                <th class="border-0 text-center">
+                                    <i class="bi bi-gear me-1"></i>Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for est in establecimientos %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-info rounded-circle d-flex align-items-center justify-content-center me-3">
+                                            <i class="bi bi-shop text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ est.name_est }}</h6>
+                                            {% if est.description %}
+                                                <small class="text-muted">{{ est.description|truncatewords:5 }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="fw-medium">{{ est.city_est }}, {{ est.country_est }}</div>
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt-fill me-1"></i>{{ est.address_est }}
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        {% if est.phone_est %}
+                                            <div class="mb-1">
+                                                <i class="bi bi-telephone-fill text-info me-1"></i>
+                                                <small>{{ est.phone_est }}</small>
+                                            </div>
+                                        {% endif %}
+                                        {% if est.email_est %}
+                                            <div>
+                                                <i class="bi bi-envelope-fill text-info me-1"></i>
+                                                <small>{{ est.email_est|truncatewords:2 }}</small>
+                                            </div>
+                                        {% endif %}
+                                        {% if not est.phone_est and not est.email_est %}
+                                            <span class="text-muted">Sin contacto</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Activo</span>
+                                    {% if est.lat_est and est.lng_est %}
+                                        <br><small class="text-muted"><i class="bi bi-geo me-1"></i>Geoubicado</small>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm bg-warning btnActualizarEst" 
+                                                title="Editar establecimiento"
+                                                data-id="{{ est.id }}"
+                                                data-nombre="{{ est.name_est }}" 
+                                                data-direccion="{{ est.address_est }}"
+                                                data-ciudad="{{ est.city_est }}" 
+                                                data-pais="{{ est.country_est }}"
+                                                data-telefono="{{ est.phone_est }}" 
+                                                data-email="{{ est.email_est }}"
+                                                data-descripcion="{{ est.description }}" 
+                                                data-lat="{{ est.lat_est }}"
+                                                data-lng="{{ est.lng_est }}" 
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updEstablishmentModal">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm bg-danger btnDelEstablishment" 
+                                                title="Eliminar establecimiento"
+                                                data-id="{{ est.id }}"
+                                                data-name="{{ est.name_est }}" 
+                                                data-bs-target="#delEstablishment">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-building" style="font-size: 3rem;"></i>
+                                        <h5 class="mt-3">No hay establecimientos registrados</h5>
+                                        <p>Comienza agregando tu primer establecimiento</p>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEstablishmentModal">
+                                            <i class="bi bi-plus-circle me-2"></i>Agregar Establecimiento
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% include 'modals/add.html' %}
+        {% include 'modals/update.html' %}
+        {% include 'modals/delete.html' %}
+
+    </div>
+{% endblock %}
