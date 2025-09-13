@@ -5,7 +5,7 @@ from django.conf import settings
 from django.views import View
 from urllib.request import urlopen, Request
 import json
-from datetime import timedelta
+from datetime import timedelta,datetime
 from django.contrib.auth.models import User, Group
 from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
 from .utils.mixins import BreadcrumbMixins
@@ -17,16 +17,16 @@ from django.utils import timezone
 from admin_module.models import Establishment, EstablishmentService, Service , Schedule, ScheduleAssignment
 from services_module.models import ServiceDate
 from admin_module.utils.slots import generate_available_slots
-from django.db.models import F, ExpressionWrapper, FloatField
+from django.db.models import F, ExpressionWrapper, FloatField,Prefetch
 from services_module.models import ServiceDate
 from admin_module.forms import ServiceDateForm
 from datetime import datetime, timedelta
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 # Create your views here.
 
 class HomeServicesView(BreadcrumbMixins, TemplateView):
-    """Vista Principal Modulo Services"""
     template_name = 'services_module/service_main.html'
     login_url = '/login_module/login/'
 
@@ -36,46 +36,75 @@ class HomeServicesView(BreadcrumbMixins, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
   
-        # 1️ Obtener establecimientos activos
-        establishments = Establishment.objects.filter(active=True)
+        # Obtener establecimientos activos con sus servicios
+        establishments = Establishment.objects.filter(active=True).prefetch_related(
+            Prefetch(
+                'establishmentservice_set',
+                queryset=EstablishmentService.objects.select_related('service').filter(service__active=True),
+                to_attr='est_services'
+            )
+        )
 
-        # 2 Preparar datos de cada establecimiento
+        # Obtener el grupo de barberos
+        grupo = Group.objects.get(name="Barbero")
+        
         establishments_data = []
         for est in establishments:
-            services = EstablishmentService.objects.filter(establishment=est).select_related("service")
-            grupo =Group.objects.get(name="Barbero")
+            # Obtener barberos de este establecimiento
             barbers = User.objects.filter(
                 groups=grupo,
                 is_active=True,
                 profile__establishment=est,
-            )
+            ).select_related('profile')
 
+            # Preparar servicios del establecimiento
+            services_data = []
+            for est_service in est.est_services:
+                services_data.append({
+                    'establishment_service_id': est_service.id,  # ✅ Este es el ID que necesitamos para ServiceDate
+                    'service_id': est_service.service.id,  # ID del servicio base
+                    'name_service': est_service.service.name_service,
+                    'price_service': float(est_service.service.price_service),
+                    'duration_minutes': est_service.service.duration,
+                    'description_service': est_service.service.description_service,
+                })
+
+            # Preparar barberos
+            barbers_data = []
+            for barber in barbers:
+                barbers_data.append({
+                    'id': barber.id,
+                    'first_name': barber.first_name,
+                    'last_name': barber.last_name,
+                    'qa_average': barber.profile.qa_average if hasattr(barber, 'profile') else 0.0
+                })
+
+            # Datos del establecimiento
             establishments_data.append({
-                
                 'id': est.id,
                 'name': est.name_est,
                 'address': est.address_est,
                 'city': est.city_est,
-                'image': est.img_est if est.img_est else '/static/img/default_barber.jpg',
-                'services':[
-                    {
-                        'id': s.id,  # 👈 ID correcto: EstablishmentService
-                        'name_service': s.service.name_service,
-                        'price_service': s.service.price_service,
-                        'duration_minutes': s.service.duration,
-                    }
-                    for s in services
-                ],
-                'barbers': list(barbers.values('id', 'first_name', 'last_name', 'profile__qa_average')),
+                'country': est.country_est,
+                'phone': est.phone_est,
+                'email': est.email_est,
+                'description': est.description,
+                'lat': float(est.lat_est),
+                'lng': float(est.lng_est),
+                'image': est.img_est.url if est.img_est else '/static/img/default_barber.jpg',
+                'qa_average': est.qa_average_est,
+                'services': services_data,
+                'barbers': barbers_data,
             })
 
-        # 3️ Incluir en el contexto
+        # Pasar datos al template
         context['establishments_data'] = establishments_data
+        context['establishments_data_json'] = json.dumps(establishments_data, cls=DjangoJSONEncoder)
         
-        # Simulación de slots: genera de 9:00 a 17:00 cada hora
+        # Horarios disponibles
         today = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0)
         slots = []
-        for i in range(9):  # 9 slots de 1 hora
+        for i in range(9):
             slot_time = today + timedelta(hours=i)
             slots.append(slot_time.strftime("%H:%M"))
         context['available_slots'] = slots    

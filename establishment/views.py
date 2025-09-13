@@ -63,3 +63,11 @@ class DeleteEstablishmentView(DeleteView):
     
     def get_queryset(self):
         return Establishment.objects.filter(id_admin_id=self.request.user.id)
+ 
+class ProfileEstablishmentView(TemplateView):
+    template_name= 'tabs/profile_est.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['establecimientos'] = self.request.user.admin_est.all()
+        return context
+    

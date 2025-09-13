@@ -4,7 +4,8 @@ from establishment.views import (
     EstablishmentManagementView, 
     CreateEstablishmentView, 
     DeleteEstablishmentView, 
-    UpdateEstablishmentView
+    UpdateEstablishmentView,
+    ProfileEstablishmentView
 )
 
 """//Usamos Class-Based View."""
@@ -16,4 +17,5 @@ urlpatterns = [
     path('management/add/', CreateEstablishmentView.as_view(), name='add'),
     path('management/update/<int:pk>/', UpdateEstablishmentView.as_view(), name='update'),
     path('management/delete/<int:pk>/', DeleteEstablishmentView.as_view(), name='delete'),
+    path('profile/', ProfileEstablishmentView.as_view(), name='profile_est'),
 ]   
