@@ -62,7 +62,7 @@ class Establishment(models.Model):
     description = models.CharField(max_length=100)
     lat_est = models.DecimalField(max_digits=9, decimal_places=6)
     lng_est = models.DecimalField(max_digits=9, decimal_places=6)
-    img_est = models.ImageField(upload_to="establishments/")
+    img_est = models.ImageField(upload_to="establishments/", null=True, blank=True)
     qa_average_est = models.FloatField(default=5.0)
     created_date = models.DateTimeField(auto_now_add=True, null=True)
     active = models.BooleanField(default=True)

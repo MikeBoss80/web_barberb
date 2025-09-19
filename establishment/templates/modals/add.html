@@ -1,21 +1,107 @@
+{# modals/add.html #}
+{% load static %}
+<!-- Modal Nuevo Establecimiento -->
 <div class="modal fade" id="addEstablishmentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content" id="modal-body-content">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">Nuevo Establecimiento</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
-            <form id="form-modal-est" method="post" action="{% url 'establishment:add' %}">
-                {% csrf_token %}
+
+            <form id="form-modal-est" method="post" enctype="multipart/form-data"
+                action="{% url 'establishment:add' %}">
                 <div class="modal-body">
-                    {{ form.as_p }}
+                    {% csrf_token %}
+
+                    {# Render campos uno por uno para controlar errores Online #}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">{{ form.name_est.label }}</label>
+                            {{ form.name_est }}
+                            <div class="invalid-feedback" id="error-name_est"></div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">{{ form.address_est.label }}</label>
+                            {{ form.address_est }} {# Tiene id="autocomplete" por el widget #}
+                            <div class="form-text">Busca la dirección y selecciona la sugerencia.</div>
+                            <div class="invalid-feedback" id="error-address_est"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.city_est.label }}</label>
+                            {{ form.city_est }}
+                            <div class="invalid-feedback" id="error-city_est"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.country_est.label }}</label>
+                            {{ form.country_est }}
+                            <div class="invalid-feedback" id="error-country_est"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.phone_est.label }}</label>
+                            {{ form.phone_est }}
+                            <div class="invalid-feedback" id="error-phone_est"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.email_est.label }}</label>
+                            {{ form.email_est }}
+                            <div class="invalid-feedback" id="error-email_est"></div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">{{ form.description.label }}</label>
+                            {{ form.description }}
+                            <div class="invalid-feedback" id="error-description"></div>
+                        </div>
+
+
+                        {# Hidden lat/lng fields (renderizados por el form) #}
+                        <div style="display:none;">
+                            {{ form.lat_est }}
+                            {{ form.lng_est }}
+                        </div>
+
+                        {# Mapa de confirmación (opcional, útil para precisión) #}
+                        <div class="col-12 mt-2">
+                            <div id="map"
+                                style="height: 240px; width: 100%; border: 1px solid #ddd; border-radius: 6px;">
+                            </div>
+                            <small class="text-muted">Puedes mover el pin para ajustar la ubicación.</small>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="alert alert-danger d-none" id="modal-nonfield-errors"></div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn bg-primary-subtle">Guardar</button>
+                    <button type="submit" class="btn btn-primary" id="submit-est-btn">
+                        <span id="submit-text">Guardar</span>
+                        <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"
+                            aria-hidden="true"></span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+    <div id="maps-config" data-api-key="{{ MAPS_APIKEY }}"></div>
 </div>
 
+<!-- Scripts para el mapa -->
+<script src="{% static 'js/map-establishment.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar el mapa cuando se abre el modal
+        $('#addEstablishmentModal').on('shown.bs.modal', function () {
+            if (typeof google !== 'undefined') {
+                initMap();
+            }
+        });
+    });
+</script>
