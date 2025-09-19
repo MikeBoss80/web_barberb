@@ -11,25 +11,19 @@
             <i class="bi bi-briefcase-fill"></i> Gestión
         </button>
     </li>
-    <!-- TODO: Agregar las siguientes pestañas cuando estén implementadas 
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button"
-                role="tab">
-                <i class="bi bi-bar-chart-line-fill"></i> Reportes
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="configuracion-tab" data-bs-toggle="tab" data-bs-target="#configuracion"
-                type="button" role="tab">
-                <i class="bi bi-gear-wide-connected"></i> Configuración
-            </button>
-        </li> -->
     <li class="nav-item" role="presentation">
         <button class="tab-btn nav-link" data-url="{% url 'establishment:profile_est' %}" data-tab="profile_est"
             type="button" role="tab">
             <i class="bi bi-person-video2"></i> Perfil
         </button>
     </li>
+    <!-- TODO: Agregar las siguientes pestañas cuando estén implementadas 
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button"
+            role="tab">
+            <i class="bi bi-bar-chart-line-fill"></i> Reportes
+        </button>
+    </li> -->
 </ul>
 
 <div id="tab-content">
@@ -109,14 +103,14 @@
 </div>
 
 <!-- Estilos -->
-<link href="{% static 'css/management.css' %}" rel="stylesheet">
-<link href="{% static 'css/profile_est.css' %}" rel="stylesheet">
+<link href="{% static 'establishment/css/management.css' %}" rel="stylesheet">
+<link href="{% static 'establishment/css/profile.css' %}" rel="stylesheet">
 
 <!-- Sweet Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Scripts propios -->
-<script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'js/tabs/management.js' %}"></script>
+<script src="{% static 'establishment/js/main.js' %}"></script>
+<script src="{% static 'establishment/js/tabs/management.js' %}"></script>
 
 {% endblock %}

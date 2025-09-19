@@ -34,7 +34,6 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     transition: var(--transition);
-    padding-top: 70px;
 }
 
 /* Header y Navegación */
