@@ -1,0 +1,224 @@
+/* ===================================
+   TEAM SECTION - MINIMALIST DESIGN
+   =================================== */
+
+:root {
+    --primary-color: #3e1a4e;
+    --secondary-color: #6c757d;
+    --light-bg: #f8f9fa;
+    --dark-text: #212529;
+    --header-purple: rgba(62, 26, 78, 0.85);
+    --header-accent: rgba(214, 179, 255, 0.9);
+    --white: #ffffff;
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-hover: rgba(0, 0, 0, 0.15);
+}
+
+/* Línea divisora de sección */
+.section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    margin: 0 auto;
+    opacity: 0.3;
+}
+
+/* Sección principal */
+.team-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    position: relative;
+}
+
+/* Título de la sección */
+.team-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+/* Línea divisora bajo el título */
+.title-divider {
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--header-accent));
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+/* Tarjetas del equipo */
+.team-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px var(--shadow-light);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(62, 26, 78, 0.05);
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 30px var(--shadow-hover);
+    border-color: rgba(62, 26, 78, 0.1);
+}
+
+/* Contenedor de imagen */
+.team-image-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+/* Imágenes de perfil circulares */
+.team-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--white);
+    box-shadow: 0 4px 15px rgba(62, 26, 78, 0.2);
+    transition: all 0.3s ease;
+}
+
+.team-card:hover .team-image {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(62, 26, 78, 0.3);
+}
+
+/* Badge de fundador */
+.founder-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: linear-gradient(135deg, var(--header-purple), var(--header-accent));
+    color: var(--white);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(62, 26, 78, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.founder-badge i {
+    font-size: 0.8rem;
+}
+
+/* Contenido de la tarjeta */
+.team-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Nombre del miembro */
+.team-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+/* Rol del miembro */
+.team-role {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* Línea divisora para fundadores */
+.founder-divider {
+    width: 70px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--header-accent), var(--primary-color));
+    margin: 0 auto;
+    border-radius: 1px;
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .team-title {
+        font-size: 2.2rem;
+    }
+    
+    .team-card {
+        height: auto;
+        min-height: 320px;
+        padding: 2rem 1.5rem;
+    }
+    
+    .team-image {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .team-name {
+        font-size: 1.3rem;
+    }
+    
+    .team-role {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-title {
+        font-size: 2rem;
+    }
+    
+    .team-card {
+        margin-bottom: 2rem;
+        padding: 2rem 1.5rem;
+    }
+    
+    .team-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .team-name {
+        font-size: 1.2rem;
+    }
+    
+    .team-role {
+        font-size: 0.95rem;
+    }
+    
+    .founder-badge {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.7rem;
+        top: -8px;
+        right: -8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .team-section {
+        padding: 3rem 0;
+    }
+    
+    .team-title {
+        font-size: 1.8rem;
+    }
+    
+    .title-divider {
+        width: 60px;
+    }
+}

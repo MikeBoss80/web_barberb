@@ -1,0 +1,89 @@
+<!-- Sección principal mejorada -->
+<section class="hero">
+    <div class="container-fluid">
+        <div class="row min-vh-100 align-items-center">
+            
+            <!-- Columna de contenido textual -->
+            <div class="col-lg-6 col-md-6 order-md-1 order-2">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Conecta tu barbería con el mundo digital
+                    </h1>
+                    <p class="hero-description">
+                        BarberB es la plataforma que revolucionará la forma en que los clientes 
+                        encuentran y reservan servicios en barberías. Únete a la transformación digital.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="{% url 'login_module:login' %}" class="btn btn-primary-hero">
+                            <i class="bi bi-rocket-takeoff me-2"></i>
+                            Comenzar ahora
+                        </a>
+                        <!-- <a href="#nosotros" class="btn btn-outline-hero">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Conocer más
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna del carrusel -->
+            <div class="col-lg-6 col-md-6 order-md-2 order-1">
+                <div class="hero-carousel-container">
+                    <div id="modernCarousel" class="carousel slide modern-carousel" data-bs-ride="carousel" data-bs-interval="4000">
+                        
+                        <!-- Indicadores modernos -->
+                        <div class="carousel-indicators modern-indicators">
+                            <button type="button" data-bs-target="#modernCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#modernCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#modernCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        </div>
+
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="carousel-image-wrapper">
+                                    <img src="/static/login_module/img/20.jpg" class="d-block w-100" alt="Estilo Clásico">
+                                    <div class="image-overlay"></div>
+                                </div>
+                                <div class="modern-caption">
+                                    <h5>Estilo Clásico</h5>
+                                    <p>Tradición y elegancia en cada corte</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="carousel-image-wrapper">
+                                    <img src="/static/login_module/img/1.jpg" class="d-block w-100" alt="Estilo Moderno">
+                                    <div class="image-overlay"></div>
+                                </div>
+                                <div class="modern-caption">
+                                    <h5>Estilo Moderno</h5>
+                                    <p>Tendencias actuales y looks frescos</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="carousel-image-wrapper">
+                                    <img src="/static/login_module/img/2.jpg" class="d-block w-100" alt="Experiencia Premium">
+                                    <div class="image-overlay"></div>
+                                </div>
+                                <div class="modern-caption">
+                                    <h5>Experiencia Premium</h5>
+                                    <p>Calidad y atención personalizada</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Controles modernos -->
+                        <button class="carousel-control-prev modern-control" type="button" data-bs-target="#modernCarousel" data-bs-slide="prev">
+                            <i class="bi bi-chevron-left"></i>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next modern-control" type="button" data-bs-target="#modernCarousel" data-bs-slide="next">
+                            <i class="bi bi-chevron-right"></i>
+                            <span class="visually-hidden">Siguiente</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

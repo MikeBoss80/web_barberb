@@ -1,0 +1,147 @@
+/* ================================
+   CSS ESPECÍFICO PARA LA SECCIÓN PRINCIPAL (HERO)
+================================ */
+
+/* Animaciones para elementos del hero */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para botones del hero */
+.hero .btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.hero .btn:hover::before {
+    left: 100%;
+}
+
+/* Efecto de partículas en el hero */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 25% 25%, rgba(214, 179, 255, 0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 75% 75%, rgba(142, 107, 175, 0.1) 0%, transparent 50%);
+    animation: particleFloat 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes particleFloat {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(30px, -30px) rotate(120deg); }
+    66% { transform: translate(-20px, 20px) rotate(240deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* Responsive para el título */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
+        line-height: 1.2;
+    }
+}
+
+/* Efecto de glassmorphism para elementos del hero */
+.hero .card, .hero .carousel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ================================
+   TÍTULO HERO - DISEÑO MINIMALISTA
+================================ */
+
+/* Título principal minimalista */
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: #3e1a4e;
+    margin-bottom: 32px;
+    text-shadow: none;
+    letter-spacing: -0.02em;
+    /* Diseño limpio y profesional */
+}
+
+/* Palabras destacadas con el mismo color */
+.hero-title .highlight {
+    color: #3e1a4e;
+    /* Removido gradiente y efectos - color uniforme */
+    background: none;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    background-clip: initial;
+    transition: none;
+    cursor: default;
+    /* Sin efectos hover - completamente estático */
+}
+
+/* ================================
+   EFECTOS ADICIONALES PARA EL HERO
+================================ */
+
+/* Efecto de hover mejorado para botones del hero */
+.hero .btn-primary-hero:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(62, 26, 78, 0.4);
+}
+
+/* Clase para efectos de hover dinámicos en botones */
+.hero .btn.btn-hover-effect {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(214, 179, 255, 0.3);
+}
+
+/* Animaciones de entrada para elementos */
+.hero .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.hero .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Efecto parallax para el contenido del hero */
+.hero-content {
+    transition: transform 0.1s ease-out;
+}
+
+/* Efectos de hover para el carrusel */
+.modern-carousel:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+}
+
+/* Partículas adicionales en hover del hero */
+.hero:hover::before {
+    animation-duration: 15s;
+}
