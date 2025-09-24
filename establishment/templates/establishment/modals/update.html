@@ -22,11 +22,11 @@
                     </div>
                     <div class="mb-3">
                         <label>Ciudad</label>
-                        <input type="text" class="form-control" id="inputCiudad" name="city_est" required>
+                        <input type="text" class="form-control inputCity" id="inputCiudadUpd" name="city_est" required>
                     </div>
                     <div class="mb-3">
                         <label>País</label>
-                        <input type="text" class="form-control" id="inputPais" name="country_est" required>
+                        <input type="text" class="form-control inputCountry" id="inputPaisUpd" name="country_est" required>
                     </div>
                     <div class="mb-3">
                         <label>Teléfono</label>
@@ -44,8 +44,8 @@
 
                     {# Hidden lat/lng fields (renderizados por el form) #}
                     <div style="display:none;">
-                        {{ form.lat_est }}
-                        {{ form.lng_est }}
+                        <input type="text" class="form-control inputLat" id="inputLatUpd" name="lat_est">
+                        <input type="text" class="form-control inputLng" id="inputLngUpd" name="lng_est">
                     </div>
 
                     {# Mapa de confirmación (opcional, útil para precisión) #}

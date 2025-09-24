@@ -130,59 +130,82 @@ function initializeManagementComponents() {
     });
 
     $('.btnActualizarEst').on('click', function () {
-        const id = $(this).data('id');
-        const nombre = $(this).data('nombre');
-        const direccion = $(this).data('direccion');
-        const ciudad = $(this).data('ciudad');
-        const pais = $(this).data('pais');
-        const telefono = $(this).data('telefono');
-        const email = $(this).data('email');
-        const descripcion = $(this).data('descripcion');
-        const lat = $(this).data('lat');
-        const lng = $(this).data('lng');
-
         // Llenar los campos del formulario
-        $('#establishment_id').val(id);
-        $('#inputNombre').val(nombre);
-        $('#inputDireccionUpd').val(direccion);
-        $('#inputCiudad').val(ciudad);
-        $('#inputPais').val(pais);
-        $('#inputTelefono').val(telefono);
-        $('#inputCorreo').val(email);
-        $('#inputDescripcion').val(descripcion);
-        $('#inputLat').val(lat);
-        $('#inputLng').val(lng);
+        $('#establishment_id').val($(this).data('id'));
+        $('#inputNombre').val($(this).data('nombre'));
+        $('#inputDireccionUpd').val($(this).data('direccion'));
+        $('#inputCiudadUpd').val($(this).data('ciudad'));
+        $('#inputPaisUpd').val($(this).data('pais'));
+        $('#inputTelefono').val($(this).data('telefono'));
+        $('#inputCorreo').val($(this).data('email'));
+        $('#inputDescripcion').val($(this).data('descripcion'));
+        $('#inputLatUpd').val(formatCoordinate($(this).data('lat')));
+        $('#inputLngUpd').val(formatCoordinate($(this).data('lng')));
 
-        $('#formUpdateEstablishment').attr('action', `./management/update/${id}/`);
+        $('#formUpdateEstablishment').attr('action', `./management/update/${$(this).data('id')}/`);
     });
 
     $('.btnDelEstablishment').on('click', function () {
-        var btn = $(this);
-        var id = btn.data('id');
-        var estName = btn.data('name');
-        $('#labelEstName').text(estName);
-        $('#formEliminarEst').attr('action', `./management/delete/${id}/`);
-
-        var modalEliminarEst = new bootstrap.Modal(document.getElementById('delEstablishment'));
-        modalEliminarEst.show();
+        $('#labelEstName').text($(this).data('name'));
+        $('#formEliminarEst').attr('action', `./management/delete/${$(this).data('id')}/`);
     });
 
-
-    // Lista de IDs de los modales que deben inicializar el mapa
+    //Variables globales para mantener el estado del formulario que se abre
+    let isMapApiLoaded = false;
+    let modalGlobal;
+    let currentInputAddress, currentInputLat, currentInputLng, currentInputCity, currentInputCountry;
     const modalIds = ['addEstablishmentModal', 'updEstablishmentModal'];
 
-    // Recorremos cada modal y le agregamos el mismo evento
+    function initializeFormVariables(modal) {
+        currentInputAddress = modal.querySelector('.inputDireccion').id;
+        currentInputCity = modal.querySelector('.inputCity').id;
+        currentInputCountry = modal.querySelector('.inputCountry').id;
+        currentInputLat = modal.querySelector('.inputLat').id;
+        currentInputLng = modal.querySelector('.inputLng').id;
+    }
+
+    function formatCoordinate(value) {
+        if (!value) return '';
+        const numValue = parseFloat(value.toString().replace(',', '.'));
+        return isNaN(numValue) ? '' : numValue.toFixed(6);
+    }
+
+    function parseCoordinate(value, defaultValue = 0) {
+        if (!value) return defaultValue;
+        const numValue = parseFloat(value.toString().replace(',', '.'));
+        return isNaN(numValue) ? defaultValue : numValue;
+    }
+
     modalIds.forEach(modalId => {
-        const modalEl = document.getElementById(modalId);
+        const modalMap = document.getElementById(modalId);
+        if (modalMap) {
+            // Agregar listeners para formateo automático de coordenadas
+            modalMap.addEventListener('shown.bs.modal', () => {
+                // Formatear campos de coordenadas cuando pierdan el foco
+                const latInput = modalMap.querySelector('.inputLat');
+                const lngInput = modalMap.querySelector('.inputLng');
+                
+                if (latInput) {
+                    latInput.addEventListener('blur', function() {
+                        this.value = formatCoordinate(this.value);
+                    });
+                }
+                
+                if (lngInput) {
+                    lngInput.addEventListener('blur', function() {
+                        this.value = formatCoordinate(this.value);
+                    });
+                }
+            });
 
-
-        if (modalEl) {
-            modalEl.addEventListener('shown.bs.modal', () => {
-                const mapDiv = modalEl.querySelector(".map");
-
-                // Sacar su id
-                if (mapDiv) {
-                    // Inicializar autocomplete si Google Maps ya cargó
+            modalMap.addEventListener('shown.bs.modal', () => {
+                modalGlobal = modalMap; //Aqui se asgina el modal actual a la variable global
+                initializeFormVariables(modalGlobal);
+                //Si los recursos del mapa ya se cargaron, solo iniciamos el mapa
+                if (isMapApiLoaded) {
+                    initMap();
+                } else {
+                    isMapApiLoaded = true;
                     fetch('http://127.0.0.1:8000/services_module/getmap/')
                         .then(response => {
                             if (response.ok) {
@@ -210,11 +233,11 @@ function initializeManagementComponents() {
                                         key: data.mapApiKey,
                                         v: "weekly"
                                     });
-                                    initMap(modalEl); // ⚠️ aquí puedes pasar modalId si quieres que distinga cuál modal abrió
+                                    initMap();
                                 });
                             }
                         });
-                }
+                } 
             });
         }
     });
@@ -223,25 +246,25 @@ function initializeManagementComponents() {
     let marker;
     let autocomplete;
 
-    async function initMap(infoModal) {
-        const idmap = infoModal.querySelector(".map").id;
-        const inputAddress = infoModal.querySelector('.inputDireccion').id;
+    async function initMap() {
         const { Map } = await google.maps.importLibrary("maps");
         const { Autocomplete, Place } = await google.maps.importLibrary("places");
         const { Geocoder } = await google.maps.importLibrary("geocoding");
+
         // Obtener las coordenadas iniciales (desde los campos ocultos si existen)
-        let initialLat = document.getElementById('id_lat_est').value || 4.628886;
-        let initialLng = document.getElementById('id_lng_est').value || -74.146605;
+        let initialLatValue = document.getElementById(currentInputLat).value || '4.628886';
+        let initialLngValue = document.getElementById(currentInputLng).value || '-74.146605';
+        let initialLat = parseCoordinate(initialLatValue, 4.628886);
+        let initialLng = parseCoordinate(initialLngValue, -74.146605);
         const defaultLocation = { lat: parseFloat(initialLat), lng: parseFloat(initialLng) };
 
         // Inicializar el mapa
-        map = new Map(document.getElementById(idmap), {
+        map = new Map(document.getElementById(modalGlobal.querySelector(".map").id), {
             center: defaultLocation,
             zoom: 15,
             mapTypeControl: true,
             streetViewControl: true,
             fullscreenControl: true
-
         });
 
         // Crear el marcador inicial
@@ -254,7 +277,7 @@ function initializeManagementComponents() {
 
         // Inicializar el autocompletado
         autocomplete = new Autocomplete(
-            document.getElementById(inputAddress),
+            document.getElementById(currentInputAddress),
             {
                 types: ['address', 'establishment'],
                 componentRestrictions: { country: 'CO' },
@@ -275,20 +298,19 @@ function initializeManagementComponents() {
             }
 
             // Actualizar el mapa y los campos
-            updateMapAndFields(place,inputAddress);
+            updateMapAndFields(place);
         });
 
         // Configurar los listeners del marcador y mapa
         setupMarkerListeners();
     }
 
-    function updateMapAndFields(place,inputAddress) {
+    function updateMapAndFields(place) {
         if (!place || !place.geometry) {
             console.log('No hay información de lugar disponible');
             return;
         }
 
-        // Centrar el mapa en el lugar seleccionado
         const location = place.geometry.location;
         map.setCenter(location);
         map.setZoom(17);
@@ -321,26 +343,29 @@ function initializeManagementComponents() {
             country = addressMap['country'] || '';
         }
 
-        // Actualizar campos del formulario
-        const autocompleteField = document.getElementById(inputAddress);
+        const autocompleteField = document.getElementById(currentInputAddress);
         if (autocompleteField) {
             autocompleteField.value = place.formatted_address || address;
         }
 
-        const cityField = document.getElementById('id_city_est');
+        const cityField = document.getElementById(currentInputCity);
         if (cityField) {
             cityField.value = city;
         }
 
-        const countryField = document.getElementById('id_country_est');
+        const countryField = document.getElementById(currentInputCountry);
         if (countryField) {
             countryField.value = country;
         }
 
-        // Actualizar coordenadas
+        // Actualizar coordenadas usando función helper
         if (location) {
-            document.getElementById('id_lat_est').value = location.lat();
-            document.getElementById('id_lng_est').value = location.lng();
+            const lat = location.lat();
+            const lng = location.lng();
+            
+            // Usar función helper para formato consistente
+            document.getElementById(currentInputLat).value = formatCoordinate(lat);
+            document.getElementById(currentInputLng).value = formatCoordinate(lng);
         }
 
         console.log('Campos actualizados:', {
@@ -360,9 +385,8 @@ function initializeManagementComponents() {
 
             const lat = position.lat();
             const lng = position.lng();
-
-            document.getElementById('id_lat_est').value = lat;
-            document.getElementById('id_lng_est').value = lng;
+            document.getElementById(currentInputLat).value = formatCoordinate(lat);
+            document.getElementById(currentInputLng).value = formatCoordinate(lng);
 
             // Usar la nueva API Place para obtener los detalles de la ubicación
             const { Place } = await google.maps.importLibrary("places");
@@ -391,7 +415,7 @@ function initializeManagementComponents() {
                     }
                 }
             } catch (searchError) {
-                console.warn('Error en búsqueda de lugar, usando geocoder:', searchError);
+                console.warn('No se encontró un lugar cercano en la búsqueda, se usara geocoder:', searchError);
                 // Usar geocoder como respaldo
                 const geocoder = new google.maps.Geocoder();
                 const response = await geocoder.geocode({

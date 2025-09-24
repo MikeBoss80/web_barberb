@@ -22,18 +22,20 @@ class CreateEstablishmentForm(forms.ModelForm):
         widgets = {
             "name_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Barbería Central"}),
             # Este input será visible y usado por Google Places (id=autocomplete)
-            "address_est": forms.TextInput(attrs={"class": "form-control inputDireccion", "id": "inputDireccion", "placeholder": "Busca la dirección en Google Maps"}),
-            "city_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Bogotá"}),
-            "country_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Colombia"}),
+            "address_est": forms.TextInput(attrs={"class": "form-control inputDireccion", "id": "inputDireccionAdd", "placeholder": "Busca la dirección en Google Maps"}),
+            "city_est": forms.TextInput(attrs={"class": "form-control inputCity", "id": "inputCityAdd", "placeholder": "Ej: Bogotá"}),
+            "country_est": forms.TextInput(attrs={"class": "form-control inputCountry", "id": "inputCountryAdd", "placeholder": "Ej: Colombia"}),
             "phone_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "+57 300 123 4567"}),
             "email_est": forms.EmailInput(attrs={"class": "form-control", "placeholder": "ejemplo@email.com"}),
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
             "lat_est": forms.HiddenInput(attrs={
-                "id": "id_lat_est",
+                "class": "form-control inputLat",
+                "id": "inputLatAdd",
                 "maxlength": "20"
             }),
             "lng_est": forms.HiddenInput(attrs={
-                "id": "id_lng_est",
+                "class": "form-control inputLng",
+                "id": "inputLngAdd",
                 "maxlength": "20"
             }),
         }
