@@ -22,7 +22,7 @@ class CreateEstablishmentForm(forms.ModelForm):
         widgets = {
             "name_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Barbería Central"}),
             # Este input será visible y usado por Google Places (id=autocomplete)
-            "address_est": forms.TextInput(attrs={"class": "form-control", "id": "autocomplete", "placeholder": "Busca la dirección en Google Maps"}),
+            "address_est": forms.TextInput(attrs={"class": "form-control inputDireccion", "id": "inputDireccion", "placeholder": "Busca la dirección en Google Maps"}),
             "city_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Bogotá"}),
             "country_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Colombia"}),
             "phone_est": forms.TextInput(attrs={"class": "form-control", "placeholder": "+57 300 123 4567"}),

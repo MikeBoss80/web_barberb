@@ -120,7 +120,7 @@ function initializeManagementComponents() {
                     });
                 }
             },
-            
+
             complete: function () {
                 // Restaurar el botón de envío
                 $('#submit-spinner').addClass('d-none');
@@ -142,9 +142,9 @@ function initializeManagementComponents() {
         const lng = $(this).data('lng');
 
         // Llenar los campos del formulario
-        $('#inputEstablecimientoId').val(id);
+        $('#establishment_id').val(id);
         $('#inputNombre').val(nombre);
-        $('#inputDireccion').val(direccion);
+        $('#inputDireccionUpd').val(direccion);
         $('#inputCiudad').val(ciudad);
         $('#inputPais').val(pais);
         $('#inputTelefono').val(telefono);
@@ -167,44 +167,81 @@ function initializeManagementComponents() {
         modalEliminarEst.show();
     });
 
-    const modalEl = document.getElementById('addEstablishmentModal');
-    modalEl.addEventListener('shown.bs.modal', () => {
-        // Inicializar autocomplete si Google Maps ya cargó
-        fetch('http://127.0.0.1:8000/services_module/getmap/').then(response => {
-            if (response.ok) {
-                response.json().then(data => {
-                    (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
-                        key: data.mapApiKey,
-                        v: "weekly",
-                        // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
-                        // Add other bootstrap parameters as needed, using camel case.
-                    });
-                    initMap();
-                });
-            }
-        });
+
+    // Lista de IDs de los modales que deben inicializar el mapa
+    const modalIds = ['addEstablishmentModal', 'updEstablishmentModal'];
+
+    // Recorremos cada modal y le agregamos el mismo evento
+    modalIds.forEach(modalId => {
+        const modalEl = document.getElementById(modalId);
+
+
+        if (modalEl) {
+            modalEl.addEventListener('shown.bs.modal', () => {
+                const mapDiv = modalEl.querySelector(".map");
+
+                // Sacar su id
+                if (mapDiv) {
+                    // Inicializar autocomplete si Google Maps ya cargó
+                    fetch('http://127.0.0.1:8000/services_module/getmap/')
+                        .then(response => {
+                            if (response.ok) {
+                                response.json().then(data => {
+                                    (g => {
+                                        var h, a, k, p = "The Google Maps JavaScript API",
+                                            c = "google", l = "importLibrary", q = "__ib__",
+                                            m = document, b = window;
+                                        b = b[c] || (b[c] = {});
+                                        var d = b.maps || (b.maps = {}),
+                                            r = new Set, e = new URLSearchParams,
+                                            u = () => h || (h = new Promise(async (f, n) => {
+                                                await (a = m.createElement("script"));
+                                                e.set("libraries", [...r] + "");
+                                                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                                                e.set("callback", c + ".maps." + q);
+                                                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                                                d[q] = f;
+                                                a.onerror = () => h = n(Error(p + " could not load."));
+                                                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                                                m.head.append(a)
+                                            }));
+                                        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+                                    })({
+                                        key: data.mapApiKey,
+                                        v: "weekly"
+                                    });
+                                    initMap(modalEl); // ⚠️ aquí puedes pasar modalId si quieres que distinga cuál modal abrió
+                                });
+                            }
+                        });
+                }
+            });
+        }
     });
 
     let map;
     let marker;
     let autocomplete;
 
-    async function initMap() {
+    async function initMap(infoModal) {
+        const idmap = infoModal.querySelector(".map").id;
+        const inputAddress = infoModal.querySelector('.inputDireccion').id;
         const { Map } = await google.maps.importLibrary("maps");
         const { Autocomplete, Place } = await google.maps.importLibrary("places");
         const { Geocoder } = await google.maps.importLibrary("geocoding");
         // Obtener las coordenadas iniciales (desde los campos ocultos si existen)
-        let initialLat = document.getElementById('id_lat_est').value || 4.679531063698843;
-        let initialLng = document.getElementById('id_lng_est').value || -74.04015630448359;
+        let initialLat = document.getElementById('id_lat_est').value || 4.628886;
+        let initialLng = document.getElementById('id_lng_est').value || -74.146605;
         const defaultLocation = { lat: parseFloat(initialLat), lng: parseFloat(initialLng) };
 
         // Inicializar el mapa
-        map = new Map(document.getElementById("map"), {
+        map = new Map(document.getElementById(idmap), {
             center: defaultLocation,
             zoom: 15,
             mapTypeControl: true,
             streetViewControl: true,
             fullscreenControl: true
+
         });
 
         // Crear el marcador inicial
@@ -217,7 +254,7 @@ function initializeManagementComponents() {
 
         // Inicializar el autocompletado
         autocomplete = new Autocomplete(
-            document.getElementById('autocomplete'),
+            document.getElementById(inputAddress),
             {
                 types: ['address', 'establishment'],
                 componentRestrictions: { country: 'CO' },
@@ -238,14 +275,14 @@ function initializeManagementComponents() {
             }
 
             // Actualizar el mapa y los campos
-            updateMapAndFields(place);
+            updateMapAndFields(place,inputAddress);
         });
 
         // Configurar los listeners del marcador y mapa
         setupMarkerListeners();
     }
 
-    function updateMapAndFields(place) {
+    function updateMapAndFields(place,inputAddress) {
         if (!place || !place.geometry) {
             console.log('No hay información de lugar disponible');
             return;
@@ -285,7 +322,7 @@ function initializeManagementComponents() {
         }
 
         // Actualizar campos del formulario
-        const autocompleteField = document.getElementById('autocomplete');
+        const autocompleteField = document.getElementById(inputAddress);
         if (autocompleteField) {
             autocompleteField.value = place.formatted_address || address;
         }

@@ -25,7 +25,7 @@
 
                         <div class="col-12">
                             <label class="form-label">{{ form.address_est.label }}</label>
-                            {{ form.address_est }} {# Tiene id="autocomplete" por el widget #}
+                            {{ form.address_est }} {# Tiene id="inputDireccion" por el widget #}
                             <div class="form-text">Busca la dirección y selecciona la sugerencia.</div>
                             <div class="invalid-feedback" id="error-address_est"></div>
                         </div>
@@ -67,7 +67,7 @@
 
                         {# Mapa de confirmación (opcional, útil para precisión) #}
                         <div class="col-12 mt-2">
-                            <div id="map"
+                            <div id="mapadd" class="map"
                                 style="height: 240px; width: 100%; border: 1px solid #ddd; border-radius: 6px;">
                             </div>
                             <small class="text-muted">Puedes mover el pin para ajustar la ubicación.</small>
@@ -93,15 +93,3 @@
     <div id="maps-config" data-api-key="{{ MAPS_APIKEY }}"></div>
 </div>
 
-<!-- Scripts para el mapa -->
-<script src="{% static 'js/map-establishment.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar el mapa cuando se abre el modal
-        $('#addEstablishmentModal').on('shown.bs.modal', function () {
-            if (typeof google !== 'undefined') {
-                initMap();
-            }
-        });
-    });
-</script>
