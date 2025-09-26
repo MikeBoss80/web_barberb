@@ -1,28 +1,32 @@
+{# modals/add.html #}
+{% load static %}
 <div class="modal fade" id="updEstablishmentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">Actualizar Establecimiento</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
-            <form id="formUpdateEstablishment" method="post" action="">
-                {% csrf_token %}
+            <form id="formUpdateEstablishment" method="post">
                 <div class="modal-body">
+                    {% csrf_token %}
+
                     <div class="mb-3">
                         <label>Nombre</label>
                         <input type="text" class="form-control" id="inputNombre" name="name_est" required>
                     </div>
                     <div class="mb-3">
                         <label>Dirección</label>
-                        <input type="text" class="form-control" id="inputDireccion" name="address_est" required>
+                        <input type="text" class="form-control inputDireccion" id="inputDireccionUpd" name="address_est" required>
                     </div>
                     <div class="mb-3">
                         <label>Ciudad</label>
-                        <input type="text" class="form-control" id="inputCiudad" name="city_est" required>
+                        <input type="text" class="form-control inputCity" id="inputCiudadUpd" name="city_est" required>
                     </div>
                     <div class="mb-3">
                         <label>País</label>
-                        <input type="text" class="form-control" id="inputPais" name="country_est" required>
+                        <input type="text" class="form-control inputCountry" id="inputPaisUpd" name="country_est" required>
                     </div>
                     <div class="mb-3">
                         <label>Teléfono</label>
@@ -36,20 +40,39 @@
                         <label>Descripción</label>
                         <textarea class="form-control" id="inputDescripcion" name="description" rows="3"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label>Latitud</label>
-                        <input type="" class="form-control" id="inputLat" name="lat_est">
+
+
+                    {# Hidden lat/lng fields (renderizados por el form) #}
+                    <div style="display:none;">
+                        <input type="text" class="form-control inputLat" id="inputLatUpd" name="lat_est">
+                        <input type="text" class="form-control inputLng" id="inputLngUpd" name="lng_est">
                     </div>
-                    <div class="mb-3">
-                        <label>Longitud</label>
-                        <input type="" class="form-control" id="inputLng" name="lng_est">
+
+                    {# Mapa de confirmación (opcional, útil para precisión) #}
+                    <div class="col-12 mt-2">
+                        <div id="mapupd" class="map"
+                            style="height: 240px; width: 100%; border: 1px solid #ddd; border-radius: 6px;">
+                        </div>
+                        <small class="text-muted">Puedes mover el pin para ajustar la ubicación.</small>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="alert alert-danger d-none" id="modal-nonfield-errors"></div>
                     </div>
                 </div>
+
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn bg-primary-subtle">Guardar</button>
+                    <button type="submit" class="btn btn-primary" id="submit-est-btn">
+                        <span id="submit-text">Guardar</span>
+                        <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"
+                            aria-hidden="true"></span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+<div id="maps-config" data-api-key="{{ MAPS_APIKEY }}"></div>
 </div>
