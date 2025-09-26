@@ -23,6 +23,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from workflows.models import FlowInstance, FlowStatus
 from admin_module.utils.mixins import CitasQuerysetMixin
+from login_module.forms import ProfileEditForm,UserEditForm
 import logging
 
 
@@ -513,26 +514,56 @@ class SoporteView(BreadcrumbMixin, TemplateView):
         return [{'label': 'Soporte', 'url': reverse('admin_module:soporte')}]
 
 class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
-     template_name ='perfil/perfil_usuario.html'
-     def get_breadcrumb(self):
+    template_name = 'perfil/perfil_usuario.html'
+
+    def get_breadcrumb(self):
         return [{'label': 'Perfil', 'url': reverse('admin_module:perfil_usuario')}]
-    
-    
-     def get_context_data(self, **kwargs):
-        usuario = "Miguel Bolivar"
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['usuario'] = self.request.user  # Agrega el usuario autenticado al contexto
+        usuario = self.request.user
+        profile = Profile.objects.get(user=usuario)
+
+        context['usuario'] = usuario
+        context['profile'] = profile    
+        context['profile_form'] = ProfileEditForm(instance=profile)
+        context["user_form"] = UserEditForm(instance=usuario)
+
         return context
 
-# Editar perfil (nombre y email básico)
+    #
+    def post(self, request, *args, **kwargs):
+        """ Maneja la actualización del perfil desde el formulario """
+        usuario = request.user
+        profile = Profile.objects.get(user=usuario)
+        user_form = UserEditForm(request.POST, instance=usuario)
+        profile_form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+
+        # Validar y guardar el formulario
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
+            user_form.save()
+            messages.success(request, 'Perfil actualizado correctamente.')
+            return redirect('admin_module:perfil_usuario')
+        else:
+            messages.error(request, 'Por favor corrige los errores en el formulario.')
+
+        context = self.get_context_data(**kwargs)
+        context["user_form"] = user_form
+        context['profile_form'] = profile_form
+        return self.render_to_response(context)
+  
+
+""" # Editar perfil 
 class EditarPerfilView(LoginRequiredMixin, UpdateView):
 #    model = usuario
-    fields = ['first_name', 'last_name', 'email']
+    fields = ['first_name', 'last_name', 'email', 'username', 'profile__phone', 'profile__address', 'profile__birth_date', 'profile__document']
     template_name = 'perfil/editar_perfil.html'
     success_url = reverse_lazy('perfil:perfil_usuario')
 
     def get_object(self):
         return self.request.user
+ """
 
 class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
     template_name = 'establecimiento/registro_est.html'

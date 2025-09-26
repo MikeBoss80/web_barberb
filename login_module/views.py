@@ -1,19 +1,19 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 from login_module.models import Profile
 from admin_module.models import Establishment
 import requests
 from django.contrib import messages
-from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView
+from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView,PasswordChangeView
 from django.views.generic.edit import FormView
 from .forms import UserProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, View
 from django.contrib.auth.views import LogoutView as DjangoLogoutView
-
+from django.contrib.auth import update_session_auth_hash
 
 
 class CustomLoginView(LoginView):
@@ -181,6 +181,28 @@ class ResetPasswordConfirmView(PasswordResetConfirmView):
 class ResetPasswordCompleteView(PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
+
+class CustomChangePassw(PasswordChangeView):
+    template_name = "perfil/perfil_usuario.html"  # mismo template donde tienes las tabs
+    success_url = reverse_lazy("admin_module:perfil_usuario")  # redirige al perfil al guardar
+
+    def get_form_kwargs(self):
+        """Se asegura de pasar el usuario logueado al PasswordChangeForm"""
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+    
+    def form_valid(self, form):
+        # Guardar la nueva contraseña
+        user = form.save()
+        # Mantener al usuario logueado tras el cambio
+        messages.success(self.request, "Contraseña cambiada correctamente.")
+        return super().form_valid(form) 
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Hubo errores al cambiar la contraseña.")
+        return super().form_invalid(form)
+    
 ##Vista para completar perfil despues del registro con google
 class FillProfileView(LoginRequiredMixin, UpdateView):
     model = Profile

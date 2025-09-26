@@ -18,7 +18,8 @@ from login_module.views import (
     ResetPasswordDoneView,
     ResetPasswordConfirmView,
     ResetPasswordCompleteView,
-    RolSelectView
+    RolSelectView,
+    CustomChangePassw
     
 )
 
@@ -36,6 +37,7 @@ urlpatterns = [
     path('terminos-condiciones/', TerminosYCondicionesView.as_view(), name='terminosycondiciones'),
     path('tipo-rol/', TipoRolView.as_view(), name='tipo_rol'),
     path('cambio_contraseña/', CambiocontraseñaView.as_view(), name='cambio_contraseña'),
+    path("perfil/password/change/", CustomChangePassw.as_view(), name="change_password"),
     #auth vies django para restablecimiento
     path('password_reset/', ResetPasswordView.as_view(), name='password_reset'),
     path('password_reset/done/', ResetPasswordDoneView.as_view(), name='password_reset_done'),

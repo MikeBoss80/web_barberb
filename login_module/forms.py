@@ -50,3 +50,68 @@ class UserProfileForm(UserCreationForm):
             )
         return user
 
+
+
+class UserEditForm(forms.ModelForm):
+    """Formulario para editar los datos básicos del usuario"""
+    class Meta:
+        model = User
+        fields = ["username", "email", "first_name", "last_name"]
+        labels = {
+            "username": "Usuario",
+            "email": "Correo electrónico",
+            "first_name": "Nombre",
+            "last_name": "Apellido",
+        }
+        widgets = {
+            "username": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Nombre de usuario"
+            }),
+            "email": forms.EmailInput(attrs={
+                "class": "form-control",
+                "placeholder": "Correo electrónico"
+            }),
+            "first_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Nombre"
+            }),
+            "last_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Apellido"
+            }),
+        }
+
+class ProfileEditForm(forms.ModelForm):
+    """Formulario para editar los datos adicionales del perfil"""
+    class Meta:
+        model = Profile
+        fields = ["phone", "address", "birth_date", "document",]
+        labels = {
+            "phone": "Teléfono",
+            "address": "Dirección",
+            "birth_date": "Fecha de nacimiento",
+            "document": "Documento de identidad",
+        }
+        widgets = {
+            "phone": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Teléfono"
+            }),
+            "address": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Dirección"
+            }),
+            "birth_date": forms.DateInput(attrs={
+                "class": "form-control",
+                "type": "date"  # input HTML5 de fecha
+            },
+            format='%Y-%m-%d'
+            ),
+            
+
+            "document": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Documento de identidad"
+            }),
+        }
