@@ -1,0 +1,10 @@
+Hola {{ user.get_username }},
+
+Recibimos una solicitud para restablecer tu contraseña. Si fuiste tú, usa el siguiente enlace:
+
+{{ absolute_base_url }}/login_module/reset/{{ uid }}/{{ token }}/
+
+Si tú no solicitaste este cambio, puedes ignorar este mensaje.
+
+Saludos,
+El equipo de soporte

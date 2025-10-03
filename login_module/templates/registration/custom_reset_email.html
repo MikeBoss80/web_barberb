@@ -1,0 +1,73 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Restablecer contraseña</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            background: #ffffff;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #007bff;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Restablecer tu contraseña</h2>
+        <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente botón para continuar:</p>
+        <!-- ESTE ES MI TEMPLATE PERSONALIZADO -->
+        Hola {{ user.get_username }}, haz clic aquí para cambiar tu contraseña:
+
+        <a href="{{ protocol }}://{{ domain }}{% url 'login_module:password_reset_confirm' uidb64=uid token=token %}"
+            class="btn">
+            Cambiar contraseña
+        </a>
+
+        <p class="footer">Si tú no solicitaste esto, puedes ignorar este mensaje.</p>
+    </div>
+
+</body>
+
+</html>
+{% endautoescape %}
