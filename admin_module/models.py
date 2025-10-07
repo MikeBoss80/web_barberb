@@ -66,7 +66,7 @@ class Establishment(models.Model):
     qa_average_est = models.FloatField(default=5.0)
     created_date = models.DateTimeField(auto_now_add=True, null=True)
     active = models.BooleanField(default=True)
-    id_admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="admin_est")
+    id_admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="admin_estant")
 
 
     def __str__(self):
@@ -94,7 +94,3 @@ class EstablishmentService(models.Model):
 class Inventory(models.Model):
     establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-
-
-

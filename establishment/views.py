@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from .forms import CreateEstablishmentForm
-from admin_module.models import Establishment
+from establishment.models import Establishment
 from django.conf import settings
 from django.http import JsonResponse
 from decimal import Decimal, InvalidOperation

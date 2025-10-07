@@ -7,7 +7,8 @@ from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from .models import Product, Establishment,Inventory, Service, Category
+from .models import Product, Inventory, Service, Category
+from establishment.models import Establishment
 from workflows.models import FlowInstance
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User
@@ -360,16 +361,17 @@ class ServiciosView(BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-
-        # Obtienes el establecimiento de ese usuario admin
-        establecimiento = Establishment.objects.get(id_admin=user)
-
         # Traer solo los servicios relacionados al establecimiento por la tabla intermedia
-        servicios = (
-            Service.objects.filter(establishmentservice__establishment=establecimiento)
-            .select_related('category')
-            .distinct()
-        )
+        try:
+            perfil = Profile.objects.get(user=user)
+            establecimiento = perfil.establishment
+            servicios = (
+                Service.objects.filter(establishmentservice__establishment=establecimiento)
+                .select_related('category')
+                .distinct()
+            )
+        except Establishment.DoesNotExist:
+            servicios = Service.objects.none()
 
         context['servicios'] = servicios
         return context

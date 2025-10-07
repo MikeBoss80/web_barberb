@@ -14,7 +14,6 @@ def create_initial_groups(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('admin_module', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

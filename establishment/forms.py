@@ -1,6 +1,6 @@
 # admin_module/forms.py
 from django import forms
-from admin_module.models import Product, Establishment
+from establishment.models import Establishment
 
 class CreateEstablishmentForm(forms.ModelForm):
     class Meta:

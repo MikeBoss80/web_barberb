@@ -2,12 +2,9 @@
 
 from django.db import migrations
 
-
-
-
 def create_initial_establishments(apps, schema_editor):
     User = apps.get_model('auth', 'User')
-    Establishment = apps.get_model('admin_module', 'Establishment')
+    Establishment = apps.get_model('establishment', 'Establishment')
 
     
     # Obtener usuarios creados previamente (migración en login_module)
@@ -52,12 +49,10 @@ def create_initial_establishments(apps, schema_editor):
         }
     )
 
-    
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('admin_module', '0004_rename_description_service_description_service_and_more'),
+        ('establishment', '0001_initial'),
         ('login_module', '0002_create_initial_users'),
     ]
 

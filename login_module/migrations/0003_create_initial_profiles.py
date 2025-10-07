@@ -2,12 +2,11 @@ from django.db import migrations
 import datetime
 from django.contrib.auth.hashers import make_password
 
-
 def create_initial_profiles(apps, schema_editor):
     User = apps.get_model('auth', 'User')
     Group = apps.get_model('auth', 'Group')
     Profile = apps.get_model('login_module', 'Profile')
-    Establishment = apps.get_model('admin_module', 'Establishment')
+    Establishment = apps.get_model('establishment', 'Establishment')
 
     # Grupos
     barbero_group, _ = Group.objects.get_or_create(name='Barbero')
@@ -146,7 +145,7 @@ def create_barbers_and_client(apps, schema_editor):
     User = apps.get_model('auth', 'User')
     Group = apps.get_model('auth', 'Group')
     Profile = apps.get_model('login_module', 'Profile')
-    Establishment = apps.get_model('admin_module', 'Establishment')
+    Establishment = apps.get_model('establishment', 'Establishment')
 
     # Grupos
     barbero_group, _ = Group.objects.get_or_create(name='Barbero')
@@ -272,7 +271,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('login_module', '0002_create_initial_users'),
-        ('admin_module', '0005_create_initial_establishments'),
+        ('establishment', '0002_create_initial_establishments'),
     ]
 
     operations = [

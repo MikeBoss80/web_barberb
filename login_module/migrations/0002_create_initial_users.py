@@ -4,8 +4,6 @@ from django.db import migrations
 import datetime
 from django.contrib.auth.hashers import make_password
 
-
-
 def create_initial_users(apps, schema_editor):
     User = apps.get_model('auth','User')
     Profile = apps.get_model('login_module', 'Profile')
@@ -22,8 +20,6 @@ def create_initial_users(apps, schema_editor):
         username='admin1',
         defaults={
             'email': 'admin1@example.com',
-            'is_staff': True,
-            'is_superuser': True,
         }
     )
 
@@ -51,8 +47,6 @@ def create_initial_users(apps, schema_editor):
         username='admin2',
         defaults={
             'email': 'admin2@example.com',
-            'is_staff': True,
-            'is_superuser': True,
         }
     )
     if created2:
@@ -72,8 +66,6 @@ def create_initial_users(apps, schema_editor):
             'qa_average': 5.0,
         }
     )
-
-
 
 class Migration(migrations.Migration):
 

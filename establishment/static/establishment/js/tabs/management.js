@@ -1,15 +1,22 @@
 // Función para inicializar componentes del módulo de gestión
 function initializeManagementComponents() {
-    $('#tablaEstablecimientos').DataTable({
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
-        },
-        dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
-        pageLength: 10,
-    });
+    const establishmentTable = $('#tablaEstablecimientos');
+    if (establishmentTable.length > 0) {
+        establishmentTable.DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+            },
+            dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 10,
+            columnDefs: [
+                { "orderable": false, "targets": [4] }
+            ],
+            order: [[0, 'asc']]
+        });
+    }
 
     // Configurar CSRF token para todas las peticiones AJAX
     $.ajaxSetup({
