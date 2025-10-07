@@ -68,14 +68,6 @@
     background-repeat: no-repeat;
 }
 
-.profile-tab .hero-background.default-bg {
-    background-image: url('../img/barbershop-hero.jpg');
-}
-
-.profile-tab .hero-background.custom-bg[data-bg] {
-    background-image: var(--custom-bg-image);
-}
-
 .hero-overlay {
     position: absolute;
     top: 0;
@@ -122,11 +114,11 @@
    ============================================= */
 
 :root {
-    /* Colores principales - Compatible con la plataforma */
-    --primary-color: #625568ff;
-    --primary-dark: #2f143d;
-    --secondary-color: #6c757d;
-    --accent-color: #5b3679;
+    /* Colores principales */
+    --primary-color: #C9A96E;
+    --primary-dark: #B8956A;
+    --secondary-color: #2C3E50;
+    --accent-color: #E74C3C;
     
     /* Colores neutros */
     --dark-color: #1A1A1A;
@@ -175,8 +167,8 @@
 }
 
 .dark-mode {
-    --primary-color: #5a2a6e;
-    --secondary-color: #6c757d;
+    --primary-color: #D4AF7A;
+    --secondary-color: #34495E;
     --text-color: #F4F4F4;
     --bg-color: #1A1A1A;
     --card-bg: #2D2D2D;
@@ -642,30 +634,6 @@ section {
     color: var(--primary-color);
     font-weight: 600;
     margin-bottom: var(--space-sm);
-}
-
-.team-rating {
-    margin: var(--space-sm) 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-xs);
-}
-
-.team-rating .stars {
-    display: flex;
-    gap: 2px;
-}
-
-.team-rating .stars i {
-    color: #ffc107;
-    font-size: 0.9rem;
-}
-
-.team-rating .rating-text {
-    font-size: 0.9rem;
-    color: var(--gray-600);
-    font-weight: 600;
 }
 
 .team-social {
