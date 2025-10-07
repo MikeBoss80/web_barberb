@@ -179,51 +179,8 @@ class DeleteEstablishmentView(DeleteView):
  
 class ProfileEstablishmentView(TemplateView):
     template_name= 'establishment/tabs/profile_est.html'
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Obtener todos los establecimientos del usuario
-        establecimientos = self.request.user.admin_est.all()
-        context['establecimientos'] = establecimientos
-        
-        # Obtener el establecimiento específico para el perfil
-        establishment_id = self.request.GET.get('establishment_id')
-        
-        if establishment_id:
-            # Si se especifica un ID, buscar ese establecimiento
-            try:
-                establishment = establecimientos.get(id=establishment_id)
-                context['establishment'] = establishment
-            except Establishment.DoesNotExist:
-                # Si no existe, usar el primero disponible
-                context['establishment'] = establecimientos.first() if establecimientos.exists() else None
-        else:
-            # Si no se especifica ID, usar el primer establecimiento del usuario
-            context['establishment'] = establecimientos.first() if establecimientos.exists() else None
-        
-        # Si hay un establecimiento seleccionado, obtener sus servicios y barberos
-        if context['establishment']:
-            establishment = context['establishment']
-            
-            # Obtener servicios del establecimiento
-            from admin_module.models import EstablishmentService
-            establishment_services = EstablishmentService.objects.filter(
-                establishment=establishment,
-                service__active=True
-            ).select_related('service', 'service__category')
-            
-            context['services'] = establishment_services
-            
-            # Obtener barberos del establecimiento
-            from django.contrib.auth.models import User
-            barberos = User.objects.filter(
-                groups__name='Barbero',
-                is_active=True,
-                profile__establishment=establishment
-            ).select_related('profile')
-            
-            context['barberos'] = barberos
-            
+        context['establecimientos'] = self.request.user.admin_est.all()
         return context
     
