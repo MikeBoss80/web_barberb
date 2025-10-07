@@ -160,11 +160,14 @@ class CambiocontraseñaView(TemplateView):
 #Formulario donde se solicita correo electronico para el envio del reseteo de contraseña
 class ResetPasswordView(PasswordResetView):
     template_name = 'password_reset_form.html'
-    form_class = PasswordResetForm
+    email_template_name = 'registration/custom_reset_email.txt'   # respaldo en texto
+    html_email_template_name = 'registration/custom_reset_email.html'  # plantilla HTML
+    subject_template_name = 'registration/custom_reset_subject.txt'
 
     def get_success_url(self):
         return '/login_module/password_reset/done/'
 
+    
 #Confirmacion de envio de correco electronico exitoso.
 class ResetPasswordDoneView(PasswordResetDoneView):
     template_name='password_reset_done.html'
