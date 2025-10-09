@@ -51,7 +51,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name_product
 
-# Tabla: admin_module_establishment
+# TODO: DEPRECATED - Usar establishment.Establishment en su lugar
+# Este modelo se mantendrá temporalmente para compatibilidad
+# Se eliminará en una versión futura
 class Establishment(models.Model):
     name_est = models.CharField(max_length=50)
     address_est = models.CharField(max_length=80)
@@ -68,6 +70,8 @@ class Establishment(models.Model):
     active = models.BooleanField(default=True)
     id_admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="admin_estant")
 
+    class Meta:
+        db_table = 'admin_module_establishment'  # Tabla específica para evitar conflictos
 
     def __str__(self):
         return self.name_est
@@ -87,10 +91,10 @@ class Service(models.Model):
 
 # Relación muchos a muchos entre establecimiento y servicios
 class EstablishmentService(models.Model):
-    establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
+    establishment = models.ForeignKey('establishment.Establishment', on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
 
 # Tabla: admin_module_inventory
 class Inventory(models.Model):
-    establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE)
+    establishment = models.ForeignKey('establishment.Establishment', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

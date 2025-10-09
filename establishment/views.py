@@ -179,8 +179,48 @@ class DeleteEstablishmentView(DeleteView):
  
 class ProfileEstablishmentView(TemplateView):
     template_name= 'establishment/tabs/profile_est.html'
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['establecimientos'] = self.request.user.admin_est.all()
+        
+        # Obtener establecimientos del usuario
+        establecimientos = self.request.user.admin_est.all()
+        context['establecimientos'] = establecimientos
+        
+        # Determinar establecimiento activo
+        establishment_id = self.request.GET.get('establishment_id')
+        establishment = None
+        
+        if establishment_id:
+            try:
+                # Convertir el ID a entero para la consulta
+                establishment_id = int(establishment_id)
+                establishment = establecimientos.get(id=establishment_id)
+            except (ValueError, Establishment.DoesNotExist):
+                # ValueError si no se puede convertir a int
+                # DoesNotExist si no existe el establecimiento
+                pass
+        
+        # Si no se especificó o no se encontró, usar el primero disponible
+        if not establishment and establecimientos.exists():
+            establishment = establecimientos.first()
+        
+        context['establishment'] = establishment
+        
+        if establishment:
+            # Cargar servicios del establecimiento
+            from admin_module.models import EstablishmentService
+            services = EstablishmentService.objects.filter(
+                establishment=establishment
+            ).select_related('service', 'service__category')
+            context['services'] = services
+            
+            # Cargar barberos vinculados al establecimiento
+            from django.contrib.auth.models import User
+            barberos = User.objects.filter(
+                profile__establishment=establishment,
+                groups__name='Barbero'
+            ).select_related('profile')
+            context['barberos'] = barberos
+            
         return context
-    

@@ -1,6 +1,6 @@
 # Create your models here.
 from django.db import models
-from admin_module.models import Establishment
+from establishment.models import Establishment
 from django.contrib.auth.models import User
 
 

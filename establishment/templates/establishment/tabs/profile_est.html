@@ -1,0 +1,289 @@
+{% load static %}
+
+{% block extra_css %}
+<!-- Estilos principales del perfil -->
+<link rel="stylesheet" href="{% static 'establishment/css/profile.css' %}">
+<!-- Iconos Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="tab-content-wrapper profile-tab">
+
+    {% if establishment %}
+    <!-- Selector de establecimiento -->
+    {% if establecimientos.count > 1 %}
+    <div class="establishment-selector">
+        <label for="establishment-select">Seleccionar Establecimiento:</label>
+        <select id="establishment-select">
+            {% for est in establecimientos %}
+                <option value="{{ est.id }}" {% if est.id == establishment.id %}selected{% endif %}>
+                    {{ est.name_est }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+
+    <div class="barbershop-profile">
+
+        <!-- 🧔 Hero Section -->
+        <section class="hero-section" id="inicio">
+            <div class="hero-background {% if establishment.image %}custom-bg{% else %}default-bg{% endif %}"
+                {% if establishment.image %}data-bg="{{ establishment.image.url }}"{% endif %}>
+            </div>
+            <div class="hero-overlay"></div>
+ 
+            <div class="hero-content">
+                <h1 class="hero-title">{{ establishment.name_est }}</h1>
+                <p class="hero-subtitle">{{ establishment.description|default:"Experiencia única en cortes masculinos y cuidado personal premium" }}</p>
+                <div class="hero-rating">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="rating-text">4.8 (127 reseñas)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📍 Información básica -->
+        <section class="info-section">
+            <div class="container">
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-card-title">Ubicación</div>
+                        <div class="info-card-value">{{ establishment.address_est|default:"Centro de la ciudad" }}</div>
+                        <div class="info-card-label">{{ establishment.city_est|default:"Ciudad" }}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon"><i class="fas fa-phone"></i></div>
+                        <div class="info-card-title">Teléfono</div>
+                        <div class="info-card-value">{{ establishment.phone_est|default:"+57 300 123 4567" }}</div>
+                        <div class="info-card-label">Contáctanos</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon"><i class="fas fa-clock"></i></div>
+                        <div class="info-card-title">Horario</div>
+                        <div class="info-card-value">9:00 - 20:00</div>
+                        <div class="info-card-label">Lun - Sáb</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✂️ Servicios -->
+        <section class="services-section" id="servicios">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Nuestros Servicios</h2>
+                </div>
+
+                <div class="content-grid">
+                    {% if services %}
+                        {% for est_service in services %}
+                        <div class="content-card">
+                            <div class="content-card-body">
+                                <div class="info-card-icon">
+                                    {% if est_service.service.category.name == 'Corte' %}
+                                        <i class="fas fa-cut"></i>
+                                    {% elif est_service.service.category.name == 'Barba' %}
+                                        <i class="fas fa-user-tie"></i>
+                                    {% elif est_service.service.category.name == 'Tratamiento' %}
+                                        <i class="fas fa-spa"></i>
+                                    {% elif est_service.service.category.name == 'Peinado' %}
+                                        <i class="fas fa-hand-sparkles"></i>
+                                    {% else %}
+                                        <i class="fas fa-star"></i>
+                                    {% endif %}
+                                </div>
+                                <h3 class="content-card-title">{{ est_service.service.name_service }}</h3>
+                                <p class="content-card-description">{{ est_service.service.description_service|truncatewords:15|default:"Servicio profesional con la más alta calidad y atención personalizada." }}</p>
+                                <div class="service-price">${{ est_service.service.price_service|floatformat:0 }}</div>
+                                <div class="content-card-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>{{ est_service.service.duration|default:"30" }} min</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>{{ est_service.service.category.name|default:"Premium" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-services-message">
+                            <i class="fas fa-info-circle"></i>
+                            <h3>No hay servicios configurados</h3>
+                            <p>Agrega servicios en la sección de Gestión para mostrarlos aquí.</p>
+                            <a href="?tab=management" class="cta-button">
+                                <i class="fas fa-plus"></i> Gestionar Servicios
+                            </a>
+                        </div>
+
+                        <!-- Ejemplos -->
+                        <div class="content-card example">
+                            <div class="content-card-body">
+                                <div class="info-card-icon"><i class="fas fa-cut"></i></div>
+                                <h3 class="content-card-title">Corte Clásico</h3>
+                                <p class="content-card-description">Corte tradicional con técnicas modernas y atención personalizada</p>
+                                <div class="service-price">$30.000</div>
+                                <div class="content-card-meta">
+                                    <div class="meta-item"><i class="fas fa-clock"></i><span>30 min</span></div>
+                                    <div class="meta-item"><i class="fas fa-tag"></i><span>Corte</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-card example">
+                            <div class="content-card-body">
+                                <div class="info-card-icon"><i class="fas fa-user-tie"></i></div>
+                                <h3 class="content-card-title">Barba Profesional</h3>
+                                <p class="content-card-description">Arreglo y diseño de barba con productos premium y técnicas expertas</p>
+                                <div class="service-price">$25.000</div>
+                                <div class="content-card-meta">
+                                    <div class="meta-item"><i class="fas fa-clock"></i><span>25 min</span></div>
+                                    <div class="meta-item"><i class="fas fa-tag"></i><span>Barba</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-card example">
+                            <div class="content-card-body">
+                                <div class="info-card-icon"><i class="fas fa-spa"></i></div>
+                                <h3 class="content-card-title">Tratamiento Capilar</h3>
+                                <p class="content-card-description">Cuidado especializado para fortalecer y revitalizar el cabello</p>
+                                <div class="service-price">$45.000</div>
+                                <div class="content-card-meta">
+                                    <div class="meta-item"><i class="fas fa-clock"></i><span>45 min</span></div>
+                                    <div class="meta-item"><i class="fas fa-tag"></i><span>Tratamiento</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- 👥 Equipo -->
+        <section class="team-section" id="equipo">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Nuestro Equipo</h2>
+                </div>
+
+                <div class="content-grid">
+                    {% if barberos %}
+                        {% for barbero in barberos %}
+                        <div class="content-card team-card">
+                            <div class="content-card-image">
+                                {% if barbero.profile.image %}
+                                    <img src="{{ barbero.profile.image.url }}" alt="{{ barbero.get_full_name }}">
+                                {% else %}
+                                    <div class="default-avatar">
+                                        <img src="{% static 'establishment/img/default-avatar-barbero.jpg' %}" alt="Avatar genérico">
+                                        <!--<span>{{ barbero.get_full_name|first|upper }}{{ barbero.last_name|first|upper|default:barbero.username|slice:":1"|upper }}</span> -->
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="content-card-body">
+                                <h3 class="content-card-title">{{ barbero.get_full_name|default:barbero.username }}</h3>
+                                <div class="team-role">
+                                    {{ barbero.profile.speciality|default:'Barbero Profesional' }}
+                                </div>
+
+                                {% if barbero.profile.qa_average %}
+                                <div class="team-rating">
+                                    <div class="stars">
+                                        {% with rating=barbero.profile.qa_average %}
+                                            {% for i in "12345" %}
+                                                {% if rating >= forloop.counter %}
+                                                    <i class="fas fa-star"></i>
+                                                {% elif rating >= forloop.counter|add:"-0.5" %}
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    <span class="rating-text">{{ barbero.profile.qa_average|floatformat:1 }}</span>
+                                </div>
+                                {% endif %}
+
+                                <p class="content-card-description">
+                                    {{ barbero.profile.experience|default:"Experto en cortes y estilos modernos con años de experiencia brindando el mejor servicio" }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-barbers-message">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>No hay barberos vinculados</h3>
+                            <p>Los barberos pueden solicitar vincularse a tu establecimiento.</p>
+                            <a href="?tab=management" class="cta-button">
+                                <i class="fas fa-users-cog"></i> Gestionar Barberos
+                            </a>
+                        </div>
+
+                        <div class="content-card team-card example">
+                            <div class="content-card-image">
+                                <div class="default-avatar">
+                                    <i class="fas fa-crown"></i>
+                                    <span>{{ establishment.owner_name|first|upper|default:'P' }}</span>
+                                </div>
+                            </div>
+                            <div class="content-card-body">
+                                <h3 class="content-card-title">{{ establishment.owner_name|default:'Propietario' }}</h3>
+                                <div class="team-role">Propietario - Master Barber</div>
+                                <div class="team-rating">
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="rating-text">5.0</span>
+                                </div>
+                                <p class="content-card-description">Fundador y administrador del establecimiento con experiencia en la gestión y atención premium</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- ☎️ Botones de acción -->
+        <div class="action-buttons">
+            <a href="tel:{{ establishment.phone_est }}" class="cta-button">
+                <i class="fas fa-phone"></i> Llamar Ahora
+            </a>
+            <a href="https://wa.me/{{ establishment.phone_est|default:'573001234567' }}" class="cta-button secondary">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- 🚫 Sin establecimiento -->
+    <div class="no-establishment">
+        <i class="fas fa-store-slash"></i>
+        <h3>No tienes establecimientos configurados</h3>
+        <p>Para ver el perfil, primero necesitas crear un establecimiento en la sección de Gestión.</p>
+        <a href="?tab=management" class="cta-button">
+            <i class="fas fa-plus"></i> Crear Establecimiento
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'establishment/js/profile.js' %}"></script>
+{% endblock %}

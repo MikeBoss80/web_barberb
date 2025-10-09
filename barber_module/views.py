@@ -3,7 +3,7 @@ from django.views.generic import ListView,TemplateView, UpdateView,CreateView,De
 from datetime import date, time
 from django.utils import timezone
 from django.views import View
-from admin_module.models import Establishment
+from establishment.models import Establishment
 from workflows.models import FlowInstance, FlowStatus
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin

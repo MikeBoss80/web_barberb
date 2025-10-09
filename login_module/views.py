@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, Set
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 from login_module.models import Profile
-from admin_module.models import Establishment
+from establishment.models import Establishment
 import requests
 from django.contrib import messages
 from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView,PasswordChangeView
