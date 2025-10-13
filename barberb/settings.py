@@ -50,7 +50,11 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 CLIENT_ID_DE_GOOGLE = config('CLIENT_ID_DE_GOOGLE') 
 CLIENT_SECRET_DE_GOOGLE = config('CLIENT_SECRET_DE_GOOGLE')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    'barberb-service-878619629488.us-central1.run.app',
+    '127.0.0.1', 
+    'localhost'
+]
 
 
 # Application definition
@@ -89,6 +93,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -98,17 +103,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-
-
 ]
 
 ROOT_URLCONF = 'barberb.urls'
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://barberb-service-878619629488.us-central1.run.app",
+]
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # << Asegúrate que esté esto
+        # 'DIRS': [BASE_DIR / 'templates'],  # << Asegúrate que esté esto
         'APP_DIRS': True,
         'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Esto NO afecta la carga de templates de tus apps. APP_DIRS: True garantiza que Django siga buscando dentro de cada app también.
         'OPTIONS': {
@@ -130,17 +136,38 @@ WSGI_APPLICATION = 'barberb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSW,
-        'HOST': DB_HOST,  # o la IP del servidor
-        'PORT': DB_PORT,
+IS_CLOUD_RUN = os.getenv("K_SERVICE", None) is not None
+
+if IS_CLOUD_RUN:
+    # Configuración para Cloud SQL (usando socket de conexión)
+    DB_NAME = os.getenv("DB_NAME")
+    DB_USER = os.getenv("DB_USER")
+    DB_PASSW = os.getenv("DB_PASSW")
+    DB_PORT = os.getenv("DB_PORT", "3306")
+    DB_CONNECTION_NAME = os.getenv("DB_CONNECTION_NAME")  # <-- lo inyectaremos
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "USER": DB_USER,
+            "PASSWORD": DB_PASSW,
+            "NAME": DB_NAME,
+            "HOST": f"/cloudsql/{DB_CONNECTION_NAME}",
+            "PORT": DB_PORT,
+        }
     }
-    
-}
+else:
+    # Config local (usa los valores del .env)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSW"),
+            "HOST": config("DB_HOST"),
+            "PORT": config("DB_PORT"),
+        }
+    }
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -217,11 +244,14 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
