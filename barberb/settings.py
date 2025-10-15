@@ -51,6 +51,7 @@ CLIENT_ID_DE_GOOGLE = config('CLIENT_ID_DE_GOOGLE')
 CLIENT_SECRET_DE_GOOGLE = config('CLIENT_SECRET_DE_GOOGLE')
 
 ALLOWED_HOSTS = [
+    'barberb.online',
     'barberb-service-878619629488.us-central1.run.app',
     '127.0.0.1', 
     'localhost'
@@ -109,6 +110,7 @@ ROOT_URLCONF = 'barberb.urls'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://barberb-service-878619629488.us-central1.run.app",
+    "https://barberb.online"
 ]
 
 TEMPLATES = [

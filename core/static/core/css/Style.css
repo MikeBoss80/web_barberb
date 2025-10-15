@@ -73,7 +73,6 @@ body {
   z-index: 1050 !important;
   width: 100% !important;
   overflow: hidden;
-  /* Asegurar que NUNCA se mueva de su posición */
   transform: none !important;
 }
 
