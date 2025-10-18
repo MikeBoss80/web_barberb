@@ -34,7 +34,7 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
     login_url = '/login_module/login/'
     
     def get_breadcrumb(self):
-        return []
+        return [{'label': 'Inicio', 'url': reverse('admin_module:main'), 'icon': 'house-door'}]
 
     #DATPS TEMPORALES
     def get_context_data(self, **kwargs):
@@ -130,7 +130,7 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
     
     # Breadcrumb (navegación)
     def get_breadcrumb(self):
-        return [{'label': 'Citas', 'url': reverse('admin_module:citas')}]
+        return [{'label': 'Citas', 'url': reverse('admin_module:citas'), 'icon': 'calendar-check'}]
 
     # Contexto que se pasa a la plantilla
     def get_context_data(self, **kwargs):
@@ -229,7 +229,7 @@ class CollapsView(BreadcrumbMixin, TemplateView):
      template_name= 'collabs/collabs.html'
      
      def get_breadcrumb(self):
-        return [{'label': 'Colaboradores', 'url': reverse('admin_module:collabs')}]
+        return [{'label': 'Colaboradores', 'url': reverse('admin_module:collabs'), 'icon': 'people'}]
 
      def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -277,6 +277,9 @@ class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
     context_object_name = 'solicitudes' #nombre variable en el template
     paginate_by = 10 #paginar de 10
 
+    def get_breadcrumb(self):
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:barber_solicitudes_list'), 'icon': 'file-earmark-text'}]
+    
     def get_queryset(self):
         #Filtra las solicitudes para que el barbero solo vea las suyas,
         #ordenadas por fecha descendente.
@@ -319,6 +322,7 @@ class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
     template_name = 'requets/solicitudes_detail.html'
     context_object_name = 'solicitud'
 
+    
     def get_queryset(self):
         """
         Asegura que el barbero solo pueda ver sus propias solicitudes.
@@ -333,7 +337,7 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
     success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
 
     def get_breadcrumb(self):
-        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero')}]
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero'), 'icon': 'file-earmark-text'}]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -381,7 +385,7 @@ class ServiciosView(BreadcrumbMixin, TemplateView):
     template_name = 'admin_module/servicios.html'
 
     def get_breadcrumb(self):
-        return [{'label': 'Productos & Servicios', 'url': reverse('admin_module:servicios')}]
+        return [{'label': 'Productos & Servicios', 'url': reverse('admin_module:servicios'), 'icon': 'grid'}]
     
     
    
@@ -451,8 +455,9 @@ def eliminar_servicio(request, id):
 
 class ContenidosView(BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
+    
     def get_breadcrumb(self):
-        return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento')}]
+        return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento'), 'icon': 'building'}]
      
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -487,7 +492,7 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
 class InventarioView(BreadcrumbMixin, TemplateView):
     template_name= 'inventario/inventario.html'
     def get_breadcrumb(self):
-        return [{'label': 'Inventario', 'url': reverse('admin_module:inventario')}]
+        return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -495,10 +500,13 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         context['products'] = Product.objects.all()
         return context
 
-class InventarioListView(ListView):
+class InventarioListView(BreadcrumbMixin, ListView):
 
     # product = Product
     template_name = 'inventario/inventario.html'
+    
+    def get_breadcrumb(self):
+        return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -506,10 +514,16 @@ class InventarioListView(ListView):
         context['products'] = Product.objects.all()
         return context
 
-class ProductCreateView(SuccessMessageMixin, CreateView):
+class ProductCreateView(BreadcrumbMixin, SuccessMessageMixin, CreateView):
     template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
     success_url = reverse_lazy('admin_module:inventario')
+
+    def get_breadcrumb(self):
+        return [
+            {'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'},
+            {'label': 'Crear Producto', 'url': '', 'icon': 'plus-circle'}
+        ]
 
     def form_valid(self, form):
         product=form.save(commit=False)
@@ -518,11 +532,17 @@ class ProductCreateView(SuccessMessageMixin, CreateView):
         product.save()
         return super().form_valid(form)
 
-class ProductUpdateView(SuccessMessageMixin, UpdateView):
+class ProductUpdateView(BreadcrumbMixin, SuccessMessageMixin, UpdateView):
     model = Product
     template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
     success_url = reverse_lazy('admin_module:inventario')
+
+    def get_breadcrumb(self):
+        return [
+            {'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'},
+            {'label': 'Editar Producto', 'url': '', 'icon': 'pencil-square'}
+        ]
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
@@ -539,23 +559,23 @@ class ProductDeleteView(DeleteView):
 class ReportesView(BreadcrumbMixin, TemplateView):
      template_name= 'reportes/reportes.html'
      def get_breadcrumb(self):
-        return [{'label': 'Reportes', 'url': reverse('admin_module:reportes')}]
+        return [{'label': 'Reportes', 'url': reverse('admin_module:reportes'), 'icon': 'graph-up'}]
 
 class SeguridadView(BreadcrumbMixin, TemplateView):
      template_name= 'perfil/seguridad.html'
      def get_breadcrumb(self):
-        return [{'label': 'Seguridad', 'url': reverse('admin_module:seguridad')}]
+        return [{'label': 'Seguridad', 'url': reverse('admin_module:seguridad'), 'icon': 'shield-lock'}]
 
 class SoporteView(BreadcrumbMixin, TemplateView):
      template_name= 'perfil/soporte.html'
      def get_breadcrumb(self):
-        return [{'label': 'Soporte', 'url': reverse('admin_module:soporte')}]
+        return [{'label': 'Soporte', 'url': reverse('admin_module:soporte'), 'icon': 'headset'}]
 
 class PerfilUsuarioView(BreadcrumbMixin, TemplateView):
     template_name = 'perfil/perfil_usuario.html'
 
     def get_breadcrumb(self):
-        return [{'label': 'Perfil', 'url': reverse('admin_module:perfil_usuario')}]
+        return [{'label': 'Perfil', 'url': reverse('admin_module:perfil_usuario'), 'icon': 'person-circle'}]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -624,7 +644,7 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
         return redirect('not_in_group')
     
     def get_breadcrumb(self):
-        return [{'label': 'Registro Establecimiento', 'url': reverse('admin_module:registro_est')}]
+        return [{'label': 'Registro Establecimiento', 'url': reverse('admin_module:registro_est'), 'icon': 'building-add'}]
 
 class DeleteEstablishmentView(DeleteView):
     
@@ -642,7 +662,7 @@ class AdminSolicitudesListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
 
     # Breadcrumb (navegación)
     def get_breadcrumb(self):
-        return [{'label': 'Solicitudes', 'url': reverse('admin_module:admin_solicitudes_list')}]
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:admin_solicitudes_list'), 'icon': 'file-earmark-text'}]
 
     def get_queryset(self):
         """
@@ -667,11 +687,17 @@ class AdminSolicitudesListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
         
         return context
     
-class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
+class AdminSolicitudesDetailView(LoginRequiredMixin, BreadcrumbMixin, UpdateView):
     model = BarberRequest
     form_class = BarberRequestAdminResponseForm
     template_name = 'admin_module/solicitudes_detail.html'
     context_object_name = 'solicitud'
+
+    def get_breadcrumb(self):
+        return [
+            {'label': 'Solicitudes', 'url': reverse('admin_module:admin_solicitudes_list'), 'icon': 'file-earmark-text'},
+            {'label': 'Detalle', 'url': '', 'icon': 'eye'}
+        ]
 
     def dispatch(self, request, *args, **kwargs):
         # Obtener la solicitud

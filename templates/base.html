@@ -251,26 +251,72 @@
             }
         }
 
-        .breadcrumb-container {
-            background: rgba(237, 64, 211, 0.07);
-            backdrop-filter: blur(4px);
-            margin-bottom: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-            font-weight: bold;
-            color: #000 !important;
+        /* Breadcrumb moderno */
+        .breadcrumb-modern {
+            background: linear-gradient(135deg, rgba(62, 26, 78, 0.05) 0%, rgba(121, 40, 202, 0.03) 100%);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #3e1a4e;
+            border-radius: 8px;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(62, 26, 78, 0.08);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
+        .breadcrumb-modern .breadcrumb-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #495057;
+        }
 
-        .breadcrumb-container a {
-            color: #000 !important;
-            /* color del enlace normal */
+        .breadcrumb-modern .breadcrumb-item i {
+            font-size: 0.85rem;
+            color: #3e1a4e;
+        }
+
+        .breadcrumb-modern .breadcrumb-item a {
+            color: #3e1a4e;
             text-decoration: none;
-            /* opcional: eliminar subrayado */
+            transition: all 0.2s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
         }
 
-        .breadcrumb-container a:hover {
-            color: #3e1a4e !important;
-            /* efecto hover tipo morado de tu paleta */
+        .breadcrumb-modern .breadcrumb-item a:hover {
+            background: rgba(62, 26, 78, 0.1);
+            color: #7928ca;
+            transform: translateX(2px);
+        }
+
+        .breadcrumb-modern .breadcrumb-separator {
+            color: #adb5bd;
+            font-size: 0.8rem;
+            margin: 0 0.25rem;
+        }
+
+        .breadcrumb-modern .breadcrumb-item.active {
+            color: #3e1a4e;
+            font-weight: 600;
+        }
+
+        @media (max-width: 576px) {
+            .breadcrumb-modern {
+                font-size: 0.85rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .breadcrumb-modern .breadcrumb-item {
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -436,13 +482,26 @@
         <!-- Aqui va el contenido principal que varia o se muestra -->
         <main class="flex-grow-1" id="main-content">
             {% if breadcrumb %}
-            <div class="breadcrumb-container text-white py-2 px-3">
+            <div class="breadcrumb-modern">
                 {% for crumb in breadcrumb %}
-                {% if not forloop.last %}
-                <a href="{{ crumb.url }}" class="text-white text-decoration-none">{{ crumb.label }}</a> /
-                {% else %}
-                <span>{{ crumb.label }}</span>
-                {% endif %}
+                    {% if not forloop.last %}
+                        <div class="breadcrumb-item">
+                            {% if crumb.icon %}
+                                <i class="bi bi-{{ crumb.icon }}"></i>
+                            {% endif %}
+                            <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+                        </div>
+                        <span class="breadcrumb-separator">
+                            <i class="bi bi-chevron-right"></i>
+                        </span>
+                    {% else %}
+                        <div class="breadcrumb-item active">
+                            {% if crumb.icon %}
+                                <i class="bi bi-{{ crumb.icon }}"></i>
+                            {% endif %}
+                            <span>{{ crumb.label }}</span>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
             {% endif %}

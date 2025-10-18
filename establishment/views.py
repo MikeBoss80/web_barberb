@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from .forms import CreateEstablishmentForm
@@ -7,6 +7,8 @@ from establishment.models import Establishment
 from django.conf import settings
 from django.http import JsonResponse
 from decimal import Decimal, InvalidOperation
+from admin_module.utils.mixins import BreadcrumbMixin
+
 
 def parse_coordinate(value, default=None):
     if value is None or value == '':
@@ -16,12 +18,12 @@ def parse_coordinate(value, default=None):
     except (InvalidOperation, ValueError, TypeError):
         return default
 
-class EstablishmentMainView(TemplateView):
+class EstablishmentMainView(BreadcrumbMixin,TemplateView):
     template_name= 'establishment/base.html'
 
-    # def get_breadcrumb(self):
-    #     return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento')}]
-
+    def get_breadcrumb(self):
+        return [{'label': 'Establecimiento', 'url': reverse('establishment:establishment_main'), 'icon': 'building'}]
+    
 class EstablishmentManagementView(TemplateView):
     template_name= 'establishment/tabs/management.html'
 
