@@ -41,8 +41,8 @@ urlpatterns = [
     path('servicio/eliminar/<int:id>/', views.eliminar_servicio, name='eliminar_servicio'),
     path('solicitudes/', BarberRequestListView.as_view(), name='barber_solicitudes_list'),
     path('solicitudes/validate/<int:pk>/<int:value>/', BarberValidateVinculation.as_view(), name='barber_vinculation_validate'),
-    path('solicitudes/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle'),
-    path('solicitudes/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero')
+    path('solicitud/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle'),
+    path('crear-solicitud/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero')
 
 
 ]   

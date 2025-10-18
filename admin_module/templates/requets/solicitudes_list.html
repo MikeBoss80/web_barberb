@@ -1,5 +1,4 @@
 {% extends "base.html" %}  
-
 {% load static %}
 
 {% block title %}Mis Solicitudes{% endblock %}
@@ -9,84 +8,265 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="d-flex justify-content-between mb-3">
-            <h2 class="mb-4">Mis Solicitudes</h2>
-            <a href="{% url 'admin_module:solicitud_barbero' %}" class="btn btn-primary mt-4">Nueva Solicitud</a>
+<div class="container-fluid mt-4 px-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-inbox-fill me-2" style="color: #3e1a4e;"></i>
+                Mis Solicitudes
+            </h2>
+            <p class="text-muted mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                Administra y revisa el estado de tus solicitudes
+            </p>
         </div>
-    
-        <table id="tablaSolicitudes" class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>Tipo</th>
-                    <th>Fechas</th>
-                    <th>Estado</th>
-                    <th>Respuesta</th>
-                    <th>Fecha de Solicitud</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for solicitud in solicitudes %}
-                <tr>
-                    <td>{{ solicitud.get_tipo_display }}</td>
-                    <td>{{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</td>
-                    <td>
-                        <span class="badge 
-                            {% if solicitud.estado == 'aprobada' %} bg-success
-                            {% elif solicitud.estado == 'rechazada' %} bg-danger
-                            {% else %} bg-secondary {% endif %}">
-                            {{ solicitud.get_estado_display }}
-                        </span>
-                    </td>
-                    <td>{{ solicitud.respuesta_admin|default:"--" }}</td>
-                    <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
-                    <td>
-                        <a href="{% url 'admin_module:barber_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-info">
-                            Ver Detalles
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    
+        <a href="{% url 'admin_module:solicitud_barbero' %}" class="btn btn-lg px-4" style="background-color: #3e1a4e; color: white; border: none;">
+            <i class="bi bi-plus-circle-fill me-2"></i>
+            Nueva Solicitud
+        </a>
     </div>
 
-    <div class="row mt-5 bg-light p-4 rounded border-0 shadow-sm">
-        {% if requests %}
-            <h5 class="mb-4">Vinculaciones Pendientes</h5>
+    <!-- Tabla de Solicitudes -->
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0">
+                <i class="bi bi-list-task me-2" style="color: #3e1a4e;"></i>
+                Historial de Solicitudes
+            </h5>
+        </div>
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-hover display" id="tblVinculation">
-                    <thead class="table-dark">
+                <table id="tablaSolicitudes" class="table table-hover align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <th>Solicitado Por</th>
-                            <th>Estado</th>
-                            <th>Fecha</th>
-                            <th>Ultima Fecha</th>
-                            <th>Dirigida a</th>
-                            <th>Tipo</th>
-                            <th>Acciones</th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-tag me-1"></i>Tipo
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-calendar-range me-1"></i>Período
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-person-badge me-1"></i>Responsable
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-info-circle me-1"></i>Estado
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-chat-square-text me-1"></i>Respuesta
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-clock me-1"></i>Fecha de Solicitud
+                            </th>
+                            <th class="border-0 text-center" style="color: #3e1a4e;">
+                                <i class="bi bi-gear me-1"></i>Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for solicitud in solicitudes %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {% if solicitud.tipo == 'permiso' %}
+                                        <i class="bi bi-file-text me-1"></i>
+                                    {% elif solicitud.tipo == 'vacaciones' %}
+                                        <i class="bi bi-sun me-1"></i>
+                                    {% elif solicitud.tipo == 'incapacidad' %}
+                                        <i class="bi bi-heart-pulse me-1"></i>
+                                    {% else %}
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                    {% endif %}
+                                    {{ solicitud.get_tipo_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    {{ solicitud.fecha_inicio|date:"d/m/Y" }}
+                                </small>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event-fill me-1"></i>
+                                    {{ solicitud.fecha_fin|date:"d/m/Y" }}
+                                </small>
+                            </td>
+                            <td>
+                                {% if solicitud.establecimiento.id_admin %}
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-small me-2" style="background-color: rgba(62, 26, 78, 0.1); color: #3e1a4e;">
+                                            {{ solicitud.establecimiento.id_admin.first_name|first }}{{ solicitud.establecimiento.id_admin.last_name|first }}
+                                        </div>
+                                        <div>
+                                            <strong class="d-block" style="font-size: 0.9rem;">
+                                                {{ solicitud.establecimiento.id_admin.get_full_name }}
+                                            </strong>
+                                            <small class="text-muted">
+                                                <i class="bi bi-building me-1"></i>
+                                                {{ solicitud.establecimiento.name_est }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">
+                                        <i class="bi bi-dash-circle me-1"></i>
+                                        Sin asignar
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if solicitud.estado == 'aprobada' %}
+                                    <span class="badge rounded-pill bg-success bg-opacity-25 text-success border border-success px-3 py-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                        Aprobada
+                                    </span>
+                                {% elif solicitud.estado == 'rechazada' %}
+                                    <span class="badge rounded-pill bg-danger bg-opacity-25 text-danger border border-danger px-3 py-2">
+                                        <i class="bi bi-x-circle-fill me-1"></i>
+                                        Rechazada
+                                    </span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-warning bg-opacity-25 text-warning border border-warning px-3 py-2">
+                                        <i class="bi bi-clock-history me-1"></i>
+                                        Pendiente
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if solicitud.respuesta_admin %}
+                                    <div class="text-truncate" style="max-width: 200px;" title="{{ solicitud.respuesta_admin }}">
+                                        <i class="bi bi-chat-left-quote me-1 text-muted"></i>
+                                        {{ solicitud.respuesta_admin }}
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">
+                                        <i class="bi bi-dash-circle me-1"></i>
+                                        Sin respuesta
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>
+                                    <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                    {{ solicitud.fecha_solicitud|date:"d/m/Y" }}
+                                </small>
+                                <br>
+                                <small>
+                                    <i class="bi bi-clock me-1 text-muted"></i>
+                                    {{ solicitud.fecha_solicitud|date:"H:i" }}
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'admin_module:barber_solicitud_detalle' solicitud.id %}" 
+                                   class="btn btn-sm rounded-pill px-3" style="background-color: #3e1a4e; color: white; border: none;">
+                                    <i class="bi bi-eye me-1"></i>
+                                    Ver Detalle
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="bi bi-inbox display-1 text-muted"></i>
+                                <p class="text-muted mt-3 mb-2">No tienes solicitudes registradas</p>
+                                <a href="{% url 'admin_module:solicitud_barbero' %}" class="btn btn-sm" style="background-color: #3e1a4e; color: white;">
+                                    <i class="bi bi-plus-circle me-1"></i>
+                                    Crear Primera Solicitud
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Vinculaciones -->
+    {% if requests %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-header border-0 py-3" style="background: linear-gradient(135deg, rgba(62, 26, 78, 0.1) 0%, rgba(62, 26, 78, 0.05) 100%);">
+            <h5 class="mb-0" style="color: #3e1a4e;">
+                <i class="bi bi-link-45deg me-2"></i>
+                Vinculaciones Pendientes
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle display" id="tblVinculation">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="color: #3e1a4e;">
+                                <i class="bi bi-person me-1"></i>Solicitado Por
+                            </th>
+                            <th style="color: #3e1a4e;">
+                                <i class="bi bi-info-circle me-1"></i>Estado
+                            </th>
+                            <th style="color: #3e1a4e;">
+                                <i class="bi bi-calendar-plus me-1"></i>Fecha
+                            </th>
+                            <th style="color: #3e1a4e;">
+                                <i class="bi bi-calendar-check me-1"></i>Última Fecha
+                            </th>
+                            <th style="color: #3e1a4e;">
+                                <i class="bi bi-person-check me-1"></i>Dirigida a
+                            </th>
+                            <th style="color: #3e1a4e;">
+                                <i class="bi bi-tag me-1"></i>Tipo
+                            </th>
+                            <th class="text-center" style="color: #3e1a4e;">
+                                <i class="bi bi-gear me-1"></i>Acciones
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for request in requests %}
                             <tr>
-                                <td>{{ request.created_by.username }}</td>
-                                <td>{{ request.status.name }}</td>
-                                <td>{{ request.created_at }}</td>
-                                <td>{{ request.updated_at }}</td>
-                                <td>{{ request.recipient.username }}</td>
-                                <td>{{ request.workflow_type.name }}</td>
                                 <td>
+                                    <i class="bi bi-person-circle me-2 text-muted"></i>
+                                    {{ request.created_by.username }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning">
+                                        {{ request.status.name }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        {{ request.created_at|date:"d/m/Y H:i" }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>
+                                        {{ request.updated_at|date:"d/m/Y H:i" }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <i class="bi bi-person-badge me-2 text-muted"></i>
+                                    {{ request.recipient.username }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        {{ request.workflow_type.name }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
                                     {% if request.status.name == "En espera" %}
-                                    <button class="btn btn-sm btn-success btnValidateValidation" data-id="{{ request.id }}" data-value="1">
-                                        Aceptar
-                                    </button>
-                                    <button class="btn btn-sm btn-danger btnValidateValidation" data-id="{{ request.id }}" data-value="0">
-                                        Denegar
-                                    </button>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-success btn-sm btnValidateValidation" data-id="{{ request.id }}" data-value="1">
+                                            <i class="bi bi-check-lg me-1"></i>Aceptar
+                                        </button>
+                                        <button class="btn btn-danger btn-sm btnValidateValidation" data-id="{{ request.id }}" data-value="0">
+                                            <i class="bi bi-x-lg me-1"></i>Denegar
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                        <span class="text-muted">
+                                            <i class="bi bi-check-circle"></i>
+                                            Procesada
+                                        </span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -94,35 +274,94 @@
                     </tbody>
                 </table>
             </div>
-        {% else %}
-            <h3 class="mb-4">Vinculación</h3>
-            <p>Si deseas vincular tu cuenta a un establecimiento, por favor contacta al administrador del establecimiento para que realice la solicitud.</p>
-        {% endif %}
-
+        </div>
     </div>
-
+    {% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-link-45deg display-1 text-muted"></i>
+            <h5 class="mt-3 mb-2">Vinculación a Establecimiento</h5>
+            <p class="text-muted mb-0">
+                Si deseas vincular tu cuenta a un establecimiento, por favor contacta al administrador 
+                del establecimiento para que realice la solicitud.
+            </p>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
+<!-- Modal de Confirmación -->
 <div class="modal fade" id="modalValidateVinculation" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form id="formValidateVinculation" method="POST">
             {% csrf_token %}
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">Confirmar elección</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0" style="background-color: #3e1a4e;">
+                    <h5 class="modal-title text-white">
+                        <i class="bi bi-question-circle me-2"></i>
+                        Confirmar Acción
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body">
-                    <p id="modalBody"></p>
+                <div class="modal-body text-center py-4">
+                    <i class="bi bi-exclamation-triangle display-3 text-warning mb-3"></i>
+                    <p id="modalBody" class="mb-0"></p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Continuar</button>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-2"></i>Cancelar
+                    </button>
+                    <button type="submit" class="btn px-4" style="background-color: #3e1a4e; color: white; border: none;">
+                        <i class="bi bi-check-lg me-2"></i>Confirmar
+                    </button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    .avatar-small {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background-color: rgba(62, 26, 78, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+</style>
 
 {% endblock %}
 
@@ -133,40 +372,36 @@
 
 <script>
     $(document).ready(function () {
+        // DataTable de Vinculaciones
         $('#tblVinculation').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
             },
-            dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
-            // buttons: [
-            //     'copy', 'csv', 'excel', 'pdf', 'print'
-            // ],
-            pageLength: 2,
+            dom: '<"d-flex justify-content-between mb-3"fB>rt<"d-flex justify-content-between mt-3"lip>',
+            pageLength: 10,
+            order: [[2, 'desc']]
         });
 
-        $(".btnValidateValidation").on("click", function () {
-            const requestId = $(this).data("id");
-            const value = $(this).data("value");
-            const action = Boolean(value) ? "ACEPTAR" : "DENEGAR";
-            const message = `¿Estás seguro de que deseas ${action} esta solicitud?`;
-
-            $("#modalBody").text(message);
-            $("#formValidateVinculation").attr("action", `../solicitudes/validate/${requestId}/${value}/`);
-            $("#modalValidateVinculation").modal("show");
-        });
-
+        // DataTable de Solicitudes
         $('#tablaSolicitudes').DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
             },
-            order: [[4, 'desc']]  // Ordena por fecha de solicitud descendente
+            order: [[4, 'desc']],  // Ordena por fecha de solicitud descendente
+            pageLength: 10,
+            dom: '<"d-flex justify-content-between mb-3"fl>rt<"d-flex justify-content-between mt-3"ip>'
         });
 
+        // Modal de confirmación
+        $(".btnValidateValidation").on("click", function () {
+            const requestId = $(this).data("id");
+            const value = $(this).data("value");
+            const action = Boolean(value) ? "ACEPTAR" : "DENEGAR";
+            const message = `¿Estás seguro de que deseas ${action} esta solicitud de vinculación?`;
 
-        // Filtro personalizado por estado
-        $('#filtroEstado').on('change', function () {
-            const estado = $(this).val();
-            tabla.column(2).search(estado).draw();  // La columna 2 es la de "Estado"
+            $("#modalBody").text(message);
+            $("#formValidateVinculation").attr("action", `../solicitudes/validate/${requestId}/${value}/`);
+            $("#modalValidateVinculation").modal("show");
         });
     });
 </script>

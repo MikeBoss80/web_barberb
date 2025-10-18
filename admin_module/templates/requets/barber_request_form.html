@@ -4,36 +4,250 @@
 {% block title %}Nueva Solicitud{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Nueva Solicitud</h2>
+<div class="container mt-4 px-4" style="max-width: 800px;">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-plus-circle-fill me-2" style="color: #3e1a4e;"></i>
+                Nueva Solicitud
+            </h2>
+            <p class="text-muted mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                Completa el formulario para enviar tu solicitud al administrador
+            </p>
+        </div>
+        <a href="{% url 'admin_module:barber_solicitudes_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Volver
+        </a>
+    </div>
 
-    <form method="post" class="needs-validation">
+    <form method="post" class="needs-validation" id="formSolicitud">
         {% csrf_token %}
-        {{ form.non_field_errors }}
+        
+        <!-- Mensaje de errores generales -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger border-start border-4 border-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
 
-        <div class="mb-3">
-            <label for="{{ form.tipo.id_for_label }}" class="form-label">Tipo de Solicitud</label>
-            {{ form.tipo }}
+        <!-- Card de Información del Responsable -->
+        {% if administrador %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header border-0 py-3" style="background: linear-gradient(135deg, rgba(62, 26, 78, 0.1) 0%, rgba(62, 26, 78, 0.05) 100%);">
+                <h5 class="mb-0" style="color: #3e1a4e;">
+                    <i class="bi bi-person-badge me-2"></i>
+                    Tu solicitud será revisada por
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-large me-3" style="background-color: rgba(62, 26, 78, 0.1); color: #3e1a4e;">
+                        {{ administrador.first_name|first }}{{ administrador.last_name|first }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">{{ administrador.get_full_name }}</h5>
+                        <small class="text-muted d-block">
+                            <i class="bi bi-shield-check me-1"></i>
+                            Administrador del Establecimiento
+                        </small>
+                        {% if establecimiento %}
+                        <small class="text-muted d-block">
+                            <i class="bi bi-building me-1"></i>
+                            {{ establecimiento.name_est }}
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Card Principal del Formulario -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header border-0 py-3" style="background-color: rgba(62, 26, 78, 0.05);">
+                <h5 class="mb-0" style="color: #3e1a4e;">
+                    <i class="bi bi-clipboard-check me-2"></i>
+                    Información de la Solicitud
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                
+                <!-- Tipo de Solicitud -->
+                <div class="mb-4">
+                    <label for="{{ form.tipo.id_for_label }}" class="form-label">
+                        <i class="bi bi-tag-fill me-2" style="color: #3e1a4e;"></i>
+                        <strong>Tipo de Solicitud</strong>
+                        <span class="text-danger">*</span>
+                    </label>
+                    {{ form.tipo }}
+                    {% if form.tipo.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.tipo.errors }}
+                        </div>
+                    {% endif %}
+                    <small class="text-muted d-block mt-1">
+                        <i class="bi bi-question-circle me-1"></i>
+                        Selecciona el motivo de tu solicitud
+                    </small>
+                </div>
+
+                <!-- Fechas en dos columnas -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">
+                            <i class="bi bi-calendar-event me-2" style="color: #3e1a4e;"></i>
+                            <strong>Fecha de Inicio</strong>
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.fecha_inicio }}
+                        {% if form.fecha_inicio.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.fecha_inicio.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">
+                            <i class="bi bi-calendar-event-fill me-2" style="color: #3e1a4e;"></i>
+                            <strong>Fecha de Fin</strong>
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.fecha_fin }}
+                        {% if form.fecha_fin.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.fecha_fin.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Comentario -->
+                <div class="mb-4">
+                    <label for="{{ form.comentario.id_for_label }}" class="form-label">
+                        <i class="bi bi-chat-left-text me-2" style="color: #3e1a4e;"></i>
+                        <strong>Comentario / Detalles</strong>
+                    </label>
+                    {{ form.comentario }}
+                    {% if form.comentario.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.comentario.errors }}
+                        </div>
+                    {% endif %}
+                    <small class="text-muted d-block mt-1">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        Agrega información adicional que el administrador deba conocer
+                    </small>
+                </div>
+
+                <!-- Nota Informativa -->
+                <div class="alert alert-info border-0" style="background-color: rgba(62, 26, 78, 0.05);">
+                    <i class="bi bi-info-circle-fill me-2" style="color: #3e1a4e;"></i>
+                    <strong>Nota:</strong> Tu solicitud será revisada por el administrador del establecimiento. 
+                    Recibirás una notificación con la respuesta.
+                </div>
+
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">Fecha de Inicio</label>
-            {{ form.fecha_inicio }}
+        <!-- Botones de Acción -->
+        <div class="d-flex justify-content-end gap-3 mt-4">
+            <a href="{% url 'admin_module:barber_solicitudes_list' %}" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-x-lg me-2"></i>
+                Cancelar
+            </a>
+            <button type="submit" class="btn btn-lg px-4" style="background-color: #3e1a4e; color: white; border: none;">
+                <i class="bi bi-send-fill me-2"></i>
+                Enviar Solicitud
+            </button>
         </div>
-
-        <div class="mb-3">
-            <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">Fecha de Fin</label>
-            {{ form.fecha_fin }}
-        </div>
-
-        <div class="mb-3">
-            <label for="{{ form.comentario.id_for_label }}" class="form-label">Comentario</label>
-            {{ form.comentario }}
-        </div>
-
-
-        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
-        <a href="{% url 'admin_module:barber_solicitudes_list' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<style>
+    .avatar-large {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #3e1a4e;
+        box-shadow: 0 0 0 0.25rem rgba(62, 26, 78, 0.15);
+    }
+    
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    label {
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<script>
+    // Validación mejorada del formulario
+    document.getElementById('formSolicitud')?.addEventListener('submit', function(e) {
+        const tipo = document.getElementById('{{ form.tipo.id_for_label }}');
+        const fechaInicio = document.getElementById('{{ form.fecha_inicio.id_for_label }}');
+        const fechaFin = document.getElementById('{{ form.fecha_fin.id_for_label }}');
+        
+        let isValid = true;
+        
+        // Validar campos requeridos
+        if (!tipo.value) {
+            alert('Por favor, selecciona el tipo de solicitud.');
+            tipo.focus();
+            e.preventDefault();
+            return;
+        }
+        
+        if (!fechaInicio.value) {
+            alert('Por favor, selecciona la fecha de inicio.');
+            fechaInicio.focus();
+            e.preventDefault();
+            return;
+        }
+        
+        if (!fechaFin.value) {
+            alert('Por favor, selecciona la fecha de fin.');
+            fechaFin.focus();
+            e.preventDefault();
+            return;
+        }
+        
+        // Validar que fecha fin sea mayor o igual a fecha inicio
+        if (new Date(fechaFin.value) < new Date(fechaInicio.value)) {
+            alert('La fecha de fin no puede ser anterior a la fecha de inicio.');
+            fechaFin.focus();
+            e.preventDefault();
+            return;
+        }
+    });
+</script>
 {% endblock %}

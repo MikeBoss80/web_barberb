@@ -40,9 +40,21 @@ class HomeadminView(BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Obtener el establecimiento del admin
-        perfil=Profile.objects.get(user=self.request.user)
-        establecimiento = perfil.establishment
+        # Obtener el establecimiento donde el usuario es administrador
+        establecimiento = Establishment.objects.filter(id_admin=self.request.user).first()
+        
+        if not establecimiento:
+            # Si el usuario no es admin de ningún establecimiento, retornar contexto vacío
+            context.update({
+                'today': timezone.now().date(),
+                'citas_hoy': 0,
+                'barberos_activos': 0,
+                'bajo_stock': 0,
+                'ingresos_hoy': 0,
+                'proximas_citas': [],
+                'notificaciones': ['No tienes un establecimiento asignado.'],
+            })
+            return context
 
         today=timezone.now().date()
 
@@ -323,6 +335,21 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
     def get_breadcrumb(self):
         return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero')}]
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        # Obtener el establecimiento y su administrador
+        try:
+            perfil = Profile.objects.get(user=user)
+            if perfil.establishment:
+                context['establecimiento'] = perfil.establishment
+                context['administrador'] = perfil.establishment.id_admin
+        except Profile.DoesNotExist:
+            context['establecimiento'] = None
+            context['administrador'] = None
+        
+        return context
 
     def form_valid(self, form):
         """
@@ -361,16 +388,25 @@ class ServiciosView(BreadcrumbMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        # Traer solo los servicios relacionados al establecimiento por la tabla intermedia
+        # Traer solo los servicios relacionados al establecimiento
         try:
-            perfil = Profile.objects.get(user=user)
-            establecimiento = perfil.establishment
-            servicios = (
-                Service.objects.filter(establishmentservice__establishment=establecimiento)
-                .select_related('category')
-                .distinct()
-            )
-        except Establishment.DoesNotExist:
+            # Primero intentar obtener el establecimiento donde el usuario es admin
+            establecimiento = Establishment.objects.filter(id_admin=user).first()
+            
+            # Si no es admin, intentar obtenerlo desde el perfil (para barberos)
+            if not establecimiento:
+                perfil = Profile.objects.get(user=user)
+                establecimiento = perfil.establishment
+            
+            if establecimiento:
+                servicios = (
+                    Service.objects.filter(establishmentservice__establishment=establecimiento)
+                    .select_related('category')
+                    .distinct()
+                )
+            else:
+                servicios = Service.objects.none()
+        except (Establishment.DoesNotExist, Profile.DoesNotExist):
             servicios = Service.objects.none()
 
         context['servicios'] = servicios
@@ -614,15 +650,40 @@ class AdminSolicitudesListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
         al establecimiento del administrador actual.
         """
         user = self.request.user
-        perfil_admin = Profile.objects.get(user=user)
-        establecimiento = perfil_admin.establishment
-        return BarberRequest.objects.filter(establecimiento=establecimiento).order_by('-fecha_solicitud')
+        # Obtener el establecimiento donde el usuario es administrador
+        establecimiento = Establishment.objects.filter(id_admin=user).first()
+        if establecimiento:
+            return BarberRequest.objects.filter(establecimiento=establecimiento).order_by('-fecha_solicitud')
+        return BarberRequest.objects.none()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        
+        # Contadores por estado
+        context['pendientes_count'] = queryset.filter(estado='pendiente').count()
+        context['aprobadas_count'] = queryset.filter(estado='aprobada').count()
+        context['rechazadas_count'] = queryset.filter(estado='rechazada').count()
+        
+        return context
     
 class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
     model = BarberRequest
     form_class = BarberRequestAdminResponseForm
     template_name = 'admin_module/solicitudes_detail.html'
     context_object_name = 'solicitud'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Obtener la solicitud
+        solicitud = self.get_object()
+        
+        # Si la solicitud ya fue procesada (aprobada o rechazada), no permitir modificaciones
+        if solicitud.estado != 'pendiente' and request.method == 'POST':
+            from django.contrib import messages
+            messages.warning(request, 'Esta solicitud ya ha sido procesada y no puede ser modificada.')
+            return redirect('admin_module:admin_solicitudes_list')
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         # Estado enviado en POST (desde los botones)
@@ -633,7 +694,7 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-def get_success_url(self):
+    def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')    
     
     

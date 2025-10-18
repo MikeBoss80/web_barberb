@@ -4,43 +4,218 @@
 {% block title %}Solicitudes de Barberos{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Solicitudes Recibidas</h2>
+<div class="container-fluid mt-4 px-4">
+    <!-- Header con estadísticas -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3">
+                <i class="bi bi-inbox-fill me-2" style="color: #3e1a4e;"></i>
+                Solicitudes de Barberos
+            </h2>
+        </div>
+    </div>
 
-    <table id="tablaSolicitudes" class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>Barbero</th>
-                <th>Tipo</th>
-                <th>Fechas</th>
-                <th>Estado</th>
-                <th>Fecha de Solicitud</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for solicitud in solicitudes %}
-            <tr>
-                <td>{{ solicitud.barber.get_full_name }}</td>
-                <td>{{ solicitud.get_tipo_display }}</td>
-                <td>{{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</td>
-                <td>
-                    <span class="badge 
-                        {% if solicitud.estado == 'aprobada' %} bg-success
-                        {% elif solicitud.estado == 'rechazada' %} bg-danger
-                        {% else %} bg-secondary {% endif %}">
-                        {{ solicitud.get_estado_display }}
-                    </span>
-                </td>
-                <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'admin_module:admin_solicitud_detalle' solicitud.id %}" class="btn btn-sm btn-primary">
-                        Ver y Responder
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Estadísticas Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                            <i class="bi bi-clock-history text-warning fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="text-muted mb-1">Pendientes</h6>
+                        <h3 class="mb-0">{{ pendientes_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                            <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="text-muted mb-1">Aprobadas</h6>
+                        <h3 class="mb-0">{{ aprobadas_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="rounded-circle bg-danger bg-opacity-10 p-3">
+                            <i class="bi bi-x-circle-fill text-danger fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="text-muted mb-1">Rechazadas</h6>
+                        <h3 class="mb-0">{{ rechazadas_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Solicitudes -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tablaSolicitudes" class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-person-circle me-1"></i>Barbero
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-tag me-1"></i>Tipo
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-calendar-range me-1"></i>Período
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-info-circle me-1"></i>Estado
+                            </th>
+                            <th class="border-0" style="color: #3e1a4e;">
+                                <i class="bi bi-clock me-1"></i>Fecha de Solicitud
+                            </th>
+                            <th class="border-0 text-center" style="color: #3e1a4e;">
+                                <i class="bi bi-gear me-1"></i>Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for solicitud in solicitudes %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-2" style="background-color: rgba(62, 26, 78, 0.1); color: #3e1a4e;">
+                                        {{ solicitud.barber.first_name|first }}{{ solicitud.barber.last_name|first }}
+                                    </div>
+                                    <strong>{{ solicitud.barber.get_full_name }}</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {% if solicitud.tipo == 'permiso' %}
+                                        <i class="bi bi-file-text me-1"></i>
+                                    {% elif solicitud.tipo == 'vacaciones' %}
+                                        <i class="bi bi-sun me-1"></i>
+                                    {% elif solicitud.tipo == 'incapacidad' %}
+                                        <i class="bi bi-heart-pulse me-1"></i>
+                                    {% else %}
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                    {% endif %}
+                                    {{ solicitud.get_tipo_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    {{ solicitud.fecha_inicio|date:"d/m/Y" }}
+                                </small>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event-fill me-1"></i>
+                                    {{ solicitud.fecha_fin|date:"d/m/Y" }}
+                                </small>
+                            </td>
+                            <td>
+                                {% if solicitud.estado == 'aprobada' %}
+                                    <span class="badge rounded-pill bg-success bg-opacity-25 text-success border border-success px-3 py-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                        Aprobada
+                                    </span>
+                                {% elif solicitud.estado == 'rechazada' %}
+                                    <span class="badge rounded-pill bg-danger bg-opacity-25 text-danger border border-danger px-3 py-2">
+                                        <i class="bi bi-x-circle-fill me-1"></i>
+                                        Rechazada
+                                    </span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-warning bg-opacity-25 text-warning border border-warning px-3 py-2">
+                                        <i class="bi bi-clock-history me-1"></i>
+                                        Pendiente
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>
+                                    <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                    {{ solicitud.fecha_solicitud|date:"d/m/Y" }}
+                                </small>
+                                <br>
+                                <small>
+                                    <i class="bi bi-clock me-1 text-muted"></i>
+                                    {{ solicitud.fecha_solicitud|date:"H:i" }}
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                {% if solicitud.estado == 'pendiente' %}
+                                    <a href="{% url 'admin_module:admin_solicitud_detalle' solicitud.id %}" 
+                                       class="btn btn-sm rounded-pill px-3" style="background-color: #3e1a4e; color: white; border: none;">
+                                        <i class="bi bi-reply-fill me-1"></i>
+                                        Responder
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'admin_module:admin_solicitud_detalle' solicitud.id %}" 
+                                       class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                        <i class="bi bi-eye me-1"></i>
+                                        Ver
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="bi bi-inbox display-1 text-muted"></i>
+                                <p class="text-muted mt-3">No hay solicitudes disponibles</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background-color: rgba(62, 26, 78, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
 {% endblock %}

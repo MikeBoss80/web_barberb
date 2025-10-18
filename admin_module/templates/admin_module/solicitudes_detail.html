@@ -1,37 +1,431 @@
 {% extends "base.html" %}
-{% block title %}Responder Solicitud{% endblock %}
+{% block title %}Detalle de Solicitud{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Responder Solicitud de {{ solicitud.barber.get_full_name }}</h2>
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <p><strong>Tipo:</strong> {{ solicitud.get_tipo_display }}</p>
-            <p><strong>Fechas:</strong> {{ solicitud.fecha_inicio }} → {{ solicitud.fecha_fin }}</p>
-            <p><strong>Comentario del Barbero:</strong> {{ solicitud.comentario|default:"--" }}</p>
-            <p><strong>Estado actual:</strong>
-                <span class="badge 
-                    {% if solicitud.estado == 'aprobada' %} bg-success
-                    {% elif solicitud.estado == 'rechazada' %} bg-danger
-                    {% else %} bg-secondary {% endif %}">
-                    {{ solicitud.get_estado_display }}
-                </span>
+<div class="container mt-4 px-4" style="max-width: 900px;">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-file-earmark-text me-2" style="color: #3e1a4e;"></i>
+                Detalle de Solicitud
+            </h2>
+            <p class="text-muted mb-0">
+                <i class="bi bi-calendar3 me-1"></i>
+                Solicitado el {{ solicitud.fecha_solicitud|date:"d/m/Y" }} a las {{ solicitud.fecha_solicitud|date:"H:i" }}
             </p>
         </div>
+        <a href="{% url 'admin_module:admin_solicitudes_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Volver
+        </a>
     </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="mb-3">
-            {{ form.respuesta_admin.label_tag }}
-            {{ form.respuesta_admin }}
+    <!-- Estado Badge Grande -->
+    <div class="text-center mb-4">
+        {% if solicitud.estado == 'aprobada' %}
+            <div class="badge-status bg-success bg-opacity-10 border border-success text-success">
+                <i class="bi bi-check-circle-fill fs-1"></i>
+                <h4 class="mt-2 mb-0">Solicitud Aprobada</h4>
+            </div>
+        {% elif solicitud.estado == 'rechazada' %}
+            <div class="badge-status bg-danger bg-opacity-10 border border-danger text-danger">
+                <i class="bi bi-x-circle-fill fs-1"></i>
+                <h4 class="mt-2 mb-0">Solicitud Rechazada</h4>
+            </div>
+        {% else %}
+            <div class="badge-status bg-warning bg-opacity-10 border border-warning text-warning">
+                <i class="bi bi-clock-history fs-1"></i>
+                <h4 class="mt-2 mb-0">Pendiente de Respuesta</h4>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <!-- Columna Izquierda - Información -->
+        <div class="col-lg-6 mb-4">
+            <!-- Card de Barbero -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-circle me-2" style="color: #3e1a4e;"></i>
+                        Información del Barbero
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar-large me-3" style="background-color: rgba(62, 26, 78, 0.1); color: #3e1a4e;">
+                            {{ solicitud.barber.first_name|first }}{{ solicitud.barber.last_name|first }}
+                        </div>
+                        <div>
+                            <h5 class="mb-0">{{ solicitud.barber.get_full_name }}</h5>
+                            <small class="text-muted">
+                                <i class="bi bi-envelope me-1"></i>
+                                {{ solicitud.barber.email }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Tipo de Solicitud -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tag me-2" style="color: #3e1a4e;"></i>
+                        Tipo de Solicitud
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-light border mb-0">
+                        {% if solicitud.tipo == 'permiso' %}
+                            <i class="bi bi-file-text fs-3 text-info"></i>
+                        {% elif solicitud.tipo == 'vacaciones' %}
+                            <i class="bi bi-sun fs-3 text-warning"></i>
+                        {% elif solicitud.tipo == 'incapacidad' %}
+                            <i class="bi bi-heart-pulse fs-3 text-danger"></i>
+                        {% else %}
+                            <i class="bi bi-calendar-check fs-3 text-success"></i>
+                        {% endif %}
+                        <h5 class="mt-2 mb-0">{{ solicitud.get_tipo_display }}</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Fechas -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-range me-2" style="color: #3e1a4e;"></i>
+                        Período Solicitado
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-calendar-event text-muted"></i>
+                                <p class="mb-1 text-muted small">Desde</p>
+                                <h6 class="mb-0">{{ solicitud.fecha_inicio|date:"d/m/Y" }}</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-calendar-event-fill text-muted"></i>
+                                <p class="mb-1 text-muted small">Hasta</p>
+                                <h6 class="mb-0">{{ solicitud.fecha_fin|date:"d/m/Y" }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <button type="submit" name="accion_estado" value="aprobada" class="btn btn-success">Aprobar</button>
-        <button type="submit" name="accion_estado" value="rechazada" class="btn btn-danger">Rechazar</button>
-        <a href="{% url 'admin_module:admin_solicitudes_list' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+        <!-- Columna Derecha - Comentarios y Acciones -->
+        <div class="col-lg-6">
+            <!-- Card de Comentario del Barbero -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-chat-left-text me-2" style="color: #3e1a4e;"></i>
+                        Comentario del Barbero
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if solicitud.comentario %}
+                        <div class="alert alert-light mb-0" style="border-left: 4px solid #3e1a4e;">
+                            <i class="bi bi-quote text-muted"></i>
+                            <p class="mb-0 mt-2">{{ solicitud.comentario }}</p>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Sin comentarios adicionales
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Card de Respuesta del Admin (si existe) -->
+            {% if solicitud.respuesta_admin %}
+            <div class="card border-0 shadow-sm mb-4 border-start border-4 border-success">
+                <div class="card-header bg-success bg-opacity-10 border-0 py-3">
+                    <h5 class="mb-0 text-success">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Respuesta del Administrador
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success border mb-0">
+                        <i class="bi bi-quote text-success"></i>
+                        <p class="mb-0 mt-2">{{ solicitud.respuesta_admin }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Formulario de Respuesta -->
+            {% if solicitud.estado == 'pendiente' %}
+            <div class="card border-0 shadow-sm" style="border-left: 4px solid #3e1a4e !important;">
+                <div class="card-header border-0 py-3" style="background-color: rgba(62, 26, 78, 0.1);">
+                    <h5 class="mb-0" style="color: #3e1a4e;">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Responder Solicitud
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="formRespuesta">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.respuesta_admin.id_for_label }}" class="form-label">
+                                <i class="bi bi-chat-square-text me-2"></i>
+                                <strong>Tu Respuesta</strong>
+                            </label>
+                            <textarea name="{{ form.respuesta_admin.name }}" 
+                                      id="{{ form.respuesta_admin.id_for_label }}"
+                                      class="form-control form-control-lg" 
+                                      rows="4" 
+                                      placeholder="Escribe tu respuesta al barbero..."
+                                      required></textarea>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Este mensaje será visible para el barbero
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" name="accion_estado" value="aprobada" 
+                                    class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Aprobar Solicitud
+                            </button>
+                            <button type="submit" name="accion_estado" value="rechazada" 
+                                    class="btn btn-danger btn-lg">
+                                <i class="bi bi-x-circle-fill me-2"></i>
+                                Rechazar Solicitud
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-lock-fill text-muted display-4"></i>
+                    <h5 class="mt-3 mb-2">Solicitud Procesada</h5>
+                    <p class="text-muted mb-0">
+                        Esta solicitud ya ha sido {{ solicitud.get_estado_display|lower }} 
+                        y no puede ser modificada.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<!-- Modal de Confirmación para Aprobar -->
+<div class="modal fade" id="modalAprobar" tabindex="-1" aria-labelledby="modalAprobarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #198754 0%, #20c997 100%);">
+                <h5 class="modal-title text-white" id="modalAprobarLabel">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Aprobar Solicitud
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle display-1 text-success"></i>
+                </div>
+                <h5 class="mb-3">¿Confirmar aprobación?</h5>
+                <p class="text-muted mb-0">
+                    Se aprobará la solicitud de <strong>{{ solicitud.barber.get_full_name }}</strong> 
+                    para <strong>{{ solicitud.get_tipo_display }}</strong> 
+                    del {{ solicitud.fecha_inicio|date:"d/m/Y" }} al {{ solicitud.fecha_fin|date:"d/m/Y" }}.
+                </p>
+                <p class="text-muted mt-2 mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    El barbero será notificado de tu decisión.
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-success px-4" id="btnConfirmarAprobar">
+                    <i class="bi bi-check-circle-fill me-2"></i>Sí, Aprobar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación para Rechazar -->
+<div class="modal fade" id="modalRechazar" tabindex="-1" aria-labelledby="modalRechazarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);">
+                <h5 class="modal-title text-white" id="modalRechazarLabel">
+                    <i class="bi bi-x-circle-fill me-2"></i>
+                    Rechazar Solicitud
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-x-octagon display-1 text-danger"></i>
+                </div>
+                <h5 class="mb-3">¿Confirmar rechazo?</h5>
+                <p class="text-muted mb-0">
+                    Se rechazará la solicitud de <strong>{{ solicitud.barber.get_full_name }}</strong> 
+                    para <strong>{{ solicitud.get_tipo_display }}</strong>.
+                </p>
+                <p class="text-muted mt-2 mb-0">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    Esta acción notificará al barbero con tu respuesta.
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-2"></i>Volver
+                </button>
+                <button type="button" class="btn btn-danger px-4" id="btnConfirmarRechazar">
+                    <i class="bi bi-x-circle-fill me-2"></i>Sí, Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge-status {
+        padding: 2rem;
+        border-radius: 15px;
+        border-width: 2px !important;
+    }
+    
+    .avatar-large {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 24px;
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+    }
+    
+    .form-control:focus {
+        border-color: #3e1a4e;
+        box-shadow: 0 0 0 0.25rem rgba(62, 26, 78, 0.15);
+    }
+    
+    .btn-lg {
+        padding: 0.8rem 1.5rem;
+        font-weight: 500;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .modal-header {
+        padding: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 2rem;
+    }
+    
+    .modal.fade .modal-dialog {
+        transition: transform 0.3s ease-out;
+    }
+    
+    .modal.show .modal-dialog {
+        transform: scale(1);
+    }
+</style>
+
+<script>
+    // Referencias al formulario
+    const form = document.getElementById('formRespuesta');
+    
+    if (form) {
+        // Prevenir envío directo del formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const accion = e.submitter.value;
+            const textarea = document.querySelector('textarea[name="respuesta_admin"]');
+            
+            // Validar que haya respuesta escrita
+            if (!textarea.value.trim()) {
+                alert('Por favor, escribe una respuesta antes de continuar.');
+                textarea.focus();
+                return;
+            }
+            
+            // Mostrar modal según la acción
+            if (accion === 'aprobada') {
+                const modal = new bootstrap.Modal(document.getElementById('modalAprobar'));
+                modal.show();
+            } else if (accion === 'rechazada') {
+                const modal = new bootstrap.Modal(document.getElementById('modalRechazar'));
+                modal.show();
+            }
+        });
+        
+        // Confirmar aprobación
+        document.getElementById('btnConfirmarAprobar')?.addEventListener('click', function() {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'accion_estado';
+            hiddenInput.value = 'aprobada';
+            form.appendChild(hiddenInput);
+            
+            // Cerrar modal y enviar
+            bootstrap.Modal.getInstance(document.getElementById('modalAprobar')).hide();
+            
+            // Esperar que el modal se cierre antes de enviar
+            setTimeout(() => {
+                form.submit();
+            }, 300);
+        });
+        
+        // Confirmar rechazo
+        document.getElementById('btnConfirmarRechazar')?.addEventListener('click', function() {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'accion_estado';
+            hiddenInput.value = 'rechazada';
+            form.appendChild(hiddenInput);
+            
+            // Cerrar modal y enviar
+            bootstrap.Modal.getInstance(document.getElementById('modalRechazar')).hide();
+            
+            // Esperar que el modal se cierre antes de enviar
+            setTimeout(() => {
+                form.submit();
+            }, 300);
+        });
+    }
+</script>
 {% endblock %}
