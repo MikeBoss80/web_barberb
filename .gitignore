@@ -6,3 +6,4 @@ perfil_gabo/
 .env
 **/__pycache__/
 docs/
+/core/notifications/
