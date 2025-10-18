@@ -5,3 +5,4 @@ django_env/
 perfil_gabo/
 .env
 **/__pycache__/
+docs/

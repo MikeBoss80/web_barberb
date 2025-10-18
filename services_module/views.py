@@ -14,7 +14,8 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.views import LogoutView
 from datetime import date, time
 from django.utils import timezone
-from admin_module.models import Establishment, EstablishmentService, Service , Schedule, ScheduleAssignment
+from establishment.models import Establishment
+from admin_module.models import EstablishmentService, Service , Schedule, ScheduleAssignment
 from services_module.models import ServiceDate
 from admin_module.utils.slots import generate_available_slots
 from django.db.models import F, ExpressionWrapper, FloatField,Prefetch

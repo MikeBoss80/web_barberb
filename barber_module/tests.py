@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from admin_module.models import Establishment
+from establishment.models import Establishment
 from barber_module.models import BarberRequest, TIPO_SOLICITUD_CHOICES, ESTADO_SOLICITUD_CHOICES
 from datetime import date, timedelta
 from django.utils import timezone

@@ -1,12 +1,12 @@
 
 from django.contrib import admin
+from establishment.models import Establishment
 from .models import  (
     
     Day,
     Schedule,
     ScheduleAssignment,
     Product,
-    Establishment,
     Service,
     EstablishmentService,
     Inventory,
@@ -34,11 +34,6 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name_product',)
     list_filter = ('updated_at',)
 
-@admin.register(Establishment)
-class EstablishmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name_est', 'city_est', 'country_est', 'phone_est', 'active')
-    search_fields = ('name_est', 'city_est', 'country_est')
-    list_filter = ('active', 'created_date')
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):

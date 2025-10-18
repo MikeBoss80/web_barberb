@@ -51,31 +51,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name_product
 
-# TODO: DEPRECATED - Usar establishment.Establishment en su lugar
-# Este modelo se mantendrá temporalmente para compatibilidad
-# Se eliminará en una versión futura
-class Establishment(models.Model):
-    name_est = models.CharField(max_length=50)
-    address_est = models.CharField(max_length=80)
-    city_est = models.CharField(max_length=20)
-    country_est = models.CharField(max_length=20)
-    phone_est = models.CharField(max_length=20)
-    email_est = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
-    lat_est = models.DecimalField(max_digits=9, decimal_places=6)
-    lng_est = models.DecimalField(max_digits=9, decimal_places=6)
-    img_est = models.ImageField(upload_to="establishments/", null=True, blank=True)
-    qa_average_est = models.FloatField(default=5.0)
-    created_date = models.DateTimeField(auto_now_add=True, null=True)
-    active = models.BooleanField(default=True)
-    id_admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="admin_estant")
-
-    class Meta:
-        db_table = 'admin_module_establishment'  # Tabla específica para evitar conflictos
-
-    def __str__(self):
-        return self.name_est
-
 # Tabla: admin_module_services
 class Service(models.Model):
     name_service = models.CharField(max_length=100)
@@ -98,3 +73,139 @@ class EstablishmentService(models.Model):
 class Inventory(models.Model):
     establishment = models.ForeignKey('establishment.Establishment', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+# ============================================================================
+# SISTEMA PROFESIONAL DE HORARIOS Y SLOTS
+# ============================================================================
+
+# Tabla: admin_module_establishmentschedule
+class EstablishmentSchedule(models.Model):
+    """
+    Horarios de operación de cada establecimiento por día de la semana.
+    Define cuándo está abierto cada local.
+    """
+    DAYS_OF_WEEK = [
+        (1, 'Lunes'),
+        (2, 'Martes'),
+        (3, 'Miércoles'),
+        (4, 'Jueves'),
+        (5, 'Viernes'),
+        (6, 'Sábado'),
+        (7, 'Domingo'),
+    ]
+    
+    establishment = models.ForeignKey(
+        'establishment.Establishment', 
+        on_delete=models.CASCADE, 
+        related_name='schedules'
+    )
+    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
+    opening_time = models.TimeField(help_text="Hora de apertura (ej: 09:00)")
+    closing_time = models.TimeField(help_text="Hora de cierre (ej: 19:00)")
+    is_open = models.BooleanField(default=True, help_text="¿El local abre este día?")
+    
+    class Meta:
+        unique_together = ['establishment', 'day_of_week']
+        ordering = ['establishment', 'day_of_week']
+        verbose_name = 'Horario de Establecimiento'
+        verbose_name_plural = 'Horarios de Establecimientos'
+    
+    def __str__(self):
+        day_name = dict(self.DAYS_OF_WEEK)[self.day_of_week]
+        if self.is_open:
+            return f"{self.establishment.name} - {day_name}: {self.opening_time.strftime('%H:%M')} - {self.closing_time.strftime('%H:%M')}"
+        return f"{self.establishment.name} - {day_name}: CERRADO"
+
+
+# Tabla: admin_module_barberavailability
+class BarberAvailability(models.Model):
+    """
+    Disponibilidad de cada barbero por día de la semana.
+    Permite que cada barbero tenga horarios personalizados.
+    """
+    DAYS_OF_WEEK = [
+        (1, 'Lunes'),
+        (2, 'Martes'),
+        (3, 'Miércoles'),
+        (4, 'Jueves'),
+        (5, 'Viernes'),
+        (6, 'Sábado'),
+        (7, 'Domingo'),
+    ]
+    
+    barber = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        limit_choices_to={'groups__name': 'Barbero'},
+        related_name='availabilities'
+    )
+    establishment = models.ForeignKey(
+        'establishment.Establishment', 
+        on_delete=models.CASCADE,
+        related_name='barber_availabilities'
+    )
+    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
+    start_time = models.TimeField(help_text="Hora de inicio del turno")
+    end_time = models.TimeField(help_text="Hora de fin del turno")
+    is_available = models.BooleanField(
+        default=True, 
+        help_text="¿El barbero trabaja este día?"
+    )
+    
+    class Meta:
+        unique_together = ['barber', 'establishment', 'day_of_week']
+        ordering = ['establishment', 'barber', 'day_of_week']
+        verbose_name = 'Disponibilidad de Barbero'
+        verbose_name_plural = 'Disponibilidades de Barberos'
+    
+    def __str__(self):
+        day_name = dict(self.DAYS_OF_WEEK)[self.day_of_week]
+        if self.is_available:
+            return f"{self.barber.get_full_name()} - {day_name}: {self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')}"
+        return f"{self.barber.get_full_name()} - {day_name}: NO DISPONIBLE"
+
+
+# Tabla: admin_module_barbertimeoff
+class BarberTimeOff(models.Model):
+    """
+    Ausencias temporales de barberos (vacaciones, permisos, días libres).
+    Permite bloquear slots específicos.
+    """
+    barber = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        limit_choices_to={'groups__name': 'Barbero'},
+        related_name='time_offs'
+    )
+    start_date = models.DateField(help_text="Fecha de inicio de la ausencia")
+    end_date = models.DateField(help_text="Fecha de fin de la ausencia")
+    start_time = models.TimeField(
+        null=True, 
+        blank=True, 
+        help_text="Hora de inicio (opcional, para ausencias parciales)"
+    )
+    end_time = models.TimeField(
+        null=True, 
+        blank=True, 
+        help_text="Hora de fin (opcional, para ausencias parciales)"
+    )
+    all_day = models.BooleanField(
+        default=True, 
+        help_text="¿Es ausencia de todo el día?"
+    )
+    reason = models.CharField(
+        max_length=200, 
+        help_text="Motivo de la ausencia (vacaciones, permiso médico, etc.)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-start_date']
+        verbose_name = 'Ausencia de Barbero'
+        verbose_name_plural = 'Ausencias de Barberos'
+    
+    def __str__(self):
+        if self.all_day:
+            return f"{self.barber.get_full_name()}: {self.start_date} - {self.end_date} (Todo el día)"
+        return f"{self.barber.get_full_name()}: {self.start_date} {self.start_time} - {self.end_date} {self.end_time}"

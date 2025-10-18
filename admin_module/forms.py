@@ -1,11 +1,12 @@
 # admin_module/forms.py
 from django import forms
 from workflows.models import FlowInstance
-from .models import Product, Establishment, Service
+from .models import Product, Service
 from login_module.models import Profile 
 from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
+from establishment.models import Establishment
 
 
 class CreateProductForm(forms.ModelForm):
@@ -87,7 +88,7 @@ class ServiceDateForm(forms.ModelForm):
             # Si es administrador
             elif user.groups.filter(name='Administrador').exists():
                 try:
-                    establishment = Establishment.objects.get(admin_id=user).id
+                    establishment = Establishment.objects.get(id_admin=user).id
                 except Establishment.DoesNotExist:
                     establishment = None
 
