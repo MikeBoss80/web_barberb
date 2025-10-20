@@ -247,11 +247,11 @@ class PostLoginRedirectView(LoginRequiredMixin, View):
 
         # ¿perfil completo?
         if not profile.data_complete:
-            return redirect('fill_profile')
+            return redirect('login_module:fill_profile')
 
         # Respeta ?next=/ruta si existe y el perfil está completo
         next_url = request.GET.get('next')
         if next_url:
             return redirect(next_url)
 
-        return redirect('main')
+        return redirect('admin_module:perfil_usuario')  # Redirige a la vista de perfil de usuario

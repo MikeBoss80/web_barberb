@@ -7,7 +7,8 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
         user = request.user
         if hasattr(user, "profile") and not user.profile.data_complete:
-            # Redirigir a la vista para completar perfil
-            return reverse("login_module:fill_profile")      
-        # Redirigir al home si ya está completo
-        return reverse('admin_module:main') 
+            # Redirigir a la vista para completar perfil (sin namespace)
+            return reverse("login_module:fill_profile")
+        
+        # Usar la vista de redirección que valida roles y grupos (sin namespace)
+        return reverse('login_module:redirect_after_login')

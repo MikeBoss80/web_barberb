@@ -223,10 +223,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # URL de redirección después de un login exitoso
-LOGIN_REDIRECT_URL = 'redirect_after_login'
+LOGIN_REDIRECT_URL = 'login_module:redirect_after_login'
 
 # URL de redirección después de un logout
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login_module:login'
 
 ACCOUNT_LOGOUT_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
