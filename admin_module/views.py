@@ -11,7 +11,7 @@ from .models import Product, Inventory, Service, Category
 from establishment.models import Establishment
 from workflows.models import FlowInstance
 from services_module.models import ServiceDate
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
@@ -721,7 +721,85 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, BreadcrumbMixin, UpdateView
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('admin_module:admin_solicitudes_list')    
+        return reverse_lazy('admin_module:admin_solicitudes_list')
+
+
+class SelecGrupoView(LoginRequiredMixin, TemplateView):
+    """Vista para visualizar y modificar los roles activos del usuario en el sistema"""
+    template_name = 'perfil/seleccionar_rol.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Permitir que esta vista se cargue en un iframe"""
+        response = super().dispatch(request, *args, **kwargs)
+        # Eliminar la restricción X-Frame-Options para permitir iframe
+        response['X-Frame-Options'] = 'SAMEORIGIN'
+        return response
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        # Obtener grupos actuales del usuario
+        user_groups = user.groups.values_list('name', flat=True)
+        
+        context['user_groups'] = list(user_groups)
+        context['has_role'] = user.groups.exists()
+        
+        # Información de cada rol
+        context['roles_info'] = {
+            'Cliente': {
+                'icon': 'person',
+                'description': 'Acceso como cliente de la barbería',
+                'features': ['Reservar citas', 'Ver servicios disponibles', 'Historial de citas', 'Calificar servicios']
+            },
+            'Barbero': {
+                'icon': 'scissors',
+                'description': 'Acceso como barbero profesional',
+                'features': ['Gestionar agenda', 'Atender clientes', 'Ver solicitudes', 'Vincularse a establecimientos']
+            },
+            'Administrador': {
+                'icon': 'gear',
+                'description': 'Gestión completa del establecimiento',
+                'features': ['Crear establecimientos', 'Gestionar barberos', 'Aprobar solicitudes', 'Ver reportes']
+            }
+        }
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        """Manejar la modificación de roles del usuario"""
+        user = request.user
+        selected_roles = request.POST.getlist('roles')  # Lista de roles seleccionados
+        
+        # Roles válidos en el sistema
+        valid_roles = ['Cliente', 'Barbero', 'Administrador']
+        
+        # Validar que al menos se seleccionó un rol
+        if not selected_roles:
+            messages.warning(request, 'Debes seleccionar al menos un rol.')
+            return redirect('admin_module:seleccionar_rol')
+        
+        # Validar que todos los roles seleccionados sean válidos
+        for role in selected_roles:
+            if role not in valid_roles:
+                messages.error(request, f'El rol "{role}" no es válido.')
+                return redirect('admin_module:seleccionar_rol')
+        
+        try:
+            # Limpiar todos los grupos actuales del usuario
+            user.groups.clear()
+            
+            # Agregar los nuevos grupos seleccionados
+            for role_name in selected_roles:
+                group, created = Group.objects.get_or_create(name=role_name)
+                user.groups.add(group)
+            
+            messages.success(request, 'Tus roles se han actualizado correctamente.')
+            
+        except Exception as e:
+            messages.error(request, f'Error al actualizar roles: {str(e)}')
+        
+        return redirect('admin_module:seleccionar_rol')
     
     
     

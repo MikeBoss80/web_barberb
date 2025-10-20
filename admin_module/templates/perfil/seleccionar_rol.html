@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Roles</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<style>
+    .role-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .role-card:hover {
+        box-shadow: 0 4px 12px rgba(62, 26, 78, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .role-card.active {
+        border-color: #3e1a4e;
+        background: linear-gradient(135deg, rgba(62, 26, 78, 0.05) 0%, rgba(121, 40, 202, 0.03) 100%);
+    }
+
+    .role-card.inactive {
+        opacity: 0.7;
+        border-color: #e0e0e0;
+    }
+
+    .role-status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .role-status-badge.active {
+        background: #4caf50;
+        color: white;
+    }
+
+    .role-status-badge.inactive {
+        background: #e0e0e0;
+        color: #666;
+    }
+
+    .role-status-badge i {
+        font-size: 0.9rem;
+    }
+
+    .role-icon {
+        font-size: 2.5rem;
+        color: #3e1a4e;
+        margin-bottom: 10px;
+    }
+
+    .role-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #3e1a4e;
+        margin-bottom: 8px;
+    }
+
+    .role-description {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+    }
+
+    .role-features {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+
+    .role-features li {
+        padding: 4px 0;
+        color: #555;
+        font-size: 0.9rem;
+    }
+
+    .role-features li:before {
+        content: "✓ ";
+        color: #3e1a4e;
+        font-weight: bold;
+        margin-right: 8px;
+    }
+
+    .current-roles {
+        background: linear-gradient(135deg, rgba(62, 26, 78, 0.05) 0%, rgba(121, 40, 202, 0.03) 100%);
+        border-left: 4px solid #3e1a4e;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+    }
+
+    .badge-role {
+        background: #3e1a4e;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-right: 8px;
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #3e1a4e 0%, #5a2d6e 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(62, 26, 78, 0.3);
+    }
+
+    .btn-save:hover {
+        background: linear-gradient(135deg, #2d1339 0%, #4a1f5e 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(62, 26, 78, 0.4);
+    }
+
+    .btn-save i {
+        margin-right: 8px;
+    }
+
+    .alert-info {
+        background: #e3f2fd;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="bi bi-person-badge"></i>Mis Roles
+            </h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Roles actuales -->
+            {% if has_role %}
+            <div class="current-roles">
+                <h5 class="mb-2">
+                    <i class="bi bi-check-circle"></i> Tus roles actuales:
+                </h5>
+                {% for role in user_groups %}
+                    <span class="badge-role">{{ role }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i> 
+                <strong>Bienvenido!</strong> Selecciona el o los roles que necesitas para comenzar a usar la plataforma.
+            </div>
+            {% endif %}
+
+            <!-- Formulario para modificar roles -->
+            <form method="post" id="roleForm">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <!-- Cliente -->
+                    <div class="col-md-4">
+                        <div class="role-card {% if 'Cliente' in user_groups %}active{% else %}inactive{% endif %}" 
+                             onclick="toggleRole('cliente')" data-role="cliente">
+                            <!-- Badge de estado -->
+                            <div class="role-status-badge {% if 'Cliente' in user_groups %}active{% else %}inactive{% endif %}">
+                                {% if 'Cliente' in user_groups %}
+                                    <i class="bi bi-check-circle-fill"></i> Activo
+                                {% else %}
+                                    <i class="bi bi-circle"></i> Inactivo
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="role-icon">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <div class="role-title">Cliente</div>
+                            </div>
+                            <div class="role-description text-center">
+                                Acceso como cliente de la barbería
+                            </div>
+                            <ul class="role-features">
+                                <li>Reservar citas</li>
+                                <li>Ver servicios disponibles</li>
+                                <li>Historial de citas</li>
+                                <li>Calificar servicios</li>
+                            </ul>
+                            
+                            <!-- Checkbox oculto -->
+                            <input type="checkbox" name="roles" value="Cliente" id="cliente" 
+                                   {% if 'Cliente' in user_groups %}checked{% endif %} style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Barbero -->
+                    <div class="col-md-4">
+                        <div class="role-card {% if 'Barbero' in user_groups %}active{% else %}inactive{% endif %}" 
+                             onclick="toggleRole('barbero')" data-role="barbero">
+                            <!-- Badge de estado -->
+                            <div class="role-status-badge {% if 'Barbero' in user_groups %}active{% else %}inactive{% endif %}">
+                                {% if 'Barbero' in user_groups %}
+                                    <i class="bi bi-check-circle-fill"></i> Activo
+                                {% else %}
+                                    <i class="bi bi-circle"></i> Inactivo
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="role-icon">
+                                    <i class="bi bi-scissors"></i>
+                                </div>
+                                <div class="role-title">Barbero</div>
+                            </div>
+                            <div class="role-description text-center">
+                                Acceso como barbero profesional
+                            </div>
+                            <ul class="role-features">
+                                <li>Gestionar agenda</li>
+                                <li>Atender clientes</li>
+                                <li>Ver solicitudes</li>
+                                <li>Vincularse a establecimientos</li>
+                            </ul>
+                            
+                            <!-- Checkbox oculto -->
+                            <input type="checkbox" name="roles" value="Barbero" id="barbero" 
+                                   {% if 'Barbero' in user_groups %}checked{% endif %} style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Administrador -->
+                    <div class="col-md-4">
+                        <div class="role-card {% if 'Administrador' in user_groups %}active{% else %}inactive{% endif %}" 
+                             onclick="toggleRole('administrador')" data-role="administrador">
+                            <!-- Badge de estado -->
+                            <div class="role-status-badge {% if 'Administrador' in user_groups %}active{% else %}inactive{% endif %}">
+                                {% if 'Administrador' in user_groups %}
+                                    <i class="bi bi-check-circle-fill"></i> Activo
+                                {% else %}
+                                    <i class="bi bi-circle"></i> Inactivo
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="role-icon">
+                                    <i class="bi bi-gear"></i>
+                                </div>
+                                <div class="role-title">Administrador</div>
+                            </div>
+                            <div class="role-description text-center">
+                                Gestión completa del establecimiento
+                            </div>
+                            <ul class="role-features">
+                                <li>Crear establecimientos</li>
+                                <li>Gestionar barberos</li>
+                                <li>Aprobar solicitudes</li>
+                                <li>Ver reportes</li>
+                            </ul>
+                            
+                            <!-- Checkbox oculto -->
+                            <input type="checkbox" name="roles" value="Administrador" id="administrador" 
+                                   {% if 'Administrador' in user_groups %}checked{% endif %} style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-circle"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para alternar roles al hacer clic en las tarjetas
+    function toggleRole(roleId) {
+        // Obtener el checkbox
+        const checkbox = document.getElementById(roleId);
+        // Obtener la tarjeta
+        const card = document.querySelector(`.role-card[data-role="${roleId}"]`);
+        // Obtener el badge
+        const badge = card.querySelector('.role-status-badge');
+        
+        // Alternar el checkbox
+        checkbox.checked = !checkbox.checked;
+        
+        // Actualizar clases visuales de la tarjeta
+        if (checkbox.checked) {
+            card.classList.remove('inactive');
+            card.classList.add('active');
+            badge.classList.remove('inactive');
+            badge.classList.add('active');
+            badge.innerHTML = '<i class="bi bi-check-circle-fill"></i> Activo';
+        } else {
+            card.classList.remove('active');
+            card.classList.add('inactive');
+            badge.classList.remove('active');
+            badge.classList.add('inactive');
+            badge.innerHTML = '<i class="bi bi-circle"></i> Inactivo';
+        }
+    }
+
+    // Animación de entrada para las tarjetas
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.role-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 50);
+            }, index * 100);
+        });
+    });
+</script>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
