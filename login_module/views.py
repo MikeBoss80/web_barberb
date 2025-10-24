@@ -68,6 +68,7 @@ class LogoutView(LoginRequiredMixin, DjangoLogoutView):
     Vista personalizada para manejar el logout.
     - Mantiene el comportamiento estándar de Django.
     - Revoca token de Google si existe.
+    - Limpia completamente la sesión.
     """
 
     next_page = "login_module:login"  # Redirección tras logout (ajusta según tu proyecto)
@@ -80,15 +81,31 @@ class LogoutView(LoginRequiredMixin, DjangoLogoutView):
                 token = social.socialtoken_set.first()
                 if token:
                     # Revocar token en Google
-                    requests.post(
-                        "https://accounts.google.com/o/oauth2/revoke",
-                        params={"token": token.token},
-                        headers={"content-type": "application/x-www-form-urlencoded"},
-                    )
+                    try:
+                        requests.post(
+                            "https://accounts.google.com/o/oauth2/revoke",
+                            params={"token": token.token},
+                            headers={"content-type": "application/x-www-form-urlencoded"},
+                            timeout=5  # Agregar timeout para evitar bloqueos
+                        )
+                    except requests.exceptions.RequestException:
+                        # Si falla la revocación, continuar con el logout
+                        pass
                     token.delete()  # Eliminar token en la BD
 
-        # 2. Ejecutar el logout estándar de Django
-        return super().dispatch(request, *args, **kwargs)
+        # 2. Limpiar completamente la sesión antes del logout
+        if hasattr(request, 'session'):
+            request.session.flush()  # Elimina todos los datos de sesión y regenera la clave
+
+        # 3. Ejecutar el logout estándar de Django
+        response = super().dispatch(request, *args, **kwargs)
+        
+        # 4. Agregar headers adicionales para prevenir caché
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate, private'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        
+        return response
 
 class RegistroAdministradorView(TemplateView):
     template_name = 'registro_administrador.html'

@@ -28,7 +28,7 @@ from login_module.forms import ProfileEditForm,UserEditForm
 import logging
 
 
-class HomeadminView(BreadcrumbMixin, TemplateView):
+class HomeadminView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
     """Vista Principal Modulo Admin"""
     template_name = 'admin_module/main.html'
     login_url = '/login_module/login/'
@@ -198,22 +198,24 @@ def cancelar_cita(request):
         date.save()
     return redirect('admin_module:citas')
 
-class EditarBarberoEstadoView(UpdateView):
+class EditarBarberoEstadoView(LoginRequiredMixin, UpdateView):
     model = ServiceDate
     form_class = EditarBarberoEstadoForm
     template_name = 'partials/form_editar_barbero_estado.html'
     success_url = reverse_lazy('admin_module:citas')
+    login_url = '/login_module/login/'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
 
-class CrearCitaRapidaView(CreateView):
+class CrearCitaRapidaView(LoginRequiredMixin, CreateView):
     model = ServiceDate
     form_class = ServiceDateForm
     template_name = 'partials/form_crear_cita.html'
     success_url = reverse_lazy('admin_module:citas')
+    login_url = '/login_module/login/'
 
     def form_valid(self, form):
         # Asignar precio automático desde el servicio
@@ -225,8 +227,9 @@ class CrearCitaRapidaView(CreateView):
         kwargs['request'] = self.request # Pasar el request al formulario    
         return kwargs
     
-class CollapsView(BreadcrumbMixin, TemplateView):  
+class CollapsView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):  
      template_name= 'collabs/collabs.html'
+     login_url = '/login_module/login/'
      
      def get_breadcrumb(self):
         return [{'label': 'Colaboradores', 'url': reverse('admin_module:collabs'), 'icon': 'people'}]
@@ -241,10 +244,11 @@ class CollapsView(BreadcrumbMixin, TemplateView):
 
         return context
 
-class CreateVinculationView(SuccessMessageMixin, CreateView):
+class CreateVinculationView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'collabs/solicitudes_barbero.html'
     form_class = VinculationForm
     success_url = reverse_lazy('admin_module:collabs')
+    login_url = '/login_module/login/'
 
     def form_valid(self, form):
         documento = form.cleaned_data.get('document')
@@ -263,12 +267,11 @@ class CreateVinculationView(SuccessMessageMixin, CreateView):
             instance.status_id =  4
             instance.recipient = self.request.user  # o dejar el campo nulo
 
-        instance.save()
-        return super().form_valid(form)
     
-class VinculationDeleteView(DeleteView):
+class VinculationDeleteView(LoginRequiredMixin, DeleteView):
     model = FlowInstance
     success_url = reverse_lazy('admin_module:barberos')
+    login_url = '/login_module/login/'
      
 class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
     model = BarberRequest
@@ -367,11 +370,10 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
         # Asignar el establecimiento al que pertenece este barbero
         # Si usas un modelo Profile, y allí está la relación con el establecimiento:
         perfil = Profile.objects.get(user=user)
-        form.instance.establecimiento = perfil.establishment  # Asegúrate que esto esté definido en Profile
-
-        return super().form_valid(form)
     
-class CalendarioBarberoView(View):
+class CalendarioBarberoView(LoginRequiredMixin, View):
+    login_url = '/login_module/login/'
+    
     def get(self, request, barbero_id):
         # Aquí podrías cargar datos específicos del barbero, por ahora lo haremos estático
         context = {
@@ -381,8 +383,9 @@ class CalendarioBarberoView(View):
         return render(request, 'calendario_barbero.html', context)
 
 # Vista para mostrar servicios
-class ServiciosView(BreadcrumbMixin, TemplateView):
+class ServiciosView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
     template_name = 'admin_module/servicios.html'
+    login_url = '/login_module/login/'
 
     def get_breadcrumb(self):
         return [{'label': 'Productos & Servicios', 'url': reverse('admin_module:servicios'), 'icon': 'grid'}]
@@ -453,8 +456,9 @@ def eliminar_servicio(request, id):
     servicio.delete()
     return redirect('admin_module:servicios')
 
-class ContenidosView(BreadcrumbMixin, TemplateView):
+class ContenidosView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
     template_name= 'establecimiento/contenidos.html'
+    login_url = '/login_module/login/'
     
     def get_breadcrumb(self):
         return [{'label': 'Establecimiento', 'url': reverse('admin_module:establecimiento'), 'icon': 'building'}]
@@ -484,13 +488,11 @@ class ContenidosView(BreadcrumbMixin, TemplateView):
             form.save()
             return redirect('/admin_module/establecimiento/')  # o el name de tu url para esta vista
 
-        # Si hay errores, recarga la página con el mismo contexto
-        context = self.get_context_data(instance=establishment)
-        context['form'] = form
-        return self.render_to_response(context)
      
-class InventarioView(BreadcrumbMixin, TemplateView):
+class InventarioView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
     template_name= 'inventario/inventario.html'
+    login_url = '/login_module/login/'
+    
     def get_breadcrumb(self):
         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
         
@@ -500,10 +502,9 @@ class InventarioView(BreadcrumbMixin, TemplateView):
         context['products'] = Product.objects.all()
         return context
 
-class InventarioListView(BreadcrumbMixin, ListView):
-
-    # product = Product
+class InventarioListView(LoginRequiredMixin, BreadcrumbMixin, ListView):
     template_name = 'inventario/inventario.html'
+    login_url = '/login_module/login/'
     
     def get_breadcrumb(self):
         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
@@ -514,10 +515,11 @@ class InventarioListView(BreadcrumbMixin, ListView):
         context['products'] = Product.objects.all()
         return context
 
-class ProductCreateView(BreadcrumbMixin, SuccessMessageMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin, CreateView):
     template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
     success_url = reverse_lazy('admin_module:inventario')
+    login_url = '/login_module/login/'
 
     def get_breadcrumb(self):
         return [
@@ -532,11 +534,12 @@ class ProductCreateView(BreadcrumbMixin, SuccessMessageMixin, CreateView):
         product.save()
         return super().form_valid(form)
 
-class ProductUpdateView(BreadcrumbMixin, SuccessMessageMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin, UpdateView):
     model = Product
     template_name = 'inventario/form_product.html'
     form_class = CreateProductForm
     success_url = reverse_lazy('admin_module:inventario')
+    login_url = '/login_module/login/'
 
     def get_breadcrumb(self):
         return [
@@ -548,26 +551,30 @@ class ProductUpdateView(BreadcrumbMixin, SuccessMessageMixin, UpdateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('admin_module:inventario')
+    login_url = '/login_module/login/'
     
-    # Filtrar o determinar por aquello que si puedo eliminar y si no cumple pues lanzar error
-    # def get_queryset(self):
-    #     return Product.objects.filter(id_admin_id=self.request.user.id)   
      
-class ReportesView(BreadcrumbMixin, TemplateView):
+class ReportesView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
      template_name= 'reportes/reportes.html'
+     login_url = '/login_module/login/'
+     
      def get_breadcrumb(self):
         return [{'label': 'Reportes', 'url': reverse('admin_module:reportes'), 'icon': 'graph-up'}]
 
-class SeguridadView(BreadcrumbMixin, TemplateView):
+class SeguridadView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
      template_name= 'perfil/seguridad.html'
+     login_url = '/login_module/login/'
+     
      def get_breadcrumb(self):
         return [{'label': 'Seguridad', 'url': reverse('admin_module:seguridad'), 'icon': 'shield-lock'}]
 
-class SoporteView(BreadcrumbMixin, TemplateView):
+class SoporteView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
      template_name= 'perfil/soporte.html'
+     login_url = '/login_module/login/'
+     
      def get_breadcrumb(self):
         return [{'label': 'Soporte', 'url': reverse('admin_module:soporte'), 'icon': 'headset'}]
 

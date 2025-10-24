@@ -101,6 +101,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'core.middleware.CurrentRolMiddleware',
+    'core.middleware.NoCacheMiddleware',  # Prevenir caché de páginas
+    'core.middleware.SecurityHeadersMiddleware',  # Headers de seguridad adicionales
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
@@ -263,4 +265,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login_module/login/'
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+# ============================================
+# CONFIGURACIONES DE SEGURIDAD ADICIONALES
+# ============================================
+
+# Configuración de sesiones
+SESSION_COOKIE_HTTPONLY = True  # Prevenir acceso a cookies via JavaScript
+SESSION_COOKIE_SECURE = not DEBUG  # Solo HTTPS en producción
+SESSION_COOKIE_SAMESITE = 'Lax'  # Prevenir CSRF
+SESSION_COOKIE_AGE = 3600  # Sesión expira en 1 hora (3600 segundos)
+SESSION_SAVE_EVERY_REQUEST = True  # Actualizar la expiración en cada request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Cerrar sesión al cerrar navegador
+
+# Configuración de CSRF
+CSRF_COOKIE_HTTPONLY = True  # Prevenir acceso a cookie CSRF via JavaScript
+CSRF_COOKIE_SECURE = not DEBUG  # Solo HTTPS en producción
+CSRF_COOKIE_SAMESITE = 'Lax'  # Prevenir ataques CSRF
+
+# Seguridad para producción
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True  # Redirigir HTTP a HTTPS
+    SECURE_HSTS_SECONDS = 31536000  # HSTS por 1 año
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Configuración de Password
+PASSWORD_RESET_TIMEOUT = 3600  # Link de reset expira en 1 hora
 
