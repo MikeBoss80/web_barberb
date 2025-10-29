@@ -340,7 +340,7 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
     success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
 
     def get_breadcrumb(self):
-        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero'), 'icon': 'file-earmark-text'}]
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero')}]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -370,6 +370,10 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
         # Asignar el establecimiento al que pertenece este barbero
         # Si usas un modelo Profile, y allí está la relación con el establecimiento:
         perfil = Profile.objects.get(user=user)
+        form.instance.establecimiento = perfil.establishment  # Asegúrate que esto esté definido en Profile
+
+        return super().form_valid(form)
+
     
 class CalendarioBarberoView(LoginRequiredMixin, View):
     login_url = '/login_module/login/'
