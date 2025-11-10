@@ -23,7 +23,7 @@ def modules_sidebar(context):
             ('admin_module:citas','calendar2-date-fill','Citas'),
             ('admin_module:collabs','people-fill','Colaboradores'),
             ('admin_module:servicios', 'basket', 'Productos'),
-            ('admin_module:inventario','receipt-cutoff','Inventario'),
+            # ('admin_module:inventario','receipt-cutoff','Inventario'),
             ('admin_module:admin_solicitudes_list','device-ssd-fill','Solicitudes'),
             ('establishment:establishment_main','shop','Establecimiento'),
             ('admin_module:soporte','info-circle','Soporte'),

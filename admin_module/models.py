@@ -35,21 +35,21 @@ class Category(models.Model):
         return self.name
 
 # Tabla: admin_module_products
-class Product(models.Model):
-    name_product = models.CharField(max_length=30)
-    description_product = models.CharField(max_length=80)
-    amount = models.IntegerField(default=0)
-    minimum_stock = models.IntegerField(default=0)
-    price_product = models.DecimalField(max_digits=8, decimal_places=2)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name="productos", default=1)
-    created_by = models.ForeignKey(User, related_name='products_created', on_delete=models.SET_NULL, null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_by = models.ForeignKey(User, related_name='products_updated', on_delete=models.SET_NULL, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+# class Product(models.Model):
+#     name_product = models.CharField(max_length=30)
+#     description_product = models.CharField(max_length=80)
+#     amount = models.IntegerField(default=0)
+#     minimum_stock = models.IntegerField(default=0)
+#     price_product = models.DecimalField(max_digits=8, decimal_places=2)
+#     category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name="productos", default=1)
+#     created_by = models.ForeignKey(User, related_name='products_created', on_delete=models.SET_NULL, null=True, blank=True)
+#     created_at = models.DateTimeField(default=timezone.now)
+#     updated_by = models.ForeignKey(User, related_name='products_updated', on_delete=models.SET_NULL, null=True, blank=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     is_active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.name_product
+#     def __str__(self):
+#         return self.name_product
 
 # Tabla: admin_module_services
 class Service(models.Model):
@@ -70,9 +70,9 @@ class EstablishmentService(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
 
 # Tabla: admin_module_inventory
-class Inventory(models.Model):
-    establishment = models.ForeignKey('establishment.Establishment', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+# class Inventory(models.Model):
+#     establishment = models.ForeignKey('establishment.Establishment', on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 
 # ============================================================================

@@ -1,9 +1,5 @@
 from django.urls import path
-
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView,InventarioListView,ProductCreateView,ProductUpdateView,ProductDeleteView, CollapsView, ServiciosView, InventarioView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, PerfilUsuarioView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView, SelecGrupoView
-
-from django.contrib.auth.views import LogoutView
-
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView, CollapsView, ServiciosView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, PerfilUsuarioView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView, SelecGrupoView
 from . import views
 
 
@@ -17,7 +13,7 @@ urlpatterns = [
     path('barberos/vinculation/', CreateVinculationView.as_view(), name='vinculation_request'),
     path('barberos/vinculation/eliminar/<int:pk>/', VinculationDeleteView.as_view(), name='vinculation_delete'),
     path('servicios/', ServiciosView.as_view(), name='servicios'),
-    path('inventario/', InventarioView.as_view(), name='inventario'),
+    # path('inventario/', InventarioView.as_view(), name='inventario'),
     path('reportes/', ReportesView.as_view(), name='reportes'),
     path('seguridad/', SeguridadView.as_view(), name='seguridad'),
     path('soporte/', SoporteView.as_view(), name='soporte'),
@@ -26,9 +22,9 @@ urlpatterns = [
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path("perfil/seleccionar-rol/", SelecGrupoView.as_view(), name="seleccionar_rol"),
 #    path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
-    path('producto/agregar/', ProductCreateView.as_view(), name='producto_create'),
-    path('producto/editar/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
-    path('producto/eliminar/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),
+    # path('producto/agregar/', ProductCreateView.as_view(), name='producto_create'),
+    # path('producto/editar/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
+    # path('producto/eliminar/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),
     path('registro_est/', CreateEstablishmentView.as_view(), name='registro_est'),
     path('eliminar_est/<int:pk>/', DeleteEstablishmentView.as_view(), name='eliminar_est'),
     path('citas/editar-rapido/<int:pk>/', EditarBarberoEstadoView.as_view(), name='editar_barbero_estado'),
