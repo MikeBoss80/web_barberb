@@ -100,8 +100,8 @@
                         </td>
                         <td style="padding: 12px; text-align: center;">
                             <div style="background: #e5e7eb; border-radius: 10px; height: 8px; position: relative;">
-                                <div style="background: {% if barbero.eficiencia >= 90 %}#22c55e{% elif barbero.eficiencia >= 70 %}#f59e0b{% else %}#ef4444{% endif %}; height: 100%; border-radius: 10px; width: {{ barbero.eficiencia }}%;"></div>
-                            </div>
+                                 <!-- <div style="background: {% if barbero.eficiencia >= 90 %}#22c55e{% elif barbero.eficiencia >= 70 %}#f59e0b{% else %}#ef4444{% endif %}; height: 100%; border-radius: 10px; width: {{ barbero.eficiencia }}%;"></div>
+                            </div> -->
                             <small style="color: #6b7280;">{{ barbero.eficiencia }}%</small>
                         </td>
                     </tr>
@@ -157,24 +157,24 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin: 20px 0;">
             <div style="text-align: center;">
                 <div style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">vs. Ayer</div>
-                <div style="font-size: 20px; font-weight: bold; color: {% if variacion_ayer > 0 %}#22c55e{% elif variacion_ayer < 0 %}#ef4444{% else %}#6b7280{% endif %};">
+                <!-- <div style="font-size: 20px; font-weight: bold; color: {% if variacion_ayer > 0 %}#22c55e{% elif variacion_ayer < 0 %}#ef4444{% else %}#6b7280{% endif %};">
                     {% if variacion_ayer > 0 %}+{% endif %}{{ variacion_ayer }}%
                     {% if variacion_ayer > 0 %}📈{% elif variacion_ayer < 0 %}📉{% else %}📊{% endif %}
-                </div>
+                </div> -->
             </div>
             <div style="text-align: center;">
                 <div style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">vs. Semana Pasada</div>
-                <div style="font-size: 20px; font-weight: bold; color: {% if variacion_semana > 0 %}#22c55e{% elif variacion_semana < 0 %}#ef4444{% else %}#6b7280{% endif %};">
+                <!-- <div style="font-size: 20px; font-weight: bold; color: {% if variacion_semana > 0 %}#22c55e{% elif variacion_semana < 0 %}#ef4444{% else %}#6b7280{% endif %};">
                     {% if variacion_semana > 0 %}+{% endif %}{{ variacion_semana }}%
                     {% if variacion_semana > 0 %}📈{% elif variacion_semana < 0 %}📉{% else %}📊{% endif %}
-                </div>
+                </div> -->
             </div>
             <div style="text-align: center;">
                 <div style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">vs. Mes Pasado</div>
-                <div style="font-size: 20px; font-weight: bold; color: {% if variacion_mes > 0 %}#22c55e{% elif variacion_mes < 0 %}#ef4444{% else %}#6b7280{% endif %};">
+               <!--  <div style="font-size: 20px; font-weight: bold; color: {% if variacion_mes > 0 %}#22c55e{% elif variacion_mes < 0 %}#ef4444{% else %}#6b7280{% endif %};">
                     {% if variacion_mes > 0 %}+{% endif %}{{ variacion_mes }}%
                     {% if variacion_mes > 0 %}📈{% elif variacion_mes < 0 %}📉{% else %}📊{% endif %}
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

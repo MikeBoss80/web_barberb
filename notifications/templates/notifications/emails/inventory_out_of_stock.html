@@ -151,9 +151,9 @@
                     <small style="color: #6b7280;">Stock: {{ sustituto.stock_actual }} unidades</small>
                 </div>
                 <div style="text-align: right;">
-                    <div style="color: {% if sustituto.compatibilidad >= 80 %}#22c55e{% elif sustituto.compatibilidad >= 60 %}#f59e0b{% else %}#ef4444{% endif %};">
+                  <!--   <div style="color: {% if sustituto.compatibilidad >= 80 %}#22c55e{% elif sustituto.compatibilidad >= 60 %}#f59e0b{% else %}#ef4444{% endif %};">
                         {{ sustituto.compatibilidad }}% compatible
-                    </div>
+                    </div> -->
                 </div>
             </div>
             {% endfor %}
@@ -182,9 +182,9 @@
                         <td style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">{{ pedido.cantidad }}</td>
                         <td style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">${{ pedido.precio_total }}</td>
                         <td style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">
-                            <span style="background: {% if pedido.estado == 'entregado' %}#dcfce7; color: #16a34a{% elif pedido.estado == 'pendiente' %}#fef3c7; color: #d97706{% else %}#fee2e2; color: #dc2626{% endif %}; padding: 4px 8px; border-radius: 15px; font-size: 12px;">
+                            <!-- <span style="background: {% if pedido.estado == 'entregado' %}#dcfce7; color: #16a34a{% elif pedido.estado == 'pendiente' %}#fef3c7; color: #d97706{% else %}#fee2e2; color: #dc2626{% endif %}; padding: 4px 8px; border-radius: 15px; font-size: 12px;">
                                 {{ pedido.estado|title }}
-                            </span>
+                            </span> -->
                         </td>
                     </tr>
                     {% endfor %}
