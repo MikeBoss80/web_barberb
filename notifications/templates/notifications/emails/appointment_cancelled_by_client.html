@@ -1,0 +1,175 @@
+{% extends 'notifications/emails/base_email.html' %}
+
+{% block title %}Cita Cancelada - {{ establecimiento_nombre }}{% endblock %}
+
+{% block content %}
+<div class="email-container">
+    <!-- Header de Cancelación -->
+    <div class="alert alert-warning">
+        <h2 style="margin: 0; color: #8B5CF6;">
+            <span style="font-size: 24px;">⚠️</span>
+            Cita Cancelada
+        </h2>
+        <p style="margin: 10px 0 0 0; font-size: 16px;">
+            Tu cita ha sido cancelada exitosamente
+        </p>
+    </div>
+
+    <!-- Información de la Cita Cancelada -->
+    <div class="info-box" style="border-left: 4px solid #f59e0b;">
+        <h3>Detalles de la cita cancelada:</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+            <div>
+                <strong>🕐 Fecha y Hora:</strong><br>
+                {{ fecha_cita }} a las {{ hora_cita }}
+            </div>
+            <div>
+                <strong>💈 Barbero:</strong><br>
+                {{ barbero_nombre }}
+            </div>
+            <div>
+                <strong>✂️ Servicio:</strong><br>
+                {{ servicio_nombre }}
+            </div>
+            <div>
+                <strong>⏱️ Duración:</strong><br>
+                {{ duracion }} minutos
+            </div>
+        </div>
+    </div>
+
+    <!-- Información de Cancelación -->
+    <div class="info-box">
+        <h3>Información de la cancelación:</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+            <div>
+                <strong>📅 Fecha de Cancelación:</strong><br>
+                {{ fecha_cancelacion }}
+            </div>
+            <div>
+                <strong>🕐 Hora de Cancelación:</strong><br>
+                {{ hora_cancelacion }}
+            </div>
+        </div>
+        
+        {% if motivo_cancelacion %}
+        <div style="margin-top: 15px;">
+            <strong>📝 Motivo:</strong><br>
+            <p style="background: #f8fafc; padding: 10px; border-radius: 5px; margin: 5px 0;">
+                {{ motivo_cancelacion }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Política de Cancelación (si aplica) -->
+    {% if tiempo_anticipacion_horas < 24 %}
+    <div class="alert alert-danger">
+        <h3>⚠️ Política de Cancelación</h3>
+        <p>Tu cita fue cancelada con {{ tiempo_anticipacion_horas }} horas de anticipación.</p>
+        {% if penalizacion %}
+        <p><strong>Nota:</strong> {{ penalizacion }}</p>
+        {% else %}
+        <p>Para futuras citas, te recomendamos cancelar con al menos 24 horas de anticipación.</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="alert alert-success">
+        <h3>✅ Cancelación a Tiempo</h3>
+        <p>Gracias por cancelar con suficiente anticipación. Esto nos permite ofrecer el espacio a otros clientes.</p>
+    </div>
+    {% endif %}
+
+    <!-- Opciones para Reagendar -->
+    <div class="info-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h3 style="color: white;">📅 ¿Quieres reagendar tu cita?</h3>
+        <p>Encuentra un nuevo horario que se ajuste mejor a tu agenda:</p>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ url_reagendar_cita }}" class="btn-primary" style="margin: 5px;">
+                📅 Reagendar Cita
+            </a>
+            <a href="{{ url_ver_disponibilidad }}" class="btn-secondary" style="margin: 5px;">
+                🔍 Ver Disponibilidad
+            </a>
+        </div>
+    </div>
+
+    <!-- Sugerencias de Horarios Alternativos -->
+    {% if horarios_sugeridos %}
+    <div class="info-box">
+        <h3>🕐 Horarios Disponibles Similares</h3>
+        <p>Te sugerimos estos horarios disponibles con el mismo barbero:</p>
+        
+        <div style="display: grid; gap: 10px; margin: 15px 0;">
+            {% for horario in horarios_sugeridos %}
+            <div style="background: #f8fafc; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ horario.fecha }}</strong> a las <strong>{{ horario.hora }}</strong><br>
+                    <small>con {{ barbero_nombre }}</small>
+                </div>
+                <a href="{{ horario.url_reservar }}" class="btn-primary" style="padding: 8px 16px; font-size: 14px;">
+                    Reservar
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Información de Contacto -->
+    <div class="info-box">
+        <h3>📞 ¿Necesitas ayuda?</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <strong>🏢 Establecimiento:</strong><br>
+                {{ establecimiento_nombre }}<br>
+                {{ establecimiento_direccion }}
+            </div>
+            <div>
+                <strong>📱 Contacto:</strong><br>
+                <a href="tel:{{ establecimiento_telefono }}">{{ establecimiento_telefono }}</a><br>
+                <a href="mailto:{{ establecimiento_email }}">{{ establecimiento_email }}</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ url_contacto }}" class="btn-secondary">
+                💬 Contactar Establecimiento
+            </a>
+        </div>
+    </div>
+
+    <!-- Descuento por Reagendar -->
+    {% if codigo_descuento %}
+    <div class="alert alert-info">
+        <h3>🎁 Descuento Especial</h3>
+        <p>Como disculpa por la cancelación, te ofrecemos un <strong>{{ descuento_porcentaje }}% de descuento</strong> en tu próxima cita.</p>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; margin: 15px 0;">
+            <div style="background: #8B5CF6; color: white; padding: 10px; border-radius: 5px; font-size: 18px; font-weight: bold; letter-spacing: 2px;">
+                {{ codigo_descuento }}
+            </div>
+            <p style="margin: 10px 0 0 0; color: #666;">
+                Válido por {{ validez_dias }} días
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+        <h3>Esperamos verte pronto 💈</h3>
+        <p>En {{ establecimiento_nombre }} siempre estaremos listos para atenderte.</p>
+        
+        <div style="margin: 20px 0;">
+            <a href="{{ url_home }}" class="btn-primary" style="margin: 5px;">
+                🏠 Ir al Inicio
+            </a>
+            <a href="{{ url_mis_citas }}" class="btn-secondary" style="margin: 5px;">
+                📋 Ver Mis Citas
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

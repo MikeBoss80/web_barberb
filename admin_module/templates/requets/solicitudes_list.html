@@ -193,7 +193,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle display" id="tblVinculation">
+                <table class="table table-hover align-middle" id="tblVinculation">
                     <thead class="table-light">
                         <tr>
                             <th style="color: #3e1a4e;">
@@ -366,42 +366,41 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
 <script>
     $(document).ready(function () {
-        // DataTable de Vinculaciones
-        $('#tblVinculation').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
-            },
-            dom: '<"d-flex justify-content-between mb-3"fB>rt<"d-flex justify-content-between mt-3"lip>',
-            pageLength: 10,
-            order: [[2, 'desc']]
-        });
-
-        // DataTable de Solicitudes
-        $('#tablaSolicitudes').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-            },
-            order: [[4, 'desc']],  // Ordena por fecha de solicitud descendente
-            pageLength: 10,
-            dom: '<"d-flex justify-content-between mb-3"fl>rt<"d-flex justify-content-between mt-3"ip>'
-        });
-
+        // ⚠️ DESHABILITADO temporalmente para evitar conflictos
+        // DataTables ya está cargado en base.html pero hay conflictos de versión
+        
         // Modal de confirmación
-        $(".btnValidateValidation").on("click", function () {
+        $(".btnValidateValidation").on("click", function (e) {
+            e.preventDefault();
+            console.log("🔵 Botón clickeado");
+            
             const requestId = $(this).data("id");
             const value = $(this).data("value");
+            
+            console.log("📋 Request ID:", requestId);
+            console.log("📋 Value:", value);
+            
             const action = Boolean(value) ? "ACEPTAR" : "DENEGAR";
             const message = `¿Estás seguro de que deseas ${action} esta solicitud de vinculación?`;
 
             $("#modalBody").text(message);
-            $("#formValidateVinculation").attr("action", `../solicitudes/validate/${requestId}/${value}/`);
+            
+            // Usar URL absoluta desde la raíz
+            const actionUrl = `/admin_module/solicitudes/validate/${requestId}/${value}/`;
+            $("#formValidateVinculation").attr("action", actionUrl);
+            
+            console.log("🔗 URL de acción configurada:", actionUrl);
+            console.log("🔗 Action del form:", $("#formValidateVinculation").attr("action"));
+            
             $("#modalValidateVinculation").modal("show");
+        });
+        
+        // Debug: Verificar submit del formulario
+        $("#formValidateVinculation").on("submit", function(e) {
+            console.log("✅ Formulario siendo enviado a:", $(this).attr("action"));
+            console.log("✅ Método:", $(this).attr("method"));
         });
     });
 </script>

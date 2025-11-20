@@ -1,0 +1,263 @@
+{% extends 'notifications/emails/base_email.html' %}
+
+{% block title %}Información del Establecimiento Actualizada{% endblock %}
+
+{% block content %}
+<div class="email-container">
+    <!-- Header de Actualización -->
+    <div class="alert alert-info">
+        <h2 style="margin: 0; color: white; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 24px;">🏢</span>
+            Información Actualizada
+        </h2>
+        <p style="margin: 10px 0 0 0; font-size: 16px;">
+            Los datos de {{ establecimiento_nombre }} han sido actualizados exitosamente
+        </p>
+    </div>
+
+    <!-- Información de la Actualización -->
+    <div class="info-box">
+        <h3>📝 Detalles de la Actualización</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+            <div>
+                <strong>📅 Fecha:</strong><br>
+                {{ fecha_actualizacion }}
+            </div>
+            <div>
+                <strong>🕐 Hora:</strong><br>
+                {{ hora_actualizacion }}
+            </div>
+            <div>
+                <strong>👤 Actualizado por:</strong><br>
+                {{ usuario_actualizo }}
+            </div>
+            <div>
+                <strong>📱 Dispositivo:</strong><br>
+                {{ dispositivo_origen }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Cambios Realizados -->
+    <div class="info-box">
+        <h3>🔄 Cambios Realizados</h3>
+        
+        <div style="display: grid; gap: 15px; margin: 15px 0;">
+            {% for cambio in cambios_realizados %}
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                <div style="display: flex; justify-content: between; align-items: start; gap: 15px;">
+                    <div style="flex: 1;">
+                        <strong style="color: #8b5cf6;">{{ cambio.campo_nombre }}</strong><br>
+                        <div style="margin: 10px 0;">
+                            {% if cambio.valor_anterior %}
+                            <div style="background: #fef2f2; padding: 8px; border-radius: 5px; margin: 5px 0;">
+                                <strong>Anterior:</strong> {{ cambio.valor_anterior }}
+                            </div>
+                            {% endif %}
+                            <div style="background: #f0fdf4; padding: 8px; border-radius: 5px; margin: 5px 0;">
+                                <strong>Nuevo:</strong> {{ cambio.valor_nuevo }}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <span style="background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 15px; font-size: 12px; font-weight: bold;">
+                            ✓ Actualizado
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Información Actual del Establecimiento -->
+    <div class="info-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h3 style="color: white;">🏢 Información Actual del Establecimiento</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+            <div>
+                <strong>Nombre:</strong><br>
+                {{ establecimiento_nombre }}
+            </div>
+            <div>
+                <strong>Teléfono:</strong><br>
+                {{ establecimiento_telefono }}
+            </div>
+            <div style="grid-column: 1 / -1;">
+                <strong>Dirección:</strong><br>
+                {{ establecimiento_direccion }}
+            </div>
+            <div>
+                <strong>Email:</strong><br>
+                {{ establecimiento_email }}
+            </div>
+            <div>
+                <strong>Horarios:</strong><br>
+                {{ establecimiento_horarios }}
+            </div>
+        </div>
+        
+        {% if establecimiento_descripcion %}
+        <div style="margin: 20px 0;">
+            <strong>Descripción:</strong><br>
+            <p style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin: 10px 0;">
+                {{ establecimiento_descripcion }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Servicios y Precios Actualizados -->
+    {% if servicios_actualizados %}
+    <div class="info-box">
+        <h3>💈 Servicios Actualizados</h3>
+        
+        <div style="display: grid; gap: 10px; margin: 15px 0;">
+            {% for servicio in servicios_actualizados %}
+            <div style="background: #f8fafc; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ servicio.nombre }}</strong><br>
+                    <small style="color: #6b7280;">{{ servicio.descripcion }}</small>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: bold; color: #8B5CF6;">
+                        ${{ servicio.precio_nuevo }}
+                    </div>
+                    {% if servicio.precio_anterior and servicio.precio_anterior != servicio.precio_nuevo %}
+                    <small style="color: #6b7280; text-decoration: line-through;">
+                        ${{ servicio.precio_anterior }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Notificación a Barberos -->
+    {% if barberos_notificados %}
+    <div class="alert alert-success">
+        <h3>👥 Barberos Notificados</h3>
+        <p>Los siguientes barberos han sido notificados automáticamente de estos cambios:</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 15px 0;">
+            {% for barbero in barberos_notificados %}
+            <div style="background: white; padding: 10px; border-radius: 8px; text-align: center;">
+                <strong style="color: #16a34a;">{{ barbero.nombre }}</strong><br>
+                <small style="color: #6b7280;">{{ barbero.email }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Impacto en Clientes -->
+    {% if cambios_visibles_clientes %}
+    <div class="alert alert-warning">
+        <h3>👥 Impacto en Clientes</h3>
+        <p>Algunos de estos cambios son visibles para los clientes:</p>
+        
+        <ul style="margin: 15px 0; padding-left: 20px;">
+            {% for impacto in cambios_visibles_clientes %}
+            <li style="margin-bottom: 8px;">
+                <strong>{{ impacto.campo }}:</strong> {{ impacto.descripcion }}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <p><strong>Recomendación:</strong> Considera informar a clientes frecuentes sobre cambios importantes como horarios o precios.</p>
+    </div>
+    {% endif %}
+
+    <!-- Próximas Acciones Sugeridas -->
+    <div class="info-box" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+        <h3>📋 Próximas Acciones Sugeridas</h3>
+        
+        <div style="display: grid; gap: 10px; margin: 15px 0;">
+            {% for accion in acciones_sugeridas %}
+            <div style="background: white; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                <div style="background: #dcfce7; color: #16a34a; padding: 8px; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                    {{ accion.icono }}
+                </div>
+                <div>
+                    <strong>{{ accion.titulo }}</strong><br>
+                    <small style="color: #6b7280;">{{ accion.descripcion }}</small>
+                </div>
+            </div>
+            {% empty %}
+            <div style="background: white; padding: 12px; border-radius: 8px; text-align: center; color: #6b7280;">
+                <em>No hay acciones adicionales requeridas por el momento.</em>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Enlaces de Gestión -->
+    <div style="text-align: center; margin: 30px 0;">
+        <h3>🚀 Gestionar Establecimiento</h3>
+        
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0;">
+            <a href="{{ url_panel_admin }}" class="btn-primary">
+                🏢 Panel de Administración
+            </a>
+            <a href="{{ url_gestionar_servicios }}" class="btn-secondary">
+                💈 Gestionar Servicios
+            </a>
+            <a href="{{ url_gestionar_barberos }}" class="btn-secondary">
+                👥 Gestionar Barberos
+            </a>
+            <a href="{{ url_configurar_horarios }}" class="btn-secondary">
+                🕐 Configurar Horarios
+            </a>
+        </div>
+    </div>
+
+    <!-- Información de Seguridad -->
+    {% if cambios_sensibles %}
+    <div class="alert alert-warning">
+        <h3>🔐 Información de Seguridad</h3>
+        <p>Se han actualizado datos sensibles del establecimiento. Por seguridad:</p>
+        
+        <ul style="margin: 15px 0; padding-left: 20px;">
+            <li>Esta actualización ha sido registrada en el log de seguridad</li>
+            <li>Se ha enviado notificación al administrador principal</li>
+            <li>Los cambios están disponibles inmediatamente en la plataforma</li>
+            {% if requiere_verificacion %}
+            <li style="color: #d97706; font-weight: bold;">Algunos cambios requieren verificación adicional</li>
+            {% endif %}
+        </ul>
+        
+        {% if requiere_verificacion %}
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ url_verificar_cambios }}" class="btn-primary" style="background: #f59e0b;">
+                ⚠️ Completar Verificación
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+        <h3>✅ Actualización Completada</h3>
+        <p>
+            Los cambios en {{ establecimiento_nombre }} se han aplicado exitosamente.
+            <br>Todos los sistemas están actualizados con la nueva información.
+        </p>
+        
+        <div style="margin: 20px 0;">
+            <a href="{{ url_ver_establecimiento }}" class="btn-secondary" style="margin: 5px;">
+                👁️ Ver Perfil Público
+            </a>
+            <a href="{{ url_historial_cambios }}" class="btn-secondary" style="margin: 5px;">
+                📊 Ver Historial de Cambios
+            </a>
+        </div>
+        
+        <p style="margin-top: 15px; color: #6b7280; font-size: 14px;">
+            Si no realizaste estos cambios o detectas algún error, contacta inmediatamente a soporte.
+        </p>
+    </div>
+</div>
+{% endblock %}

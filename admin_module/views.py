@@ -252,20 +252,46 @@ class CreateVinculationView(LoginRequiredMixin, SuccessMessageMixin, CreateView)
 
     def form_valid(self, form):
         documento = form.cleaned_data.get('document')
-        instance=form.save(commit=False)
+        instance = form.save(commit=False)
         instance.created_by = self.request.user
         instance.updated_by = self.request.user
 
         try:
-            colaborator = User.objects.filter(profile__document=documento).last() #Se toma el ultimo
-            #TODO: Esto debe cambiarse, no deberia existir usuarios con el mismo documento 
+            colaborator = User.objects.filter(profile__document=documento).last()
+            # TODO: Esto debe cambiarse, no deberia existir usuarios con el mismo documento 
             # o si no, realizar la validacion por algun id unico
-            instance.status_id =  4
+            instance.status_id = 4
             instance.recipient = colaborator  # lo vinculamos si existe
-            # messages.success(self.request, "Colaborador encontrado, solicitud enviada.")
         except User.DoesNotExist:
-            instance.status_id =  4
+            instance.status_id = 4
             instance.recipient = self.request.user  # o dejar el campo nulo
+        
+        # Guardar la instancia
+        instance.save()
+        
+        # 🚀 ENVIAR EMAIL AL COLABORADOR (opcional)
+        try:
+            if instance.recipient and instance.recipient != self.request.user:
+                from notifications.email_service import send_email_notification
+                
+                send_email_notification(
+                    user=instance.recipient,
+                    email_type='vinculacion_aprobada',
+                    context={
+                        'establecimiento_nombre': self.request.user.profile.establishment.name_est if hasattr(self.request.user, 'profile') and self.request.user.profile.establishment else 'Establecimiento',
+                        'establecimiento_direccion': self.request.user.profile.establishment.address_est if hasattr(self.request.user, 'profile') and self.request.user.profile.establishment else '',
+                        'fecha_aprobacion': timezone.now().strftime('%d/%m/%Y'),
+                        'url_panel_barbero': self.request.build_absolute_uri(
+                            reverse('barber_module:barber_main')
+                        ),
+                    }
+                )
+        except Exception as e:
+            # Si falla el email, no afectar el proceso principal
+            print(f"Error enviando email de vinculación: {e}")
+        
+        # IMPORTANTE: Retornar la respuesta
+        return super().form_valid(form)
 
     
 class VinculationDeleteView(LoginRequiredMixin, DeleteView):
@@ -296,29 +322,104 @@ class BarberRequestListView(LoginRequiredMixin,BreadcrumbMixin, ListView):
         return context
 
 class BarberValidateVinculation(View):
+    """
+    Vista para que el barbero acepte o rechace una solicitud de vinculación
+    """
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
-        value = self.kwargs['value']
-        solicitud = get_object_or_404(FlowInstance, pk=pk)
-
-        if bool(value):
-            new_status = get_object_or_404(FlowStatus, name='Confirmada')
-            vinculation_est = solicitud.created_by.admin_est.first()
-            print(vinculation_est)
-            self.request.user.profile.establishment = vinculation_est
-            profile = self.request.user.profile
-            profile.establishment = vinculation_est
-            profile.save()
-        else:
-            new_status = get_object_or_404(FlowStatus, name='Cancelada')
-        # else:
-        #     messages.error(request, 'Acción no válida.')
-        #     return redirect('admin_module:barberos')  # Ajusta el nombre de redirección
-        solicitud.status = new_status
-        solicitud.save()
-
-        # messages.success(request, f'Solicitud actualizada a {new_status.name}')
+        value = int(self.kwargs['value'])
+        
+        try:
+            # Obtener la solicitud
+            solicitud = get_object_or_404(FlowInstance, pk=pk)
+            
+            # Verificar que el usuario sea el destinatario de la solicitud
+            if solicitud.recipient != request.user:
+                messages.error(request, 'No tienes permiso para validar esta solicitud.')
+                return redirect('admin_module:barber_solicitudes_list')
+            
+            # Verificar que la solicitud esté en estado "En espera"
+            if solicitud.status.name != "En espera":
+                messages.warning(request, 'Esta solicitud ya fue procesada.')
+                return redirect('admin_module:barber_solicitudes_list')
+            
+            if value == 1:  # ACEPTAR
+                # Cambiar estado a "Confirmada"
+                new_status = get_object_or_404(FlowStatus, name='Confirmada')
+                
+                # Vincular al establecimiento
+                vinculation_est = solicitud.created_by.admin_est.first()
+                
+                if vinculation_est:
+                    profile = request.user.profile
+                    profile.establishment = vinculation_est
+                    profile.save()
+                    
+                    messages.success(
+                        request, 
+                        f'¡Vinculación aceptada! Ahora perteneces al establecimiento {vinculation_est.name_est}'
+                    )
+                    
+                    # 🚀 ENVIAR EMAIL AL ADMIN QUE CREÓ LA SOLICITUD
+                    try:
+                        from notifications.email_service import send_email_notification
+                        
+                        send_email_notification(
+                            user=solicitud.created_by,
+                            email_type='vinculacion_aprobada',
+                            context={
+                                'barbero_nombre': request.user.get_full_name() or request.user.username,
+                                'establecimiento_nombre': vinculation_est.name_est,
+                                'establecimiento_direccion': vinculation_est.address_est,
+                                'fecha_aprobacion': timezone.now().strftime('%d/%m/%Y'),
+                                'url_panel_barbero': request.build_absolute_uri(
+                                    reverse('admin_module:collabs')
+                                ),
+                            }
+                        )
+                    except Exception as e:
+                        print(f"Error enviando email de confirmación: {e}")
+                else:
+                    messages.error(request, 'No se pudo vincular al establecimiento.')
+                    
+            else:  # RECHAZAR (value == 0)
+                # Cambiar estado a "Cancelada"
+                new_status = get_object_or_404(FlowStatus, name='Cancelada')
+                
+                messages.info(request, 'Solicitud de vinculación rechazada.')
+                
+                # 🚀 ENVIAR EMAIL AL ADMIN QUE CREÓ LA SOLICITUD
+                try:
+                    from notifications.email_service import send_email_notification
+                    
+                    vinculation_est = solicitud.created_by.admin_est.first()
+                    
+                    send_email_notification(
+                        user=solicitud.created_by,
+                        email_type='vinculacion_rechazada',
+                        context={
+                            'barbero_nombre': request.user.get_full_name() or request.user.username,
+                            'establecimiento_nombre': vinculation_est.name_est if vinculation_est else 'Establecimiento',
+                            'fecha_rechazo': timezone.now().strftime('%d/%m/%Y'),
+                            'motivo': 'El barbero rechazó la solicitud',
+                            'url_establecimientos': request.build_absolute_uri(
+                                reverse('core:home')
+                            ),
+                        }
+                    )
+                except Exception as e:
+                    print(f"Error enviando email de rechazo: {e}")
+            
+            # Guardar el nuevo estado
+            solicitud.status = new_status
+            solicitud.save()
+            
+        except Exception as e:
+            messages.error(request, f'Error al procesar la solicitud: {str(e)}')
+            print(f"Error en BarberValidateVinculation: {e}")
+        
         return redirect('admin_module:barber_solicitudes_list')
+
 
 class BarberRequestDetailView(LoginRequiredMixin, BreadcrumbMixin, DetailView):
     model = BarberRequest
@@ -364,12 +465,46 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
         Aquí se asignan automáticamente el barbero y el establecimiento.
         """
         user = self.request.user  # Barbero autenticado
-
-        form.instance.barber = user  # Asigna el barbero automáticamente
+        form.instance.user = user  # Asigna el barbero automáticamente
 
         # Asignar el establecimiento al que pertenece este barbero
-        # Si usas un modelo Profile, y allí está la relación con el establecimiento:
-        perfil = Profile.objects.get(user=user)
+        try:
+            perfil = Profile.objects.get(user=user)
+            if perfil.establishment:
+                form.instance.establecimiento = perfil.establishment
+        except Profile.DoesNotExist:
+            pass
+
+        # Guardar la solicitud en la base de datos
+        response = super().form_valid(form)
+
+        # 🚀 ENVIAR EMAIL AL ADMIN (si la solicitud se guardó exitosamente)
+        try:
+            from notifications.email_service import send_email_notification
+            from django.urls import reverse
+            
+            solicitud = self.object
+            
+            if solicitud.establecimiento and solicitud.establecimiento.id_admin:
+                send_email_notification(
+                    user=solicitud.establecimiento.id_admin,
+                    email_type='solicitud_creada',
+                    context={
+                        'barbero_nombre': user.get_full_name() or user.username,
+                        'barbero_email': user.email,
+                        'establecimiento_nombre': solicitud.establecimiento.name_est,
+                        'fecha_solicitud': solicitud.created_at.strftime('%d/%m/%Y'),
+                        'mensaje': getattr(solicitud, 'message', ''),
+                        'url_detalle_solicitud': self.request.build_absolute_uri(
+                            reverse('admin_module:admin_solicitudes_detail', kwargs={'pk': solicitud.id})
+                        ),
+                    }
+                )
+        except Exception as e:
+            # Si falla el email, no afectar el proceso principal
+            print(f"Error enviando email: {e}")
+
+        return response
     
 class CalendarioBarberoView(LoginRequiredMixin, View):
     login_url = '/login_module/login/'
@@ -724,6 +859,50 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, BreadcrumbMixin, UpdateView
 
         if estado_nuevo in ['aprobada', 'rechazada']:
             form.instance.estado = estado_nuevo
+            
+            # Guardar primero
+            response = super().form_valid(form)
+            
+            # 🚀 ENVIAR EMAIL AL BARBERO
+            try:
+                from notifications.email_service import send_email_notification
+                from django.utils import timezone
+                
+                solicitud = form.instance
+                barbero = solicitud.user
+                
+                if estado_nuevo == 'aprobada':
+                    send_email_notification(
+                        user=barbero,
+                        email_type='solicitud_aprobada',
+                        context={
+                            'establecimiento_nombre': solicitud.establecimiento.name_est,
+                            'establecimiento_direccion': f"{solicitud.establecimiento.address_est}, {solicitud.establecimiento.city_est}",
+                            'fecha_aprobacion': timezone.now().strftime('%d/%m/%Y %H:%M'),
+                            'url_panel_barbero': self.request.build_absolute_uri(
+                                reverse('barber_module:main')
+                            ),
+                        }
+                    )
+                
+                elif estado_nuevo == 'rechazada':
+                    send_email_notification(
+                        user=barbero,
+                        email_type='solicitud_rechazada',
+                        context={
+                            'establecimiento_nombre': solicitud.establecimiento.name_est,
+                            'fecha_rechazo': timezone.now().strftime('%d/%m/%Y %H:%M'),
+                            'motivo': self.request.POST.get('motivo_rechazo', 'No especificado'),
+                            'url_establecimientos': self.request.build_absolute_uri(
+                                reverse('core:home')
+                            ),
+                        }
+                    )
+            except Exception as e:
+                # Si falla el email, no afectar el proceso principal
+                print(f"Error enviando email: {e}")
+            
+            return response
 
         return super().form_valid(form)
 

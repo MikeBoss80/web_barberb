@@ -1,0 +1,37 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>¡Vinculación Solicitada!</strong>
+</div>
+
+<div class="content">
+    <p>Nos complace informarte que has solicitado ser vinculado al establecimiento.</p>
+</div>
+
+<div class="info-box">
+    <h3>Información de Solicitud de Vinculación</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    {% if establecimiento_direccion %}
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    {% endif %}
+    <p><span class="info-label">Estado:</span> <span style="color: #33d158; font-weight: 600;">Solicitud de Vinculacion</span></p>
+    <p><span class="info-label">Fecha:</span> {{ fecha_aprobacion }}</p>
+</div>
+
+<div class="content">
+    <p>Ya puedes acceder a tu panel para finalizar la vinculacion.</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_establecimientos }}" class="button">
+        Ir a Mi Panel
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #e5e2e6;">
+    ¡Bienvenido al equipo! Estamos emocionados de trabajar contigo. 🚀
+</p>
+{% endblock %}

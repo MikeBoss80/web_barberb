@@ -1,0 +1,87 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-warning">
+    <strong>⚠️ Producto con stock bajo</strong>
+</div>
+
+<div class="content">
+    <p>El siguiente producto en tu inventario está llegando al límite mínimo de stock:</p>
+</div>
+
+<div class="info-box" style="border-left-color: #ff9800; background: #fff8e1;">
+    <h3>📦 Producto Afectado</h3>
+    <p><span class="info-label">Producto:</span> <strong>{{ producto_nombre }}</strong></p>
+    <p><span class="info-label">Categoría:</span> {{ producto_categoria }}</p>
+    <p><span class="info-label">Stock actual:</span> <span style="color: #ff9800; font-size: 18px; font-weight: bold;">{{ stock_actual }} unidades</span></p>
+    <p><span class="info-label">Stock mínimo:</span> {{ stock_minimo }} unidades</p>
+    {% if codigo_producto %}
+    <p><span class="info-label">Código:</span> {{ codigo_producto }}</p>
+    {% endif %}
+</div>
+
+<div class="info-box" style="border-left-color: #17a2b8;">
+    <h3>📊 Estadísticas de Uso</h3>
+    {% if consumo_promedio %}
+    <p><span class="info-label">Consumo promedio semanal:</span> {{ consumo_promedio }} unidades</p>
+    {% endif %}
+    {% if dias_duracion %}
+    <p><span class="info-label">Días estimados de duración:</span> <strong style="color: #dc3545;">{{ dias_duracion }} días</strong></p>
+    {% endif %}
+    {% if ultimo_pedido %}
+    <p><span class="info-label">Último pedido:</span> {{ ultimo_pedido }}</p>
+    {% endif %}
+</div>
+
+{% if proveedor_info %}
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>🏪 Información del Proveedor</h3>
+    <p><span class="info-label">Proveedor:</span> {{ proveedor_nombre }}</p>
+    {% if proveedor_telefono %}
+    <p><span class="info-label">Teléfono:</span> <a href="tel:{{ proveedor_telefono }}">{{ proveedor_telefono }}</a></p>
+    {% endif %}
+    {% if proveedor_email %}
+    <p><span class="info-label">Email:</span> <a href="mailto:{{ proveedor_email }}">{{ proveedor_email }}</a></p>
+    {% endif %}
+    {% if precio_unitario %}
+    <p><span class="info-label">Precio unitario:</span> ${{ precio_unitario }}</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="button-container">
+    <a href="{{ url_actualizar_inventario }}" class="button">
+        📝 Actualizar Stock
+    </a>
+</div>
+
+{% if url_pedido_rapido %}
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_pedido_rapido }}" class="button" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+        🛒 Realizar Pedido Rápido
+    </a>
+</div>
+{% endif %}
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>💡 Recomendaciones:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>🛒 Realiza el pedido antes de que se agote completamente</li>
+        <li>📞 Confirma disponibilidad con el proveedor</li>
+        <li>📊 Considera ajustar el stock mínimo si es necesario</li>
+        <li>🔄 Revisa si hay productos sustitutos disponibles</li>
+    </ul>
+</div>
+
+<div class="button-container" style="margin-top: 20px;">
+    <a href="{{ url_inventario_completo }}" class="button" style="background: #6c757d;">
+        📋 Ver Inventario Completo
+    </a>
+</div>
+
+<p style="font-size: 13px; color: #666; text-align: center; margin-top: 15px;">
+    <strong>📦 Mantén tu inventario siempre actualizado para un mejor servicio.</strong>
+</p>
+{% endblock %}

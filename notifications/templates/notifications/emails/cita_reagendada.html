@@ -1,0 +1,37 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-info">
+    <strong>📅 Tu cita ha sido reagendada</strong>
+</div>
+
+<div class="content">
+    <p>Tu cita ha sido reagendada. A continuación, los nuevos detalles:</p>
+</div>
+
+<div class="info-box" style="border-left-color: #dc3545;">
+    <h3>❌ Horario Anterior</h3>
+    <p><span class="info-label">Fecha:</span> {{ fecha_anterior }}</p>
+    <p><span class="info-label">Hora:</span> {{ hora_anterior }}</p>
+</div>
+
+<div class="info-box" style="border-left-color: #28a745;">
+    <h3>✅ Nuevo Horario</h3>
+    <p><span class="info-label">Fecha:</span> <strong>{{ fecha_nueva }}</strong></p>
+    <p><span class="info-label">Hora:</span> <strong style="color: #667eea; font-size: 18px;">{{ hora_nueva }}</strong></p>
+    <p><span class="info-label">Servicio:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_detalle_cita }}" class="button">
+        Ver Detalles
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #666;">
+    Si no estás de acuerdo con este cambio, por favor contáctanos lo antes posible.
+</p>
+{% endblock %}

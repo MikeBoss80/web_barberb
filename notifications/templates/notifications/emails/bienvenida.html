@@ -1,0 +1,40 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>👋 ¡Bienvenido a BarberB!</strong>
+</div>
+
+<div class="content">
+    <p>Nos alegra tenerte con nosotros. Has creado tu cuenta exitosamente.</p>
+</div>
+
+<div class="info-box">
+    <h3>👤 Tu Cuenta</h3>
+    <p><span class="info-label">Nombre:</span> {{ user_name }}</p>
+    <p><span class="info-label">Email:</span> {{ user.email }}</p>
+    <p><span class="info-label">Tipo de cuenta:</span> {{ tipo_cuenta }}</p>
+</div>
+
+<div class="content">
+    <p><strong>¿Qué puedes hacer ahora?</strong></p>
+    <ul>
+        <li>✂️ Explora nuestros establecimientos</li>
+        <li>📅 Agenda tu primera cita</li>
+        <li>⭐ Conoce a nuestros barberos</li>
+        <li>👤 Completa tu perfil</li>
+    </ul>
+</div>
+
+<div class="button-container">
+    <a href="{{ site_url }}" class="button">
+        Comenzar Ahora
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #666;">
+    Si tienes alguna pregunta, nuestro equipo de soporte está aquí para ayudarte.
+</p>
+{% endblock %}

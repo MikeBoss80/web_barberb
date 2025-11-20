@@ -1,0 +1,35 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>🎉 ¡Felicitaciones! Tu solicitud fue aprobada</strong>
+</div>
+
+<div class="content">
+    <p>Nos complace informarte que tu solicitud de vinculación ha sido <strong>aprobada</strong>.</p>
+</div>
+
+<div class="info-box">
+    <h3>✅ Información de Vinculación</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #28a745; font-weight: 600;">Aprobada</span></p>
+    <p><span class="info-label">Fecha de aprobación:</span> {{ fecha_aprobacion }}</p>
+</div>
+
+<div class="content">
+    <p>Ya puedes acceder a tu panel de barbero y comenzar a gestionar tus citas.</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_panel_barbero }}" class="button">
+        Ir a Mi Panel
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #666;">
+    ¡Bienvenido al equipo! Estamos emocionados de trabajar contigo. 🚀
+</p>
+{% endblock %}

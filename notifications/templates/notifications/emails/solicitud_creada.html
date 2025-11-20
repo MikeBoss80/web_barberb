@@ -1,0 +1,38 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-info">
+    <strong>📩 Nueva Solicitud de Vinculación</strong>
+</div>
+
+<div class="content">
+    <p>Has recibido una nueva solicitud de vinculación de un barbero:</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Detalles de la Solicitud</h3>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Email:</span> {{ barbero_email }}</p>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Fecha:</span> {{ fecha_solicitud }}</p>
+    {% if mensaje %}
+    <p><span class="info-label">Mensaje:</span> {{ mensaje }}</p>
+    {% endif %}
+</div>
+
+<div class="content">
+    <p>Por favor, revisa la solicitud y decide si deseas aprobarla o rechazarla.</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_detalle_solicitud }}" class="button">
+        Ver Solicitud Completa
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #666;">
+    💡 <strong>Tip:</strong> Puedes gestionar todas tus solicitudes desde el panel de administración.
+</p>
+{% endblock %}

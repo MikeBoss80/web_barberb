@@ -1,0 +1,66 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-info">
+    <strong>📝 Tu cita ha sido actualizada</strong>
+</div>
+
+<div class="content">
+    <p>Se han realizado cambios en tu cita. Aquí tienes la información actualizada:</p>
+</div>
+
+{% if fecha_anterior or hora_anterior %}
+<div class="info-box" style="border-left-color: #dc3545; background: #ffeaea;">
+    <h3>❌ Información Anterior</h3>
+    {% if fecha_anterior %}<p><span class="info-label">Fecha anterior:</span> {{ fecha_anterior }}</p>{% endif %}
+    {% if hora_anterior %}<p><span class="info-label">Hora anterior:</span> {{ hora_anterior }}</p>{% endif %}
+</div>
+{% endif %}
+
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>✅ Nueva Información</h3>
+    <p><span class="info-label">Servicio:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Nueva fecha:</span> <strong style="color: #28a745;">{{ fecha_nueva }}</strong></p>
+    <p><span class="info-label">Nueva hora:</span> <strong style="color: #28a745; font-size: 18px;">{{ hora_nueva }}</strong></p>
+    <p><span class="info-label">Duración:</span> {{ duracion }} minutos</p>
+    <p><span class="info-label">Precio:</span> ${{ precio }}</p>
+</div>
+
+<div class="info-box" style="border-left-color: #17a2b8;">
+    <h3>📍 Ubicación (sin cambios)</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    <p><span class="info-label">Teléfono:</span> {{ establecimiento_telefono }}</p>
+</div>
+
+{% if motivo_cambio %}
+<div class="info-box" style="border-left-color: #ffc107; background: #fff8e1;">
+    <h3>💬 Motivo del Cambio</h3>
+    <p>{{ motivo_cambio }}</p>
+</div>
+{% endif %}
+
+<div class="button-container">
+    <a href="{{ url_detalle_cita }}" class="button">
+        Ver Detalles Actualizados
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_contactar_establecimiento }}" class="button" style="background: #6c757d;">
+        📞 Contactar Establecimiento
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-warning">
+    <p><strong>📅 Si no puedes asistir en el nuevo horario:</strong></p>
+    <p>Contacta al establecimiento lo antes posible para reagendar o cancelar sin penalizaciones.</p>
+</div>
+
+<p style="font-size: 13px; color: #666;">
+    Los cambios fueron realizados {{ fecha_actualizacion }} por el establecimiento para brindarte un mejor servicio.
+</p>
+{% endblock %}

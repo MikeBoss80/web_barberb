@@ -1,0 +1,84 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-info">
+    <strong>📋 Tu agenda de hoy - {{ fecha_hoy }}</strong>
+</div>
+
+<div class="content">
+    <p>Buenos días, {{ barbero_nombre }}. Aquí tienes el resumen de tu agenda para hoy:</p>
+</div>
+
+{% if citas_hoy %}
+<div class="info-box">
+    <h3>📅 Citas Programadas ({{ total_citas }})</h3>
+    {% for cita in citas_hoy %}
+    <div style="border-bottom: 1px solid #e0e0e0; padding: 10px 0; margin-bottom: 10px;">
+        <p><strong>{{ cita.hora }}</strong> - {{ cita.cliente_nombre }}</p>
+        <p style="font-size: 14px; color: #666;">
+            📋 {{ cita.servicio }} | 
+            ⏱️ {{ cita.duracion }}min | 
+            💰 ${{ cita.precio }}
+        </p>
+        {% if cita.notas %}
+        <p style="font-size: 13px; color: #667eea; font-style: italic;">
+            💬 Nota: {{ cita.notas }}
+        </p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>💰 Resumen del Día</h3>
+    <p><span class="info-label">Total de citas:</span> {{ total_citas }}</p>
+    <p><span class="info-label">Ingresos estimados:</span> <strong>${{ ingresos_estimados }}</strong></p>
+    <p><span class="info-label">Horas de trabajo:</span> {{ horas_trabajo }}</p>
+    {% if tiempo_libre %}
+    <p><span class="info-label">Tiempo libre:</span> {{ tiempo_libre }}</p>
+    {% endif %}
+</div>
+
+{% else %}
+<div class="info-box" style="border-left-color: #ffc107; background: #fff8e1;">
+    <h3>📅 Sin Citas Programadas</h3>
+    <p>No tienes citas agendadas para hoy. ¡Es un buen momento para:</p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>🧹 Organizar y limpiar tu estación de trabajo</li>
+        <li>📚 Practicar nuevas técnicas</li>
+        <li>📱 Promocionar tus servicios en redes sociales</li>
+        <li>🛠️ Mantener tus herramientas</li>
+    </ul>
+</div>
+{% endif %}
+
+{% if recordatorios %}
+<div class="info-box" style="border-left-color: #17a2b8; background: #e7f3ff;">
+    <h3>🔔 Recordatorios</h3>
+    {% for recordatorio in recordatorios %}
+    <p>• {{ recordatorio }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="button-container">
+    <a href="{{ url_agenda_completa }}" class="button">
+        📅 Ver Agenda Completa
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_reportar_llegada }}" class="button" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+        ✅ Reportar Llegada al Trabajo
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="content" style="text-align: center;">
+    <p><strong>¡Ten un excelente día de trabajo! 💈</strong></p>
+    <p style="font-size: 13px; color: #666;">
+        Recuerda mantener siempre la excelencia en el servicio al cliente.
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>📅 ¡Tu cita ha sido confirmada!</strong>
+</div>
+
+<div class="content">
+    <p>Hemos confirmado tu cita exitosamente. A continuación, los detalles:</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Detalles de tu Cita</h3>
+    <p><span class="info-label">Servicio:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Fecha:</span> <strong style="color: #667eea;">{{ fecha_cita }}</strong></p>
+    <p><span class="info-label">Hora:</span> <strong style="color: #667eea; font-size: 18px;">{{ hora_cita }}</strong></p>
+    <p><span class="info-label">Duración:</span> {{ duracion }} minutos</p>
+    <p><span class="info-label">Precio:</span> <strong>${{ precio }}</strong></p>
+</div>
+
+<div class="info-box" style="border-left-color: #17a2b8;">
+    <h3>📍 Ubicación del Establecimiento</h3>
+    <p><span class="info-label">Nombre:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    {% if establecimiento_telefono %}
+    <p><span class="info-label">Teléfono:</span> {{ establecimiento_telefono }}</p>
+    {% endif %}
+</div>
+
+<div class="button-container">
+    <a href="{{ url_detalle_cita }}" class="button">
+        Ver Detalles Completos
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>💡 Recordatorios importantes:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>Te enviaremos recordatorios 24 y 2 horas antes de tu cita</li>
+        <li>Si necesitas cancelar, hazlo con al menos 2 horas de anticipación</li>
+        <li>Llega 5 minutos antes de tu cita</li>
+    </ul>
+</div>
+
+<p style="font-size: 13px; color: #666; margin-top: 15px;">
+    ¿Tienes alguna pregunta? Contacta directamente con el establecimiento usando el teléfono de arriba.
+</p>
+{% endblock %}
