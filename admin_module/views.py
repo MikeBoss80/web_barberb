@@ -441,7 +441,7 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
     success_url = reverse_lazy('admin_module:barber_solicitudes_list')  # Redirección tras guardar
 
     def get_breadcrumb(self):
-        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero'), 'icon': 'file-earmark-text'}]
+        return [{'label': 'Solicitudes', 'url': reverse('admin_module:solicitud_barbero')}]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
