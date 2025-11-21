@@ -7,9 +7,14 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between mb-3">
         <h4><i class="fas fa-box-seam"></i> Productos</h4>
-        <button class="btn btn-primary btnModalProduct">
-            <i class="fas fa-plus"></i> Agregar
-        </button>
+        <div class="d-flex gap-2">
+            <a href="{% url 'product:stock_movement_list' %}" class="btn btn-primary">
+                <i class="bi bi-arrow-left-right"></i> Movimientos
+            </a>
+            <button class="btn bg-primary-subtle btnModalProduct">
+                <i class="bi bi-plus-circle"></i> Agregar
+            </button>
+        </div>
     </div>
     
     <link rel="stylesheet" href="{% static 'admin_module/css/table_product.css' %}">
