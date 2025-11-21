@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'workflows',
     'login_auth',
     'establishment',
+    'product'
     ]
 
 

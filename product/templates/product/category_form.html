@@ -1,0 +1,268 @@
+<!-- Modal para Crear/Editar Categoría -->
+<div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="categoryForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">
+                        <span id="modal-title">Nueva Categoría</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_name" class="form-label">
+                                    Nombre <span class="text-danger">*</span>
+                                </label>
+                                {{ form.name }}
+                                <div class="invalid-feedback" id="name-error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_category_type" class="form-label">
+                                    Tipo <span class="text-danger">*</span>
+                                </label>
+                                {{ form.category_type }}
+                                <div class="form-text">
+                                    <small>
+                                        <strong>Almacenable:</strong> Productos físicos con stock<br>
+                                        <strong>Servicio:</strong> Servicios sin inventario<br>
+                                        <strong>Consumible:</strong> Productos que se consumen
+                                    </small>
+                                </div>
+                                <div class="invalid-feedback" id="category_type-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_parent_category" class="form-label">Categoría Padre</label>
+                                {{ form.parent_category }}
+                                <div class="form-text">
+                                    <small>Opcional: Selecciona si esta es una subcategoría</small>
+                                </div>
+                                <div class="invalid-feedback" id="parent_category-error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_color_hex" class="form-label">Color</label>
+                                <div class="input-group">
+                                    {{ form.color_hex }}
+                                    <span class="input-group-text">
+                                        <div id="color-preview" style="width: 20px; height: 20px; border-radius: 50%; background-color: #007bff;"></div>
+                                    </span>
+                                </div>
+                                <div class="form-text">
+                                    <small>Color para identificar la categoría visualmente</small>
+                                </div>
+                                <div class="invalid-feedback" id="color_hex-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Descripción</label>
+                        {{ form.description }}
+                        <div class="form-text">
+                            <small>Descripción opcional de la categoría</small>
+                        </div>
+                        <div class="invalid-feedback" id="description-error"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form.requires_prescription }}
+                                <label class="form-check-label" for="id_requires_prescription">
+                                    Requiere prescripción
+                                </label>
+                                <div class="form-text">
+                                    <small>Marcar si los productos requieren prescripción médica</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="id_is_active">
+                                    Categoría activa
+                                </label>
+                                <div class="form-text">
+                                    <small>Desmarcar para desactivar temporalmente</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alertas de validación -->
+                    <div id="form-alerts"></div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <i class="fas fa-save"></i> <span id="submit-text">Guardar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Preview del color
+    $('#id_color_hex').on('input change', function() {
+        const color = $(this).val();
+        $('#color-preview').css('background-color', color);
+    });
+
+    // Inicializar color preview
+    const initialColor = $('#id_color_hex').val() || '#007bff';
+    $('#color-preview').css('background-color', initialColor);
+
+    // Submit del formulario
+    $('#categoryForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = $('#submit-btn');
+        const spinner = submitBtn.find('.spinner-border');
+        const submitText = $('#submit-text');
+        
+        // Limpiar errores previos
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').text('');
+        $('#form-alerts').empty();
+        
+        // Mostrar loading
+        spinner.removeClass('d-none');
+        submitBtn.prop('disabled', true);
+        submitText.text('Guardando...');
+        
+        const formData = new FormData(this);
+        const url = $('#categoryForm').attr('action') || "{% url 'product:category_create' %}";
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    $('#categoryModal').modal('hide');
+                    
+                    // Mostrar mensaje de éxito
+                    showAlert('success', response.message || 'Categoría guardada correctamente');
+                    
+                    // Recargar la página después de un breve delay
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showFormErrors(response.errors);
+                }
+            },
+            error: function(xhr) {
+                let message = 'Error al guardar la categoría';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+                showAlert('danger', message);
+            },
+            complete: function() {
+                // Ocultar loading
+                spinner.addClass('d-none');
+                submitBtn.prop('disabled', false);
+                submitText.text('Guardar');
+            }
+        });
+    });
+    
+    // Función para mostrar errores del formulario
+    function showFormErrors(errors) {
+        for (const field in errors) {
+            const fieldElement = $(`#id_${field}`);
+            const errorElement = $(`#${field}-error`);
+            
+            if (fieldElement.length && errorElement.length) {
+                fieldElement.addClass('is-invalid');
+                errorElement.text(errors[field].join(', '));
+            }
+        }
+        
+        // Mostrar alerta general si hay errores no específicos
+        if (errors.__all__) {
+            showAlert('danger', errors.__all__.join(', '));
+        }
+    }
+    
+    // Función para mostrar alertas
+    function showAlert(type, message) {
+        const alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        $('#form-alerts').html(alertHtml);
+    }
+    
+    // Limpiar formulario cuando se cierra el modal
+    $('#categoryModal').on('hidden.bs.modal', function() {
+        $('#categoryForm')[0].reset();
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').text('');
+        $('#form-alerts').empty();
+        $('#color-preview').css('background-color', '#007bff');
+        $('#modal-title').text('Nueva Categoría');
+    });
+});
+
+// Función para editar categoría
+function editCategory(categoryId) {
+    $.ajax({
+        url: `/product/categories/${categoryId}/edit/`,
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const category = response.category;
+                
+                // Llenar el formulario
+                $('#id_name').val(category.name);
+                $('#id_category_type').val(category.category_type);
+                $('#id_parent_category').val(category.parent_category);
+                $('#id_description').val(category.description);
+                $('#id_color_hex').val(category.color_hex);
+                $('#id_requires_prescription').prop('checked', category.requires_prescription);
+                $('#id_is_active').prop('checked', category.is_active);
+                
+                // Actualizar preview del color
+                $('#color-preview').css('background-color', category.color_hex);
+                
+                // Cambiar título y acción del formulario
+                $('#modal-title').text('Editar Categoría');
+                $('#categoryForm').attr('action', `/product/categories/${categoryId}/edit/`);
+                
+                // Mostrar modal
+                $('#categoryModal').modal('show');
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Error al cargar los datos de la categoría');
+        }
+    });
+}
+</script>

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Categorías de Productos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h4><i class="fas fa-tags"></i> Categorías de Productos</h4>
+        <div>
+            <a href="{% url 'product:category_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva Categoría
+            </a>
+            <a href="{% url 'product:product_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al Inventario
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">{{ category.name }}</h6>
+                    <span class="badge 
+                        {% if category.category_type == 'storable' %}bg-primary
+                        {% elif category.category_type == 'service' %}bg-info
+                        {% elif category.category_type == 'consumable' %}bg-warning
+                        {% else %}bg-secondary{% endif %}">
+                        {{ category.get_category_type_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    {% if category.description %}
+                        <p class="card-text">{{ category.description }}</p>
+                    {% else %}
+                        <p class="text-muted">Sin descripción</p>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            {{ category.product_set.count }} producto{{ category.product_set.count|pluralize }}
+                        </small>
+                        <div>
+                            <a href="{% url 'product:product_list' %}?category={{ category.id }}" 
+                               class="btn btn-sm btn-outline-primary" title="Ver productos">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button class="btn btn-sm btn-outline-warning" title="Editar categoría">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% if category.parent_category %}
+                <div class="card-footer">
+                    <small class="text-muted">
+                        <i class="fas fa-sitemap"></i> Subcategoría de: {{ category.parent_category.name }}
+                    </small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                <h5>No hay categorías registradas</h5>
+                <p>Crea la primera categoría para organizar tus productos.</p>
+                <a href="{% url 'product:category_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Crear Primera Categoría
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

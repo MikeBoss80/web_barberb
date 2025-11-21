@@ -31,4 +31,5 @@ urlpatterns = [
     path('login_module/', include('login_module.urls')),  # Rutas del módulo Login
     path('barber_module/', decorator_include(login_required, 'barber_module.urls')),  # Rutas del módulo Barber
     path('establishment/', decorator_include(login_required, 'establishment.urls')),  # Rutas del módulo Establecimiento
+    path('product/', decorator_include(login_required, 'product.urls')),  # Rutas del módulo de Productos
 ]

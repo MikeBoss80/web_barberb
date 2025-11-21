@@ -32,18 +32,36 @@
             <tbody>
                 {% for product in products %}
                 <tr>
-                    <td>{{ product.name_product }}</td>
-                    <td>{{ product.description_product }}</td>
-                    <td>{{ product.amount }}</td>
-                    <td>{{ product.category.name }}</td>
-                    <td>{{ product.price_product }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.description|truncatechars:80 }}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning btnModalProduct" data-id="{{ product.id }}">
+                        {% if product.track_inventory %}
+                            {{ product.current_stock }} {{ product.unit_of_measure }}
+                            {% if product.is_low_stock %}
+                                <span class="badge bg-danger ms-1">Bajo</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ product.category.name }}</span>
+                        {% if product.category.category_type == 'service' %}
+                            <small class="text-info d-block">Servicio</small>
+                        {% elif product.category.category_type == 'consumable' %}
+                            <small class="text-warning d-block">Consumible</small>
+                        {% endif %}
+                    </td>
+                    <td>${{ product.sale_price }}</td>
+                    <td>
+                        <a href="{% url 'product:product_detail' product.pk %}" class="btn btn-sm btn-info" title="Ver detalles">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <button class="btn btn-sm btn-warning btnModalProduct" data-id="{{ product.id }}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-
-                        <button class="btn btn-sm btn-danger btnDeleteProduct " data-id="{{ product.id }}"
-                            data-name="{{ product.name_product }}" data-bs-target="#modalDeleteProduct">
+                        <button class="btn btn-sm btn-danger btnDeleteProduct" data-id="{{ product.id }}"
+                            data-name="{{ product.name }}" data-bs-target="#modalDeleteProduct" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -118,13 +136,13 @@
             let productId = btn.data('id');
             if (productId) {
                 $.ajax({
-                    url: `../producto/editar/${productId}/`,
+                    url: `{% url 'product:product_edit' 0 %}`.replace('0', productId),
                     method: 'GET',
                     success: function (data) {
                         $('#modalFormProduct').html(data);
                         $('#formProductTitle').html("Editar Producto");
                         $('#formProduct').attr('method', 'post');
-                        $('#formProduct').attr('action', `../producto/editar/${productId}/`);
+                        $('#formProduct').attr('action', `{% url 'product:product_edit' 0 %}`.replace('0', productId));
                         $('#modalProduct').modal('show');
                     },
                     error: function () {
@@ -133,13 +151,13 @@
                 });
             } else {
                 $.ajax({
-                    url: '../producto/agregar/',
+                    url: '{% url "product:product_create" %}',
                     method: 'GET',
                     success: function (data) {
                         $('#modalFormProduct').html(data);
                         $('#formProductTitle').html("Agregar Producto");
                         $('#formProduct').attr('method', 'post');
-                        $('#formProduct').attr('action', `../producto/agregar/`);
+                        $('#formProduct').attr('action', '{% url "product:product_create" %}');
                         $('#modalProduct').modal('show');
                     },
                     error: function () {
@@ -154,9 +172,90 @@
             let productId = btn.data('id');
             let productName = btn.data('name');
             $('#lblProductName').text(productName);
-            $('#formDeleteProduct').attr('action', `../producto/eliminar/${productId}/`);
+            $('#formDeleteProduct').attr('action', `{% url 'product:product_delete' 0 %}`.replace('0', productId));
 
             $('#modalDeleteProduct').modal('show');
+        });
+
+        // Manejar envío de formulario de producto via AJAX
+        $(document).on('submit', '#formProduct', function(e) {
+            e.preventDefault();
+            
+            let form = $(this);
+            let url = form.attr('action');
+            let formData = new FormData(form[0]);
+            
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalProduct').modal('hide');
+                        // Mostrar mensaje de éxito
+                        $('body').prepend(`
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                ${response.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                        // Recargar la página para mostrar los cambios
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        // Mostrar errores en el formulario
+                        let errorHtml = '<div class="alert alert-danger"><ul>';
+                        for (let field in response.errors) {
+                            for (let error of response.errors[field]) {
+                                errorHtml += `<li>${field}: ${error}</li>`;
+                            }
+                        }
+                        errorHtml += '</ul></div>';
+                        form.find('.modal-body').prepend(errorHtml);
+                    }
+                },
+                error: function() {
+                    alert('Error al procesar la solicitud.');
+                }
+            });
+        });
+
+        // Manejar envío de formulario de eliminación via AJAX
+        $(document).on('submit', '#formDeleteProduct', function(e) {
+            e.preventDefault();
+            
+            let form = $(this);
+            let url = form.attr('action');
+            
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: form.serialize(),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalDeleteProduct').modal('hide');
+                        // Mostrar mensaje de éxito
+                        $('body').prepend(`
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                ${response.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                        // Recargar la página para mostrar los cambios
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                },
+                error: function() {
+                    alert('Error al eliminar el producto.');
+                }
+            });
         });
 
     })
