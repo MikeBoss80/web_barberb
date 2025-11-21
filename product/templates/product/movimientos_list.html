@@ -7,9 +7,14 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between mb-3">
         <h4><i class="fas fa-arrow-left-right"></i> Movimientos de Inventario</h4>
-        <a href="{% url 'product:stock_movement_create' %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Nuevo Movimiento
-        </a>
+        <div>
+            <a href="{% url 'product:low_stock_report' %}" class="btn btn-danger me-2">
+                <i class="bi bi-exclamation-triangle"></i> Reporte Bajo Stock
+            </a>
+            <a href="{% url 'product:stock_movement_create' %}" class="btn bg-primary-subtle">
+                <i class="bi bi-plus-circle"></i> Nuevo Movimiento
+            </a>
+        </div>
     </div>
 
     <!-- Filtros -->
