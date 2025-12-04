@@ -15,13 +15,29 @@ console.log('🔌 Archivo configuration.js cargado correctamente');
     }
 
     function showAlert(message, type = 'success') {
+        // Usar siempre la función mejorada de alertas
         if (window.mostrarAlerta) {
             window.mostrarAlerta(type, message);
         } else {
+            // Fallback mejorado
             const alert = document.getElementById('configAlert');
             if (alert) {
-                alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-                setTimeout(() => alert.innerHTML = '', 3000);
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const bgColor = type === 'success' ? '#28a745' : '#dc3545';
+                
+                alert.innerHTML = `
+                    <div class="alert ${alertClass} alert-dismissible fade show" 
+                         style="background: ${bgColor}; color: white; border: none; border-radius: 12px; box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);">
+                        <div class="d-flex align-items-center">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-3"></i>
+                            <div class="flex-grow-1">${message}</div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                `;
+                // Scroll hacia la alerta
+                alert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                setTimeout(() => alert.innerHTML = '', 5000);
             }
         }
     }
@@ -188,13 +204,14 @@ console.log('🔌 Archivo configuration.js cargado correctamente');
             // CARGAR HORARIOS POR DÍA
             // ============================================================================
             
-            const days = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+            // Usar directamente nombres sin acentos que coincidan con HTML y backend
+            const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
             console.log('📅 Iniciando carga de horarios...');
             
             days.forEach(day => {
                 console.log(`🔍 Procesando día: ${day}`);
                 
-                // Cargar horarios de inicio y fin
+                // Cargar horarios de inicio y fin (ya sin acentos)
                 const inicioInput = document.querySelector(`input[name="${day}_inicio"]`);
                 const finInput = document.querySelector(`input[name="${day}_fin"]`);
                 
@@ -205,37 +222,24 @@ console.log('🔌 Archivo configuration.js cargado correctamente');
                     finName: finInput?.name
                 });
                 
-                // Mapear nombres con acentos a nombres sin acentos para config data
-                const dayMap = {
-                    'lunes': 'lunes',
-                    'martes': 'martes', 
-                    'miércoles': 'miercoles',
-                    'jueves': 'jueves',
-                    'viernes': 'viernes',
-                    'sábado': 'sabado',
-                    'domingo': 'domingo'
-                };
-                
-                const configDay = dayMap[day];
-                console.log(`🗂️ Mapeando ${day} → ${configDay}`);
-                
-                if (inicioInput && config[`${configDay}_inicio`]) {
+                // Ya no necesitamos mapeo, usar directamente el nombre del día
+                if (inicioInput && config[`${day}_inicio`]) {
                     const valorAnterior = inicioInput.value;
-                    inicioInput.value = config[`${configDay}_inicio`];
-                    console.log(`⏰ ${day} inicio: ${valorAnterior} → ${config[`${configDay}_inicio`]}`);
+                    inicioInput.value = config[`${day}_inicio`];
+                    console.log(`⏰ ${day} inicio: ${valorAnterior} → ${config[`${day}_inicio`]}`);
                 }
                 
-                if (finInput && config[`${configDay}_fin`]) {
+                if (finInput && config[`${day}_fin`]) {
                     const valorAnterior = finInput.value;
-                    finInput.value = config[`${configDay}_fin`];
-                    console.log(`⏰ ${day} fin: ${valorAnterior} → ${config[`${configDay}_fin`]}`);
+                    finInput.value = config[`${day}_fin`];
+                    console.log(`⏰ ${day} fin: ${valorAnterior} → ${config[`${day}_fin`]}`);
                 }
                 
                 // Si hay checkbox para día activo/inactivo (futuro)
                 const activoCheckbox = document.querySelector(`input[name="${day}_activo"]`);
-                if (activoCheckbox && config[`${configDay}_activo`] !== undefined) {
-                    activoCheckbox.checked = config[`${configDay}_activo`];
-                    console.log(`✅ ${day} activo: ${config[`${configDay}_activo`]}`);
+                if (activoCheckbox && config[`${day}_activo`] !== undefined) {
+                    activoCheckbox.checked = config[`${day}_activo`];
+                    console.log(`✅ ${day} activo: ${config[`${day}_activo`]}`);
                 }
             });
 
