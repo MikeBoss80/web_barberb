@@ -5,6 +5,14 @@ from admin_module.views import VinculationDeleteView,CreateVinculationView,Citas
 from django.contrib.auth.views import LogoutView
 
 from . import views
+# from .schedule_views import (
+#     configurar_horarios_establecimiento,
+#     configurar_slots_avanzado,
+#     bulk_schedule_config,
+#     gestionar_disponibilidad_barberos,
+#     preview_slots,
+#     aplicar_configuracion_predefinida
+# )  # DEPRECADO: Se usa establishment/views.py para configuración
 
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
@@ -43,7 +51,18 @@ urlpatterns = [
     path('solicitudes/', BarberRequestListView.as_view(), name='barber_solicitudes_list'),
     path('solicitudes/validate/<int:pk>/<int:value>/', BarberValidateVinculation.as_view(), name='barber_vinculation_validate'),
     path('solicitud/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle'),
-    path('crear-solicitud/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero')
+    path('crear-solicitud/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero'),
+    
+    # ============================================================================
+    # URLs para Configuración de Horarios y Slots - DEPRECADO
+    # ============================================================================
+    # NOTA: Estas vistas han sido reemplazadas por establishment/views.py
+    # path('horarios/configurar/', configurar_horarios_establecimiento, name='configurar_horarios_establecimiento'),
+    # path('horarios/slots-avanzado/', configurar_slots_avanzado, name='configurar_slots_avanzado'),
+    # path('horarios/bulk-config/', bulk_schedule_config, name='bulk_schedule_config'),
+    # path('horarios/disponibilidad-barberos/', gestionar_disponibilidad_barberos, name='gestionar_disponibilidad_barberos'),
+    # path('ajax/preview-slots/', preview_slots, name='preview_slots'),
+    # path('ajax/aplicar-config-predefinida/', aplicar_configuracion_predefinida, name='aplicar_configuracion_predefinida'),
 
 
 ]   

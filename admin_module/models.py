@@ -166,46 +166,5 @@ class BarberAvailability(models.Model):
         return f"{self.barber.get_full_name()} - {day_name}: NO DISPONIBLE"
 
 
-# Tabla: admin_module_barbertimeoff
-class BarberTimeOff(models.Model):
-    """
-    Ausencias temporales de barberos (vacaciones, permisos, días libres).
-    Permite bloquear slots específicos.
-    """
-    barber = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE,
-        limit_choices_to={'groups__name': 'Barbero'},
-        related_name='time_offs'
-    )
-    start_date = models.DateField(help_text="Fecha de inicio de la ausencia")
-    end_date = models.DateField(help_text="Fecha de fin de la ausencia")
-    start_time = models.TimeField(
-        null=True, 
-        blank=True, 
-        help_text="Hora de inicio (opcional, para ausencias parciales)"
-    )
-    end_time = models.TimeField(
-        null=True, 
-        blank=True, 
-        help_text="Hora de fin (opcional, para ausencias parciales)"
-    )
-    all_day = models.BooleanField(
-        default=True, 
-        help_text="¿Es ausencia de todo el día?"
-    )
-    reason = models.CharField(
-        max_length=200, 
-        help_text="Motivo de la ausencia (vacaciones, permiso médico, etc.)"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        ordering = ['-start_date']
-        verbose_name = 'Ausencia de Barbero'
-        verbose_name_plural = 'Ausencias de Barberos'
-    
-    def __str__(self):
-        if self.all_day:
-            return f"{self.barber.get_full_name()}: {self.start_date} - {self.end_date} (Todo el día)"
-        return f"{self.barber.get_full_name()}: {self.start_date} {self.start_time} - {self.end_date} {self.end_time}"
+# Importar modelo esencial de configuración de slots
+from .slot_config_models import EstablishmentSlotConfiguration

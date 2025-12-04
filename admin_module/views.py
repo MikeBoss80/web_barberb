@@ -19,7 +19,8 @@ from django.contrib import messages
 from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm, BarberRequestForm
 from django.views.generic.edit import FormView
 from collections import defaultdict
-from admin_module.models import Category 
+from admin_module.models import Category, EstablishmentSchedule
+from admin_module.slot_config_models import EstablishmentSlotConfiguration 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from workflows.models import FlowInstance, FlowStatus
@@ -773,9 +774,55 @@ class CreateEstablishmentView(BreadcrumbMixin,UserPassesTestMixin, FormView):
         return '/admin_module/establecimiento/'
 
     def form_valid(self, form):
-        establishment=form.save(commit=False)
-        establishment.id_admin_id=self.request.user.id
+        from datetime import time
+        from django.db import transaction
+        
+        # Guardar establecimiento
+        establishment = form.save(commit=False)
+        establishment.id_admin_id = self.request.user.id
         establishment.save()
+        
+        # Crear horarios por defecto en una transacción
+        with transaction.atomic():
+            # Crear horarios estándar: Lun-Vie 9:00-18:00, Sáb 9:00-14:00, Dom cerrado
+            default_schedules = [
+                {'day': 1, 'open': time(9, 0), 'close': time(18, 0), 'is_open': True},  # Lunes
+                {'day': 2, 'open': time(9, 0), 'close': time(18, 0), 'is_open': True},  # Martes
+                {'day': 3, 'open': time(9, 0), 'close': time(18, 0), 'is_open': True},  # Miércoles
+                {'day': 4, 'open': time(9, 0), 'close': time(18, 0), 'is_open': True},  # Jueves
+                {'day': 5, 'open': time(9, 0), 'close': time(18, 0), 'is_open': True},  # Viernes
+                {'day': 6, 'open': time(9, 0), 'close': time(14, 0), 'is_open': True},  # Sábado
+                {'day': 7, 'open': time(9, 0), 'close': time(18, 0), 'is_open': False}, # Domingo cerrado
+            ]
+            
+            for schedule_data in default_schedules:
+                EstablishmentSchedule.objects.create(
+                    establishment=establishment,
+                    day_of_week=schedule_data['day'],
+                    opening_time=schedule_data['open'],
+                    closing_time=schedule_data['close'],
+                    is_open=schedule_data['is_open']
+                )
+            
+            # Crear configuración de slots por defecto
+            EstablishmentSlotConfiguration.objects.create(
+                establishment=establishment,
+                default_slot_duration=30,
+                advance_booking_days=30,
+                min_advance_booking_hours=2,
+                allow_same_day_booking=True,
+                business_type='traditional'
+            )
+        
+        # Mensaje de éxito con link a configuración
+        messages.success(
+            self.request, 
+            f'Establecimiento "{establishment.name_est}" creado exitosamente con horarios por defecto. '
+            f'<a href="/admin_module/horarios/configurar/" class="btn btn-sm btn-outline-primary ms-2">'
+            f'<i class="fas fa-clock me-1"></i>Configurar Horarios</a>',
+            extra_tags='safe'
+        )
+        
         return super().form_valid(form)
 
 
@@ -909,7 +956,6 @@ class AdminSolicitudesDetailView(LoginRequiredMixin, BreadcrumbMixin, UpdateView
     def get_success_url(self):
         return reverse_lazy('admin_module:admin_solicitudes_list')
 
-
 class SelecGrupoView(LoginRequiredMixin, TemplateView):
     """Vista para visualizar y modificar los roles activos del usuario en el sistema"""
     template_name = 'perfil/seleccionar_rol.html'
@@ -987,7 +1033,10 @@ class SelecGrupoView(LoginRequiredMixin, TemplateView):
         
         return redirect('admin_module:seleccionar_rol')
     
+ 
+   
     
+
     
     
     

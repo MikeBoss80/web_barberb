@@ -230,3 +230,155 @@ class BarberRequestForm(forms.ModelForm):
         self.fields['fecha_inicio'].label = "Fecha de Inicio"
         self.fields['fecha_fin'].label = "Fecha de Fin"
         self.fields['comentario'].label = "Comentario"
+
+
+# ============================================================================
+# FORMULARIOS PARA CONFIGURACIÓN DE HORARIOS Y SLOTS
+# ============================================================================
+
+from django.forms import ModelForm, inlineformset_factory
+from django.core.exceptions import ValidationError
+from datetime import time
+
+from admin_module.models import (
+    EstablishmentSchedule, 
+    BarberAvailability, 
+)
+from admin_module.slot_config_models import (
+    EstablishmentSlotConfiguration
+)
+
+
+class EstablishmentScheduleForm(ModelForm):
+    """
+    Formulario para configurar horarios del establecimiento por día de la semana.
+    """
+    
+    class Meta:
+        model = EstablishmentSchedule
+        fields = ['day_of_week', 'opening_time', 'closing_time', 'is_open']
+        widgets = {
+            'opening_time': forms.TimeInput(
+                attrs={
+                    'type': 'time',
+                    'class': 'form-control',
+                    'step': '900'  # 15 minutes intervals
+                }
+            ),
+            'closing_time': forms.TimeInput(
+                attrs={
+                    'type': 'time',
+                    'class': 'form-control',
+                    'step': '900'
+                }
+            ),
+            'day_of_week': forms.Select(attrs={'class': 'form-control'}),
+            'is_open': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        }
+        labels = {
+            'day_of_week': 'Día de la semana',
+            'opening_time': 'Hora de apertura',
+            'closing_time': 'Hora de cierre',
+            'is_open': '¿Abre este día?'
+        }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        opening_time = cleaned_data.get('opening_time')
+        closing_time = cleaned_data.get('closing_time')
+        is_open = cleaned_data.get('is_open')
+        
+        if is_open and opening_time and closing_time:
+            if opening_time >= closing_time:
+                raise ValidationError(
+                    'La hora de apertura debe ser anterior a la hora de cierre'
+                )
+            
+            # Validar horarios razonables
+            if opening_time < time(6, 0):
+                raise ValidationError(
+                    'La hora de apertura no puede ser antes de las 6:00 AM'
+                )
+            
+            if closing_time > time(23, 0):
+                raise ValidationError(
+                    'La hora de cierre no puede ser después de las 11:00 PM'
+                )
+        
+        return cleaned_data
+
+
+class EstablishmentSlotConfigurationForm(ModelForm):
+    """
+    Formulario para configuración avanzada de slots del establecimiento.
+    """
+    
+    class Meta:
+        model = EstablishmentSlotConfiguration
+        exclude = ['establishment', 'created_at', 'updated_at', 'updated_by']
+        
+        widgets = {
+            'default_slot_duration': forms.NumberInput(attrs={'class': 'form-control', 'min': 15, 'max': 120}),
+            'allow_custom_slot_duration': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'advance_booking_days': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 365}),
+            'min_advance_booking_hours': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 72}),
+            'buffer_time_between_appointments': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 60}),
+            'lunch_break_start': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'lunch_break_end': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'allow_same_day_booking': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'business_type': forms.Select(attrs={'class': 'form-control'})
+        }
+
+
+class BulkScheduleConfigForm(forms.Form):
+    """
+    Formulario para configurar horarios en lote para todos los días.
+    """
+    
+    DAYS_CHOICES = [
+        ('weekdays', 'Lunes a Viernes'),
+        ('weekend', 'Sábados y Domingos'),
+        ('all', 'Todos los días'),
+        ('custom', 'Días específicos')
+    ]
+    
+    apply_to = forms.ChoiceField(
+        choices=DAYS_CHOICES,
+        widget=forms.RadioSelect(),
+        label="Aplicar a"
+    )
+    
+    custom_days = forms.MultipleChoiceField(
+        choices=EstablishmentSchedule.DAYS_OF_WEEK,
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
+        label="Días específicos"
+    )
+    
+    opening_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+        label="Hora de apertura"
+    )
+    
+    closing_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+        label="Hora de cierre"
+    )
+    
+    is_open = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        label="¿Abierto estos días?"
+    )
+
+
+# FormSets para manejo múltiple de horarios
+EstablishmentScheduleFormSet = inlineformset_factory(
+    Establishment,
+    EstablishmentSchedule,
+    form=EstablishmentScheduleForm,
+    extra=7,  # 7 días de la semana
+    max_num=7,
+    can_delete=False
+)

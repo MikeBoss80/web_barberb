@@ -3,345 +3,296 @@
 EJEMPLOS DE USO - SISTEMA DE NOTIFICACIONES BARBERB
 ============================================
 
-Este archivo muestra cómo usar el sistema de notificaciones por email
-actualizado con todos los tipos específicos del proyecto BarberB.
+Guía rápida para usar el sistema de notificaciones por email.
+Simplemente importa la función y úsala en cualquier vista o función.
 """
 
 from notifications.email_service import send_email_notification
-from django.urls import reverse
 
 
 # ============================================
-# 📅 EJEMPLOS DE CITAS - CLIENTE
+# � USO BÁSICO
 # ============================================
 
-# EJEMPLO 1: Cita creada por cliente
-def crear_cita_cliente(request, form):
-    cita = form.instance
+def ejemplo_basico():
+    """Ejemplo más simple de envío de email"""
     
+    # Obtener el usuario (desde request, base de datos, etc.)
+    user = request.user  # o User.objects.get(id=123)
+    
+    # Enviar email
     send_email_notification(
-        user=cita.cliente,
+        user=user,
         email_type='appointment_created_client',
         context={
-            'servicio_nombre': cita.servicio.nombre,
-            'barbero_nombre': cita.barbero.get_full_name(),
-            'fecha_cita': cita.fecha.strftime('%d/%m/%Y'),
-            'hora_cita': cita.fecha.strftime('%I:%M %p'),
-            'duracion': cita.servicio.duracion,
-            'precio': cita.precio_total,
-            'establecimiento_nombre': cita.establecimiento.nombre,
-            'establecimiento_direccion': cita.establecimiento.direccion,
-            'establecimiento_telefono': cita.establecimiento.telefono,
-            'url_detalle_cita': request.build_absolute_uri(
-                reverse('citas:detalle', kwargs={'pk': cita.id})
-            ),
+            'servicio_nombre': 'Corte Premium',
+            'barbero_nombre': 'Carlos García',
+            'fecha_cita': '25/11/2025',
+            'hora_cita': '10:30 AM',
+            'establecimiento_nombre': 'Barbería Elite',
         }
     )
 
-# EJEMPLO 2: Recordatorio 24 horas antes
-def enviar_recordatorio_24h():
-    from django.core.management.base import BaseCommand
-    from datetime import datetime, timedelta
+
+# ============================================
+# 📅 EJEMPLOS POR CATEGORÍA
+# ============================================
+
+class CitasView:
+    """Ejemplos en vistas de citas"""
     
-    manana = datetime.now() + timedelta(days=1)
-    citas = Cita.objects.filter(fecha__date=manana.date(), estado='confirmada')
-    
-    for cita in citas:
+    def form_valid(self, form):
+        """Al crear una cita nueva"""
+        cita = form.save()
+        
+        # ✅ Notificar al cliente
         send_email_notification(
-            user=cita.cliente,
-            email_type='appointment_reminder_24h',
+            user=cita.customer,
+            email_type='appointment_created_client',
             context={
-                'servicio_nombre': cita.servicio.nombre,
-                'barbero_nombre': cita.barbero.get_full_name(),
-                'fecha_cita': cita.fecha.strftime('%d/%m/%Y'),
-                'hora_cita': cita.fecha.strftime('%I:%M %p'),
-                'establecimiento_nombre': cita.establecimiento.nombre,
-                'establecimiento_direccion': cita.establecimiento.direccion,
-                'establecimiento_telefono': cita.establecimiento.telefono,
-                'url_confirmar_asistencia': f"/citas/{cita.id}/confirmar/",
-                'url_cancelar_cita': f"/citas/{cita.id}/cancelar/",
+                'servicio_nombre': cita.service.name,
+                'barbero_nombre': cita.barber.get_full_name(),
+                'fecha_cita': cita.date.strftime('%d/%m/%Y'),
+                'hora_cita': cita.date.strftime('%I:%M %p'),
+                'precio': cita.price,
+                'establecimiento_nombre': cita.service.establishment.name_est,
+                'establecimiento_direccion': cita.service.establishment.address_est,
+                'url_detalle_cita': f'/citas/{cita.id}/',
+            }
+        )
+        
+        return super().form_valid(form)
+
+
+class SolicitudesView:
+    """Ejemplos en vistas de solicitudes"""
+    
+    def enviar_solicitud(self, solicitud):
+        """Al recibir nueva solicitud de barbero"""
+        
+        # ✅ Notificar al admin
+        send_email_notification(
+            user=solicitud.establishment.id_admin,
+            email_type='new_request_admin',
+            context={
+                'barbero_nombre': solicitud.user.get_full_name(),
+                'barbero_email': solicitud.user.email,
+                'establecimiento_nombre': solicitud.establishment.name_est,
+                'fecha_solicitud': solicitud.created_at.strftime('%d/%m/%Y'),
+                'mensaje_barbero': solicitud.message,
+                'url_aprobar_solicitud': f'/admin/solicitudes/{solicitud.id}/aprobar/',
+                'url_rechazar_solicitud': f'/admin/solicitudes/{solicitud.id}/rechazar/',
             }
         )
 
-# EJEMPLO 3: Solicitud de calificación post-servicio
-def solicitar_calificacion_cliente(cita_id):
-    cita = Cita.objects.get(id=cita_id)
+
+class InventarioView:
+    """Ejemplos en vistas de inventario"""
     
-    send_email_notification(
-        user=cita.cliente,
-        email_type='appointment_rate_request',
-        context={
-            'servicio_nombre': cita.servicio.nombre,
-            'barbero_nombre': cita.barbero.get_full_name(),
-            'fecha_cita': cita.fecha.strftime('%d/%m/%Y'),
-            'establecimiento_nombre': cita.establecimiento.nombre,
-            'url_calificar_servicio': f"/citas/{cita.id}/calificar/",
-            'url_agendar_nueva_cita': "/citas/nueva/",
-            # Opcional: código de descuento para próxima cita
-            'codigo_descuento': 'FIDELIDAD10',
-            'descuento_porcentaje': 10,
-        }
+    def verificar_stock(self, producto):
+        """Al detectar stock bajo"""
+        
+        if producto.stock_actual <= producto.stock_minimo:
+            # ✅ Alertar al admin
+            send_email_notification(
+                user=producto.establecimiento.administrador,
+                email_type='inventory_low_stock',
+                context={
+                    'producto_nombre': producto.nombre,
+                    'stock_actual': producto.stock_actual,
+                    'stock_minimo': producto.stock_minimo,
+                    'establecimiento_nombre': producto.establecimiento.nombre,
+                    'url_pedido_rapido': f'/inventario/pedido/{producto.id}/',
+                }
+            )
+
+
+# ============================================
+# � AUTOMATIZACIÓN
+# ============================================
+
+def enviar_recordatorios_diarios():
+    """Comando para enviar recordatorios (cron job)"""
+    from datetime import datetime, timedelta
+    from services_module.models import ServiceDate
+    
+    # Buscar citas de mañana
+    manana = datetime.now() + timedelta(days=1)
+    citas = ServiceDate.objects.filter(
+        date__date=manana.date(),
+        status='confirmada'
     )
+    
+    # Enviar recordatorio a cada cliente
+    for cita in citas:
+        send_email_notification(
+            user=cita.customer,
+            email_type='appointment_reminder_24h',
+            context={
+                'servicio_nombre': cita.service.name,
+                'barbero_nombre': cita.barber.get_full_name(),
+                'fecha_cita': cita.date.strftime('%d/%m/%Y'),
+                'hora_cita': cita.date.strftime('%I:%M %p'),
+                'establecimiento_nombre': cita.service.establishment.name_est,
+                'url_confirmar_asistencia': f'/citas/{cita.id}/confirmar/',
+                'url_cancelar_cita': f'/citas/{cita.id}/cancelar/',
+            }
+        )
 
 
-# ============================================
-# 💈 EJEMPLOS DE BARBERO
-# ============================================
-
-# EJEMPLO 4: Agenda diaria del barbero (enviado cada mañana a las 7 AM)
-def enviar_agenda_diaria_barbero(barbero):
+def enviar_agenda_diaria_barberos():
+    """Comando para agenda diaria de barberos (cron job)"""
+    from django.contrib.auth.models import User
     from datetime import datetime
     
+    # Obtener barberos activos
+    barberos = User.objects.filter(groups__name='Barbero', is_active=True)
     hoy = datetime.now().date()
-    citas_hoy = Cita.objects.filter(
-        barbero=barbero, 
-        fecha__date=hoy, 
-        estado='confirmada'
-    ).order_by('fecha')
     
-    ingresos_estimados = sum(cita.precio_total for cita in citas_hoy)
-    
-    send_email_notification(
-        user=barbero,
-        email_type='barber_daily_schedule',
-        context={
-            'barbero_nombre': barbero.get_full_name(),
-            'fecha_hoy': hoy.strftime('%d/%m/%Y'),
-            'citas_hoy': [{
-                'hora': cita.fecha.strftime('%I:%M %p'),
-                'cliente_nombre': cita.cliente.get_full_name(),
-                'servicio': cita.servicio.nombre,
-                'duracion': f"{cita.servicio.duracion}",
-                'precio': cita.precio_total,
-                'notas': cita.notas_especiales,
-            } for cita in citas_hoy],
-            'total_citas': citas_hoy.count(),
-            'ingresos_estimados': ingresos_estimados,
-            'horas_trabajo': '8 horas',
-            'tiempo_libre': '2 horas',
-            'recordatorios': [
-                'Revisar herramientas antes de empezar',
-                'Actualizar inventario de productos',
-            ],
-            'url_agenda_completa': '/barbero/agenda/',
-            'url_reportar_llegada': '/barbero/llegada/',
-        }
-    )
-
-
-# ============================================
-# 🧑‍🔧 EJEMPLOS DE SOLICITUDES
-# ============================================
-
-# EJEMPLO 5: Nueva solicitud recibida por admin
-def notificar_nueva_solicitud_admin(request, solicitud):
-    send_email_notification(
-        user=solicitud.establecimiento.administrador,
-        email_type='new_request_admin',
-        context={
-            'barbero_nombre': solicitud.barbero.get_full_name(),
-            'barbero_email': solicitud.barbero.email,
-            'barbero_telefono': getattr(solicitud.barbero.profile, 'telefono', ''),
-            'barbero_experiencia': getattr(solicitud.barbero.profile, 'anos_experiencia', ''),
-            'establecimiento_nombre': solicitud.establecimiento.nombre,
-            'fecha_solicitud': solicitud.fecha_creacion.strftime('%d/%m/%Y'),
-            'mensaje_barbero': solicitud.mensaje,
-            'especialidades': solicitud.especialidades.all() if hasattr(solicitud, 'especialidades') else [],
-            'url_detalle_solicitud': request.build_absolute_uri(
-                reverse('admin:solicitud_detalle', kwargs={'pk': solicitud.id})
-            ),
-            'url_aprobar_solicitud': request.build_absolute_uri(
-                reverse('admin:solicitud_aprobar', kwargs={'pk': solicitud.id})
-            ),
-            'url_rechazar_solicitud': request.build_absolute_uri(
-                reverse('admin:solicitud_rechazar', kwargs={'pk': solicitud.id})
-            ),
-        }
-    )
-
-# EJEMPLO 6: Confirmación de solicitud enviada al barbero
-def confirmar_solicitud_enviada(solicitud):
-    send_email_notification(
-        user=solicitud.barbero,
-        email_type='request_submitted_barber',
-        context={
-            'establecimiento_nombre': solicitud.establecimiento.nombre,
-            'establecimiento_direccion': solicitud.establecimiento.direccion,
-            'fecha_solicitud': solicitud.fecha_creacion.strftime('%d/%m/%Y'),
-            'solicitud_id': solicitud.id,
-            'mensaje_enviado': solicitud.mensaje,
-            'url_mis_solicitudes': '/barbero/mis-solicitudes/',
-            'url_buscar_establecimientos': '/establecimientos/',
-        }
-    )
-
-
-# ============================================
-# 🤝 EJEMPLOS DE VINCULACIÓN
-# ============================================
-
-# EJEMPLO 7: Vinculación aprobada
-def notificar_vinculacion_aprobada(vinculacion, mensaje_admin=None):
-    send_email_notification(
-        user=vinculacion.barbero,
-        email_type='link_request_approved',
-        context={
-            'establecimiento_nombre': vinculacion.establecimiento.nombre,
-            'establecimiento_direccion': vinculacion.establecimiento.direccion,
-            'admin_nombre': vinculacion.establecimiento.administrador.get_full_name(),
-            'fecha_aprobacion': timezone.now().strftime('%d/%m/%Y'),
-            'mensaje_admin': mensaje_admin,
-            'informacion_establecimiento': [
-                'Horario de trabajo: Lunes a Sábado 9:00 AM - 7:00 PM',
-                'Comisión por servicio: 60%',
-                'Pago semanal todos los viernes',
-                'Capacitación inicial incluida',
-            ],
-            'url_panel_barbero': '/barbero/panel/',
-            'url_configurar_horarios': '/barbero/horarios/',
-            'url_contactar_admin': f'/admin/contacto/{vinculacion.establecimiento.id}/',
-        }
-    )
-
-
-# ============================================
-# 📦 EJEMPLOS DE INVENTARIO
-# ============================================
-
-# EJEMPLO 8: Stock bajo en inventario
-def alertar_stock_bajo(producto):
-    send_email_notification(
-        user=producto.establecimiento.administrador,
-        email_type='inventory_low_stock',
-        context={
-            'producto_nombre': producto.nombre,
-            'producto_categoria': producto.categoria.nombre,
-            'stock_actual': producto.stock_actual,
-            'stock_minimo': producto.stock_minimo,
-            'codigo_producto': producto.codigo,
-            'consumo_promedio': producto.consumo_promedio_semanal,
-            'dias_duracion': producto.dias_estimados_duracion,
-            'ultimo_pedido': producto.ultimo_pedido.strftime('%d/%m/%Y') if producto.ultimo_pedido else None,
-            'proveedor_nombre': producto.proveedor.nombre if producto.proveedor else None,
-            'proveedor_telefono': producto.proveedor.telefono if producto.proveedor else None,
-            'proveedor_email': producto.proveedor.email if producto.proveedor else None,
-            'precio_unitario': producto.precio_compra,
-            'url_actualizar_inventario': f'/inventario/producto/{producto.id}/editar/',
-            'url_pedido_rapido': f'/inventario/pedido/{producto.id}/',
-            'url_inventario_completo': '/inventario/',
-        }
-    )
-
-
-# ============================================
-# 🔐 EJEMPLOS DE SEGURIDAD Y PERFIL
-# ============================================
-
-# EJEMPLO 9: Confirmación de actualización de perfil
-def confirmar_actualizacion_perfil(user, campos_actualizados):
-    send_email_notification(
-        user=user,
-        email_type='profile_update_confirmation',
-        context={
-            'fecha_actualizacion': timezone.now().strftime('%d/%m/%Y %H:%M'),
-            'campos_actualizados': campos_actualizados,
-            'cambios_importantes': [
-                {'campo': 'Email', 'descripcion': 'Se requiere verificación'},
-                {'campo': 'Teléfono', 'descripcion': 'Se envió código de verificación'},
-            ] if 'email' in campos_actualizados or 'telefono' in campos_actualizados else [],
-            'url_ver_perfil': '/perfil/',
-            'url_soporte': '/soporte/',
-        }
-    )
-
-
-# ============================================
-# COMANDOS DE MANAGEMENT PARA AUTOMATIZACIÓN
-# ============================================
-
-# EJEMPLO 10: Comando para enviar agenda diaria (ejecutar con cron a las 7 AM)
-"""
-# Archivo: management/commands/enviar_agenda_diaria.py
-
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-
-class Command(BaseCommand):
-    help = 'Envía la agenda diaria a todos los barberos activos'
-    
-    def handle(self, *args, **options):
-        barberos = User.objects.filter(
-            groups__name='Barbero',
-            is_active=True,
-            profile__establecimiento__isnull=False
+    for barbero in barberos:
+        # Obtener citas del barbero para hoy
+        citas_hoy = ServiceDate.objects.filter(
+            barber=barbero,
+            date__date=hoy,
+            status='confirmada'
         )
         
-        for barbero in barberos:
-            enviar_agenda_diaria_barbero(barbero)
-        
-        self.stdout.write(
-            self.style.SUCCESS(f'Agendas enviadas a {barberos.count()} barberos')
+        send_email_notification(
+            user=barbero,
+            email_type='barber_daily_schedule',
+            context={
+                'barbero_nombre': barbero.get_full_name(),
+                'fecha_hoy': hoy.strftime('%d/%m/%Y'),
+                'total_citas': citas_hoy.count(),
+                'citas_hoy': [
+                    {
+                        'hora': cita.date.strftime('%I:%M %p'),
+                        'cliente_nombre': cita.customer.get_full_name(),
+                        'servicio': cita.service.name,
+                        'precio': cita.price,
+                    }
+                    for cita in citas_hoy
+                ],
+                'url_agenda_completa': '/barbero/agenda/',
+            }
         )
+
+
+# ============================================
+# � TIPOS DE EMAIL DISPONIBLES
+# ============================================
+
 """
+LISTA COMPLETA DE TIPOS DE EMAIL:
 
-# EJEMPLO 11: Comando para recordatorios 24h (ejecutar diariamente a las 6 PM)
-"""
-# Archivo: management/commands/enviar_recordatorios_24h.py
+🔐 SEGURIDAD:
+- profile_update_confirmation
 
-from django.core.management.base import BaseCommand
+📅 CITAS - CLIENTE:
+- appointment_created_client
+- appointment_updated_client
+- appointment_cancelled_by_client
+- appointment_cancelled_by_admin
+- appointment_reminder_24h
+- appointment_reminder_2h
+- appointment_rate_request
+- appointment_no_show_followup
 
-class Command(BaseCommand):
-    help = 'Envía recordatorios de citas 24 horas antes'
-    
-    def handle(self, *args, **options):
-        enviar_recordatorio_24h()
-        self.stdout.write(
-            self.style.SUCCESS('Recordatorios 24h enviados')
-        )
+💈 CITAS - BARBERO:
+- appointment_updated_barber
+- appointment_cancelled_barber
+- barber_daily_schedule
+- barber_daily_alert
+
+🏢 ADMIN:
+- daily_appointments_report
+- appointment_conflict_warning
+
+🧑‍🔧 SOLICITUDES:
+- new_request_admin
+- request_submitted_barber
+- request_status_update
+- pending_requests_reminder
+
+🤝 VINCULACIÓN:
+- link_request_submitted
+- link_request_approved
+- link_request_rejected
+
+📦 INVENTARIO:
+- inventory_low_stock
+- inventory_out_of_stock
+- inventory_new_product
+- inventory_expiration_warning
+- inventory_update_confirmation
+
+⚙️ SISTEMA:
+- establishment_info_updated
 """
 
 
 # ============================================
-# INTEGRACIONES EN VISTAS EXISTENTES
+# 🛠️ INTEGRACIÓN RÁPIDA
 # ============================================
 
 """
-INTEGRACIÓN RECOMENDADA EN TUS VISTAS:
+CÓMO INTEGRAR EN TUS VISTAS EXISTENTES:
 
-1. En CreateCitaView.form_valid():
-   crear_cita_cliente(self.request, form)
+1. Importar la función:
+   from notifications.email_service import send_email_notification
 
-2. En CancelarCitaView.post():
-   send_email_notification(user=cita.cliente, email_type='appointment_cancelled_by_client', context={...})
+2. Agregar en el método donde quieres enviar email:
+   send_email_notification(
+       user=usuario_destinatario,
+       email_type='tipo_email_de_la_lista_arriba',
+       context={
+           'variable1': 'valor1',
+           'variable2': 'valor2',
+           # ... todas las variables que usa el template
+       }
+   )
 
-3. En AprobarSolicitudView.post():
-   notificar_nueva_solicitud_admin(self.request, solicitud)
+3. ¡Listo! El email se envía automáticamente.
 
-4. En ActualizarInventarioView.form_valid():
-   if producto.stock_actual <= producto.stock_minimo:
-       alertar_stock_bajo(producto)
-
-5. En UpdateProfileView.form_valid():
-   confirmar_actualizacion_perfil(self.request.user, ['nombre', 'telefono'])
+TIPS:
+- El user debe tener email válido
+- El email_type debe existir en EMAIL_TYPES
+- Las variables del context deben coincidir con el template
+- Usa try/except para manejar errores si es crítico
 """
 
 
 # ============================================
-# CONFIGURACIÓN DE CRON JOBS (LINUX/MAC)
+# 🔧 CONFIGURACIÓN CRON JOBS
 # ============================================
 
 """
-# Agregar al crontab (crontab -e):
+COMANDOS DISPONIBLES:
+
+1. Recordatorios automáticos:
+   python manage.py send_appointment_reminders --type=24h
+   python manage.py send_appointment_reminders --type=2h
+
+2. Agenda diaria barberos:
+   python manage.py send_daily_schedule
+
+CONFIGURACIÓN CRON (Linux/Mac):
+# Editar crontab: crontab -e
 
 # Agenda diaria a las 7:00 AM
-0 7 * * * cd /path/to/project && python manage.py enviar_agenda_diaria
+0 7 * * * cd /ruta/proyecto && python manage.py send_daily_schedule
 
-# Recordatorios 24h a las 6:00 PM  
-0 18 * * * cd /path/to/project && python manage.py enviar_recordatorios_24h
+# Recordatorios 24h a las 6:00 PM
+0 18 * * * cd /ruta/proyecto && python manage.py send_appointment_reminders --type=24h
 
 # Recordatorios 2h cada hora de 8 AM a 8 PM
-0 8-20 * * * cd /path/to/project && python manage.py enviar_recordatorios_2h
+0 8-20 * * * cd /ruta/proyecto && python manage.py send_appointment_reminders --type=2h
 
-# Revisión de stock bajo todos los lunes a las 9 AM
-0 9 * * 1 cd /path/to/project && python manage.py revisar_inventario_bajo
+WINDOWS (Task Scheduler):
+- Crear tarea básica
+- Trigger: Diario a la hora deseada  
+- Action: Ejecutar programa
+- Program: python
+- Arguments: manage.py send_daily_schedule
+- Start in: C:\ruta\a\tu\proyecto
 """
