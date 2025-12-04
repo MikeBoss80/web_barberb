@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'workflows',
     'login_auth',
     'establishment',
+    'notifications',
     'product'
     ]
 
@@ -266,6 +267,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login_module/login/'
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+# ============================================
+# CONFIGURACIÓN DE EMAIL
+# ============================================
+
+# Para desarrollo: mostrar emails en consola (comentar para enviar emails reales)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Para producción: envío real de emails con Gmail/SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Variable de entorno
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # App password de Gmail
+
+# URL base del sitio (para links en emails)
+SITE_URL = 'http://localhost:8000'  # Cambiar en producción
 
 # ============================================
 # CONFIGURACIONES DE SEGURIDAD ADICIONALES

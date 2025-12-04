@@ -1,0 +1,360 @@
+{% extends 'admin_module/base.html' %}
+{% load static %}
+
+{% block title %}Configurar Horarios del Establecimiento{% endblock %}
+
+{% block extra_css %}
+<style>
+.schedule-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+}
+
+.schedule-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-card.closed {
+    background-color: #f8f9fa;
+    opacity: 0.7;
+}
+
+.day-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.day-header.weekend {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.schedule-form {
+    padding: 1.5rem;
+}
+
+.time-input {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+}
+
+.bulk-config {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.preview-section {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.slot-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.slot-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 text-gray-800">
+                    <i class="fas fa-clock me-2"></i>
+                    Configurar Horarios - {{ establishment.name_est }}
+                </h1>
+                <div>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bulkConfigModal">
+                        <i class="fas fa-magic me-2"></i>Configuración Rápida
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="previewSlots()">
+                        <i class="fas fa-eye me-2"></i>Vista Previa
+                    </button>
+                </div>
+            </div>
+
+            <form method="post" id="scheduleForm">
+                {% csrf_token %}
+                
+                <div class="row">
+                    {% for day_num, day_name in DAYS_OF_WEEK %}
+                    <div class="col-lg-6 col-xl-4 mb-4">
+                        <div class="schedule-card {% if day_num == 7 %}weekend{% endif %}" id="card-{{ day_num }}">
+                            <div class="day-header {% if day_num >= 6 %}weekend{% endif %}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ day_name }}</span>
+                                    <div class="form-check form-switch">
+                                        <input 
+                                            class="form-check-input" 
+                                            type="checkbox" 
+                                            id="is_open_{{ day_num }}"
+                                            name="is_open_{{ day_num }}"
+                                            {% if schedules|lookup:day_num.is_open %}checked{% endif %}
+                                            onchange="toggleDaySchedule({{ day_num }})"
+                                        >
+                                        <label class="form-check-label text-white" for="is_open_{{ day_num }}">
+                                            Abierto
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-form" id="form-{{ day_num }}">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="form-label">Hora de Apertura</label>
+                                        <input 
+                                            type="time" 
+                                            class="form-control time-input" 
+                                            name="opening_time_{{ day_num }}"
+                                            value="{{ schedules|lookup:day_num.opening_time|time:'H:i' }}"
+                                            step="900"
+                                        >
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">Hora de Cierre</label>
+                                        <input 
+                                            type="time" 
+                                            class="form-control time-input" 
+                                            name="closing_time_{{ day_num }}"
+                                            value="{{ schedules|lookup:day_num.closing_time|time:'H:i' }}"
+                                            step="900"
+                                        >
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 text-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Intervalos de 15 minutos
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save me-2"></i>
+                        Guardar Horarios
+                    </button>
+                    <a href="{% url 'admin_module:configurar_slots_avanzado' %}" class="btn btn-info btn-lg ms-3">
+                        <i class="fas fa-cog me-2"></i>
+                        Configuración Avanzada
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Configuración Rápida -->
+<div class="modal fade" id="bulkConfigModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-magic me-2"></i>
+                    Configuración Rápida de Horarios
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <form method="post" action="{% url 'admin_module:bulk_schedule_config' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Aplicar a:</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="apply_to" value="weekdays" id="weekdays">
+                                <label class="form-check-label" for="weekdays">
+                                    Lunes a Viernes
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="apply_to" value="weekend" id="weekend">
+                                <label class="form-check-label" for="weekend">
+                                    Fines de semana
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="apply_to" value="all" id="all">
+                                <label class="form-check-label" for="all">
+                                    Todos los días
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>Horarios:</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Hora de Apertura</label>
+                                <input type="time" class="form-control" name="opening_time" value="09:00" step="900">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Hora de Cierre</label>
+                                <input type="time" class="form-control" name="closing_time" value="18:00" step="900">
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_open" id="is_open_bulk" checked>
+                                <label class="form-check-label" for="is_open_bulk">
+                                    Establecimiento abierto
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Aplicar Configuración</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Vista Previa -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye me-2"></i>
+                    Vista Previa de Slots
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha para vista previa:</label>
+                        <input type="date" class="form-control" id="previewDate" onchange="loadPreview()">
+                    </div>
+                    <div class="col-md-8">
+                        <div id="previewResults" class="preview-section">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                                <p class="mt-2">Generando vista previa...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Función para habilitar/deshabilitar formulario de día
+function toggleDaySchedule(dayNum) {
+    const checkbox = document.getElementById(`is_open_${dayNum}`);
+    const card = document.getElementById(`card-${dayNum}`);
+    const form = document.getElementById(`form-${dayNum}`);
+    
+    if (checkbox.checked) {
+        card.classList.remove('closed');
+        form.style.opacity = '1';
+        form.querySelectorAll('input').forEach(input => {
+            input.disabled = false;
+        });
+    } else {
+        card.classList.add('closed');
+        form.style.opacity = '0.5';
+        form.querySelectorAll('input').forEach(input => {
+            input.disabled = true;
+        });
+    }
+}
+
+// Inicializar estado de formularios
+document.addEventListener('DOMContentLoaded', function() {
+    for (let i = 1; i <= 7; i++) {
+        toggleDaySchedule(i);
+    }
+    
+    // Configurar fecha por defecto para vista previa
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('previewDate').value = tomorrow.toISOString().split('T')[0];
+});
+
+// Vista previa de slots
+function previewSlots() {
+    const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+    modal.show();
+    loadPreview();
+}
+
+function loadPreview() {
+    const date = document.getElementById('previewDate').value;
+    const resultsDiv = document.getElementById('previewResults');
+    
+    resultsDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Generando vista previa...</p></div>';
+    
+    fetch(`{% url 'admin_module:preview_slots' %}?date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                resultsDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                return;
+            }
+            
+            let html = `
+                <h6>Slots para ${data.date} - ${data.establishment}</h6>
+                <p class="text-muted">Total de slots disponibles: ${data.slots_count}</p>
+                <div class="slot-preview">
+            `;
+            
+            data.slots.forEach(slot => {
+                html += `
+                    <div class="slot-item">
+                        <strong>${slot.start_time} - ${slot.end_time}</strong><br>
+                        <small class="text-muted">${slot.barber_count} barbero(s)</small>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            if (data.slots_count > 20) {
+                html += `<p class="text-muted mt-2"><small>Mostrando primeros 20 de ${data.slots_count} slots</small></p>`;
+            }
+            
+            resultsDiv.innerHTML = html;
+        })
+        .catch(error => {
+            resultsDiv.innerHTML = '<div class="alert alert-danger">Error cargando vista previa</div>';
+            console.error('Error:', error);
+        });
+}
+</script>
+{% endblock %}

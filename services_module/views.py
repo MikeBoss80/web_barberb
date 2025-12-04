@@ -17,7 +17,7 @@ from django.utils import timezone
 from establishment.models import Establishment
 from admin_module.models import EstablishmentService, Service , Schedule, ScheduleAssignment
 from services_module.models import ServiceDate
-from admin_module.utils.slots import generate_available_slots
+# from admin_module.utils.slots import generate_available_slots  # TODO: Implementar cuando esté disponible
 from django.db.models import F, ExpressionWrapper, FloatField,Prefetch
 from services_module.models import ServiceDate
 from admin_module.forms import ServiceDateForm

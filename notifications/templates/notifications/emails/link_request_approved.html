@@ -1,0 +1,80 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>🎉 ¡Vinculación aprobada exitosamente!</strong>
+</div>
+
+<div class="content">
+    <p>Nos complace informarte que tu solicitud de vinculación ha sido <strong>aprobada</strong>.</p>
+</div>
+
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>✅ Detalles de la Aprobación</h3>
+    <p><span class="info-label">Establecimiento:</span> <strong>{{ establecimiento_nombre }}</strong></p>
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    <p><span class="info-label">Administrador:</span> {{ admin_nombre }}</p>
+    <p><span class="info-label">Fecha de aprobación:</span> {{ fecha_aprobacion }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #28a745; font-weight: 600;">✅ Aprobada</span></p>
+</div>
+
+{% if mensaje_admin %}
+<div class="info-box" style="border-left-color: #17a2b8; background: #e7f3ff;">
+    <h3>💬 Mensaje del Administrador</h3>
+    <p style="font-style: italic;">"{{ mensaje_admin }}"</p>
+</div>
+{% endif %}
+
+<div class="content">
+    <p><strong>🚀 ¡Bienvenido al equipo de {{ establecimiento_nombre }}!</strong></p>
+    <p>Ya puedes comenzar a trabajar y recibir citas. Estos son tus próximos pasos:</p>
+</div>
+
+<div class="info-box" style="border-left-color: #667eea; background: #f8f9ff;">
+    <h3>📋 Próximos Pasos</h3>
+    <ol style="margin: 10px 0; padding-left: 20px;">
+        <li>🏠 Accede a tu panel de barbero</li>
+        <li>⏰ Configura tus horarios de trabajo</li>
+        <li>👤 Completa tu perfil profesional</li>
+        <li>📸 Sube fotos de tu trabajo</li>
+        <li>💰 Configura tus precios (si aplica)</li>
+        <li>📅 ¡Comienza a recibir citas!</li>
+    </ol>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_panel_barbero }}" class="button">
+        🏠 Acceder a Mi Panel
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_configurar_horarios }}" class="button" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+        ⏰ Configurar Horarios
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_contactar_admin }}" class="button" style="background: #28a745;">
+        📞 Contactar Administrador
+    </a>
+</div>
+
+<div class="divider"></div>
+
+{% if informacion_establecimiento %}
+<div class="info-box" style="border-left-color: #ffc107; background: #fff8e1;">
+    <h3>🏢 Información Importante del Establecimiento</h3>
+    {% for info in informacion_establecimiento %}
+    <p>• {{ info }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="content" style="text-align: center; margin-top: 20px;">
+    <p><strong>💈 ¡Estamos emocionados de tenerte en el equipo!</strong></p>
+    <p style="font-size: 13px; color: #666;">
+        Si tienes alguna pregunta, no dudes en contactar al administrador.
+    </p>
+</div>
+{% endblock %}

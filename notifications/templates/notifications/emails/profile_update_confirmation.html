@@ -1,0 +1,52 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>✅ Perfil actualizado exitosamente</strong>
+</div>
+
+<div class="content">
+    <p>Hemos confirmado la actualización de tu información de perfil en BarberB.</p>
+</div>
+
+<div class="info-box">
+    <h3>📝 Cambios Realizados</h3>
+    <p><span class="info-label">Fecha de actualización:</span> {{ fecha_actualizacion }}</p>
+    {% if campos_actualizados %}
+    <p><span class="info-label">Campos modificados:</span></p>
+    <ul style="margin: 5px 0; padding-left: 20px;">
+        {% for campo in campos_actualizados %}
+        <li>{{ campo }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+{% if cambios_importantes %}
+<div class="info-box" style="border-left-color: #ff9800; background: #fff8e1;">
+    <h3>⚠️ Cambios Importantes</h3>
+    {% for cambio in cambios_importantes %}
+    <p><span class="info-label">{{ cambio.campo }}:</span> {{ cambio.descripcion }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="button-container">
+    <a href="{{ url_ver_perfil }}" class="button">
+        👤 Ver Mi Perfil
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>🔒 Seguridad de tu cuenta:</strong></p>
+    <p>Si no realizaste estos cambios, por favor contacta a soporte inmediatamente.</p>
+</div>
+
+<div class="button-container" style="margin-top: 15px;">
+    <a href="{{ url_soporte }}" class="button" style="background: #dc3545;">
+        🆘 Reportar Problema
+    </a>
+</div>
+{% endblock %}

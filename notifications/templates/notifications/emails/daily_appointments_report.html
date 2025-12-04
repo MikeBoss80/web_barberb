@@ -1,0 +1,222 @@
+{% extends 'notifications/emails/base_email.html' %}
+
+{% block title %}Reporte Diario de Citas - {{ fecha_reporte }}{% endblock %}
+
+{% block content %}
+<div class="email-container">
+    <!-- Header del Reporte -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 15px; color: white; text-align: center; margin-bottom: 25px;">
+        <h1 style="margin: 0; font-size: 28px;">📊 Reporte Diario</h1>
+        <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
+            {{ establecimiento_nombre }} - {{ fecha_reporte }}
+        </p>
+    </div>
+
+    <!-- Resumen Ejecutivo -->
+    <div class="info-box" style="background: linear-gradient(135deg, #34d399 0%, #059669 100%); color: white;">
+        <h2 style="color: white; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 24px;">📈</span>
+            Resumen del Día
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                <div style="font-size: 32px; font-weight: bold;">{{ total_citas }}</div>
+                <div style="font-size: 14px; opacity: 0.9;">Citas Totales</div>
+            </div>
+            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                <div style="font-size: 32px; font-weight: bold;">${{ ingresos_totales }}</div>
+                <div style="font-size: 14px; opacity: 0.9;">Ingresos</div>
+            </div>
+            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                <div style="font-size: 32px; font-weight: bold;">{{ barberos_activos }}</div>
+                <div style="font-size: 14px; opacity: 0.9;">Barberos</div>
+            </div>
+            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                <div style="font-size: 32px; font-weight: bold;">{{ tasa_ocupacion }}%</div>
+                <div style="font-size: 14px; opacity: 0.9;">Ocupación</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado de Citas -->
+    <div class="info-box">
+        <h3>📅 Estado de las Citas</h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="text-align: center; padding: 15px; border-radius: 10px; background: #dcfce7; border: 2px solid #22c55e;">
+                <div style="font-size: 28px; font-weight: bold; color: #16a34a;">{{ citas_completadas }}</div>
+                <div style="color: #16a34a; font-weight: 500;">✅ Completadas</div>
+            </div>
+            <div style="text-align: center; padding: 15px; border-radius: 10px; background: #fef3c7; border: 2px solid #f59e0b;">
+                <div style="font-size: 28px; font-weight: bold; color: #d97706;">{{ citas_pendientes }}</div>
+                <div style="color: #d97706; font-weight: 500;">⏳ Pendientes</div>
+            </div>
+            <div style="text-align: center; padding: 15px; border-radius: 10px; background: #fee2e2; border: 2px solid #ef4444;">
+                <div style="font-size: 28px; font-weight: bold; color: #dc2626;">{{ citas_canceladas }}</div>
+                <div style="color: #dc2626; font-weight: 500;">❌ Canceladas</div>
+            </div>
+            <div style="text-align: center; padding: 15px; border-radius: 10px; background: #e0e7ff; border: 2px solid #6366f1;">
+                <div style="font-size: 28px; font-weight: bold; color: #4f46e5;">{{ citas_no_show }}</div>
+                <div style="color: #4f46e5; font-weight: 500;">👻 No Show</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance por Barbero -->
+    <div class="info-box">
+        <h3>👨‍💼 Performance por Barbero</h3>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #8B5CF6; color: white;">
+                        <th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0;">Barbero</th>
+                        <th style="padding: 12px; text-align: center;">Citas</th>
+                        <th style="padding: 12px; text-align: center;">Ingresos</th>
+                        <th style="padding: 12px; text-align: center;">Rating</th>
+                        <th style="padding: 12px; text-align: center; border-radius: 0 8px 0 0;">Eficiencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for barbero in performance_barberos %}
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px; font-weight: 500;">
+                            {{ barbero.nombre }}
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <span style="background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 15px; font-size: 14px;">
+                                {{ barbero.citas_completadas }}
+                            </span>
+                        </td>
+                        <td style="padding: 12px; text-align: center; font-weight: 500; color: #059669;">
+                            ${{ barbero.ingresos }}
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                <span>{{ barbero.rating_promedio }}</span>
+                                <span style="color: #f59e0b;">⭐</span>
+                            </div>
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <div style="background: #e5e7eb; border-radius: 10px; height: 8px; position: relative;">
+                                 <!-- <div style="background: {% if barbero.eficiencia >= 90 %}#22c55e{% elif barbero.eficiencia >= 70 %}#f59e0b{% else %}#ef4444{% endif %}; height: 100%; border-radius: 10px; width: {{ barbero.eficiencia }}%;"></div>
+                            </div> -->
+                            <small style="color: #6b7280;">{{ barbero.eficiencia }}%</small>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Servicios Más Populares -->
+    <div class="info-box">
+        <h3>🏆 Servicios Más Populares</h3>
+        
+        <div style="display: grid; gap: 10px; margin: 15px 0;">
+            {% for servicio in servicios_populares %}
+            <div style="background: #f8fafc; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ servicio.nombre }}</strong><br>
+                    <small style="color: #6b7280;">{{ servicio.cantidad }} citas realizadas</small>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: bold; color: #8B5CF6;">${{ servicio.ingresos }}</div>
+                    <small style="color: #6b7280;">{{ servicio.porcentaje }}% del total</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Incidencias y Alertas -->
+    {% if incidencias %}
+    <div class="alert alert-warning">
+        <h3>⚠️ Incidencias del Día</h3>
+        <ul style="margin: 15px 0; padding-left: 20px;">
+            {% for incidencia in incidencias %}
+            <li style="margin-bottom: 10px;">
+                <strong>{{ incidencia.hora }}:</strong> {{ incidencia.descripcion }}
+                {% if incidencia.solucionado %}
+                    <span style="color: #22c55e; font-weight: 500;">✅ Resuelto</span>
+                {% else %}
+                    <span style="color: #ef4444; font-weight: 500;">⏳ Pendiente</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Comparación con Días Anteriores -->
+    <div class="info-box">
+        <h3>📊 Comparación</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin: 20px 0;">
+            <div style="text-align: center;">
+                <div style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">vs. Ayer</div>
+                <!-- <div style="font-size: 20px; font-weight: bold; color: {% if variacion_ayer > 0 %}#22c55e{% elif variacion_ayer < 0 %}#ef4444{% else %}#6b7280{% endif %};">
+                    {% if variacion_ayer > 0 %}+{% endif %}{{ variacion_ayer }}%
+                    {% if variacion_ayer > 0 %}📈{% elif variacion_ayer < 0 %}📉{% else %}📊{% endif %}
+                </div> -->
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">vs. Semana Pasada</div>
+                <!-- <div style="font-size: 20px; font-weight: bold; color: {% if variacion_semana > 0 %}#22c55e{% elif variacion_semana < 0 %}#ef4444{% else %}#6b7280{% endif %};">
+                    {% if variacion_semana > 0 %}+{% endif %}{{ variacion_semana }}%
+                    {% if variacion_semana > 0 %}📈{% elif variacion_semana < 0 %}📉{% else %}📊{% endif %}
+                </div> -->
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">vs. Mes Pasado</div>
+               <!--  <div style="font-size: 20px; font-weight: bold; color: {% if variacion_mes > 0 %}#22c55e{% elif variacion_mes < 0 %}#ef4444{% else %}#6b7280{% endif %};">
+                    {% if variacion_mes > 0 %}+{% endif %}{{ variacion_mes }}%
+                    {% if variacion_mes > 0 %}📈{% elif variacion_mes < 0 %}📉{% else %}📊{% endif %}
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Próximas Acciones Recomendadas -->
+    <div class="info-box" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white;">
+        <h3 style="color: white;">💡 Recomendaciones para Mañana</h3>
+        
+        <ul style="list-style: none; padding: 0; margin: 15px 0;">
+            {% for recomendacion in recomendaciones %}
+            <li style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                {{ recomendacion.icono }} {{ recomendacion.texto }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div style="text-align: center; margin: 30px 0;">
+        <h3>🚀 Acciones Rápidas</h3>
+        
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0;">
+            <a href="{{ url_dashboard_completo }}" class="btn-primary">
+                📊 Dashboard Completo
+            </a>
+            <a href="{{ url_programar_citas }}" class="btn-primary">
+                📅 Programar Citas
+            </a>
+            <a href="{{ url_gestionar_barberos }}" class="btn-secondary">
+                👥 Gestionar Barberos
+            </a>
+            <a href="{{ url_configurar_servicios }}" class="btn-secondary">
+                ⚙️ Configurar Servicios
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer con Contacto -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+        <p style="margin: 0; color: #6b7280;">
+            Reporte generado automáticamente por BarberB el {{ fecha_generacion }} a las {{ hora_generacion }}
+        </p>
+    </div>
+</div>
+{% endblock %}

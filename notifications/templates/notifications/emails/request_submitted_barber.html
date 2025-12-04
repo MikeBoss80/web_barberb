@@ -1,0 +1,67 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>✅ Tu solicitud ha sido enviada exitosamente</strong>
+</div>
+
+<div class="content">
+    <p>Hemos recibido tu solicitud para trabajar en <strong>{{ establecimiento_nombre }}</strong>. Te notificaremos cuando tengamos una respuesta.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Resumen de tu Solicitud</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Ubicación:</span> {{ establecimiento_direccion }}</p>
+    <p><span class="info-label">Fecha de envío:</span> {{ fecha_solicitud }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #ffc107; font-weight: 600;">En revisión</span></p>
+    <p><span class="info-label">ID de solicitud:</span> #{{ solicitud_id }}</p>
+</div>
+
+{% if mensaje_enviado %}
+<div class="info-box" style="border-left-color: #17a2b8; background: #e7f3ff;">
+    <h3>💬 Tu Mensaje</h3>
+    <p style="font-style: italic;">"{{ mensaje_enviado }}"</p>
+</div>
+{% endif %}
+
+<div class="content">
+    <p><strong>⏳ ¿Qué pasa ahora?</strong></p>
+    <ol style="margin: 10px 0; padding-left: 20px;">
+        <li>El administrador del establecimiento revisará tu solicitud</li>
+        <li>Podrían contactarte para una entrevista o más información</li>
+        <li>Recibirás una notificación con la decisión final</li>
+        <li>Si es aprobada, podrás comenzar a trabajar</li>
+    </ol>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_mis_solicitudes }}" class="button">
+        📄 Ver Mis Solicitudes
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>⏰ Tiempos de respuesta esperados:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>Revisión inicial: 2-3 días hábiles</li>
+        <li>Respuesta final: 5-7 días hábiles</li>
+        <li>Si requieren entrevista: Te contactarán directamente</li>
+    </ul>
+</div>
+
+<div class="button-container" style="margin-top: 20px;">
+    <a href="{{ url_buscar_establecimientos }}" class="button" style="background: #6c757d;">
+        🏢 Buscar Otros Establecimientos
+    </a>
+</div>
+
+<div class="content" style="text-align: center; margin-top: 20px;">
+    <p><strong>¡Gracias por tu interés en unirte a BarberB!</strong></p>
+    <p style="font-size: 13px; color: #666;">
+        Mantente atento a tu email para futuras actualizaciones sobre tu solicitud.
+    </p>
+</div>
+{% endblock %}

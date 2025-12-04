@@ -1,15 +1,31 @@
 <div class="modal-header bg-dark text-white">
-    <h5 class="modal-title">Nuevo Establecimiento</h5>
+    <h5 class="modal-title">
+        <i class="bi bi-shop me-2"></i>Nuevo Establecimiento
+    </h5>
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
+
 <div class="modal-body">
-    <h2>Crea Tu Establecimiento</h2>
-    <form id="form-modal-est" method="post" action="../registro_est/">
+    <h4 class="mb-3">Crea tu Establecimiento</h4>
+
+    <form id="form-modal-est"
+          method="post"
+          action="{% url 'registro_est' %}">
         {% csrf_token %}
-        {{ form.as_p }}
+        
+        <!-- Render del formulario -->
+        <div class="form-container">
+            {{ form.as_p }}
+        </div>
     </form>
 </div>
+
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-    <button type="submit" form="form-modal-est" class="btn btn-primary">Guardar Establecimiento</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        Cancelar
+    </button>
+
+    <button type="submit" form="form-modal-est" class="btn btn-primary">
+        <i class="bi bi-check-circle me-1"></i> Guardar Establecimiento
+    </button>
 </div>

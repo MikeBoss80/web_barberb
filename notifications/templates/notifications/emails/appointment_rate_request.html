@@ -1,0 +1,64 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-success">
+    <strong>⭐ ¿Cómo estuvo tu experiencia?</strong>
+</div>
+
+<div class="content">
+    <p>Esperamos que hayas disfrutado tu visita a <strong>{{ establecimiento_nombre }}</strong>. Tu opinión es muy valiosa para nosotros.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Detalles de tu Visita</h3>
+    <p><span class="info-label">Servicio recibido:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Fecha:</span> {{ fecha_cita }}</p>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+</div>
+
+<div class="content">
+    <p><strong>🌟 ¿Te gustaría calificar tu experiencia?</strong></p>
+    <p>Tu calificación ayuda a otros clientes y nos permite seguir mejorando nuestros servicios.</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_calificar_servicio }}" class="button">
+        ⭐ Calificar Mi Experiencia
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>💬 ¿Qué puedes calificar?</h3>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>⭐ Calidad del servicio (1-5 estrellas)</li>
+        <li>💬 Dejar comentarios sobre tu experiencia</li>
+        <li>👤 Calificar específicamente al barbero</li>
+        <li>🏢 Evaluar las instalaciones</li>
+    </ul>
+</div>
+
+<div class="button-container" style="margin-top: 20px;">
+    <a href="{{ url_agendar_nueva_cita }}" class="button" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+        📅 Agendar Nueva Cita
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="content" style="text-align: center;">
+    <p><strong>¡Gracias por elegir BarberB!</strong></p>
+    <p style="font-size: 13px; color: #666;">
+        Si tuviste algún problema durante tu visita, por favor contáctanos directamente.
+    </p>
+</div>
+
+{% if codigo_descuento %}
+<div class="alert alert-success">
+    <strong>🎉 ¡Bonus por tu fidelidad!</strong><br>
+    Usa el código <strong>{{ codigo_descuento }}</strong> en tu próxima cita y obtén {{ descuento_porcentaje }}% de descuento.
+</div>
+{% endif %}
+{% endblock %}

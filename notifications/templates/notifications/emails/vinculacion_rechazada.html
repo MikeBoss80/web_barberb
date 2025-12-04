@@ -1,0 +1,31 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <strong>❌ Vinculación Rechazada</strong>
+</div>
+
+<div class="content">
+    <p>Lamentamos informarte que tu vinculación al establecimiento <strong>{{ establecimiento_nombre }}</strong> ha sido rechazada.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Detalles</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #dc3545; font-weight: 600;">Rechazada</span></p>
+    <p><span class="info-label">Fecha:</span> {{ fecha_rechazo }}</p>
+    {% if motivo %}
+    <p><span class="info-label">Motivo:</span> {{ motivo }}</p>
+    {% endif %}
+</div>
+
+<div class="content">
+    <p>Si tienes alguna pregunta sobre esta decisión, puedes contactar directamente con el establecimiento.</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_establecimientos }}" class="button button-secondary">
+        Ver Otros Establecimientos
+    </a>
+</div>
+{% endblock %}

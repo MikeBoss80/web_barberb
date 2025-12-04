@@ -1,0 +1,237 @@
+{% extends 'notifications/emails/base_email.html' %}
+
+{% block title %}Producto Agotado - {{ producto_nombre }}{% endblock %}
+
+{% block content %}
+<div class="email-container">
+    <!-- Header de Urgencia -->
+    <div class="alert alert-danger">
+        <h2 style="margin: 0; color: white; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 28px;">🚨</span>
+            Stock Agotado
+        </h2>
+        <p style="margin: 10px 0 0 0; font-size: 16px;">
+            El producto <strong>{{ producto_nombre }}</strong> se ha agotado por completo
+        </p>
+    </div>
+
+    <!-- Información del Producto Agotado -->
+    <div class="info-box" style="border-left: 4px solid #ef4444;">
+        <h3>📦 Detalles del Producto</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+            <div>
+                <strong>📝 Nombre:</strong><br>
+                {{ producto_nombre }}
+            </div>
+            <div>
+                <strong>🏷️ Categoría:</strong><br>
+                {{ producto_categoria }}
+            </div>
+            <div>
+                <strong>🔢 Código:</strong><br>
+                {{ codigo_producto }}
+            </div>
+            <div>
+                <strong>📊 Stock:</strong><br>
+                <span style="color: #ef4444; font-weight: bold;">0 unidades</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impacto en el Servicio -->
+    <div class="alert alert-warning">
+        <h3>⚠️ Impacto en el Servicio</h3>
+        <p><strong>Servicios Afectados:</strong></p>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            {% for servicio in servicios_afectados %}
+            <li style="margin-bottom: 5px;">
+                {{ servicio.nombre }} - <em>{{ servicio.descripcion_impacto }}</em>
+            </li>
+            {% empty %}
+            <li>Este producto no está directamente asociado a servicios específicos</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Estadísticas de Consumo -->
+    <div class="info-box">
+        <h3>📊 Estadísticas de Consumo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0;">
+            <div style="text-align: center; background: #fef3c7; padding: 15px; border-radius: 10px;">
+                <div style="font-size: 24px; font-weight: bold; color: #d97706;">{{ consumo_diario_promedio }}</div>
+                <div style="font-size: 14px; color: #92400e;">Consumo Diario</div>
+            </div>
+            <div style="text-align: center; background: #fee2e2; padding: 15px; border-radius: 10px;">
+                <div style="font-size: 24px; font-weight: bold; color: #dc2626;">{{ dias_sin_stock }}</div>
+                <div style="font-size: 14px; color: #991b1b;">Días sin Stock</div>
+            </div>
+            <div style="text-align: center; background: #ecfdf5; padding: 15px; border-radius: 10px;">
+                <div style="font-size: 24px; font-weight: bold; color: #16a34a;">{{ ultimo_pedido_dias }}</div>
+                <div style="font-size: 14px; color: #15803d;">Días desde Último Pedido</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Proveedor -->
+    {% if proveedor_nombre %}
+    <div class="info-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h3 style="color: white;">🏢 Información del Proveedor</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+            <div>
+                <strong>Proveedor:</strong><br>
+                {{ proveedor_nombre }}
+            </div>
+            <div>
+                <strong>Teléfono:</strong><br>
+                <a href="tel:{{ proveedor_telefono }}" style="color: white;">{{ proveedor_telefono }}</a>
+            </div>
+            <div>
+                <strong>Email:</strong><br>
+                <a href="mailto:{{ proveedor_email }}" style="color: white;">{{ proveedor_email }}</a>
+            </div>
+            <div>
+                <strong>Tiempo de Entrega:</strong><br>
+                {{ tiempo_entrega_estimado }}
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="tel:{{ proveedor_telefono }}" class="btn-secondary" style="margin: 5px;">
+                📞 Llamar Proveedor
+            </a>
+            <a href="mailto:{{ proveedor_email }}?subject=Pedido Urgente - {{ producto_nombre }}" class="btn-secondary" style="margin: 5px;">
+                ✉️ Enviar Email
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Acciones Inmediatas -->
+    <div class="info-box" style="border-left: 4px solid #f59e0b;">
+        <h3>🚀 Acciones Inmediatas</h3>
+        
+        <div style="display: grid; gap: 15px; margin: 15px 0;">
+            <div style="background: #fef3c7; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                <strong>1. Pedido de Emergencia</strong><br>
+                <span style="color: #92400e;">Realizar pedido inmediato para evitar interrupción del servicio</span>
+            </div>
+            
+            <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border-left: 4px solid #0284c7;">
+                <strong>2. Evaluar Productos Sustitutos</strong><br>
+                <span style="color: #0369a1;">Buscar alternativas temporales en el inventario</span>
+            </div>
+            
+            <div style="background: #f3e8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                <strong>3. Informar al Equipo</strong><br>
+                <span style="color: #7c3aed;">Notificar a barberos sobre la situación y alternativas</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ url_pedido_emergencia }}" class="btn-primary" style="background: #ef4444; margin: 5px;">
+                🚨 Pedido de Emergencia
+            </a>
+            <a href="{{ url_productos_sustitutos }}" class="btn-secondary" style="margin: 5px;">
+                🔄 Ver Sustitutos
+            </a>
+        </div>
+    </div>
+
+    <!-- Productos Sustitutos Sugeridos -->
+    {% if productos_sustitutos %}
+    <div class="info-box">
+        <h3>🔄 Productos Sustitutos Disponibles</h3>
+        
+        <div style="display: grid; gap: 10px; margin: 15px 0;">
+            {% for sustituto in productos_sustitutos %}
+            <div style="background: #f8fafc; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ sustituto.nombre }}</strong><br>
+                    <small style="color: #6b7280;">Stock: {{ sustituto.stock_actual }} unidades</small>
+                </div>
+                <div style="text-align: right;">
+                  <!--   <div style="color: {% if sustituto.compatibilidad >= 80 %}#22c55e{% elif sustituto.compatibilidad >= 60 %}#f59e0b{% else %}#ef4444{% endif %};">
+                        {{ sustituto.compatibilidad }}% compatible
+                    </div> -->
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Historial de Pedidos -->
+    <div class="info-box">
+        <h3>📈 Historial de Pedidos Recientes</h3>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th style="padding: 10px; text-align: left; border: 1px solid #e5e7eb;">Fecha</th>
+                        <th style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">Cantidad</th>
+                        <th style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">Precio</th>
+                        <th style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in historial_pedidos %}
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;">{{ pedido.fecha }}</td>
+                        <td style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">{{ pedido.cantidad }}</td>
+                        <td style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">${{ pedido.precio_total }}</td>
+                        <td style="padding: 10px; text-align: center; border: 1px solid #e5e7eb;">
+                            <!-- <span style="background: {% if pedido.estado == 'entregado' %}#dcfce7; color: #16a34a{% elif pedido.estado == 'pendiente' %}#fef3c7; color: #d97706{% else %}#fee2e2; color: #dc2626{% endif %}; padding: 4px 8px; border-radius: 15px; font-size: 12px;">
+                                {{ pedido.estado|title }}
+                            </span> -->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Configuración de Alertas -->
+    <div class="info-box" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+        <h3>⚙️ Configurar Alertas Futuras</h3>
+        <p>Para evitar que esto vuelva a ocurrir, considera ajustar la configuración de alertas:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+            <div>
+                <strong>Stock Mínimo Actual:</strong><br>
+                {{ stock_minimo_actual }} unidades
+            </div>
+            <div>
+                <strong>Stock Mínimo Recomendado:</strong><br>
+                <span style="color: #16a34a; font-weight: bold;">{{ stock_minimo_recomendado }} unidades</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ url_configurar_alertas }}" class="btn-primary" style="background: #22c55e;">
+                ⚙️ Ajustar Configuración
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer con Recordatorios -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #fee2e2; border-radius: 10px; border-left: 4px solid #ef4444;">
+        <h3 style="color: #dc2626;">🚨 Recordatorio Importante</h3>
+        <p style="margin: 10px 0; color: #7f1d1d;">
+            Un producto agotado puede afectar la calidad del servicio y la satisfacción del cliente.
+            <br><strong>Actúa rápidamente para restablecer el stock.</strong>
+        </p>
+        
+        <div style="margin: 20px 0;">
+            <a href="{{ url_inventario_completo }}" class="btn-secondary" style="margin: 5px;">
+                📦 Ver Inventario Completo
+            </a>
+            <a href="{{ url_configurar_proveedores }}" class="btn-secondary" style="margin: 5px;">
+                🏢 Gestionar Proveedores
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

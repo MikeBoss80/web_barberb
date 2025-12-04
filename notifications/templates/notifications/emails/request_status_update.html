@@ -1,0 +1,104 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+{% if status == 'aprobada' %}
+<div class="alert alert-success">
+    <strong>🎉 ¡Felicitaciones! Tu solicitud fue aprobada</strong>
+</div>
+
+<div class="content">
+    <p>Nos complace informarte que tu solicitud para trabajar en <strong>{{ establecimiento_nombre }}</strong> ha sido <strong>aprobada</strong>.</p>
+</div>
+
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>✅ ¡Bienvenido al equipo!</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #28a745; font-weight: 600;">✅ Aprobada</span></p>
+    <p><span class="info-label">Fecha de aprobación:</span> {{ fecha_decision }}</p>
+</div>
+
+{% if mensaje_admin %}
+<div class="info-box" style="border-left-color: #17a2b8; background: #e7f3ff;">
+    <h3>💬 Mensaje del Administrador</h3>
+    <p style="font-style: italic;">"{{ mensaje_admin }}"</p>
+</div>
+{% endif %}
+
+<div class="content">
+    <p><strong>🚀 Próximos pasos:</strong></p>
+    <ol style="margin: 10px 0; padding-left: 20px;">
+        <li>Accede a tu panel de barbero</li>
+        <li>Configura tus horarios de trabajo</li>
+        <li>Actualiza tu perfil profesional</li>
+        <li>Comienza a recibir citas</li>
+    </ol>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_panel_barbero }}" class="button">
+        🏠 Ir a Mi Panel de Barbero
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_contactar_admin }}" class="button" style="background: #17a2b8;">
+        📞 Contactar Administrador
+    </a>
+</div>
+
+{% else %}
+<div class="alert alert-danger">
+    <strong>❌ Tu solicitud fue rechazada</strong>
+</div>
+
+<div class="content">
+    <p>Lamentamos informarte que tu solicitud para trabajar en <strong>{{ establecimiento_nombre }}</strong> ha sido rechazada.</p>
+</div>
+
+<div class="info-box" style="border-left-color: #dc3545; background: #ffeaea;">
+    <h3>📋 Detalles de la Decisión</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #dc3545; font-weight: 600;">❌ Rechazada</span></p>
+    <p><span class="info-label">Fecha de decisión:</span> {{ fecha_decision }}</p>
+</div>
+
+{% if motivo_rechazo %}
+<div class="info-box" style="border-left-color: #ffc107; background: #fff8e1;">
+    <h3>💬 Motivo del Rechazo</h3>
+    <p>{{ motivo_rechazo }}</p>
+</div>
+{% endif %}
+
+{% if mensaje_admin %}
+<div class="info-box" style="border-left-color: #17a2b8; background: #e7f3ff;">
+    <h3>💬 Mensaje del Administrador</h3>
+    <p style="font-style: italic;">"{{ mensaje_admin }}"</p>
+</div>
+{% endif %}
+
+<div class="content">
+    <p>No te desanimes. Puedes:</p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>🏢 Aplicar a otros establecimientos</li>
+        <li>📧 Contactar al administrador para más información</li>
+        <li>🔄 Reenviar tu solicitud en el futuro</li>
+        <li>💪 Continuar desarrollando tus habilidades</li>
+    </ul>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_buscar_establecimientos }}" class="button">
+        🏢 Buscar Otros Establecimientos
+    </a>
+</div>
+
+{% endif %}
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #666; text-align: center;">
+    <strong>Gracias por tu interés en BarberB.</strong><br>
+    Si tienes preguntas, no dudes en contactarnos.
+</p>
+{% endblock %}

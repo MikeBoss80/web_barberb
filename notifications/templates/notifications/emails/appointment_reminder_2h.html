@@ -1,0 +1,54 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-warning" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white;">
+    <strong>🕐 ¡Tu cita es en 2 HORAS!</strong>
+</div>
+
+<div class="content">
+    <p>Es momento de prepararte, tu cita está muy cerca:</p>
+</div>
+
+<div class="info-box" style="border-left-color: #ff9800; background: #fff8e1;">
+    <h3>⏰ Información de tu Cita</h3>
+    <p><span class="info-label">Servicio:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Hora exacta:</span> <strong style="color: #ff9800; font-size: 22px;">{{ hora_cita }}</strong></p>
+    <p><span class="info-label">Duración:</span> {{ duracion }} minutos</p>
+</div>
+
+<div class="info-box" style="border-left-color: #2196f3;">
+    <h3>📍 Dirección</h3>
+    <p><span class="info-label">{{ establecimiento_nombre }}</span></p>
+    <p style="font-size: 16px;"><strong>{{ establecimiento_direccion }}</strong></p>
+    <p><span class="info-label">Teléfono:</span> <a href="tel:{{ establecimiento_telefono }}" style="color: #667eea;">{{ establecimiento_telefono }}</a></p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_mapa_establecimiento }}" class="button" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);">
+        🗺️ Abrir en Mapa
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="tel:{{ establecimiento_telefono }}" class="button" style="background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);">
+        📞 Llamar al Establecimiento
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>🚀 Lista de verificación:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>✅ Sal de casa en 15-30 minutos (dependiendo del tráfico)</li>
+        <li>✅ Lleva tu identificación</li>
+        <li>✅ Ten listo el método de pago</li>
+        <li>✅ Si hay retraso, llama al establecimiento</li>
+    </ul>
+</div>
+
+<p style="font-size: 13px; color: #666; text-align: center; margin-top: 20px;">
+    <strong>💈 ¡Te esperamos pronto en BarberB!</strong>
+</p>
+{% endblock %}

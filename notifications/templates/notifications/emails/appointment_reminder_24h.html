@@ -1,0 +1,58 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-warning">
+    <strong>⏰ ¡Tu cita es mañana!</strong>
+</div>
+
+<div class="content">
+    <p>Te recordamos que tienes una cita agendada para <strong>mañana</strong>:</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Detalles de tu Cita</h3>
+    <p><span class="info-label">Servicio:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Fecha:</span> <strong>{{ fecha_cita }}</strong></p>
+    <p><span class="info-label">Hora:</span> <strong style="color: #667eea; font-size: 20px;">{{ hora_cita }}</strong></p>
+</div>
+
+<div class="info-box" style="border-left-color: #17a2b8;">
+    <h3>📍 Ubicación</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Dirección:</span> {{ establecimiento_direccion }}</p>
+    <p><span class="info-label">Teléfono:</span> {{ establecimiento_telefono }}</p>
+</div>
+
+<div class="content">
+    <p><strong>👇 Confirma tu asistencia:</strong></p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_confirmar_asistencia }}" class="button">
+        ✅ Confirmar que Asistiré
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 15px;">
+    <a href="{{ url_cancelar_cita }}" style="color: #dc3545; text-decoration: none; font-size: 14px; border: 1px solid #dc3545; padding: 8px 20px; border-radius: 5px;">
+        ❌ Necesito Cancelar
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>📝 Recomendaciones para mañana:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>🕐 Llega 5-10 minutos antes</li>
+        <li>📱 Trae tu teléfono para confirmar llegada</li>
+        <li>💳 Ten listo tu método de pago</li>
+        <li>😷 Si te sientes enfermo, por favor reagenda</li>
+    </ul>
+</div>
+
+<p style="font-size: 13px; color: #666;">
+    ⚠️ <strong>Importante:</strong> Si no puedes asistir, cancela con anticipación para que otros clientes puedan agendar.
+</p>
+{% endblock %}

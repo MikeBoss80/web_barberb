@@ -17,6 +17,12 @@
             <i class="bi bi-person-video2"></i> Perfil
         </button>
     </li>
+    <li class="nav-item" role="presentation">
+        <button class="tab-btn nav-link" data-url="{% url 'establishment:configuration' %}" data-tab="configuration"
+            type="button" role="tab">
+            <i class="bi bi-gear-wide-connected"></i> Configuración
+        </button>
+    </li>
     <!-- TODO: Agregar las siguientes pestañas cuando estén implementadas 
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button"
@@ -73,14 +79,14 @@
                             </div>
                             <div class="col-md-4 text-center mb-4">
                                 <div class="feature-box">
-                                    <i class="bi bi-gear-wide-connected text-secondary mb-3"
+                                    <i class="bi bi-gear-wide-connected text-success mb-3"
                                         style="font-size: 2.5rem;"></i>
-                                    <h5 class="text-secondary">Configuración</h5>
+                                    <h5 class="text-success">Configuración</h5>
                                     <p class="text-muted small">
-                                        Personaliza los ajustes de cada establecimiento,
-                                        configura horarios de atención, políticas de servicio
-                                        y preferencias del sistema.
-                                        <span class="badge bg-warning text-dark ms-2">Próximamente</span>
+                                        Personaliza los ajustes de cada establecimiento:
+                                        horarios de atención, configuración de slots para citas,
+                                        gestión de barberos y sistema de notificaciones.
+                                        <span class="badge bg-success text-white ms-2">Disponible</span>
                                     </p>
                                 </div>
                             </div>
@@ -112,5 +118,6 @@
 <!-- Scripts propios -->
 <script src="{% static 'establishment/js/main.js' %}"></script>
 <script src="{% static 'establishment/js/tabs/management.js' %}"></script>
+<script src="{% static 'establishment/js/tabs/configuration.js' %}"></script>
 
 {% endblock %}

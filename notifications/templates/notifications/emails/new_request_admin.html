@@ -1,0 +1,82 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-info">
+    <strong>📩 Nueva solicitud de barbero recibida</strong>
+</div>
+
+<div class="content">
+    <p>Has recibido una nueva solicitud de un barbero que quiere unirse a tu establecimiento:</p>
+</div>
+
+<div class="info-box">
+    <h3>👤 Información del Barbero</h3>
+    <p><span class="info-label">Nombre:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Email:</span> {{ barbero_email }}</p>
+    {% if barbero_telefono %}
+    <p><span class="info-label">Teléfono:</span> {{ barbero_telefono }}</p>
+    {% endif %}
+    {% if barbero_experiencia %}
+    <p><span class="info-label">Años de experiencia:</span> {{ barbero_experiencia }} años</p>
+    {% endif %}
+</div>
+
+<div class="info-box" style="border-left-color: #17a2b8;">
+    <h3>📋 Detalles de la Solicitud</h3>
+    <p><span class="info-label">Establecimiento:</span> {{ establecimiento_nombre }}</p>
+    <p><span class="info-label">Fecha de solicitud:</span> {{ fecha_solicitud }}</p>
+    <p><span class="info-label">Estado:</span> <span style="color: #ffc107; font-weight: 600;">Pendiente de revisión</span></p>
+</div>
+
+{% if mensaje_barbero %}
+<div class="info-box" style="border-left-color: #28a745; background: #eafaf1;">
+    <h3>💬 Mensaje del Barbero</h3>
+    <p style="font-style: italic;">"{{ mensaje_barbero }}"</p>
+</div>
+{% endif %}
+
+{% if especialidades %}
+<div class="info-box" style="border-left-color: #667eea; background: #f8f9ff;">
+    <h3>✂️ Especialidades</h3>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        {% for especialidad in especialidades %}
+        <li>{{ especialidad }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="button-container">
+    <a href="{{ url_detalle_solicitud }}" class="button">
+        📄 Ver Solicitud Completa
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_aprobar_solicitud }}" class="button" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+        ✅ Aprobar Solicitud
+    </a>
+</div>
+
+<div class="button-container" style="margin-top: 10px;">
+    <a href="{{ url_rechazar_solicitud }}" class="button" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+        ❌ Rechazar Solicitud
+    </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert alert-info">
+    <p><strong>💡 Recomendaciones:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li>Revisa el perfil completo del barbero</li>
+        <li>Considera programar una entrevista</li>
+        <li>Verifica referencias si es necesario</li>
+        <li>Responde en un plazo razonable</li>
+    </ul>
+</div>
+
+<p style="font-size: 13px; color: #666;">
+    💡 <strong>Tip:</strong> Puedes gestionar todas las solicitudes pendientes desde tu panel de administración.
+</p>
+{% endblock %}

@@ -1,0 +1,463 @@
+{% load static %}
+{% block establishment_content %}
+
+<div class="container-fluid py-4 px-lg-4">
+    <!-- Header mejorado -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <h2 class="mb-1 fw-bold text-dark">
+                        <i class="fas fa-sliders-h me-2 text-primary"></i>Configuración del Establecimiento
+                    </h2>
+                    <p class="text-muted mb-0">Personaliza los ajustes de horarios, citas y notificaciones</p>
+                </div>
+                {% if establecimientos|length > 1 %}
+                <div class="d-flex align-items-center">
+                    <span class="me-2 text-muted"><i class="fas fa-store"></i></span>
+                    <div style="min-width: 250px;">
+                        <select class="form-select form-select-sm border-primary" id="selectEstablecimiento">
+                            <option value="">Seleccionar establecimiento...</option>
+                            {% for est in establecimientos %}
+                            <option value="{{ est.id }}">{{ est.name_est }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Indicador de establecimiento activo -->
+            {% if establecimientos|length == 1 %}
+            <div class="alert alert-light border d-inline-flex align-items-center py-2 px-3">
+                <i class="fas fa-store text-primary me-2"></i>
+                <span class="fw-medium">Configurando:</span>
+                <span class="ms-2 fw-semibold text-dark">{{ establecimientos.0.name_est }}</span>
+                <span class="ms-2 text-muted">• {{ establecimientos.0.city_est }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- FORMULARIO DE CONFIGURACIÓN -->
+    <form id="configForm" method="post" action="javascript:void(0);">
+        {% csrf_token %}
+        
+        <div class="row g-4">
+            <!-- COLUMNA 1: HORARIOS -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pb-0 pt-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="icon-circle bg-primary-light me-3">
+                                <i class="fas fa-clock text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-semibold text-dark">Horarios de Atención</h4>
+                                <small class="text-muted">Configura los horarios para cada día de la semana</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-2">
+                        <div class="row g-2">
+                            {% for day in days %}
+                            <div class="col-12">
+                                <div class="day-schedule-card p-3 mb-2 border rounded hover-shadow">
+                                    <div class="row align-items-center">
+                                        <div class="col-3">
+                                            <label class="fw-semibold text-dark d-block mb-1">{{ day }}</label>
+                                            <small class="text-muted d-block">{{ day|slice:":3" }}</small>
+                                        </div>
+                                        <div class="col-9">
+                                            <div class="row g-2 align-items-center">
+                                                <div class="col-5">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text bg-light border-end-0">
+                                                            <i class="fas fa-door-open text-muted small"></i>
+                                                        </span>
+                                                        <input type="time" 
+                                                               name="{{ day|lower }}_inicio" 
+                                                               class="form-control form-control-sm border-start-0"
+                                                               {% if day == 'Sábado' %}value="09:00"
+                                                               {% elif day == 'Domingo' %}value="10:00"
+                                                               {% else %}value="09:00" %}{% endif %}>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 text-center">
+                                                    <span class="text-muted">–</span>
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="time" 
+                                                               name="{{ day|lower }}_fin"
+                                                               class="form-control form-control-sm border-end-0"
+                                                               {% if day == 'Sábado' %}value="16:00"
+                                                               {% elif day == 'Domingo' %}value="14:00"
+                                                               {% else %}value="18:00" %}{% endif %}>
+                                                        <span class="input-group-text bg-light border-start-0">
+                                                            <i class="fas fa-door-closed text-muted small"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Nota informativa -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-info-circle text-info me-2 mt-1"></i>
+                                <div>
+                                    <small class="text-muted">
+                                        Los horarios se ajustarán automáticamente si ya tiene configuración guardada.
+                                        Para cerrar un día completo, establece la misma hora de inicio y fin.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA 2: CONFIGURACIÓN DE CITAS -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pb-0 pt-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="icon-circle bg-success-light me-3">
+                                <i class="fas fa-calendar-check text-success"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-semibold text-dark">Configuración de Citas</h4>
+                                <small class="text-muted">Ajusta la duración, tiempos y anticipación</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-2">
+                        <!-- Duración de cita -->
+                        <div class="config-item mb-4">
+                            <label class="fw-semibold text-dark mb-2">
+                                <i class="fas fa-hourglass-half me-2 text-primary"></i>Duración por cita
+                            </label>
+                            <select name="duracion_slot" class="form-select form-select-sm">
+                                <option value="5">5 minutos</option>
+                                <option value="10">10 minutos</option>
+                                <option value="15">15 minutos</option>
+                                <option value="20">20 minutos</option>
+                                <option value="25">25 minutos</option>
+                                <option value="30" selected>30 minutos</option>
+                                <option value="35">35 minutos</option>
+                                <option value="40">40 minutos</option>
+                                <option value="45">45 minutos</option>
+                                <option value="50">50 minutos</option>
+                                <option value="55">55 minutos</option>
+                                <option value="60">60 minutos (1 hora)</option>
+                            </select>
+                            <small class="form-text text-muted mt-1 d-block">Tiempo promedio para cada servicio</small>
+                        </div>
+
+                        <!-- Tiempo entre citas -->
+                        <div class="config-item mb-4">
+                            <label class="fw-semibold text-dark mb-2">
+                                <i class="fas fa-coffee me-2 text-warning"></i>Tiempo entre citas
+                            </label>
+                            <select name="tiempo_descanso" class="form-select form-select-sm">
+                                <option value="0">Sin tiempo de descanso</option>
+                                <option value="5" selected>5 minutos</option>
+                                <option value="10">10 minutos</option>
+                                <option value="15">15 minutos</option>
+                                <option value="20">20 minutos</option>
+                                <option value="25">25 minutos</option>
+                                <option value="30">30 minutos</option>
+                                <option value="35">35 minutos</option>
+                                <option value="40">40 minutos</option>
+                                <option value="45">45 minutos</option>
+                                <option value="50">50 minutos</option>
+                                <option value="55">55 minutos</option>
+                                <option value="60">60 minutos (1 hora)</option>
+                            </select>
+                            <small class="form-text text-muted mt-1 d-block">Para limpieza, preparación y descanso</small>
+                        </div>
+
+                        <!-- Días de anticipación -->
+                        <div class="config-item mb-4">
+                            <label class="fw-semibold text-dark mb-2">
+                                <i class="fas fa-calendar-plus me-2 text-info"></i>Anticipación para reservar
+                            </label>
+                            <select name="dias_anticipacion" class="form-select form-select-sm">
+                                <option value="1">1 día</option>
+                                <option value="3">3 días</option>
+                                <option value="7">1 semana (7 días)</option>
+                                <option value="14">2 semanas (14 días)</option>
+                                <option value="21">3 semanas (21 días)</option>
+                                <option value="30" selected>1 mes (30 días)</option>
+                                <option value="45">45 días</option>
+                                <option value="60">2 meses (60 días)</option>
+                                <option value="90">3 meses (90 días)</option>
+                                <option value="120">4 meses (120 días)</option>
+                                <option value="180">6 meses (180 días)</option>
+                                <option value="365">1 año (365 días)</option>
+                            </select>
+                            <small class="form-text text-muted mt-1 d-block">Máximo tiempo de anticipación para reservar</small>
+                        </div>
+
+                        <!-- Checkbox: Citas mismo día -->
+                        <div class="form-check form-switch mb-3 p-3 bg-light rounded">
+                            <input class="form-check-input" type="checkbox" name="permitir_mismo_dia" id="permitirMismoDia" checked style="transform: scale(1.2);">
+                            <label class="form-check-label fw-medium text-dark ms-2" for="permitirMismoDia">
+                                <i class="fas fa-calendar-day me-2 text-success"></i>Permitir citas el mismo día
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">Los clientes pueden agendar citas para hoy</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA 3: NOTIFICACIONES -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pb-0 pt-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="icon-circle bg-warning-light me-3">
+                                <i class="fas fa-bell text-warning"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-semibold text-dark">Notificaciones Automáticas</h4>
+                                <small class="text-muted">Configura los recordatorios por email</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-2">
+                        <!-- Confirmación -->
+                        <div class="form-check form-switch mb-3 p-3 bg-light rounded">
+                            <input class="form-check-input" type="checkbox" name="enviar_confirmacion" id="enviarConfirmacion" checked style="transform: scale(1.2);">
+                            <label class="form-check-label fw-medium text-dark ms-2" for="enviarConfirmacion">
+                                <i class="fas fa-check-circle me-2 text-success"></i>Email de confirmación
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">Al momento de agendar la cita</small>
+                        </div>
+
+                        <!-- Recordatorio -->
+                        <div class="form-check form-switch mb-4 p-3 bg-light rounded">
+                            <input class="form-check-input" type="checkbox" name="enviar_recordatorio" id="enviarRecordatorio" checked style="transform: scale(1.2);">
+                            <label class="form-check-label fw-medium text-dark ms-2" for="enviarRecordatorio">
+                                <i class="fas fa-clock me-2 text-info"></i>Email recordatorio
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">Antes de la cita programada</small>
+                        </div>
+
+                        <!-- Tiempo del recordatorio -->
+                        <div class="config-item mb-4">
+                            <label class="fw-semibold text-dark mb-2">
+                                <i class="fas fa-hourglass-end me-2 text-primary"></i>Enviar recordatorio
+                            </label>
+                            <select name="horas_recordatorio" class="form-select form-select-sm">
+                                <option value="1">1 hora antes</option>
+                                <option value="2">2 horas antes</option>
+                                <option value="4">4 horas antes</option>
+                                <option value="6">6 horas antes</option>
+                                <option value="12">12 horas antes</option>
+                                <option value="24" selected>24 horas antes (1 día)</option>
+                                <option value="48">48 horas antes (2 días)</option>
+                                <option value="72">72 horas antes (3 días)</option>
+                                <option value="168">168 horas antes (1 semana)</option>
+                            </select>
+                        </div>
+
+                        <!-- Cancelación -->
+                        <div class="form-check form-switch mb-3 p-3 bg-light rounded">
+                            <input class="form-check-input" type="checkbox" name="enviar_cancelacion" id="enviarCancelacion" checked style="transform: scale(1.2);">
+                            <label class="form-check-label fw-medium text-dark ms-2" for="enviarCancelacion">
+                                <i class="fas fa-times-circle me-2 text-danger"></i>Email de cancelación
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">Cuando se cancele una cita</small>
+                        </div>
+
+                        <!-- Vista previa de notificación -->
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-semibold mb-3">
+                                <i class="fas fa-eye me-2 text-muted"></i>Vista previa
+                            </h6>
+                            <div class="p-3 bg-light rounded small">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-success me-2">CONFIRMACIÓN</span>
+                                    <span class="text-muted">Se enviará inmediatamente</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info me-2">RECORDATORIO</span>
+                                    <span class="text-muted">24 horas antes de la cita</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTÓN DE GUARDADO -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    Los cambios se aplicarán inmediatamente a todas las citas futuras
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-save me-2"></i>Guardar Configuración
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- ÁREA DE ALERTAS -->
+    <div id="configAlert" class="mt-3"></div>
+</div>
+
+<!-- ESTILOS CSS ADICIONALES -->
+<style>
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    
+    .bg-primary-light { background-color: rgba(13, 110, 253, 0.1); }
+    .bg-success-light { background-color: rgba(25, 135, 84, 0.1); }
+    .bg-warning-light { background-color: rgba(255, 193, 7, 0.1); }
+    
+    .day-schedule-card {
+        transition: all 0.2s ease;
+        border: 1px solid #e9ecef;
+    }
+    
+    .day-schedule-card:hover {
+        border-color: #4dabf7;
+        box-shadow: 0 2px 8px rgba(77, 171, 247, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .config-item {
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+    
+    .config-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    .form-switch .form-check-input:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<!-- SCRIPT DE CONFIGURACIÓN -->
+<script>
+    console.log('🚀 Configuración de establecimiento cargada');
+    
+    // URLs para AJAX
+    window.configSaveUrl = "{% url 'establishment:ajax_save_configuration' %}";
+    window.configLoadUrl = "{% url 'establishment:ajax_load_configuration' establishment_id=0 %}";
+    
+    // Establecimiento activo
+    {% if establecimientos|length == 1 %}
+    window.selectedEstablishmentId = {{ establecimientos.0.id }};
+    console.log('🏢 Establecimiento activo:', window.selectedEstablishmentId);
+    {% endif %}
+    
+    // Función mejorada para mostrar alertas
+    window.mostrarAlerta = function(type, message, duration = 5000) {
+        const alertDiv = document.getElementById('configAlert');
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        
+        const alertHtml = `
+            <div class="alert ${alertClass} alert-dismissible fade show shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                    <div class="flex-grow-1">${message}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        `;
+        
+        alertDiv.innerHTML = alertHtml;
+        
+        // Auto-ocultar después de un tiempo
+        if (duration > 0) {
+            setTimeout(() => {
+                const alert = alertDiv.querySelector('.alert');
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, duration);
+        }
+    };
+    
+    // Inicialización cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔄 DOM cargado, inicializando configuración...');
+        
+        // Aplicar estilos dinámicos a los días
+        document.querySelectorAll('.day-schedule-card').forEach(card => {
+            const dayInput = card.querySelector('input[type="time"]');
+            if (dayInput) {
+                // Verificar si es fin de semana
+                const dayLabel = card.querySelector('.fw-semibold').textContent.trim();
+                if (dayLabel === 'Sábado' || dayLabel === 'Domingo') {
+                    card.style.borderLeft = '3px solid #ff6b6b';
+                } else {
+                    card.style.borderLeft = '3px solid #4dabf7';
+                }
+            }
+        });
+        
+        // Inicializar componentes si existen
+        if (typeof window.initializeConfigComponents === 'function') {
+            window.initializeConfigComponents();
+        }
+    });
+    
+    // Manejo del selector de establecimiento
+    const selectEstablecimiento = document.getElementById('selectEstablecimiento');
+    if (selectEstablecimiento) {
+        selectEstablecimiento.addEventListener('change', function() {
+            if (this.value) {
+                window.selectedEstablishmentId = this.value;
+                console.log('🏢 Establecimiento seleccionado:', this.value);
+                // Aquí podrías cargar la configuración del establecimiento seleccionado
+                if (typeof window.loadConfiguration === 'function') {
+                    window.loadConfiguration(this.value);
+                }
+            }
+        });
+    }
+</script>
+
+<!-- Archivo JS principal -->
+<script src="{% static 'establishment/js/tabs/configuration.js' %}"></script>
+
+{% endblock %}

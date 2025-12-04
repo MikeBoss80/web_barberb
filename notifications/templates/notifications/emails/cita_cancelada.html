@@ -1,0 +1,32 @@
+{% extends "notifications/emails/base_email.html" %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <strong>🚫 Cita Cancelada</strong>
+</div>
+
+<div class="content">
+    <p>Tu cita ha sido <strong>cancelada</strong>{% if cancelada_por %} por {{ cancelada_por }}{% endif %}.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Detalles de la Cita Cancelada</h3>
+    <p><span class="info-label">Servicio:</span> {{ servicio_nombre }}</p>
+    <p><span class="info-label">Barbero:</span> {{ barbero_nombre }}</p>
+    <p><span class="info-label">Fecha original:</span> {{ fecha_cita }}</p>
+    <p><span class="info-label">Hora original:</span> {{ hora_cita }}</p>
+    {% if motivo_cancelacion %}
+    <p><span class="info-label">Motivo:</span> {{ motivo_cancelacion }}</p>
+    {% endif %}
+</div>
+
+<div class="content">
+    <p>Lamentamos los inconvenientes. Puedes agendar una nueva cita cuando lo desees.</p>
+</div>
+
+<div class="button-container">
+    <a href="{{ url_agendar_cita }}" class="button">
+        Agendar Nueva Cita
+    </a>
+</div>
+{% endblock %}
