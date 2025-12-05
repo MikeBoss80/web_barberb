@@ -466,7 +466,7 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
         Aquí se asignan automáticamente el barbero y el establecimiento.
         """
         user = self.request.user  # Barbero autenticado
-        form.instance.user = user  # Asigna el barbero automáticamente
+        form.instance.barber = user  # Asigna el barbero automáticamente
 
         # Asignar el establecimiento al que pertenece este barbero
         try:
