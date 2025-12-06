@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-warning text-dark">
-                    <h5><i class="fas fa-sliders-h"></i> Ajuste Rápido de Stock</h5>
+                    <h5><i class="bi bi-sliders"></i> Ajuste Rápido de Stock</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" id="quickAdjustmentForm">
@@ -69,10 +69,10 @@
                         
                         <div class="d-flex justify-content-end">
                             <a href="{% url 'product:product_list' %}" class="btn btn-secondary me-2">
-                                <i class="fas fa-times"></i> Cancelar
+                                <i class="bi bi-x-lg"></i> Cancelar
                             </a>
                             <button type="submit" class="btn btn-warning" id="btnSubmit" disabled>
-                                <i class="fas fa-save"></i> Aplicar Ajuste
+                                <i class="bi bi-save"></i> Aplicar Ajuste
                             </button>
                         </div>
                     </form>
@@ -82,7 +82,7 @@
             <!-- Información de ayuda -->
             <div class="card mt-3">
                 <div class="card-body">
-                    <h6><i class="fas fa-info-circle"></i> Información</h6>
+                    <h6><i class="bi bi-info-circle"></i> Información</h6>
                     <ul class="small text-muted">
                         <li>Este formulario permite ajustar rápidamente el stock de un producto.</li>
                         <li>Selecciona el producto y establecimiento para ver el stock actual.</li>

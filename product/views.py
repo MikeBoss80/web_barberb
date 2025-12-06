@@ -380,6 +380,7 @@ class LowStockReportView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
         
         form = LowStockReportForm(self.request.GET or None)
         low_stock_products = []
+        out_of_stock_count = 0
         
         if form and form.is_valid():
             establishment = form.cleaned_data.get('establishment')
@@ -389,10 +390,14 @@ class LowStockReportView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
                 establishment=establishment,
                 category=category
             )
+            
+            # Calcular productos agotados
+            out_of_stock_count = sum(1 for item in low_stock_products if item['current_stock'] <= 0)
         
         context.update({
             'form': form,
             'low_stock_products': low_stock_products,
+            'out_of_stock_count': out_of_stock_count,
         })
         return context
 

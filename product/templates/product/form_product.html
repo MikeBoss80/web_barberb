@@ -4,131 +4,128 @@
             <h5 class="modal-title" id="formProductTitle">{{ formProductTitle }}</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="padding: 1.5rem;">
             {% csrf_token %}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
-                        {{ form.name }}
-                        {% if form.name.errors %}
-                            <div class="text-danger">{{ form.name.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.internal_reference.id_for_label }}" class="form-label">{{ form.internal_reference.label }}</label>
-                        {{ form.internal_reference }}
-                        {% if form.internal_reference.errors %}
-                            <div class="text-danger">{{ form.internal_reference.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.barcode.id_for_label }}" class="form-label">{{ form.barcode.label }}</label>
-                        {{ form.barcode }}
-                        {% if form.barcode.errors %}
-                            <div class="text-danger">{{ form.barcode.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.category.id_for_label }}" class="form-label">{{ form.category.label }}</label>
-                        {{ form.category }}
-                        {% if form.category.errors %}
-                            <div class="text-danger">{{ form.category.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.product_type.id_for_label }}" class="form-label">{{ form.product_type.label }}</label>
-                        {{ form.product_type }}
-                        {% if form.product_type.errors %}
-                            <div class="text-danger">{{ form.product_type.errors }}</div>
-                        {% endif %}
-                    </div>
+            <div class="row g-3">
+                <!-- Primera fila: 3 columnas -->
+                <div class="col-md-4">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small">{{ form.name.errors }}</div>
+                    {% endif %}
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="{{ form.cost_price.id_for_label }}" class="form-label">{{ form.cost_price.label }}</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            {{ form.cost_price }}
-                        </div>
-                        {% if form.cost_price.errors %}
-                            <div class="text-danger">{{ form.cost_price.errors }}</div>
-                        {% endif %}
+                <div class="col-md-4">
+                    <label for="{{ form.internal_reference.id_for_label }}" class="form-label">{{ form.internal_reference.label }}</label>
+                    {{ form.internal_reference }}
+                    {% if form.internal_reference.errors %}
+                        <div class="text-danger small">{{ form.internal_reference.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="{{ form.barcode.id_for_label }}" class="form-label">{{ form.barcode.label }}</label>
+                    {{ form.barcode }}
+                    {% if form.barcode.errors %}
+                        <div class="text-danger small">{{ form.barcode.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Segunda fila: 3 columnas -->
+                <div class="col-md-4">
+                    <label for="{{ form.category.id_for_label }}" class="form-label">{{ form.category.label }}</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <div class="text-danger small">{{ form.category.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="{{ form.product_type.id_for_label }}" class="form-label">{{ form.product_type.label }}</label>
+                    {{ form.product_type }}
+                    {% if form.product_type.errors %}
+                        <div class="text-danger small">{{ form.product_type.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="{{ form.unit_of_measure.id_for_label }}" class="form-label">{{ form.unit_of_measure.label }}</label>
+                    {{ form.unit_of_measure }}
+                    {% if form.unit_of_measure.errors %}
+                        <div class="text-danger small">{{ form.unit_of_measure.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Tercera fila: Precios y stocks -->
+                <div class="col-md-3">
+                    <label for="{{ form.cost_price.id_for_label }}" class="form-label">{{ form.cost_price.label }}</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 10;">$</span>
+                        {{ form.cost_price }}
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.sale_price.id_for_label }}" class="form-label">{{ form.sale_price.label }}</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            {{ form.sale_price }}
-                        </div>
-                        {% if form.sale_price.errors %}
-                            <div class="text-danger">{{ form.sale_price.errors }}</div>
-                        {% endif %}
+                    {% if form.cost_price.errors %}
+                        <div class="text-danger small">{{ form.cost_price.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3">
+                    <label for="{{ form.sale_price.id_for_label }}" class="form-label">{{ form.sale_price.label }}</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 10;">$</span>
+                        {{ form.sale_price }}
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.unit_of_measure.id_for_label }}" class="form-label">{{ form.unit_of_measure.label }}</label>
-                        {{ form.unit_of_measure }}
-                        {% if form.unit_of_measure.errors %}
-                            <div class="text-danger">{{ form.unit_of_measure.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="mb-3">
-                                <label for="{{ form.minimum_stock.id_for_label }}" class="form-label">{{ form.minimum_stock.label }}</label>
-                                {{ form.minimum_stock }}
-                                {% if form.minimum_stock.errors %}
-                                    <div class="text-danger">{{ form.minimum_stock.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="mb-3">
-                                <label for="{{ form.maximum_stock.id_for_label }}" class="form-label">{{ form.maximum_stock.label }}</label>
-                                {{ form.maximum_stock }}
-                                {% if form.maximum_stock.errors %}
-                                    <div class="text-danger">{{ form.maximum_stock.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3 form-check">
+                    {% if form.sale_price.errors %}
+                        <div class="text-danger small">{{ form.sale_price.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3">
+                    <label for="{{ form.minimum_stock.id_for_label }}" class="form-label">{{ form.minimum_stock.label }}</label>
+                    {{ form.minimum_stock }}
+                    {% if form.minimum_stock.errors %}
+                        <div class="text-danger small">{{ form.minimum_stock.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3">
+                    <label for="{{ form.maximum_stock.id_for_label }}" class="form-label">{{ form.maximum_stock.label }}</label>
+                    {{ form.maximum_stock }}
+                    {% if form.maximum_stock.errors %}
+                        <div class="text-danger small">{{ form.maximum_stock.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Cuarta fila: Descripción y checkboxes -->
+                <div class="col-md-8">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-danger small">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 d-flex flex-column justify-content-center">
+                    <div class="form-check mb-2">
                         {{ form.track_inventory }}
                         <label for="{{ form.track_inventory.id_for_label }}" class="form-check-label">
                             {{ form.track_inventory.label }}
                         </label>
                         {% if form.track_inventory.errors %}
-                            <div class="text-danger">{{ form.track_inventory.errors }}</div>
+                            <div class="text-danger small">{{ form.track_inventory.errors }}</div>
                         {% endif %}
                     </div>
                     
-                    <div class="mb-3 form-check">
+                    <div class="form-check">
                         {{ form.is_active }}
                         <label for="{{ form.is_active.id_for_label }}" class="form-check-label">
                             {{ form.is_active.label }}
                         </label>
                         {% if form.is_active.errors %}
-                            <div class="text-danger">{{ form.is_active.errors }}</div>
+                            <div class="text-danger small">{{ form.is_active.errors }}</div>
                         {% endif %}
                     </div>
                 </div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                    <div class="text-danger">{{ form.description.errors }}</div>
-                {% endif %}
             </div>
         </div>
         <div class="modal-footer">

@@ -8,15 +8,12 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4><i class="fas fa-box"></i> {{ product.name }}</h4>
+            <h4><i class="bi bi-box-seam"></i> {{ product.name }}</h4>
             <p class="text-muted mb-0">{{ product.category.name }} - {{ product.get_product_type_display }}</p>
         </div>
         <div>
             <a href="{% url 'product:product_list' %}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver al Inventario
-            </a>
-            <a href="{% url 'product:product_edit' product.pk %}" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Editar
+                <i class="bi bi-arrow-left"></i> Volver al Inventario
             </a>
         </div>
     </div>
@@ -27,7 +24,7 @@
             <!-- Información Básica -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><i class="fas fa-info-circle"></i> Información Básica</h5>
+                    <h5><i class="bi bi-info-circle"></i> Información Básica</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -71,7 +68,7 @@
             <!-- Precios -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><i class="fas fa-dollar-sign"></i> Información de Precios</h5>
+                    <h5><i class="bi bi-currency-dollar"></i> Información de Precios</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -100,7 +97,7 @@
             {% if product.product_type == 'composite' and components %}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><i class="fas fa-puzzle-piece"></i> Lista de Materiales</h5>
+                    <h5><i class="bi bi-puzzle"></i> Lista de Materiales</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -135,7 +132,7 @@
             {% if recent_movements %}
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between">
-                    <h5><i class="fas fa-history"></i> Movimientos Recientes</h5>
+                    <h5><i class="bi bi-clock-history"></i> Movimientos Recientes</h5>
                     <a href="{% url 'product:stock_movement_list' %}?product={{ product.id }}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
                 </div>
                 <div class="card-body">
@@ -181,7 +178,7 @@
             {% if product.track_inventory %}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><i class="fas fa-warehouse"></i> Stock por Establecimiento</h5>
+                    <h5><i class="bi bi-buildings"></i> Stock por Establecimiento</h5>
                 </div>
                 <div class="card-body">
                     {% if establishment_stocks %}
@@ -208,7 +205,7 @@
             <!-- Configuración de Stock -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><i class="fas fa-cogs"></i> Configuración de Stock</h5>
+                    <h5><i class="bi bi-gear"></i> Configuración de Stock</h5>
                 </div>
                 <div class="card-body">
                     <p><strong>Stock Mínimo:</strong> {{ product.minimum_stock }} {{ product.unit_of_measure }}</p>
@@ -219,11 +216,11 @@
                     <!-- Estado del Stock -->
                     {% if product.is_low_stock %}
                         <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle"></i> Stock bajo el mínimo
+                            <i class="bi bi-exclamation-triangle"></i> Stock bajo el mínimo
                         </div>
                     {% else %}
                         <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> Stock en nivel óptimo
+                            <i class="bi bi-check-circle"></i> Stock en nivel óptimo
                         </div>
                     {% endif %}
                 </div>
@@ -231,24 +228,24 @@
             {% endif %}
 
             <!-- Acciones Rápidas -->
-            <div class="card">
+            <!-- <div class="card">
                 <div class="card-header">
-                    <h5><i class="fas fa-bolt"></i> Acciones Rápidas</h5>
+                    <h5><i class="bi bi-lightning-charge"></i> Acciones Rápidas</h5>
                 </div>
                 <div class="card-body">
                     {% if product.track_inventory %}
                         <a href="{% url 'product:stock_movement_create' %}?product={{ product.id }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
-                            <i class="fas fa-plus"></i> Registrar Movimiento
+                            <i class="bi bi-plus-lg"></i> Registrar Movimiento
                         </a>
                         <a href="{% url 'product:quick_stock_adjustment' %}?product={{ product.id }}" class="btn btn-outline-warning btn-sm w-100 mb-2">
-                            <i class="fas fa-sliders-h"></i> Ajustar Stock
+                            <i class="bi bi-sliders"></i> Ajustar Stock
                         </a>
                     {% endif %}
                     <a href="{% url 'product:product_edit' product.pk %}" class="btn btn-outline-secondary btn-sm w-100">
-                        <i class="fas fa-edit"></i> Editar Producto
+                        <i class="bi bi-pencil-square"></i> Editar Producto
                     </a>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

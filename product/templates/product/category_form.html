@@ -108,11 +108,11 @@
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Cancelar
+                        <i class="bi bi-x-lg"></i> Cancelar
                     </button>
                     <button type="submit" class="btn btn-primary" id="submit-btn">
                         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <i class="fas fa-save"></i> <span id="submit-text">Guardar</span>
+                        <i class="bi bi-save"></i> <span id="submit-text">Guardar</span>
                     </button>
                 </div>
             </form>
@@ -212,7 +212,7 @@ $(document).ready(function() {
     function showAlert(type, message) {
         const alertHtml = `
             <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>

@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between mb-3">
-        <h4><i class="fas fa-arrow-left-right"></i> Movimientos de Inventario</h4>
+        <h4><i class="bi bi-arrow-left-right"></i> Movimientos de Inventario</h4>
         <div>
             <a href="{% url 'product:low_stock_report' %}" class="btn btn-danger me-2">
                 <i class="bi bi-exclamation-triangle"></i> Reporte Bajo Stock
@@ -57,10 +57,10 @@
                     <label class="form-label">&nbsp;</label>
                     <div>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Filtrar
+                            <i class="bi bi-search"></i> Filtrar
                         </button>
                         <a href="{% url 'product:stock_movement_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Limpiar
+                            <i class="bi bi-x-lg"></i> Limpiar
                         </a>
                     </div>
                 </div>
