@@ -151,10 +151,34 @@ class RegistroUsuarioView(FormView):
     success_url = reverse_lazy('login_module:login')
 
     def form_valid(self, form):
-        user = form.save()
-        group = form.cleaned_data['type_group']
-        user.groups.add(group) 
-        return super().form_valid(form)
+        try:
+            # Guardar el usuario y el perfil
+            user = form.save()
+            
+            # Asignar el grupo seleccionado
+            group = form.cleaned_data['type_group']
+            user.groups.add(group)
+            
+            # Mensaje de éxito
+            from django.contrib import messages
+            messages.success(
+                self.request, 
+                f'¡Registro exitoso! Tu cuenta ha sido creada como {group.name}. Ya puedes iniciar sesión.'
+            )
+            
+            return super().form_valid(form)
+        except Exception as e:
+            from django.contrib import messages
+            messages.error(self.request, f'Error al registrar usuario: {str(e)}')
+            return self.form_invalid(form)
+    
+    def form_invalid(self, form):
+        from django.contrib import messages
+        messages.error(
+            self.request, 
+            'Por favor corrige los errores en el formulario.'
+        )
+        return super().form_invalid(form)
 
 class TerminosYCondicionesView(TemplateView):
     template_name = 'terminosycondiciones.html'

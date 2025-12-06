@@ -1,46 +1,708 @@
 {% load static %}
 {% load socialaccount %}
 
-<link rel="stylesheet" href="{% static 'login_module/css/login.css' %}">
-<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - BarberB</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-content">
+            <!-- Panel Izquierdo - Formulario -->
+            <div class="login-left">
+                <div class="form-wrapper">
+                    <!-- Logo -->
+                    <div class="logo-section">
+                        <img src="{% static 'login_module/img/logobarberb2.png' %}" alt="BarberB Logo" class="logo">
+                    </div>
 
-<div class="container">
-  <div class="login-form">
-    <img src="/static/login_module/img/logobarberb2.png" alt="LogoB2" class="LogoB2">
+                    <!-- Título -->
+                    <div class="header-section">
+                        <h2>Bienvenido de nuevo</h2>
+                        <p>Ingresa tus credenciales para continuar</p>
+                    </div>
 
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <a href="{% url 'login_module:password_reset' %}" class="forgot">¿Olvido contraseña?</a>
-      
-  
-      <button type="submit" class="btn-login">Iniciar Sesion</button>
+                    <!-- Mensajes de Error -->
+                    {% if form.errors %}
+                    <div class="alert alert-danger alert-modern">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span>Usuario o contraseña incorrectos</span>
+                    </div>
+                    {% endif %}
 
+                    <!-- Formulario -->
+                    <form method="post" class="login-form-modern" id="loginForm">
+                        {% csrf_token %}
+                        
+                        <!-- Campo Usuario -->
+                        <div class="form-group-modern">
+                            <label for="{{ form.username.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-person-circle me-2"></i>Usuario
+                            </label>
+                            <div class="input-wrapper">
+                                <i class="input-icon bi bi-person"></i>
+                                <input type="text" 
+                                       name="{{ form.username.name }}" 
+                                       id="{{ form.username.id_for_label }}"
+                                       class="form-control-modern" 
+                                       placeholder="Ingresa tu usuario"
+                                       required
+                                       autofocus>
+                            </div>
+                        </div>
 
-      <div class="separator">
-        <span>O</span>
-      </div>
-      <a href="{% provider_login_url 'google' %}" class="google-login-btn">
-        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
-        <span> Continuar con Google</span>
-      </a>
+                        <!-- Campo Contraseña -->
+                        <div class="form-group-modern">
+                            <label for="{{ form.password.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-shield-lock me-2"></i>Contraseña
+                            </label>
+                            <div class="input-wrapper">
+                                <i class="input-icon bi bi-lock"></i>
+                                <input type="password" 
+                                       name="{{ form.password.name }}" 
+                                       id="{{ form.password.id_for_label }}"
+                                       class="form-control-modern" 
+                                       placeholder="Ingresa tu contraseña"
+                                       required>
+                                <button type="button" class="toggle-password-btn" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
 
+                        <!-- Olvidé contraseña -->
+                        <div class="forgot-password-section">
+                            <a href="{% url 'login_module:password_reset' %}" class="forgot-link">
+                                <i class="bi bi-question-circle me-1"></i>¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
 
-      <div class="registrar-mobile">
-        <p><a href="{% url 'login_module:tipo_rol' %}"></a></p>
-      </div>
-    </form>
-  </div>
+                        <!-- Botón Login -->
+                        <button type="submit" class="btn-login-modern">
+                            <span class="btn-text">Iniciar Sesión</span>
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
 
-  <div class="side-panel">
-    <div class="overlay">
-      <h3>¿No tienes cuenta?</h3>
-      <br>
-      <a href="{% url 'login_module:registro_usuario' %}" class="btn-signup">Crear Cuenta</a>
+                        <!-- Separador -->
+                        <div class="separator-modern">
+                            <span>O continúa con</span>
+                        </div>
+
+                        <!-- Botón Google -->
+                        <a href="{% provider_login_url 'google' %}" class="btn-google-modern">
+                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+                            <span>Continuar con Google</span>
+                        </a>
+                    </form>
+
+                    <!-- Footer -->
+                    <div class="form-footer-modern">
+                        <p>¿No tienes una cuenta? <a href="{% url 'login_module:registro_usuario' %}" class="signup-link">Regístrate aquí</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Derecho - Imagen/Info -->
+            <div class="login-right">
+                <div class="right-overlay">
+                    <div class="brand-info">
+                        <div class="brand-icon">
+                            <i class="bi bi-scissors"></i>
+                        </div>
+                        <h1>BarberB</h1>
+                        <p class="tagline">Gestiona tu barbería de manera profesional</p>
+                        
+                        <div class="features-list">
+                            <div class="feature-item-login">
+                                <div class="feature-icon-small">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+                                <span>Sistema de citas inteligente</span>
+                            </div>
+                            <div class="feature-item-login">
+                                <div class="feature-icon-small">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <span>Gestión de barberos y clientes</span>
+                            </div>
+                            <div class="feature-item-login">
+                                <div class="feature-icon-small">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                </div>
+                                <span>Reportes y análisis en tiempo real</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Decoración -->
+                    <div class="decoration-shapes">
+                        <div class="shape shape-1"></div>
+                        <div class="shape shape-2"></div>
+                        <div class="shape shape-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-{% if form.errors %}
-<p style="color: red;">Usuario o contraseña incorrectos</p>
-{% endif %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #3e1a4e 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 1200px;
+            perspective: 1000px;
+        }
+
+        .login-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Panel Izquierdo */
+        .login-left {
+            padding: 60px 50px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 140px;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-section p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+        }
+
+        /* Formulario Moderno */
+        .form-group-modern {
+            margin-bottom: 24px;
+        }
+
+        .form-label-modern {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 18px;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        .form-control-modern {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-modern::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-control-modern:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #8a2be2;
+            box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.15);
+        }
+
+        .form-control-modern:focus + .input-icon {
+            color: #8a2be2;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password-btn:hover {
+            color: #8a2be2;
+        }
+
+        .forgot-password-section {
+            text-align: right;
+            margin-bottom: 24px;
+        }
+
+        .forgot-link {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: #8a2be2;
+        }
+
+        .btn-login-modern {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #8a2be2 0%, #5a1e78 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-login-modern:hover::before {
+            left: 100%;
+        }
+
+        .btn-login-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-login-modern:active {
+            transform: translateY(0);
+        }
+
+        .separator-modern {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+        }
+
+        .separator-modern::before,
+        .separator-modern::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .separator-modern span {
+            padding: 0 15px;
+        }
+
+        .btn-google-modern {
+            width: 100%;
+            padding: 14px;
+            background: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-google-modern img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-google-modern:hover {
+            background: #f8f8f8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-footer-modern {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .form-footer-modern p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .signup-link {
+            color: #8a2be2;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link:hover {
+            color: #b483d3;
+            text-decoration: underline;
+        }
+
+        /* Panel Derecho */
+        .login-right {
+            background: linear-gradient(135deg, rgba(62, 26, 78, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%),
+                        url('/static/login_module/img/img10.jpeg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .right-overlay {
+            height: 100%;
+            padding: 60px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-info {
+            text-align: center;
+            color: #fff;
+        }
+
+        .brand-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(138, 43, 226, 0);
+            }
+        }
+
+        .brand-icon i {
+            font-size: 50px;
+            color: #8a2be2;
+        }
+
+        .brand-info h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item-login {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item-login:hover {
+            background: rgba(138, 43, 226, 0.2);
+            transform: translateX(10px);
+            border-color: rgba(138, 43, 226, 0.5);
+        }
+
+        .feature-icon-small {
+            width: 40px;
+            height: 40px;
+            background: rgba(138, 43, 226, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon-small i {
+            font-size: 20px;
+            color: #8a2be2;
+        }
+
+        .feature-item-login span {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        /* Decoración de formas */
+        .decoration-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(138, 43, 226, 0.1);
+            animation: float-shapes 20s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 5s;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: 30%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float-shapes {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        /* Alerta moderna */
+        .alert-modern {
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            animation: shake 0.5s ease;
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .login-content {
+                grid-template-columns: 1fr;
+            }
+
+            .login-right {
+                display: none;
+            }
+
+            .login-left {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .login-left {
+                padding: 30px 20px;
+            }
+
+            .header-section h2 {
+                font-size: 26px;
+            }
+
+            .logo {
+                width: 100px;
+            }
+        }
+    </style>
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword')?.addEventListener('click', function() {
+            const passwordInput = document.getElementById('{{ form.password.id_for_label }}');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+
+        // Form animation on submit
+        document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+            const btn = this.querySelector('.btn-login-modern');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span><span>Iniciando sesión...</span>';
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>
