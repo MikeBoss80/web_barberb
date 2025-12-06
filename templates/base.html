@@ -84,16 +84,43 @@
 
         const savedState = localStorage.getItem('sidebarCollapsed');
         
+        // Aplicar estado guardado o colapsar en pantallas pequeñas
         if (window.innerWidth <= 768 || savedState === 'true') {
             sidebar.classList.add('sidebar-collapsed');
             mainContent.style.marginLeft = '80px';
         }
 
+        // Toggle con animación fluida
         toggleBtn?.addEventListener('click', () => {
+            // Agregar clase para animación
+            sidebar.style.pointerEvents = 'none';
+            
             const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
-            mainContent.style.marginLeft = isCollapsed ? '80px' : '220px';
+            
+            // Actualizar margen del contenido principal
+            requestAnimationFrame(() => {
+                mainContent.style.marginLeft = isCollapsed ? '80px' : '220px';
+            });
+            
+            // Restaurar eventos después de la animación
+            setTimeout(() => {
+                sidebar.style.pointerEvents = 'auto';
+            }, 400);
             
             localStorage.setItem('sidebarCollapsed', isCollapsed);
+        });
+
+        // Manejar cambios de tamaño de ventana
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth <= 768 && !sidebar.classList.contains('sidebar-collapsed')) {
+                    sidebar.classList.add('sidebar-collapsed');
+                    mainContent.style.marginLeft = '80px';
+                    localStorage.setItem('sidebarCollapsed', 'true');
+                }
+            }, 250);
         });
 
     </script>

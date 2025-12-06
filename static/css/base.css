@@ -30,11 +30,12 @@
     width: 220px;
     background: linear-gradient(90deg, #212121 0%, #3e1a4e 100%);
     overflow-y: auto;
+    overflow-x: hidden;
     height: calc(100vh - 60px);
     top: 60px;
     left: 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: width 0.3s ease;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
     z-index: 1000;
     position: fixed;
 }
@@ -52,17 +53,37 @@
     align-items: center;
     text-decoration: none;
     color: white;
-    transition: background-color 0.3s, padding 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link.text-white::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    transform: scaleY(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link.text-white:hover::before {
+    transform: scaleY(1);
 }
 
 .nav-link.text-white:hover {
-    background-color: #3e1a4e;
+    background-color: rgba(62, 26, 78, 0.8);
     font-weight: 600;
     padding-left: 1rem;
+    transform: translateX(4px);
 }
 
 .nav-link.text-white:hover i {
     color: #f8f9fa;
+    transform: scale(1.1);
 }
 
 /* Sidebar colapsado */
@@ -70,8 +91,19 @@
     width: 80px !important;
 }
 
+.sidebar-label {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
 .sidebar-collapsed .sidebar-label {
-    display: none;
+    opacity: 0;
+    transform: translateX(-10px);
+    pointer-events: none;
+    position: absolute;
 }
 
 #toggleSidebar {
@@ -80,6 +112,16 @@
     color: white;
     font-size: 1.75rem;
     margin-right: 0.60rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+#toggleSidebar:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+#toggleSidebar:active {
+    transform: scale(0.95);
 }
 
 #sidebar.sidebar-expanded #toggleSidebar {
@@ -92,10 +134,24 @@
 
 #sidebar .nav-link i {
     font-size: 1.2rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #sidebar.sidebar-collapsed .nav-link i {
-    transform: scale(1.2);
+    transform: scale(1.15);
+}
+
+#sidebar.sidebar-collapsed .nav-link {
+    justify-content: center;
+}
+
+#sidebar.sidebar-collapsed .nav-link:hover {
+    padding-left: 0.5rem;
+    transform: translateX(0) scale(1.05);
 }
 
 /* Botones */
@@ -137,7 +193,7 @@
     background-color: #f8f9fa;
     min-height: 100vh;
     overflow-x: hidden;
-    transition: margin-left 0.3s ease;
+    transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #rol {
@@ -353,6 +409,46 @@ div.dataTables_filter label::before {
     margin-right: 6px;
 }
 
+/* Animaciones para elementos del sidebar */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+#sidebar .nav-item {
+    animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+#sidebar .nav-item:nth-child(1) { animation-delay: 0.05s; }
+#sidebar .nav-item:nth-child(2) { animation-delay: 0.1s; }
+#sidebar .nav-item:nth-child(3) { animation-delay: 0.15s; }
+#sidebar .nav-item:nth-child(4) { animation-delay: 0.2s; }
+#sidebar .nav-item:nth-child(5) { animation-delay: 0.25s; }
+#sidebar .nav-item:nth-child(6) { animation-delay: 0.3s; }
+#sidebar .nav-item:nth-child(7) { animation-delay: 0.35s; }
+#sidebar .nav-item:nth-child(8) { animation-delay: 0.4s; }
+
+/* Efecto de brillo sutil en hover del sidebar */
+#sidebar:hover {
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Animación del icono del toggle */
+@keyframes rotateToggle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(180deg); }
+}
+
+#sidebar.sidebar-collapsed #toggleSidebar i {
+    animation: rotateToggle 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .dt-buttons {
@@ -367,6 +463,12 @@ div.dataTables_filter label::before {
 
     .card.card-border-color {
         margin-bottom: 1rem;
+    }
+    
+    #sidebar {
+        transform: translateX(0);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                    width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
