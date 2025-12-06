@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Reporte de Stock Bajo{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h4><i class="bi bi-exclamation-triangle text-warning"></i> Reporte de Stock Bajo</h4>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label for="{{ form.establishment.id_for_label }}" class="form-label">{{ form.establishment.label }}</label>
+                    {{ form.establishment }}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.category.id_for_label }}" class="form-label">{{ form.category.label }}</label>
+                    {{ form.category }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Generar Reporte
+                        </button>
+                        <a href="{% url 'product:low_stock_report' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Limpiar
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resumen -->
+    {% if low_stock_products %}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h3>{{ low_stock_products|length }}</h3>
+                    <p class="mb-0">Productos con Stock Bajo</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h3>{% for item in low_stock_products %}{% if item.current_stock <= 0 %}1{% endif %}{% endfor %}</h3>
+                    <p class="mb-0">Productos Agotados</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6><i class="fas fa-lightbulb"></i> Acciones Recomendadas</h6>
+                    <ul class="small mb-0">
+                        <li>Revisar proveedores para productos agotados</li>
+                        <li>Programar compras para productos con stock bajo</li>
+                        <li>Verificar la demanda de productos frecuentemente agotados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tabla de Productos con Stock Bajo -->
+    {% if low_stock_products %}
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-table"></i> Productos con Stock Bajo</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover display" id="tblLowStock">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Establecimiento</th>
+                            <th>Categoría</th>
+                            <th>Stock Actual</th>
+                            <th>Stock Mínimo</th>
+                            <th>Diferencia</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in low_stock_products %}
+                        <tr class="{% if item.current_stock <= 0 %}table-danger{% else %}table-warning{% endif %}">
+                            <td>
+                                <a href="{% url 'product:product_detail' item.product.pk %}">
+                                    {{ item.product.name }}
+                                </a>
+                                <br><small class="text-muted">{{ item.product.internal_reference|default:"Sin ref." }}</small>
+                            </td>
+                            <td>{{ item.establishment.name }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ item.product.category.name }}</span>
+                            </td>
+                            <td>
+                                <strong class="{% if item.current_stock <= 0 %}text-danger{% else %}text-warning{% endif %}">
+                                    {{ item.current_stock }} {{ item.product.unit_of_measure }}
+                                </strong>
+                            </td>
+                            <td>{{ item.minimum_stock }} {{ item.product.unit_of_measure }}</td>
+                            <td>
+                                <span class="badge bg-danger">
+                                    -{{ item.difference }} {{ item.product.unit_of_measure }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if item.current_stock <= 0 %}
+                                    <span class="badge bg-danger">AGOTADO</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">BAJO</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'product:quick_stock_adjustment' %}?product={{ item.product.id }}&establishment={{ item.establishment.id }}" 
+                                   class="btn btn-sm btn-primary" title="Ajustar Stock">
+                                    <i class="fas fa-sliders-h"></i>
+                                </a>
+                                <a href="{% url 'product:stock_movement_create' %}?product={{ item.product.id }}&establishment={{ item.establishment.id }}" 
+                                   class="btn btn-sm btn-success" title="Registrar Entrada">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center">
+            {% if request.GET %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h5>¡Excelente!</h5>
+                    <p>No se encontraron productos con stock bajo según los filtros aplicados.</p>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle fa-3x mb-3"></i>
+                    <h5>Generar Reporte</h5>
+                    <p>Selecciona los filtros deseados y presiona "Generar Reporte" para ver los productos con stock bajo.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#tblLowStock').DataTable({
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+        },
+        dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+        buttons: [
+            'copy', 'csv', 'excel', 'print',
+            {
+                extend: 'pdfHtml5',
+                text: 'Exportar PDF',
+                title: 'Reporte de Stock Bajo - {{ "now"|date:"d/m/Y" }}',
+                orientation: 'landscape',
+                pageSize: 'A4'
+            }
+        ],
+        pageLength: 25,
+        order: [[5, 'desc']], // Ordenar por diferencia (mayor déficit primero)
+    });
+});
+</script>
+
+{% endblock %}

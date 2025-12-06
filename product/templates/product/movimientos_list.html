@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Movimientos de Inventario{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h4><i class="fas fa-arrow-left-right"></i> Movimientos de Inventario</h4>
+        <div>
+            <a href="{% url 'product:low_stock_report' %}" class="btn btn-danger me-2">
+                <i class="bi bi-exclamation-triangle"></i> Reporte Bajo Stock
+            </a>
+            <a href="{% url 'product:stock_movement_create' %}" class="btn bg-primary-subtle">
+                <i class="bi bi-plus-circle"></i> Nuevo Movimiento
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label for="product" class="form-label">Producto</label>
+                    <select name="product" id="product" class="form-select">
+                        <option value="">Todos los productos</option>
+                        {% for product in all_products %}
+                            <option value="{{ product.id }}" {% if product.id|stringformat:"s" == selected_product %}selected{% endif %}>
+                                {{ product.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="establishment" class="form-label">Establecimiento</label>
+                    <select name="establishment" id="establishment" class="form-select">
+                        <option value="">Todos los establecimientos</option>
+                        {% for establishment in all_establishments %}
+                            <option value="{{ establishment.id }}" {% if establishment.id|stringformat:"s" == selected_establishment %}selected{% endif %}>
+                                {{ establishment.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="movement_type" class="form-label">Tipo de Movimiento</label>
+                    <select name="movement_type" id="movement_type" class="form-select">
+                        <option value="">Todos los tipos</option>
+                        <option value="in" {% if selected_movement_type == 'in' %}selected{% endif %}>Entrada</option>
+                        <option value="out" {% if selected_movement_type == 'out' %}selected{% endif %}>Salida</option>
+                        <option value="adjustment_in" {% if selected_movement_type == 'adjustment_in' %}selected{% endif %}>Ajuste Positivo</option>
+                        <option value="adjustment_out" {% if selected_movement_type == 'adjustment_out' %}selected{% endif %}>Ajuste Negativo</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Filtrar
+                        </button>
+                        <a href="{% url 'product:stock_movement_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Limpiar
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Movimientos -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover display" id="tblMovements">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Establecimiento</th>
+                    <th>Tipo</th>
+                    <th>Motivo</th>
+                    <th>Cantidad</th>
+                    <th>Costo Unit.</th>
+                    <th>Costo Total</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movement in movements %}
+                <tr>
+                    <td>{{ movement.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'product:product_detail' movement.product.pk %}">
+                            {{ movement.product.name }}
+                        </a>
+                    </td>
+                    <td>{{ movement.establishment.name }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if movement.movement_type == 'in' %}bg-success
+                            {% elif movement.movement_type == 'out' %}bg-danger
+                            {% elif movement.movement_type == 'adjustment_in' %}bg-info
+                            {% elif movement.movement_type == 'adjustment_out' %}bg-warning
+                            {% else %}bg-secondary{% endif %}">
+                            {{ movement.get_movement_type_display }}
+                        </span>
+                    </td>
+                    <td>{{ movement.get_reason_display }}</td>
+                    <td>{{ movement.quantity }} {{ movement.product.unit_of_measure }}</td>
+                    <td>${{ movement.unit_cost }}</td>
+                    <td>${{ movement.total_cost }}</td>
+                    <td>{{ movement.created_by.get_full_name|default:movement.created_by.username }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted">No hay movimientos registrados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+    <nav aria-label="Paginación de movimientos">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tblMovements').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json'
+            },
+            dom: '<"d-flex justify-content-between mb-2"fB>rt<"d-flex justify-content-between mt-2"lip>',
+            buttons: [
+                'copy', 'csv', 'excel', 'print'
+            ],
+            pageLength: 25,
+            order: [[0, 'desc']], // Ordenar por fecha descendente
+            paging: false, // Usar paginación de Django
+            info: false,
+            searching: false // Usar filtros personalizados
+        });
+    });
+</script>
+
+{% endblock %}

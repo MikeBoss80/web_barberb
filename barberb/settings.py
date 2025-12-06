@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'login_auth',
     'establishment',
     'notifications',
+    'product'
     ]
 
 

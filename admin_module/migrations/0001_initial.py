@@ -41,31 +41,31 @@ class Migration(migrations.Migration):
                 ('end_hour', models.DateTimeField()),
             ],
         ),
-        migrations.CreateModel(
-            name='Product',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_product', models.CharField(max_length=30)),
-                ('description_product', models.CharField(max_length=80)),
-                ('amount', models.IntegerField(default=0)),
-                ('minimum_stock', models.IntegerField(default=0)),
-                ('price_product', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=True)),
-                ('category', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='productos', to='admin_module.category')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_created', to=settings.AUTH_USER_MODEL)),
-                ('updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_updated', to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Inventory',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('establishment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='establishment.establishment')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='admin_module.product')),
-            ],
-        ),
+        # migrations.CreateModel(
+        #     name='Product',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('name_product', models.CharField(max_length=30)),
+        #         ('description_product', models.CharField(max_length=80)),
+        #         ('amount', models.IntegerField(default=0)),
+        #         ('minimum_stock', models.IntegerField(default=0)),
+        #         ('price_product', models.DecimalField(decimal_places=2, max_digits=8)),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('updated_at', models.DateTimeField(auto_now=True)),
+        #         ('is_active', models.BooleanField(default=True)),
+        #         ('category', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='productos', to='admin_module.category')),
+        #         ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_created', to=settings.AUTH_USER_MODEL)),
+        #         ('updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_updated', to=settings.AUTH_USER_MODEL)),
+        #     ],
+        # ),
+        # migrations.CreateModel(
+        #     name='Inventory',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('establishment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='establishment.establishment')),
+        #         ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='admin_module.product')),
+        #     ],
+        # ),
         migrations.CreateModel(
             name='ScheduleAssignment',
             fields=[

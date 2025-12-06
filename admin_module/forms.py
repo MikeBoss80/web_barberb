@@ -1,35 +1,34 @@
 # admin_module/forms.py
 from django import forms
 from workflows.models import FlowInstance
-from .models import Product, Service
-from login_module.models import Profile 
+from .models import Service
 from services_module.models import ServiceDate,EstablishmentService
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
 from establishment.models import Establishment
 
 
-class CreateProductForm(forms.ModelForm):
-    name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
-    description_product = forms.CharField(max_length=80, required=True, label="Descripcion")
-    amount = forms.IntegerField(required=True, initial=0, label="Cantidad")
-    minimun_stock = forms.IntegerField(required=True, initial=0, label="Cantidad Minima")
-    price_product = forms.IntegerField(required=True, initial=0, label="Precio")
+# class CreateProductForm(forms.ModelForm):
+#     name_product = forms.CharField(max_length=40, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del producto'}))
+#     description_product = forms.CharField(max_length=80, required=True, label="Descripcion")
+#     amount = forms.IntegerField(required=True, initial=0, label="Cantidad")
+#     minimun_stock = forms.IntegerField(required=True, initial=0, label="Cantidad Minima")
+#     price_product = forms.IntegerField(required=True, initial=0, label="Precio")
 
-    class Meta:
-        model = Product
-        # exclude=["id_admin_id"]
-        fields = ["name_product", "description_product", "amount", "minimun_stock", "price_product", "category"]
+#     class Meta:
+#         model = Product
+#         # exclude=["id_admin_id"]
+#         fields = ["name_product", "description_product", "amount", "minimun_stock", "price_product", "category"]
 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        product=super().save(commit=False)
-        if commit:
-            product.save()
-        return product
+#     def save(self, commit=True):
+#         product=super().save(commit=False)
+#         if commit:
+#             product.save()
+#         return product
 
 class CreateEstablishmentForm(forms.ModelForm):
     name_est = forms.CharField(max_length=50, required=True, label="Nombre", widget=forms.TextInput(attrs={'placeholder': 'Nombre del establecimiento'}))

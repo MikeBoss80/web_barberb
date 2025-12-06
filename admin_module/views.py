@@ -7,7 +7,7 @@ from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from .models import Product, Inventory, Service, Category
+from .models import Service, Category
 from establishment.models import Establishment
 from workflows.models import FlowInstance
 from services_module.models import ServiceDate
@@ -16,7 +16,7 @@ from barber_module.models import BarberRequest
 from login_module.models import Profile
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .forms import CreateProductForm, CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm, BarberRequestForm
+from .forms import CreateEstablishmentForm,ServiceDateForm,EditarBarberoEstadoForm,BarberRequestAdminResponseForm, CreateServiceForm, VinculationForm, BarberRequestForm
 from django.views.generic.edit import FormView
 from collections import defaultdict
 from admin_module.models import Category, EstablishmentSchedule
@@ -26,7 +26,6 @@ from django.views.decorators.csrf import csrf_exempt
 from workflows.models import FlowInstance, FlowStatus
 from admin_module.utils.mixins import CitasQuerysetMixin
 from login_module.forms import ProfileEditForm,UserEditForm
-import logging
 
 
 class HomeadminView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
@@ -73,11 +72,11 @@ class HomeadminView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
         ).count()
 
         #Productos bajo stock
-        bajo_stock= Inventory.objects.filter(
-            establishment=establecimiento,
-            product=5
-        #Revisar aca quedamos  
-        ).count()
+        # bajo_stock= Inventory.objects.filter(
+        #     establishment=establecimiento,
+        #     product=5
+        # #Revisar aca quedamos  
+        # ).count()
 
         # Ingresos del día
         ingresos_hoy = ServiceDate.objects.filter(
@@ -105,7 +104,7 @@ class HomeadminView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
             'today': today,
             'citas_hoy': citas_hoy,
             'barberos_activos': barberos_activos,
-            'bajo_stock': bajo_stock,
+            # 'bajo_stock': bajo_stock,
             'ingresos_hoy': ingresos_hoy,
             'proximas_citas': proximas_citas,
             'notificaciones': notificaciones,
@@ -625,72 +624,72 @@ class ContenidosView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
             return redirect('/admin_module/establecimiento/')  # o el name de tu url para esta vista
 
      
-class InventarioView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
-    template_name= 'inventario/inventario.html'
-    login_url = '/login_module/login/'
+# class InventarioView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
+#     template_name= 'inventario/inventario.html'
+#     login_url = '/login_module/login/'
     
-    def get_breadcrumb(self):
-        return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
+#     def get_breadcrumb(self):
+#         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
         
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
 
-        context['products'] = Product.objects.all()
-        return context
+#         context['products'] = Product.objects.all()
+#         return context
 
-class InventarioListView(LoginRequiredMixin, BreadcrumbMixin, ListView):
-    template_name = 'inventario/inventario.html'
-    login_url = '/login_module/login/'
+# class InventarioListView(LoginRequiredMixin, BreadcrumbMixin, ListView):
+#     template_name = 'inventario/inventario.html'
+#     login_url = '/login_module/login/'
     
-    def get_breadcrumb(self):
-        return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
+#     def get_breadcrumb(self):
+#         return [{'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'}]
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
 
-        context['products'] = Product.objects.all()
-        return context
+#         context['products'] = Product.objects.all()
+#         return context
 
-class ProductCreateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin, CreateView):
-    template_name = 'inventario/form_product.html'
-    form_class = CreateProductForm
-    success_url = reverse_lazy('admin_module:inventario')
-    login_url = '/login_module/login/'
+# class ProductCreateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin, CreateView):
+#     template_name = 'inventario/form_product.html'
+#     form_class = CreateProductForm
+#     success_url = reverse_lazy('admin_module:inventario')
+#     login_url = '/login_module/login/'
 
-    def get_breadcrumb(self):
-        return [
-            {'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'},
-            {'label': 'Crear Producto', 'url': '', 'icon': 'plus-circle'}
-        ]
+#     def get_breadcrumb(self):
+#         return [
+#             {'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'},
+#             {'label': 'Crear Producto', 'url': '', 'icon': 'plus-circle'}
+#         ]
 
-    def form_valid(self, form):
-        product=form.save(commit=False)
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        product.save()
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         product=form.save(commit=False)
+#         form.instance.created_by = self.request.user
+#         form.instance.updated_by = self.request.user
+#         product.save()
+#         return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin, UpdateView):
-    model = Product
-    template_name = 'inventario/form_product.html'
-    form_class = CreateProductForm
-    success_url = reverse_lazy('admin_module:inventario')
-    login_url = '/login_module/login/'
+# class ProductUpdateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin, UpdateView):
+#     model = Product
+#     template_name = 'inventario/form_product.html'
+#     form_class = CreateProductForm
+#     success_url = reverse_lazy('admin_module:inventario')
+#     login_url = '/login_module/login/'
 
-    def get_breadcrumb(self):
-        return [
-            {'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'},
-            {'label': 'Editar Producto', 'url': '', 'icon': 'pencil-square'}
-        ]
+#     def get_breadcrumb(self):
+#         return [
+#             {'label': 'Inventario', 'url': reverse('admin_module:inventario'), 'icon': 'box-seam'},
+#             {'label': 'Editar Producto', 'url': '', 'icon': 'pencil-square'}
+#         ]
 
-    def form_valid(self, form):
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         form.instance.updated_by = self.request.user
+#         return super().form_valid(form)
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
-    model = Product
-    success_url = reverse_lazy('admin_module:inventario')
-    login_url = '/login_module/login/'
+# class ProductDeleteView(LoginRequiredMixin, DeleteView):
+#     model = Product
+#     success_url = reverse_lazy('admin_module:inventario')
+#     login_url = '/login_module/login/'
     
      
 class ReportesView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
