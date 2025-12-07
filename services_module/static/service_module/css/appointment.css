@@ -1,0 +1,896 @@
+/* ========================================
+   Appointment Booking Styles
+   ======================================== */
+
+/* Main Wrapper - Ocupa todo el espacio disponible sin scroll externo */
+.appointment-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 140px); /* Ajustar según header/padding del contenedor padre */
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* ========================================
+   Progress Stepper
+   ======================================== */
+.appointment-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    margin: 0.75rem;
+}
+
+.stepper-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    position: relative;
+}
+
+.stepper-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.stepper-circle i {
+    font-size: 1rem;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.stepper-number {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.stepper-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.stepper-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #495057;
+    transition: color 0.3s ease;
+}
+
+.stepper-subtitle {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.stepper-line {
+    flex: 1;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 0.5rem;
+    transition: background 0.3s ease;
+}
+
+/* Active Stepper State */
+.stepper-item--active .stepper-circle {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.stepper-item--active .stepper-circle i {
+    color: #fff;
+}
+
+.stepper-item--active .stepper-number {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.stepper-item--active .stepper-title {
+    color: #0d6efd;
+}
+
+/* Completed Stepper State */
+.stepper-item--completed .stepper-circle {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+}
+
+.stepper-item--completed .stepper-circle i {
+    color: #fff;
+}
+
+.stepper-item--completed .stepper-number {
+    background: #198754;
+    border-color: #198754;
+    color: #fff;
+}
+
+.stepper-item--completed .stepper-title {
+    color: #198754;
+}
+
+.stepper-line--completed {
+    background: linear-gradient(90deg, #198754 0%, #146c43 100%);
+}
+
+/* Responsive Stepper */
+@media (max-width: 992px) {
+    .appointment-stepper {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .stepper-line {
+        display: none;
+    }
+    
+    .stepper-item {
+        flex: 1 1 calc(50% - 0.5rem);
+        min-width: calc(50% - 0.5rem);
+    }
+}
+
+@media (max-width: 576px) {
+    .appointment-stepper {
+        padding: 1rem;
+    }
+    
+    .stepper-item {
+        flex: 1 1 100%;
+    }
+    
+    .stepper-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .stepper-circle i {
+        font-size: 1.25rem;
+    }
+    
+    .stepper-label {
+        gap: 0.125rem;
+    }
+    
+    .stepper-title {
+        font-size: 0.875rem;
+    }
+    
+    .stepper-subtitle {
+        font-size: 0.75rem;
+    }
+}
+
+/* ========================================
+   Form Container
+   ======================================== */
+.appointment-form-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    margin: 0 0.75rem 0.75rem 0.75rem;
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.appointment-form-container form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Step Header */
+.step-header {
+    text-align: center;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.step-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 0.25rem;
+}
+
+.step-description {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Step Visibility */
+.appointment-step {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    animation: fadeIn 0.4s ease;
+}
+
+.appointment-step--active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   Establishment & Service Cards
+   ======================================== */
+.establishments-grid,
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.establishment-card,
+.service-card {
+    cursor: pointer;
+    position: relative;
+    display: block;
+}
+
+.establishment-input,
+.service-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.establishment-card-inner,
+.service-card-inner {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.establishment-card:hover .establishment-card-inner,
+.service-card:hover .service-card-inner {
+    border-color: #0d6efd;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+    transform: translateY(-2px);
+}
+
+.establishment-input:checked ~ .establishment-card-inner,
+.service-input:checked ~ .service-card-inner {
+    border-color: #0d6efd;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e7f1ff 100%);
+    box-shadow: 0 2px 12px rgba(13, 110, 253, 0.25);
+}
+
+.establishment-icon,
+.service-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.establishment-icon i,
+.service-icon i {
+    font-size: 1.5rem;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.service-icon--featured {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+}
+
+.service-icon--featured i {
+    color: #fff;
+}
+
+.establishment-input:checked ~ .establishment-card-inner .establishment-icon,
+.service-input:checked ~ .service-card-inner .service-icon {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    transform: scale(1.05);
+}
+
+.establishment-input:checked ~ .establishment-card-inner .establishment-icon i,
+.service-input:checked ~ .service-card-inner .service-icon i {
+    color: #fff;
+}
+
+.service-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #fff;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.establishment-title,
+.service-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.establishment-address {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.service-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.service-price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #198754;
+}
+
+.service-duration {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.establishment-check,
+.service-check {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.establishment-check i,
+.service-check i {
+    font-size: 1.25rem;
+    color: #0d6efd;
+}
+
+.establishment-input:checked ~ .establishment-card-inner .establishment-check,
+.service-input:checked ~ .service-card-inner .service-check {
+    opacity: 1;
+}
+
+/* ========================================
+   Barber Selection
+   ======================================== */
+.barber-datetime-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.barber-selector {
+    flex-shrink: 0;
+}
+
+.barbers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.barber-card {
+    cursor: pointer;
+    position: relative;
+    display: block;
+}
+
+.barber-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.barber-card-inner {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.barber-card:hover .barber-card-inner {
+    border-color: #0d6efd;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+    transform: translateY(-2px);
+}
+
+.barber-input:checked ~ .barber-card-inner {
+    border-color: #0d6efd;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e7f1ff 100%);
+    box-shadow: 0 2px 12px rgba(13, 110, 253, 0.25);
+}
+
+.barber-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.barber-avatar i {
+    font-size: 2rem;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.barber-input:checked ~ .barber-card-inner .barber-avatar {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    transform: scale(1.05);
+}
+
+.barber-input:checked ~ .barber-card-inner .barber-avatar i {
+    color: #fff;
+}
+
+.barber-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 0.25rem 0;
+}
+
+.barber-rating {
+    font-size: 0.75rem;
+    color: #ffc107;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.barber-check {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.barber-check i {
+    font-size: 1.125rem;
+    color: #0d6efd;
+}
+
+.barber-input:checked ~ .barber-card-inner .barber-check {
+    opacity: 1;
+}
+
+/* ========================================
+   Date and Time Selection
+   ======================================== */
+.datetime-selection {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.date-selector,
+.time-selector {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-label i {
+    color: #0d6efd;
+}
+
+.form-control,
+.form-control-lg {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-control-lg:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.time-slot {
+    padding: 0.5rem;
+    background: #fff;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.time-slot:hover {
+    border-color: #0d6efd;
+    background: #f8f9ff;
+}
+
+.time-slot--selected {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    border-color: #0d6efd;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+}
+
+.time-slot--disabled {
+    background: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.time-slot--disabled:hover {
+    border-color: #dee2e6;
+    background: #e9ecef;
+}
+
+/* ========================================
+   Form Controls
+   ======================================== */
+.invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback,
+.form-select.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #198754;
+}
+
+/* ========================================
+   Appointment Summary
+   ======================================== */
+.appointment-summary {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.summary-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: #fff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.summary-header i {
+    font-size: 1.5rem;
+}
+
+.summary-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.summary-body {
+    padding: 1.25rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+.summary-label i {
+    color: #0d6efd;
+    font-size: 1rem;
+}
+
+.summary-value {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #212529;
+    text-align: right;
+}
+
+.summary-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #0d6efd 50%, transparent 100%);
+    margin: 0.75rem 0;
+}
+
+.summary-footer {
+    background: #fff;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-top: 2px solid #e9ecef;
+}
+
+.summary-footer i {
+    color: #0d6efd;
+    font-size: 1rem;
+    margin-top: 0.125rem;
+}
+
+.summary-footer p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.75rem;
+}
+
+/* ========================================
+   Navigation Buttons
+   ======================================== */
+.appointment-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-top: 2px solid #e9ecef;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.appointment-navigation .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.appointment-navigation .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#prevBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media (max-width: 768px) {
+    .appointment-wrapper {
+        height: calc(100vh - 120px);
+    }
+    
+    .appointment-stepper {
+        margin: 0.5rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .appointment-form-container {
+        margin: 0 0.5rem 0.5rem 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .step-title {
+        font-size: 1.125rem;
+    }
+    
+    .step-description {
+        font-size: 0.8rem;
+    }
+    
+    .establishments-grid,
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .barbers-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .appointment-navigation {
+        flex-direction: column;
+        padding: 0.75rem;
+    }
+    
+    .appointment-navigation .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #prevBtn {
+        order: 2;
+    }
+    
+    #nextBtn,
+    #submitBtn {
+        order: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .stepper-circle {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .stepper-circle i {
+        font-size: 0.875rem;
+    }
+    
+    .stepper-number {
+        width: 16px;
+        height: 16px;
+        font-size: 0.6rem;
+    }
+    
+    .stepper-title {
+        font-size: 0.75rem;
+    }
+    
+    .stepper-subtitle {
+        font-size: 0.65rem;
+    }
+    
+    .time-slots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+@media print {
+    .appointment-stepper,
+    .appointment-navigation {
+        display: none;
+    }
+    
+    .appointment-form-container {
+        box-shadow: none;
+    }
+}

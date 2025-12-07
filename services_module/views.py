@@ -28,7 +28,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
 
 class HomeServicesView(BreadcrumbMixins, TemplateView):
-    template_name = 'services_module/service_main.html'
+    template_name = 'services_module/base.html'
     login_url = '/login_module/login/'
 
     def get_breadcrumb(self):

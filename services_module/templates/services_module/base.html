@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Agendar Cita - Barbería{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'service_module/css/appointment.css' %}">
+
+<div class="appointment-wrapper">
+    <!-- Progress Stepper -->
+    <div class="appointment-stepper">
+        <div class="stepper-item stepper-item--active" data-step="1">
+            <div class="stepper-circle">
+                <i class="bi bi-building"></i>
+                <span class="stepper-number">1</span>
+            </div>
+            <div class="stepper-label">
+                <span class="stepper-title">Establecimiento</span>
+                <span class="stepper-subtitle">Selecciona la sede</span>
+            </div>
+        </div>
+        
+        <div class="stepper-line"></div>
+        
+        <div class="stepper-item" data-step="2">
+            <div class="stepper-circle">
+                <i class="bi bi-scissors"></i>
+                <span class="stepper-number">2</span>
+            </div>
+            <div class="stepper-label">
+                <span class="stepper-title">Servicio</span>
+                <span class="stepper-subtitle">Elige tu servicio</span>
+            </div>
+        </div>
+        
+        <div class="stepper-line"></div>
+        
+        <div class="stepper-item" data-step="3">
+            <div class="stepper-circle">
+                <i class="bi bi-person-fill"></i>
+                <span class="stepper-number">3</span>
+            </div>
+            <div class="stepper-label">
+                <span class="stepper-title">Barbero y Hora</span>
+                <span class="stepper-subtitle">Fecha y horario</span>
+            </div>
+        </div>
+        
+        <div class="stepper-line"></div>
+        
+        <div class="stepper-item" data-step="4">
+            <div class="stepper-circle">
+                <i class="bi bi-check-circle"></i>
+                <span class="stepper-number">4</span>
+            </div>
+            <div class="stepper-label">
+                <span class="stepper-title">Confirmación</span>
+                <span class="stepper-subtitle">Revisa tu cita</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="appointment-form-container">
+        <form id="appointmentForm" method="POST" action="/agendar" novalidate>
+            {% csrf_token %}
+            
+            <!-- Step 1: Establishment Selection -->
+            <div class="appointment-step appointment-step--active" data-step="1">
+                <div class="step-header">
+                    <h2 class="step-title">Selecciona el Establecimiento</h2>
+                    <p class="step-description">Elige la sede donde deseas tu cita</p>
+                </div>
+                
+                <div class="establishments-grid">
+                    <label class="establishment-card">
+                        <input type="radio" name="establishment" value="sede1" class="establishment-input" required>
+                        <div class="establishment-card-inner">
+                            <div class="establishment-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <h3 class="establishment-title">Barbería Centro</h3>
+                            <p class="establishment-address">
+                                <i class="bi bi-geo-alt"></i> Calle 10 #15-20
+                            </p>
+                            <div class="establishment-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="establishment-card">
+                        <input type="radio" name="establishment" value="sede2" class="establishment-input" required>
+                        <div class="establishment-card-inner">
+                            <div class="establishment-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <h3 class="establishment-title">Barbería Norte</h3>
+                            <p class="establishment-address">
+                                <i class="bi bi-geo-alt"></i> Carrera 50 #80-35
+                            </p>
+                            <div class="establishment-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="establishment-card">
+                        <input type="radio" name="establishment" value="sede3" class="establishment-input" required>
+                        <div class="establishment-card-inner">
+                            <div class="establishment-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <h3 class="establishment-title">Barbería Sur</h3>
+                            <p class="establishment-address">
+                                <i class="bi bi-geo-alt"></i> Avenida 30 #5-12
+                            </p>
+                            <div class="establishment-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 2: Service Selection -->
+            <div class="appointment-step" data-step="2">
+                <div class="step-header">
+                    <h2 class="step-title">Selecciona tu Servicio</h2>
+                    <p class="step-description">Elige el servicio que deseas reservar</p>
+                </div>
+                
+                <div class="services-grid">
+                    <label class="service-card">
+                        <input type="radio" name="service" value="corte" class="service-input" required>
+                        <div class="service-card-inner">
+                            <div class="service-icon">
+                                <i class="bi bi-scissors"></i>
+                            </div>
+                            <h3 class="service-title">Corte de Cabello</h3>
+                            <div class="service-details">
+                                <span class="service-price">$15.000</span>
+                                <span class="service-duration">
+                                    <i class="bi bi-clock"></i> 30 min
+                                </span>
+                            </div>
+                            <div class="service-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-card">
+                        <input type="radio" name="service" value="barba" class="service-input" required>
+                        <div class="service-card-inner">
+                            <div class="service-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <h3 class="service-title">Arreglo de Barba</h3>
+                            <div class="service-details">
+                                <span class="service-price">$10.000</span>
+                                <span class="service-duration">
+                                    <i class="bi bi-clock"></i> 20 min
+                                </span>
+                            </div>
+                            <div class="service-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-card">
+                        <input type="radio" name="service" value="combo" class="service-input" required>
+                        <div class="service-card-inner">
+                            <div class="service-icon service-icon--featured">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <div class="service-badge">Popular</div>
+                            <h3 class="service-title">Combo Completo</h3>
+                            <div class="service-details">
+                                <span class="service-price">$20.000</span>
+                                <span class="service-duration">
+                                    <i class="bi bi-clock"></i> 45 min
+                                </span>
+                            </div>
+                            <div class="service-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 3: Barber, Date and Time -->
+            <div class="appointment-step" data-step="3">
+                <div class="step-header">
+                    <h2 class="step-title">Barbero, Fecha y Hora</h2>
+                    <p class="step-description">Selecciona tu barbero preferido y horario</p>
+                </div>
+                
+                <div class="barber-datetime-selection">
+                    <!-- Barber Selection -->
+                    <div class="barber-selector">
+                        <label class="form-label">
+                            <i class="bi bi-person-badge"></i> Selecciona tu barbero
+                        </label>
+                        <div class="barbers-grid" id="barbersGrid">
+                            <label class="barber-card">
+                                <input type="radio" name="barber" value="barber1" class="barber-input" required>
+                                <div class="barber-card-inner">
+                                    <div class="barber-avatar">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <h4 class="barber-name">Carlos Martínez</h4>
+                                    <p class="barber-rating">
+                                        <i class="bi bi-star-fill"></i> 4.8
+                                    </p>
+                                    <div class="barber-check">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="barber-card">
+                                <input type="radio" name="barber" value="barber2" class="barber-input" required>
+                                <div class="barber-card-inner">
+                                    <div class="barber-avatar">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <h4 class="barber-name">Juan López</h4>
+                                    <p class="barber-rating">
+                                        <i class="bi bi-star-fill"></i> 4.9
+                                    </p>
+                                    <div class="barber-check">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="barber-card">
+                                <input type="radio" name="barber" value="barber3" class="barber-input" required>
+                                <div class="barber-card-inner">
+                                    <div class="barber-avatar">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <h4 class="barber-name">Pedro Sánchez</h4>
+                                    <p class="barber-rating">
+                                        <i class="bi bi-star-fill"></i> 4.7
+                                    </p>
+                                    <div class="barber-check">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Date and Time Selection -->
+                    <div class="datetime-selection">
+                        <div class="date-selector">
+                            <label for="appointmentDate" class="form-label">
+                                <i class="bi bi-calendar3"></i> Fecha de la cita
+                            </label>
+                            <input type="date" 
+                                   id="appointmentDate" 
+                                   name="date" 
+                                   class="form-control" 
+                                   required>
+                            <div class="invalid-feedback">Por favor selecciona una fecha</div>
+                        </div>
+                        
+                        <div class="time-selector">
+                            <label class="form-label">
+                                <i class="bi bi-clock"></i> Horarios disponibles
+                            </label>
+                            <div id="timeSlots" class="time-slots-grid">
+                                <!-- Dynamic time slots will be inserted here -->
+                            </div>
+                            <input type="hidden" name="time" id="selectedTime" required>
+                            <div class="invalid-feedback">Por favor selecciona una hora</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Confirmation -->
+            <div class="appointment-step" data-step="4">
+                <div class="step-header">
+                    <h2 class="step-title">Confirma tu Cita</h2>
+                    <p class="step-description">Revisa los detalles antes de confirmar</p>
+                </div>
+                
+                <div class="appointment-summary">
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <i class="bi bi-calendar-check-fill"></i>
+                            <h3>Resumen de tu Cita</h3>
+                        </div>
+                        
+                        <div class="summary-body">
+                            <div class="summary-row">
+                                <div class="summary-label">
+                                    <i class="bi bi-building"></i>
+                                    <span>Establecimiento</span>
+                                </div>
+                                <div class="summary-value" id="summaryEstablishment">-</div>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <div class="summary-label">
+                                    <i class="bi bi-scissors"></i>
+                                    <span>Servicio</span>
+                                </div>
+                                <div class="summary-value" id="summaryService">-</div>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <div class="summary-label">
+                                    <i class="bi bi-person-badge"></i>
+                                    <span>Barbero</span>
+                                </div>
+                                <div class="summary-value" id="summaryBarber">-</div>
+                            </div>
+                            
+                            <div class="summary-divider"></div>
+                            
+                            <div class="summary-row">
+                                <div class="summary-label">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span>Fecha</span>
+                                </div>
+                                <div class="summary-value" id="summaryDate">-</div>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <div class="summary-label">
+                                    <i class="bi bi-clock"></i>
+                                    <span>Hora</span>
+                                </div>
+                                <div class="summary-value" id="summaryTime">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-footer">
+                            <i class="bi bi-info-circle"></i>
+                            <p>Recibirás un mensaje de confirmación con los detalles de tu cita</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="appointment-navigation">
+                <button type="button" 
+                        class="btn btn-outline-secondary btn-lg" 
+                        id="prevBtn">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Anterior</span>
+                </button>
+                
+                <button type="button" 
+                        class="btn btn-primary btn-lg" 
+                        id="nextBtn">
+                    <span>Siguiente</span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+                
+                <button type="submit" 
+                        class="btn btn-success btn-lg" 
+                        id="submitBtn" 
+                        style="display: none;">
+                    <i class="bi bi-check-circle"></i>
+                    <span>Confirmar Cita</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'service_module/js/appointment.js' %}"></script>
+{% endblock %}
