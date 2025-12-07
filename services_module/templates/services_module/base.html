@@ -67,69 +67,130 @@
             
             <!-- Step 1: Establishment Selection -->
             <div class="appointment-step appointment-step--active" data-step="1">
-                <div class="step-header">
-                    <h2 class="step-title">Selecciona el Establecimiento</h2>
-                    <p class="step-description">Elige la sede donde deseas tu cita</p>
-                </div>
-                
-                <div class="establishments-grid">
-                    <label class="establishment-card">
-                        <input type="radio" name="establishment" value="sede1" class="establishment-input" required>
-                        <div class="establishment-card-inner">
-                            <div class="establishment-icon">
-                                <i class="bi bi-building"></i>
-                            </div>
-                            <h3 class="establishment-title">Barbería Centro</h3>
-                            <p class="establishment-address">
-                                <i class="bi bi-geo-alt"></i> Calle 10 #15-20
-                            </p>
-                            <div class="establishment-check">
-                                <i class="bi bi-check-circle-fill"></i>
+                <div class="establishment-selection-container">
+                    <!-- Map Section (60%) -->
+                    <div class="establishment-map-section">
+                        <div class="map-container">
+                            <div id="establishmentMap" class="map-placeholder">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <p>Mapa de establecimientos</p>
+                                <small>Aquí se cargará el mapa interactivo</small>
                             </div>
                         </div>
-                    </label>
+                    </div>
                     
-                    <label class="establishment-card">
-                        <input type="radio" name="establishment" value="sede2" class="establishment-input" required>
-                        <div class="establishment-card-inner">
-                            <div class="establishment-icon">
-                                <i class="bi bi-building"></i>
-                            </div>
-                            <h3 class="establishment-title">Barbería Norte</h3>
-                            <p class="establishment-address">
-                                <i class="bi bi-geo-alt"></i> Carrera 50 #80-35
-                            </p>
-                            <div class="establishment-check">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
+                    <!-- Establishments List (40%) -->
+                    <div class="establishments-list-section">
+                        
+                        <div class="establishments-list">
+                            <label class="establishment-card-list">
+                                <input type="radio" name="establishment" value="sede1" class="establishment-input" required>
+                                <div class="establishment-card-content">
+                                    <div class="establishment-card-header">
+                                        <div class="establishment-icon-small">
+                                            <i class="bi bi-building-fill"></i>
+                                        </div>
+                                        <div class="establishment-info">
+                                            <h4 class="establishment-name">Barbería Centro</h4>
+                                            <p class="establishment-address-small">
+                                                <i class="bi bi-geo-alt"></i> Calle 10 #15-20
+                                            </p>
+                                        </div>
+                                        <div class="establishment-check-small">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="establishment-card-details">
+                                        <div class="detail-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>Lun - Sáb: 9:00 AM - 7:00 PM</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-telephone"></i>
+                                            <span>(601) 234-5678</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.8 (230 reseñas)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="establishment-card-list">
+                                <input type="radio" name="establishment" value="sede2" class="establishment-input" required>
+                                <div class="establishment-card-content">
+                                    <div class="establishment-card-header">
+                                        <div class="establishment-icon-small">
+                                            <i class="bi bi-building-fill"></i>
+                                        </div>
+                                        <div class="establishment-info">
+                                            <h4 class="establishment-name">Barbería Norte</h4>
+                                            <p class="establishment-address-small">
+                                                <i class="bi bi-geo-alt"></i> Carrera 50 #80-35
+                                            </p>
+                                        </div>
+                                        <div class="establishment-check-small">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="establishment-card-details">
+                                        <div class="detail-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>Lun - Sáb: 10:00 AM - 8:00 PM</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-telephone"></i>
+                                            <span>(601) 345-6789</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.9 (345 reseñas)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="establishment-card-list">
+                                <input type="radio" name="establishment" value="sede3" class="establishment-input" required>
+                                <div class="establishment-card-content">
+                                    <div class="establishment-card-header">
+                                        <div class="establishment-icon-small">
+                                            <i class="bi bi-building-fill"></i>
+                                        </div>
+                                        <div class="establishment-info">
+                                            <h4 class="establishment-name">Barbería Sur</h4>
+                                            <p class="establishment-address-small">
+                                                <i class="bi bi-geo-alt"></i> Avenida 30 #5-12
+                                            </p>
+                                        </div>
+                                        <div class="establishment-check-small">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="establishment-card-details">
+                                        <div class="detail-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>Lun - Dom: 9:00 AM - 9:00 PM</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-telephone"></i>
+                                            <span>(601) 456-7890</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.7 (198 reseñas)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
                         </div>
-                    </label>
-                    
-                    <label class="establishment-card">
-                        <input type="radio" name="establishment" value="sede3" class="establishment-input" required>
-                        <div class="establishment-card-inner">
-                            <div class="establishment-icon">
-                                <i class="bi bi-building"></i>
-                            </div>
-                            <h3 class="establishment-title">Barbería Sur</h3>
-                            <p class="establishment-address">
-                                <i class="bi bi-geo-alt"></i> Avenida 30 #5-12
-                            </p>
-                            <div class="establishment-check">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                        </div>
-                    </label>
+                    </div>
                 </div>
             </div>
 
             <!-- Step 2: Service Selection -->
             <div class="appointment-step" data-step="2">
-                <div class="step-header">
-                    <h2 class="step-title">Selecciona tu Servicio</h2>
-                    <p class="step-description">Elige el servicio que deseas reservar</p>
-                </div>
-                
                 <div class="services-grid">
                     <label class="service-card">
                         <input type="radio" name="service" value="corte" class="service-input" required>
@@ -193,11 +254,6 @@
 
             <!-- Step 3: Barber, Date and Time -->
             <div class="appointment-step" data-step="3">
-                <div class="step-header">
-                    <h2 class="step-title">Barbero, Fecha y Hora</h2>
-                    <p class="step-description">Selecciona tu barbero preferido y horario</p>
-                </div>
-                
                 <div class="barber-datetime-selection">
                     <!-- Barber Selection -->
                     <div class="barber-selector">
@@ -285,11 +341,6 @@
 
             <!-- Step 4: Confirmation -->
             <div class="appointment-step" data-step="4">
-                <div class="step-header">
-                    <h2 class="step-title">Confirma tu Cita</h2>
-                    <p class="step-description">Revisa los detalles antes de confirmar</p>
-                </div>
-                
                 <div class="appointment-summary">
                     <div class="summary-card">
                         <div class="summary-header">
@@ -357,6 +408,12 @@
                     <i class="bi bi-arrow-left"></i>
                     <span>Anterior</span>
                 </button>
+                
+                <!-- Step Info -->
+                <div class="step-header">
+                    <h2 class="step-title" id="stepTitle">Busca y compará</h2>
+                    <p class="step-description" id="stepDescription">Elige donde deseas tu cita</p>
+                </div>
                 
                 <button type="button" 
                         class="btn btn-primary btn-lg" 

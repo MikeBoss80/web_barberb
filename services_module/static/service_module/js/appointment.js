@@ -271,8 +271,43 @@
             }
         });
 
+        // Update step header text
+        updateStepHeaderText();
+
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * Update step header text in navigation
+     */
+    function updateStepHeaderText() {
+        const stepTitle = document.getElementById('stepTitle');
+        const stepDescription = document.getElementById('stepDescription');
+        
+        const stepTexts = {
+            1: {
+                title: 'Busca y compará',
+                description: 'Elige donde deseas tu cita'
+            },
+            2: {
+                title: 'Selecciona tu Servicio',
+                description: 'Elige el servicio que deseas reservar'
+            },
+            3: {
+                title: 'Barbero, Fecha y Hora',
+                description: 'Selecciona tu barbero preferido y horario'
+            },
+            4: {
+                title: 'Confirma tu Cita',
+                description: 'Revisa los detalles antes de confirmar'
+            }
+        };
+
+        if (stepTitle && stepDescription && stepTexts[currentStep]) {
+            stepTitle.textContent = stepTexts[currentStep].title;
+            stepDescription.textContent = stepTexts[currentStep].description;
+        }
     }
 
     /**

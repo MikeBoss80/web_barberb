@@ -198,7 +198,7 @@
     border-radius: 8px;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
     margin: 0 0.75rem 0.75rem 0.75rem;
-    padding: 1rem;
+    padding: 0.5rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -212,24 +212,30 @@
     overflow: hidden;
 }
 
-/* Step Header */
+/* Step Header - Ahora en la navegación */
 .step-header {
     text-align: center;
-    margin-bottom: 1rem;
-    flex-shrink: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .step-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #212529;
-    margin-bottom: 0.25rem;
+    margin: 0;
+    line-height: 1.2;
 }
 
 .step-description {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #6c757d;
     margin: 0;
+    line-height: 1.2;
 }
 
 /* Step Visibility */
@@ -258,9 +264,237 @@
 }
 
 /* ========================================
-   Establishment & Service Cards
+   Establishment Selection with Map
    ======================================== */
-.establishments-grid,
+.establishment-selection-container {
+    display: flex;
+    gap: 1rem;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Map Section (60%) */
+.establishment-map-section {
+    flex: 0 0 60%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.map-container {
+    flex: 1;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e9ecef;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.map-placeholder i {
+    font-size: 4rem;
+    color: #0d6efd;
+    margin-bottom: 1rem;
+}
+
+.map-placeholder p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.map-placeholder small {
+    font-size: 0.875rem;
+    color: #adb5bd;
+}
+
+/* Establishments List Section (40%) */
+.establishments-list-section {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.establishments-list-header {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+    flex-shrink: 0;
+}
+
+.establishments-list-header h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0 0 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.establishments-list-header h3 i {
+    color: #0d6efd;
+}
+
+.establishments-list-header .text-muted {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+.establishments-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Establishment List Cards */
+.establishment-card-list {
+    display: block;
+    cursor: pointer;
+    position: relative;
+}
+
+.establishment-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.establishment-card-content {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.establishment-card-list:hover .establishment-card-content {
+    border-color: #0d6efd;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+    transform: translateX(4px);
+}
+
+.establishment-input:checked ~ .establishment-card-content {
+    border-color: #0d6efd;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e7f1ff 100%);
+    box-shadow: 0 2px 12px rgba(13, 110, 253, 0.25);
+}
+
+.establishment-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.establishment-icon-small {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.establishment-icon-small i {
+    font-size: 1.25rem;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.establishment-input:checked ~ .establishment-card-content .establishment-icon-small {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+}
+
+.establishment-input:checked ~ .establishment-card-content .establishment-icon-small i {
+    color: #fff;
+}
+
+.establishment-info {
+    flex: 1;
+}
+
+.establishment-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+.establishment-address-small {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    line-height: 1.2;
+}
+
+.establishment-address-small i {
+    font-size: 0.875rem;
+}
+
+.establishment-check-small {
+    flex-shrink: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.establishment-check-small i {
+    font-size: 1.5rem;
+    color: #0d6efd;
+}
+
+.establishment-input:checked ~ .establishment-card-content .establishment-check-small {
+    opacity: 1;
+}
+
+.establishment-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #495057;
+}
+
+.detail-item i {
+    font-size: 0.875rem;
+    color: #6c757d;
+    flex-shrink: 0;
+}
+
+.detail-item i.bi-star-fill {
+    color: #ffc107;
+}
+
+/* ========================================
+   Service Cards
+   ======================================== */
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -270,21 +504,18 @@
     padding: 0.5rem;
 }
 
-.establishment-card,
 .service-card {
     cursor: pointer;
     position: relative;
     display: block;
 }
 
-.establishment-input,
 .service-input {
     position: absolute;
     opacity: 0;
     pointer-events: none;
 }
 
-.establishment-card-inner,
 .service-card-inner {
     background: #fff;
     border: 2px solid #e9ecef;
@@ -299,21 +530,18 @@
     align-items: center;
 }
 
-.establishment-card:hover .establishment-card-inner,
 .service-card:hover .service-card-inner {
     border-color: #0d6efd;
     box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
     transform: translateY(-2px);
 }
 
-.establishment-input:checked ~ .establishment-card-inner,
 .service-input:checked ~ .service-card-inner {
     border-color: #0d6efd;
     background: linear-gradient(135deg, #f8f9ff 0%, #e7f1ff 100%);
     box-shadow: 0 2px 12px rgba(13, 110, 253, 0.25);
 }
 
-.establishment-icon,
 .service-icon {
     width: 50px;
     height: 50px;
@@ -326,7 +554,6 @@
     transition: all 0.3s ease;
 }
 
-.establishment-icon i,
 .service-icon i {
     font-size: 1.5rem;
     color: #495057;
@@ -341,13 +568,11 @@
     color: #fff;
 }
 
-.establishment-input:checked ~ .establishment-card-inner .establishment-icon,
 .service-input:checked ~ .service-card-inner .service-icon {
     background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
     transform: scale(1.05);
 }
 
-.establishment-input:checked ~ .establishment-card-inner .establishment-icon i,
 .service-input:checked ~ .service-card-inner .service-icon i {
     color: #fff;
 }
@@ -365,22 +590,11 @@
     text-transform: uppercase;
 }
 
-.establishment-title,
 .service-title {
     font-size: 1rem;
     font-weight: 600;
     color: #212529;
     margin-bottom: 0.5rem;
-}
-
-.establishment-address {
-    font-size: 0.75rem;
-    color: #6c757d;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
 }
 
 .service-details {
@@ -405,7 +619,6 @@
     color: #6c757d;
 }
 
-.establishment-check,
 .service-check {
     position: absolute;
     top: 0.5rem;
@@ -414,13 +627,11 @@
     transition: all 0.3s ease;
 }
 
-.establishment-check i,
 .service-check i {
     font-size: 1.25rem;
     color: #0d6efd;
 }
 
-.establishment-input:checked ~ .establishment-card-inner .establishment-check,
 .service-input:checked ~ .service-card-inner .service-check {
     opacity: 1;
 }
@@ -767,8 +978,9 @@
    ======================================== */
 .appointment-navigation {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 1rem;
     padding: 1rem;
     border-top: 2px solid #e9ecef;
     background: #fff;
@@ -784,6 +996,7 @@
     font-size: 0.875rem;
     border-radius: 6px;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .appointment-navigation .btn:hover:not(:disabled) {
@@ -816,14 +1029,17 @@
     }
     
     .step-title {
-        font-size: 1.125rem;
+        font-size: 0.875rem;
     }
     
     .step-description {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
     
-    .establishments-grid,
+    .appointment-navigation {
+        padding: 0.75rem;
+    }
+    
     .services-grid {
         grid-template-columns: 1fr;
     }
@@ -832,14 +1048,35 @@
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
     
-    .appointment-navigation {
+    /* Establishment selection responsive */
+    .establishment-selection-container {
         flex-direction: column;
+    }
+    
+    .establishment-map-section {
+        flex: 0 0 40%;
+        min-height: 250px;
+    }
+    
+    .establishments-list-section {
+        flex: 0 0 60%;
+    }
+    
+    .appointment-navigation {
+        flex-wrap: wrap;
         padding: 0.75rem;
     }
     
-    .appointment-navigation .btn {
+    .step-header {
+        order: 1;
         width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .appointment-navigation .btn {
+        flex: 1;
         justify-content: center;
+        min-width: 120px;
     }
     
     #prevBtn {
@@ -848,7 +1085,7 @@
     
     #nextBtn,
     #submitBtn {
-        order: 1;
+        order: 3;
     }
 }
 
@@ -878,6 +1115,44 @@
     
     .time-slots-grid {
         grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+    
+    /* Establishment mobile adjustments */
+    .establishment-map-section {
+        min-height: 200px;
+    }
+    
+    .map-placeholder i {
+        font-size: 3rem;
+    }
+    
+    .map-placeholder p {
+        font-size: 1rem;
+    }
+    
+    .establishments-list-header h3 {
+        font-size: 1rem;
+    }
+    
+    .establishment-card-content {
+        padding: 0.5rem;
+    }
+    
+    .establishment-icon-small {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .establishment-icon-small i {
+        font-size: 1rem;
+    }
+    
+    .establishment-name {
+        font-size: 0.875rem;
+    }
+    
+    .detail-item {
+        font-size: 0.7rem;
     }
 }
 
