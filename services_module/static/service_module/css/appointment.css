@@ -317,6 +317,68 @@
     color: #adb5bd;
 }
 
+/* Map error state */
+.map-error {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #dc3545;
+    background: #fff;
+}
+
+.map-error i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.map-error p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Google Maps InfoWindow custom styles */
+.establishment-info-window {
+    padding: 0.5rem;
+    max-width: 250px;
+}
+
+.establishment-info-window h5 {
+    color: #212529;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.establishment-info-window p {
+    margin-bottom: 0.25rem;
+}
+
+.establishment-info-window i {
+    margin-right: 0.25rem;
+}
+
+/* Custom marker animation */
+.custom-marker {
+    animation: markerBounce 0.5s ease-out;
+}
+
+@keyframes markerBounce {
+    0% {
+        transform: translateY(-20px) rotate(-45deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(5px) rotate(-45deg);
+    }
+    100% {
+        transform: translateY(0) rotate(-45deg);
+        opacity: 1;
+    }
+}
+
 /* Establishments List Section (40%) */
 .establishments-list-section {
     flex: 0 0 40%;
