@@ -38,6 +38,28 @@ class ProductCategoryForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     """Formulario para crear/editar productos"""
     
+    # Campos adicionales para el establecimiento y stock inicial
+    establishment = forms.ModelChoiceField(
+        queryset=None,
+        required=True,
+        label='Establecimiento',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    initial_stock = forms.DecimalField(
+        required=False,
+        initial=0,
+        min_value=0,
+        decimal_places=3,
+        label='Stock Inicial',
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'step': '0.001',
+            'min': '0',
+            'placeholder': '0.000'
+        }),
+        help_text='Cantidad inicial del producto en este establecimiento'
+    )
+    
     class Meta:
         model = Product
         fields = [
@@ -122,9 +144,35 @@ class ProductForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        # Extraer el establecimiento del usuario si se pasa en kwargs
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        
+        # Importar aquí para evitar importaciones circulares
+        from establishment.models import Establishment
+        
         # Filtrar categorías activas
         self.fields['category'].queryset = ProductCategory.objects.filter(is_active=True)
+        
+        # Configurar el queryset de establecimientos
+        self.fields['establishment'].queryset = Establishment.objects.filter(active=True)
+        
+        # Si hay un usuario, preseleccionar su establecimiento
+        if user and hasattr(user, 'profile') and user.profile.establishment:
+            self.fields['establishment'].initial = user.profile.establishment
+        
+        # Si estamos editando, cargar el stock del establecimiento seleccionado
+        if self.instance.pk and self.data.get('establishment'):
+            from .models import ProductEstablishment
+            try:
+                establishment_id = self.data.get('establishment')
+                prod_est = ProductEstablishment.objects.get(
+                    product=self.instance,
+                    establishment_id=establishment_id
+                )
+                self.fields['initial_stock'].initial = prod_est.current_stock
+            except ProductEstablishment.DoesNotExist:
+                pass
         
         # Configurar valores por defecto
         if not self.instance.pk:  # Solo para nuevos productos

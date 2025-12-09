@@ -129,9 +129,45 @@ class ProductCreateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin
             {'label': 'Crear Producto', 'url': '', 'icon': 'plus-circle'}
         ]
     
+    def get_form_kwargs(self):
+        """Pasar el usuario al formulario"""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
     def form_valid(self, form):
+        from django.db import transaction
+        
         form.instance.created_by = self.request.user
-        response = super().form_valid(form)
+        
+        # Obtener datos antes de guardar
+        establishment = form.cleaned_data.get('establishment')
+        initial_stock = form.cleaned_data.get('initial_stock', 0)
+        
+        # Usar transacción para asegurar integridad
+        with transaction.atomic():
+            response = super().form_valid(form)
+            
+            # Crear registro en ProductEstablishment
+            if establishment:
+                product_establishment, created = ProductEstablishment.objects.get_or_create(
+                    product=self.object,
+                    establishment=establishment,
+                    defaults={'current_stock': initial_stock}
+                )
+                
+                # Si el producto controla inventario y hay stock inicial, crear movimiento
+                if self.object.track_inventory and initial_stock > 0:
+                    StockMovement.objects.create(
+                        product=self.object,
+                        establishment=establishment,
+                        movement_type='in',
+                        reason='initial_stock',
+                        quantity=initial_stock,
+                        unit_cost=self.object.cost_price,
+                        notes='Stock inicial del producto',
+                        created_by=self.request.user
+                    )
         
         # Si es petición AJAX, retornar JSON
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -181,9 +217,56 @@ class ProductUpdateView(LoginRequiredMixin, BreadcrumbMixin, SuccessMessageMixin
             {'label': f'Editar: {product.name}', 'url': '', 'icon': 'pencil-square'}
         ]
     
+    def get_form_kwargs(self):
+        """Pasar el usuario al formulario"""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
     def form_valid(self, form):
+        from django.db import transaction
+        from decimal import Decimal
+        
         form.instance.updated_by = self.request.user
-        response = super().form_valid(form)
+        
+        # Obtener datos antes de guardar
+        establishment = form.cleaned_data.get('establishment')
+        new_stock = form.cleaned_data.get('initial_stock', 0)
+        
+        # Usar transacción para asegurar integridad
+        with transaction.atomic():
+            response = super().form_valid(form)
+            
+            # Actualizar o crear registro en ProductEstablishment
+            if establishment:
+                product_establishment, created = ProductEstablishment.objects.get_or_create(
+                    product=self.object,
+                    establishment=establishment,
+                    defaults={'current_stock': new_stock}
+                )
+                
+                # Si ya existía, actualizar el stock y crear movimiento de ajuste
+                if not created and self.object.track_inventory:
+                    old_stock = product_establishment.current_stock
+                    difference = Decimal(str(new_stock)) - old_stock
+                    
+                    if difference != 0:
+                        # Actualizar el stock
+                        product_establishment.current_stock = new_stock
+                        product_establishment.save()
+                        
+                        # Crear movimiento de ajuste
+                        movement_type = 'adjustment_in' if difference > 0 else 'adjustment_out'
+                        StockMovement.objects.create(
+                            product=self.object,
+                            establishment=establishment,
+                            movement_type=movement_type,
+                            reason='inventory_adjustment',
+                            quantity=abs(difference),
+                            unit_cost=self.object.cost_price,
+                            notes=f'Ajuste de inventario: de {old_stock} a {new_stock}',
+                            created_by=self.request.user
+                        )
         
         # Si es petición AJAX, retornar JSON
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':

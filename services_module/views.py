@@ -260,12 +260,12 @@ def get_active_establishments_data():
             queryset=BarberAvailability.objects.select_related('barber', 'barber__profile').filter(is_available=True),
             to_attr='est_barber_availabilities'
         ),
-        # Servicios del establecimiento
+        # Servicios y productos del establecimiento
         Prefetch(
             'products_stock',
             queryset=ProductEstablishment.objects.select_related('product', 'product__category').filter(
-                product__is_active=True,
-                current_stock__gt=0  # Solo productos con stock
+                product__is_active=True
+                # No filtrar por stock aquí porque los servicios tienen stock=0
             ),
             to_attr='est_products'
         )
@@ -307,6 +307,8 @@ def get_active_establishments_data():
         products_data = []
         
         for product_est in est.est_products:
+            category_type = product_est.product.category.category_type if product_est.product.category else 'storable'
+            
             product_data = {
                 'product_id': product_est.product.id,
                 'name': product_est.product.name,
@@ -314,7 +316,7 @@ def get_active_establishments_data():
                 'barcode': product_est.product.barcode,
                 'description': product_est.product.description,
                 'category': product_est.product.category.name if product_est.product.category else 'Sin categoría',
-                'category_type': product_est.product.category.category_type if product_est.product.category else 'storable',
+                'category_type': category_type,
                 'cost_price': float(product_est.product.cost_price),
                 'sale_price': float(product_est.product.sale_price),
                 'current_stock': float(product_est.current_stock),
@@ -323,11 +325,13 @@ def get_active_establishments_data():
             }
             
             # Si es un servicio (category_type='service'), agregarlo a servicios
-            if product_est.product.category and product_est.product.category.category_type == 'service':
+            if category_type == 'service':
                 services_data.append(product_data)
             else:
-                # Es un producto físico
-                products_data.append(product_data)
+                # Es un producto físico (storable o consumable)
+                # Solo incluir si tiene stock disponible
+                if product_est.available_stock > 0:
+                    products_data.append(product_data)
         
         # ========================================
         # 3. HORARIOS DEL ESTABLECIMIENTO
