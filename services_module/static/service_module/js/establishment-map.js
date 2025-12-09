@@ -1,65 +1,65 @@
 /**
  * Establishment Map Handler
+ * ===========================
  * Maneja el mapa de Google Maps para la selección de establecimientos
+ * Integrado con EstablishmentSelector para sincronización bidireccional
+ * 
+ * @version 2.0
+ * @author BarberB Team
  */
 
-(function() {
+const EstablishmentMap = (function() {
     'use strict';
 
-    let map;
+    // ============================================================================
+    // VARIABLES PRIVADAS
+    // ============================================================================
+    let map = null;
     let markers = [];
-    let infoWindow;
-    
-    // Datos de los establecimientos (esto debería venir del backend)
-    const establishments = [
-        {
-            id: 'sede1',
-            name: 'Barbería Centro',
-            address: 'Calle 10 #15-20',
-            phone: '(601) 234-5678',
-            hours: 'Lun - Sáb: 9:00 AM - 7:00 PM',
-            rating: 4.8,
-            reviews: 230,
-            lat: 4.679531063698843,
-            lng: -74.04015630448359
-        },
-        {
-            id: 'sede2',
-            name: 'Barbería Norte',
-            address: 'Carrera 50 #80-35',
-            phone: '(601) 345-6789',
-            hours: 'Lun - Sáb: 10:00 AM - 8:00 PM',
-            rating: 4.9,
-            reviews: 345,
-            lat: 4.710988643120845,
-            lng: -74.04238891601562
-        },
-        {
-            id: 'sede3',
-            name: 'Barbería Sur',
-            address: 'Avenida 30 #5-12',
-            phone: '(601) 456-7890',
-            hours: 'Lun - Dom: 9:00 AM - 9:00 PM',
-            rating: 4.7,
-            reviews: 198,
-            lat: 4.595653,
-            lng: -74.076363
-        }
-    ];
+    let infoWindow = null;
+    let establishments = [];
+    let isInitialized = false;
+    let googleMapsLoaded = false;
 
-    // Inicializar cuando el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
-        // Solo inicializar si estamos en la página correcta
+    // ============================================================================
+    // INICIALIZACIÓN
+    // ============================================================================
+
+    /**
+     * Inicializa el mapa con datos de establecimientos
+     * @param {Array} data - Array de establecimientos desde la BD
+     */
+    function init(data) {
+        console.log('Inicializando Establishment Map...');
+        
+        establishments = data || [];
+        
         const mapContainer = document.getElementById('establishmentMap');
-        if (mapContainer) {
-            loadGoogleMapsAPI();
+        if (!mapContainer) {
+            console.warn('Contenedor del mapa no encontrado');
+            return;
         }
-    });
+
+        if (establishments.length === 0) {
+            console.warn(' hay establecimientos para mostrar en el mapa');
+            showMapPlaceholder();
+            return;
+        }
+
+        // Cargar Google Maps API
+        loadGoogleMapsAPI();
+    }
 
     /**
      * Cargar la API de Google Maps
      */
     function loadGoogleMapsAPI() {
+        // Verificar si ya está cargado
+        if (googleMapsLoaded && window.google && window.google.maps) {
+            initMap();
+            return;
+        }
+
         fetch('/services_module/getmap/')
             .then(response => response.json())
             .then(data => {
@@ -76,11 +76,17 @@
      * Cargar el script de Google Maps
      */
     function loadMapScript(apiKey) {
+        if (googleMapsLoaded) {
+            initMap();
+            return;
+        }
+
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
             key: apiKey,
             v: "weekly",
         });
         
+        googleMapsLoaded = true;
         initMap();
     }
 
@@ -88,18 +94,26 @@
      * Inicializar el mapa
      */
     async function initMap() {
+        if (isInitialized) {
+            console.log('ℹMapa ya inicializado');
+            return;
+        }
+
         try {
             const { Map } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
             
-            // Centro del mapa (Bogotá)
-            const center = { lat: 4.679531063698843, lng: -74.04015630448359 };
+            // Calcular centro del mapa basado en establecimientos
+            const center = calculateCenter();
             
             // Crear el mapa
             map = new Map(document.getElementById("establishmentMap"), {
                 center: center,
                 zoom: 12,
-                mapId: 'DEMO_MAP_ID', // Requerido para AdvancedMarkerElement
+                mapId: 'BARBER_ESTABLISHMENT_MAP',
+                zoomControl: true,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true,
             });
 
             // Crear InfoWindow
@@ -107,59 +121,55 @@
 
             // Agregar marcadores para cada establecimiento
             establishments.forEach(establishment => {
-                createMarker(establishment);
+                if (establishment.lat && establishment.lng) {
+                    createMarker(establishment);
+                }
             });
 
             // Ajustar el mapa para mostrar todos los marcadores
             fitMapToMarkers();
 
-            // Agregar listeners a las tarjetas de establecimientos
-            setupEstablishmentCardListeners();
+            isInitialized = true;
+            console.log(` Mapa inicializado con ${markers.length} marcadores`);
 
         } catch (error) {
-            console.error('Error initializing map:', error);
+            console.error(' Error initializing map:', error);
             showMapError('Error al inicializar el mapa');
         }
     }
+
+    // ============================================================================
+    // MARCADORES
+    // ============================================================================
 
     /**
      * Crear marcador en el mapa
      */
     function createMarker(establishment) {
-        const position = { lat: establishment.lat, lng: establishment.lng };
+        const position = { 
+            lat: parseFloat(establishment.lat), 
+            lng: parseFloat(establishment.lng) 
+        };
         
-        // Crear elemento del marcador
-        const markerContent = document.createElement('div');
-        markerContent.className = 'custom-marker';
-        markerContent.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
-        markerContent.style.cssText = `
-            background: #0d6efd;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-        `;
-        
-        const icon = markerContent.querySelector('i');
-        icon.style.transform = 'rotate(45deg)';
-        icon.style.fontSize = '20px';
-
         // Crear marcador con API v3
         const marker = new google.maps.Marker({
             position: position,
             map: map,
             title: establishment.name,
+            animation: google.maps.Animation.DROP,
             icon: {
                 url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
                     <svg width="40" height="50" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20,2 C11.2,2 4,9.2 4,18 C4,28 20,48 20,48 S36,28 36,18 C36,9.2 28.8,2 20,2 Z" fill="#0d6efd" stroke="white" stroke-width="2"/>
+                        <defs>
+                            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+                            </filter>
+                        </defs>
+                        <path d="M20,2 C11.2,2 4,9.2 4,18 C4,28 20,48 20,48 S36,28 36,18 C36,9.2 28.8,2 20,2 Z" 
+                              fill="#0d6efd" stroke="white" stroke-width="2" filter="url(#shadow)"/>
                         <circle cx="20" cy="18" r="8" fill="white"/>
+                        <text x="20" y="23" font-family="Arial" font-size="12" font-weight="bold" 
+                              fill="#0d6efd" text-anchor="middle">B</text>
                     </svg>
                 `),
                 scaledSize: new google.maps.Size(40, 50),
@@ -171,37 +181,141 @@
         marker.addListener('click', () => {
             showEstablishmentInfo(establishment, marker);
             
-            // Seleccionar el establecimiento
-            selectEstablishment(establishment.id);
+            // Notificar al selector de establecimientos
+            if (window.EstablishmentSelector) {
+                window.EstablishmentSelector.selectEstablishment(establishment.id);
+            }
         });
 
-        markers.push({ id: establishment.id, marker: marker });
+        markers.push({ 
+            id: establishment.id, 
+            marker: marker,
+            data: establishment 
+        });
+
+        return marker;
     }
 
     /**
      * Mostrar información del establecimiento
      */
     function showEstablishmentInfo(establishment, marker) {
+        // Obtener texto de horarios
+        const scheduleText = establishment.schedules && establishment.schedules.length > 0
+            ? getScheduleText(establishment.schedules)
+            : 'Horario no disponible';
+
         const content = `
-            <div class="establishment-info-window">
-                <h5 class="mb-2">${establishment.name}</h5>
-                <p class="mb-1 text-muted small">
-                    <i class="bi bi-geo-alt"></i> ${establishment.address}
-                </p>
-                <p class="mb-1 text-muted small">
-                    <i class="bi bi-clock"></i> ${establishment.hours}
-                </p>
-                <p class="mb-1 text-muted small">
-                    <i class="bi bi-telephone"></i> ${establishment.phone}
-                </p>
-                <p class="mb-0 small">
-                    <i class="bi bi-star-fill text-warning"></i> ${establishment.rating} (${establishment.reviews} reseñas)
-                </p>
+            <div class="establishment-info-window" style="max-width: 280px;">
+                <div style="margin-bottom: 12px;">
+                    <h5 style="margin: 0 0 8px 0; color: #212529; font-size: 1.1rem;">
+                        ${establishment.name}
+                    </h5>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                        <i class="bi bi-star-fill" style="color: #ffc107; font-size: 0.9rem;"></i>
+                        <span style="font-weight: 600; color: #212529;">${establishment.qa_average.toFixed(1)}</span>
+                        <span style="color: #6c757d; font-size: 0.85rem;">estrellas</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem;">
+                    <div style="display: flex; align-items: start; gap: 8px; color: #495057;">
+                        <i class="bi bi-geo-alt-fill" style="color: #0d6efd; flex-shrink: 0;"></i>
+                        <span>${establishment.address}, ${establishment.city}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; color: #495057;">
+                        <i class="bi bi-clock-fill" style="color: #0d6efd;"></i>
+                        <span>${scheduleText}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; color: #495057;">
+                        <i class="bi bi-telephone-fill" style="color: #0d6efd;"></i>
+                        <span>${establishment.phone}</span>
+                    </div>
+                    
+                    ${establishment.services && establishment.services.length > 0 ? `
+                    <div style="display: flex; align-items: center; gap: 8px; color: #495057;">
+                        <i class="bi bi-scissors" style="color: #0d6efd;"></i>
+                        <span>${establishment.services.length} servicios disponibles</span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e9ecef;">
+                    <button 
+                        onclick="window.EstablishmentSelector?.selectEstablishment(${establishment.id})" 
+                        style="width: 100%; padding: 8px 16px; background: #0d6efd; color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; font-size: 0.9rem;"
+                        onmouseover="this.style.background='#0b5ed7'" 
+                        onmouseout="this.style.background='#0d6efd'">
+                        <i class="bi bi-check-circle"></i> Seleccionar este local
+                    </button>
+                </div>
             </div>
         `;
 
         infoWindow.setContent(content);
         infoWindow.open(map, marker);
+        
+        // Centrar ligeramente el mapa en el marcador
+        map.panTo(marker.getPosition());
+    }
+
+    /**
+     * Genera texto legible del horario
+     */
+    function getScheduleText(schedules) {
+        const openDay = schedules.find(s => s.is_open);
+        
+        if (!openDay) return 'Cerrado';
+
+        const commonSchedule = schedules.filter(s => 
+            s.is_open && 
+            s.opening_time === openDay.opening_time && 
+            s.closing_time === openDay.closing_time
+        );
+
+        if (commonSchedule.length >= 5) {
+            return `Lun - Sáb: ${openDay.opening_time} - ${openDay.closing_time}`;
+        }
+
+        return `${openDay.day_name}: ${openDay.opening_time} - ${openDay.closing_time}`;
+    }
+
+    // ============================================================================
+    // UTILIDADES DE MAPA
+    // ============================================================================
+
+    /**
+     * Calcular centro del mapa basado en establecimientos
+     */
+    function calculateCenter() {
+        if (establishments.length === 0) {
+            // Centro por defecto (Bogotá)
+            return { lat: 4.679531063698843, lng: -74.04015630448359 };
+        }
+
+        if (establishments.length === 1) {
+            return { 
+                lat: parseFloat(establishments[0].lat), 
+                lng: parseFloat(establishments[0].lng) 
+            };
+        }
+
+        // Calcular promedio de coordenadas
+        const total = establishments.reduce((acc, est) => {
+            if (est.lat && est.lng) {
+                acc.lat += parseFloat(est.lat);
+                acc.lng += parseFloat(est.lng);
+                acc.count++;
+            }
+            return acc;
+        }, { lat: 0, lng: 0, count: 0 });
+
+        return {
+            lat: total.lat / total.count,
+            lng: total.lng / total.count
+        };
     }
 
     /**
@@ -210,6 +324,12 @@
     function fitMapToMarkers() {
         if (markers.length === 0) return;
 
+        if (markers.length === 1) {
+            map.setCenter(markers[0].marker.getPosition());
+            map.setZoom(14);
+            return;
+        }
+
         const bounds = new google.maps.LatLngBounds();
         markers.forEach(({ marker }) => {
             bounds.extend(marker.getPosition());
@@ -217,56 +337,76 @@
 
         map.fitBounds(bounds);
         
-        // Ajustar zoom si es necesario
+        // Ajustar zoom máximo
         const listener = google.maps.event.addListener(map, "idle", function() {
-            if (map.getZoom() > 13) map.setZoom(13);
+            if (map.getZoom() > 15) map.setZoom(15);
             google.maps.event.removeListener(listener);
         });
     }
 
     /**
-     * Configurar listeners para las tarjetas de establecimientos
+     * Centrar el mapa en un establecimiento específico
+     * @param {number} establishmentId - ID del establecimiento
      */
-    function setupEstablishmentCardListeners() {
-        const establishmentCards = document.querySelectorAll('.establishment-card-list');
+    function centerOnEstablishment(establishmentId) {
+        const markerData = markers.find(m => m.id === establishmentId);
         
-        establishmentCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const input = this.querySelector('input[name="establishment"]');
-                const establishmentId = input.value;
-                
-                // Centrar el mapa en el establecimiento seleccionado
-                centerMapOnEstablishment(establishmentId);
-                
-                // Mostrar info del establecimiento
-                const establishment = establishments.find(e => e.id === establishmentId);
-                const markerData = markers.find(m => m.id === establishmentId);
-                if (establishment && markerData) {
-                    showEstablishmentInfo(establishment, markerData.marker);
-                }
-            });
-        });
-    }
-
-    /**
-     * Centrar el mapa en un establecimiento
-     */
-    function centerMapOnEstablishment(establishmentId) {
-        const establishment = establishments.find(e => e.id === establishmentId);
-        if (establishment && map) {
-            map.panTo({ lat: establishment.lat, lng: establishment.lng });
+        if (markerData && map) {
+            const position = markerData.marker.getPosition();
+            map.panTo(position);
             map.setZoom(15);
+            
+            // Animar el marcador
+            markerData.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(() => {
+                markerData.marker.setAnimation(null);
+            }, 2000);
+            
+            // Mostrar info del establecimiento
+            showEstablishmentInfo(markerData.data, markerData.marker);
+            
+            console.log(`🎯 Mapa centrado en: ${markerData.data.name}`);
+        } else {
+            console.warn(`⚠️ No se encontró marcador para establecimiento ID: ${establishmentId}`);
         }
     }
 
     /**
-     * Seleccionar un establecimiento
+     * Destacar un marcador específico
+     * @param {number} establishmentId - ID del establecimiento
      */
-    function selectEstablishment(establishmentId) {
-        const radioButton = document.querySelector(`input[name="establishment"][value="${establishmentId}"]`);
-        if (radioButton) {
-            radioButton.checked = true;
-            radioButton.dispatchEvent(new Event('change', { bubbles: true }));
+    function highlightMarker(establishmentId) {
+        // Restaurar todos los marcadores a su estado normal
+        markers.forEach(({ marker }) => {
+            marker.setAnimation(null);
+        });
+
+        // Destacar el marcador seleccionado
+        const markerData = markers.find(m => m.id === establishmentId);
+        if (markerData) {
+            markerData.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(() => {
+                markerData.marker.setAnimation(null);
+            }, 1500);
+        }
+    }
+
+    // ============================================================================
+    // MANEJO DE ERRORES Y PLACEHOLDERS
+    // ============================================================================
+
+    /**
+     * Mostrar placeholder cuando no hay mapa
+     */
+    function showMapPlaceholder() {
+        const mapContainer = document.getElementById('establishmentMap');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #6c757d;">
+                    <i class="bi bi-map" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p style="margin: 0; font-size: 1rem;">No hay establecimientos para mostrar</p>
+                </div>
+            `;
         }
     }
 
@@ -277,18 +417,30 @@
         const mapContainer = document.getElementById('establishmentMap');
         if (mapContainer) {
             mapContainer.innerHTML = `
-                <div class="map-error">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <p>${message}</p>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #dc3545;">
+                    <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p style="margin: 0; font-size: 1rem; text-align: center; padding: 0 1rem;">${message}</p>
                 </div>
             `;
         }
     }
 
-    // Exponer funciones globales si es necesario
-    window.EstablishmentMap = {
-        centerOnEstablishment: centerMapOnEstablishment,
-        selectEstablishment: selectEstablishment
+    // ============================================================================
+    // API PÚBLICA
+    // ============================================================================
+
+    return {
+        init,
+        centerOnEstablishment,
+        highlightMarker,
+        isInitialized: () => isInitialized,
+        getMarkers: () => markers,
+        getMap: () => map
     };
 
 })();
+
+// ============================================================================
+// EXPORT PARA USO GLOBAL
+// ============================================================================
+window.EstablishmentMap = EstablishmentMap;

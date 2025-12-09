@@ -1,29 +1,27 @@
 from django.shortcuts import render, redirect
-from django.contrib import admin,messages
+from django.contrib import admin, messages
 from django.http import JsonResponse
 from django.conf import settings
 from django.views import View
 from urllib.request import urlopen, Request
 import json
-from datetime import timedelta,datetime
+from datetime import timedelta, datetime, date, time
 from django.contrib.auth.models import User, Group
-from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView 
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView, DeleteView 
 from .utils.mixins import BreadcrumbMixins
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.views import LogoutView
-from datetime import date, time
 from django.utils import timezone
-from establishment.models import Establishment
-from admin_module.models import EstablishmentService, Service , Schedule, ScheduleAssignment
-from services_module.models import ServiceDate
-# from admin_module.utils.slots import generate_available_slots  # TODO: Implementar cuando esté disponible
-from django.db.models import F, ExpressionWrapper, FloatField,Prefetch
-from services_module.models import ServiceDate
-from admin_module.forms import ServiceDateForm
-from datetime import datetime, timedelta
+from django.db.models import F, ExpressionWrapper, FloatField, Prefetch
 from django.core.serializers.json import DjangoJSONEncoder
 
+# Models
+from establishment.models import Establishment
+from admin_module.models import Schedule, ScheduleAssignment, EstablishmentSlotConfiguration, EstablishmentSchedule, BarberAvailability
+from services_module.models import ServiceDate
+from admin_module.forms import ServiceDateForm
+from product.models import ProductEstablishment
 
 # Create your views here.
 
@@ -37,67 +35,9 @@ class HomeServicesView(BreadcrumbMixins, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
   
-        # Obtener establecimientos activos con sus servicios
-        establishments = Establishment.objects.filter(active=True).prefetch_related(
-            Prefetch(
-                'establishmentservice_set',
-                queryset=EstablishmentService.objects.select_related('service').filter(service__active=True),
-                to_attr='est_services'
-            )
-        )
-
-        # Obtener el grupo de barberos
-        grupo = Group.objects.get(name="Barbero")
+        # Obtener toda la información de establecimientos usando la función centralizada
+        establishments_data = get_active_establishments_data()
         
-        establishments_data = []
-        for est in establishments:
-            # Obtener barberos de este establecimiento
-            barbers = User.objects.filter(
-                groups=grupo,
-                is_active=True,
-                profile__establishment=est,
-            ).select_related('profile')
-
-            # Preparar servicios del establecimiento
-            services_data = []
-            for est_service in est.est_services:
-                services_data.append({
-                    'establishment_service_id': est_service.id,  # ✅ Este es el ID que necesitamos para ServiceDate
-                    'service_id': est_service.service.id,  # ID del servicio base
-                    'name_service': est_service.service.name_service,
-                    'price_service': float(est_service.service.price_service),
-                    'duration_minutes': est_service.service.duration,
-                    'description_service': est_service.service.description_service,
-                })
-
-            # Preparar barberos
-            barbers_data = []
-            for barber in barbers:
-                barbers_data.append({
-                    'id': barber.id,
-                    'first_name': barber.first_name,
-                    'last_name': barber.last_name,
-                    'qa_average': barber.profile.qa_average if hasattr(barber, 'profile') else 0.0
-                })
-
-            # Datos del establecimiento
-            establishments_data.append({
-                'id': est.id,
-                'name': est.name_est,
-                'address': est.address_est,
-                'city': est.city_est,
-                'country': est.country_est,
-                'phone': est.phone_est,
-                'email': est.email_est,
-                'description': est.description,
-                'lat': float(est.lat_est),
-                'lng': float(est.lng_est),
-                'image': est.img_est.url if est.img_est else '/static/img/default_barber.jpg',
-                'qa_average': est.qa_average_est,
-                'services': services_data,
-                'barbers': barbers_data,
-            })
-
         # Pasar datos al template
         context['establishments_data'] = establishments_data
         context['establishments_data_json'] = json.dumps(establishments_data, cls=DjangoJSONEncoder)
@@ -289,3 +229,188 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
+def get_active_establishments_data():
+    """
+    Función centralizada para obtener toda la información de establecimientos activos.
+    
+    Retorna una lista completa de establecimientos con:
+    - Información básica del establecimiento
+    - Servicios/Productos disponibles (ProductEstablishment)
+    - Barberos con sus disponibilidades
+    - Horarios del establecimiento (EstablishmentSchedule)
+    - Configuración de slots (EstablishmentSlotConfiguration)
+    
+    Returns:
+        list: Lista de diccionarios con toda la información de establecimientos
+    """
+
+    
+    # Query optimizado con prefetch_related y select_related
+    establishments = Establishment.objects.filter(active=True).prefetch_related(
+        
+        # Horarios del establecimiento
+        Prefetch(
+            'schedules',
+            queryset=EstablishmentSchedule.objects.all().order_by('day_of_week'),
+            to_attr='est_schedules'
+        ),
+        # Disponibilidades de barberos
+        Prefetch(
+            'barber_availabilities',
+            queryset=BarberAvailability.objects.select_related('barber', 'barber__profile').filter(is_available=True),
+            to_attr='est_barber_availabilities'
+        ),
+        # Servicios del establecimiento
+        Prefetch(
+            'products_stock',
+            queryset=ProductEstablishment.objects.select_related('product', 'product__category').filter(
+                product__is_active=True,
+                current_stock__gt=0  # Solo productos con stock
+            ),
+            to_attr='est_products'
+        )
+    ).select_related('slot_config')  # Configuración de slots (relación OneToOne)
+    
+    # Obtener grupo de barberos
+    try:
+        grupo_barbero = Group.objects.get(name="Barbero")
+    except Group.DoesNotExist:
+        grupo_barbero = None
+    
+    establishments_data = []
+    
+    for est in establishments:
+        # ========================================
+        # 1. INFORMACIÓN BÁSICA DEL ESTABLECIMIENTO
+        # ========================================
+        establishment_info = {
+            'id': est.id,
+            'name': est.name_est,
+            'address': est.address_est,
+            'city': est.city_est,
+            'country': est.country_est,
+            'phone': est.phone_est,
+            'email': est.email_est,
+            'description': est.description,
+            'lat': float(est.lat_est),
+            'lng': float(est.lng_est),
+            'image': est.img_est.url if est.img_est else '/static/img/default_barber.jpg',
+            'qa_average': est.qa_average_est,
+            'active': est.active,
+        }
+        
+        # ========================================
+        # 2. SERVICIOS/PRODUCTOS DEL ESTABLECIMIENTO
+        # ========================================
+        # Separar productos entre servicios y productos físicos
+        services_data = []
+        products_data = []
+        
+        for product_est in est.est_products:
+            product_data = {
+                'product_id': product_est.product.id,
+                'name': product_est.product.name,
+                'internal_reference': product_est.product.internal_reference,
+                'barcode': product_est.product.barcode,
+                'description': product_est.product.description,
+                'category': product_est.product.category.name if product_est.product.category else 'Sin categoría',
+                'category_type': product_est.product.category.category_type if product_est.product.category else 'storable',
+                'cost_price': float(product_est.product.cost_price),
+                'sale_price': float(product_est.product.sale_price),
+                'current_stock': float(product_est.current_stock),
+                'available_stock': float(product_est.available_stock),
+                'location': product_est.location,
+            }
+            
+            # Si es un servicio (category_type='service'), agregarlo a servicios
+            if product_est.product.category and product_est.product.category.category_type == 'service':
+                services_data.append(product_data)
+            else:
+                # Es un producto físico
+                products_data.append(product_data)
+        
+        # ========================================
+        # 3. HORARIOS DEL ESTABLECIMIENTO
+        # ========================================
+        schedules_data = []
+        for schedule in est.est_schedules:
+            schedules_data.append({
+                'day_of_week': schedule.day_of_week,
+                'day_name': schedule.get_day_of_week_display(),
+                'opening_time': schedule.opening_time.strftime('%H:%M'),
+                'closing_time': schedule.closing_time.strftime('%H:%M'),
+                'is_open': schedule.is_open,
+            })
+        
+        # ========================================
+        # 4. CONFIGURACIÓN DE SLOTS
+        # ========================================
+        slot_config_data = None
+        if hasattr(est, 'slot_config') and est.slot_config:
+            slot_config = est.slot_config
+            slot_config_data = {
+                'default_slot_duration': slot_config.default_slot_duration,
+                'buffer_time': slot_config.buffer_time_between_appointments,
+                'advance_booking_days': slot_config.advance_booking_days,
+                'min_advance_hours': slot_config.min_advance_booking_hours,
+                'allow_same_day': slot_config.allow_same_day_booking,
+                'send_reminders': slot_config.send_appointment_reminders,
+                'reminder_hours': slot_config.reminder_hours_before,
+                'allow_cancellation': slot_config.allow_online_cancellation,
+                'min_cancellation_hours': slot_config.min_cancellation_hours,
+            }
+        
+        # ========================================
+        # 5. BARBEROS Y SUS DISPONIBILIDADES
+        # ========================================
+        barbers_data = []
+        
+        # Obtener barberos únicos de las disponibilidades
+        if grupo_barbero:
+            barbers = User.objects.filter(
+                groups=grupo_barbero,
+                is_active=True,
+                profile__establishment=est,
+            ).select_related('profile').distinct()
+            
+            for barber in barbers:
+                # Obtener disponibilidades de este barbero en este establecimiento
+                barber_availabilities = [
+                    {
+                        'day_of_week': avail.day_of_week,
+                        'day_name': avail.get_day_of_week_display(),
+                        'start_time': avail.start_time.strftime('%H:%M'),
+                        'end_time': avail.end_time.strftime('%H:%M'),
+                        'is_available': avail.is_available,
+                    }
+                    for avail in est.est_barber_availabilities 
+                    if avail.barber_id == barber.id
+                ]
+                
+                barbers_data.append({
+                    'id': barber.id,
+                    'first_name': barber.first_name,
+                    'last_name': barber.last_name,
+                    'full_name': barber.get_full_name(),
+                    'email': barber.email,
+                    'qa_average': barber.profile.qa_average if hasattr(barber, 'profile') else 0.0,
+                    #'photo': barber.profile.photo.url if hasattr(barber, 'profile') and barber.profile.photo else None,
+                    'availabilities': barber_availabilities,
+                })
+        
+
+        
+        # ========================================
+        # CONSOLIDAR TODA LA INFORMACIÓN
+        # ========================================
+        establishment_info.update({
+            'services': services_data,
+            'schedules': schedules_data,
+            'slot_config': slot_config_data,
+            'barbers': barbers_data,
+            'products': products_data,
+        })
+        
+        establishments_data.append(establishment_info)
+    
+    return establishments_data

@@ -1231,3 +1231,132 @@
         box-shadow: none;
     }
 }
+
+/* ========================================
+   Establishment Selector Enhancements
+   ======================================== */
+
+/* Tarjeta seleccionada - Estado mejorado */
+.establishment-card-list--selected {
+    border-color: #0d6efd !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e7f1ff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15) !important;
+}
+
+.establishment-card-list--selected .establishment-check-small {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.establishment-card-list--selected .establishment-check-small i {
+    color: #0d6efd;
+}
+
+/* Logo del establecimiento */
+.establishment-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Resumen del establecimiento seleccionado */
+.establishment-summary {
+    display: none;
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    margin: 0.75rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.summary-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.summary-icon {
+    font-size: 2rem;
+}
+
+.summary-icon i {
+    color: #fff;
+}
+
+.summary-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.summary-text strong {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.summary-text span {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+/* Sin resultados */
+.no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-results p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Animación de carga */
+.establishment-card-list {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover mejorado */
+.establishment-card-list:hover:not(.establishment-card-list--selected) {
+    border-color: #adb5bd;
+    background: #f8f9fa;
+}
+
+/* Transiciones suaves */
+.establishment-card-list,
+.establishment-check-small,
+.establishment-icon-small {
+    transition: all 0.3s ease;
+}

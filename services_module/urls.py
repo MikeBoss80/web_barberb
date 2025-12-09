@@ -1,5 +1,5 @@
 from django.urls import path
-from services_module.views import MapServicesView, PlacesListView , getMap, getPlacesBySearch, HomeServicesView, SeguridadView, SoporteView, ServicesCitasView, LogoutView,EditarPerfilView,PerfilUsuarioView,ServiceDateCreateView
+from services_module.views import MapServicesView, PlacesListView , getMap, getPlacesBySearch, HomeServicesView, SeguridadView, SoporteView, ServicesCitasView, LogoutView,EditarPerfilView,PerfilUsuarioView,ServiceDateCreateView, get_active_establishments_data
 from django.contrib.auth.views import LogoutView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
@@ -16,5 +16,5 @@ urlpatterns = [
     path('soporte/', SoporteView.as_view(), name='soporte'),
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
-
+    path('establecimientos/activos/list', get_active_establishments_data, name='establecimientos_activos_list'),
 ]   

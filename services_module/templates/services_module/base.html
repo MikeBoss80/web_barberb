@@ -437,6 +437,49 @@
 
 {% block extra_js %}
 <script src="{% static 'service_module/js/base.js' %}"></script>
-<script src="{% static 'service_module/js/appointment.js' %}"></script>
 <script src="{% static 'service_module/js/establishment-map.js' %}"></script>
+<script src="{% static 'service_module/js/establishment-selector.js' %}"></script>
+<script src="{% static 'service_module/js/appointment.js' %}"></script>
+
+<script>
+    // ============================================================================
+    // INICIALIZACIÓN DE LA APLICACIÓN
+    // ============================================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Iniciando aplicación de reservas...');
+        
+        // Datos de establecimientos desde el servidor
+        const establishmentsData = {{ establishments_data_json|safe }};
+        
+        console.log('📊 Datos recibidos del servidor:', {
+            establecimientos: establishmentsData.length,
+            datos: establishmentsData
+        });
+        
+        // 1. Inicializar el selector de establecimientos
+        if (window.EstablishmentSelector) {
+            EstablishmentSelector.init(establishmentsData);
+        } else {
+            console.error('❌ EstablishmentSelector no está disponible');
+        }
+        
+        // 2. El mapa se inicializa automáticamente desde EstablishmentSelector
+        // No es necesario inicializarlo manualmente
+        
+        // 3. Escuchar eventos de selección de establecimiento
+        document.addEventListener('establishmentSelected', function(e) {
+            console.log('🎯 Evento: Establecimiento seleccionado', e.detail.establishment);
+            
+            // Destacar el marcador en el mapa
+            if (window.EstablishmentMap && window.EstablishmentMap.isInitialized()) {
+                window.EstablishmentMap.highlightMarker(e.detail.establishment.id);
+            }
+            
+            // Aquí puedes agregar lógica adicional cuando se selecciona un establecimiento
+            // Por ejemplo: actualizar servicios disponibles, mostrar barberos, etc.
+        });
+        
+        console.log('✅ Aplicación inicializada correctamente');
+    });
+</script>
 {% endblock %}
