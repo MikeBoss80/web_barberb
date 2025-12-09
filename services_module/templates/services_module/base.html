@@ -5,6 +5,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'service_module/css/appointment.css' %}">
+<link rel="stylesheet" href="{% static 'service_module/css/tabs/service_selection.css' %}">
 
 <div class="appointment-wrapper">
     <!-- Progress Stepper -->
@@ -439,6 +440,7 @@
 <script src="{% static 'service_module/js/base.js' %}"></script>
 <script src="{% static 'service_module/js/establishment-map.js' %}"></script>
 <script src="{% static 'service_module/js/establishment-selector.js' %}"></script>
+<script src="{% static 'service_module/js/tabs/service_selection.js' %}"></script>
 <script src="{% static 'service_module/js/appointment.js' %}"></script>
 
 <script>
@@ -449,7 +451,7 @@
         console.log('🚀 Iniciando aplicación de reservas...');
         
         // Datos de establecimientos desde el servidor
-        const establishmentsData = {{ establishments_data_json|safe }};
+        const establishmentsData = JSON.parse('{{ establishments_data_json|escapejs }}');
         
         console.log('📊 Datos recibidos del servidor:', {
             establecimientos: establishmentsData.length,
@@ -463,10 +465,17 @@
             console.error('❌ EstablishmentSelector no está disponible');
         }
         
-        // 2. El mapa se inicializa automáticamente desde EstablishmentSelector
+        // 2. Inicializar el selector de servicios
+        if (window.ServiceSelection) {
+            ServiceSelection.init(establishmentsData);
+        } else {
+            console.error('❌ ServiceSelection no está disponible');
+        }
+        
+        // 3. El mapa se inicializa automáticamente desde EstablishmentSelector
         // No es necesario inicializarlo manualmente
         
-        // 3. Escuchar eventos de selección de establecimiento
+        // 4. Escuchar eventos de selección de establecimiento
         document.addEventListener('establishmentSelected', function(e) {
             console.log('🎯 Evento: Establecimiento seleccionado', e.detail.establishment);
             

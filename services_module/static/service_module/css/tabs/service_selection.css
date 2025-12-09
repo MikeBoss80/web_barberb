@@ -1,0 +1,236 @@
+/**
+ * ============================================================================
+ * SERVICE SELECTION STYLES
+ * ============================================================================
+ */
+
+/* Grid de servicios */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+/* Tarjeta de servicio */
+.service-card {
+    position: relative;
+    cursor: pointer;
+    display: block;
+}
+
+.service-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.service-card-inner {
+    position: relative;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-card:hover .service-card-inner {
+    border-color: var(--primary-color, #007bff);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+    transform: translateY(-4px);
+}
+
+.service-input:checked ~ .service-card-inner {
+    border-color: var(--primary-color, #007bff);
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.05), rgba(0, 123, 255, 0.02));
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.2);
+}
+
+/* Header del servicio (nombre + precio + icono) - 60% altura */
+.service-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+    min-height: 60%;
+}
+
+/* Contenedor de nombre y precio - 60% ancho */
+.service-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 0 0 60%;
+    padding-right: 1rem;
+}
+
+/* Título del servicio */
+.service-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    text-align: left;
+}
+
+/* Icono del servicio - 40% ancho */
+.service-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.service-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.service-icon--featured {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.service-card:hover .service-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.service-input:checked ~ .service-card-inner .service-icon {
+    transform: scale(1.15);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+}
+
+/* Badge de popular */
+.service-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+}
+
+/* Descripción del servicio - 40% altura */
+.service-description {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.4;
+    margin: 0;
+    text-align: left;
+    width: 100%;
+    min-height: 40%;
+    display: flex;
+    align-items: center;
+}
+
+/* Precio del servicio */
+.service-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color, #007bff);
+    text-align: left;
+}
+
+/* Check de selección */
+.service-check {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.service-check i {
+    color: var(--primary-color, #007bff);
+    font-size: 1.2rem;
+}
+
+.service-input:checked ~ .service-card-inner .service-check {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Estado vacío */
+.services-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+.services-empty-state i {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.services-empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.services-empty-state p {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+    
+    .service-card-inner {
+        padding: 1.5rem 1rem;
+    }
+    
+    .service-icon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .service-icon i {
+        font-size: 1.2rem;
+    }
+    
+    .service-title {
+        font-size: 1rem;
+    }
+    
+    .service-description {
+        font-size: 0.8rem;
+    }
+    
+    .service-price {
+        font-size: 1.25rem;
+    }
+}
