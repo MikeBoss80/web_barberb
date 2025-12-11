@@ -310,6 +310,7 @@ def get_active_establishments_data():
             category_type = product_est.product.category.category_type if product_est.product.category else 'storable'
             
             product_data = {
+                'id': product_est.id,  # ✅ ID de EstablishmentService (esto es lo que necesita el backend)
                 'product_id': product_est.product.id,
                 'name': product_est.product.name,
                 'internal_reference': product_est.product.internal_reference,

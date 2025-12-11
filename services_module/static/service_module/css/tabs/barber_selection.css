@@ -1,0 +1,554 @@
+/**
+ * ============================================================================
+ * BARBER SELECTION STYLES
+ * ============================================================================
+ * Estilos para la selección de barberos y horarios disponibles
+ */
+
+/* ============================================================================
+   LAYOUT PRINCIPAL - BARBERO Y FECHA/HORA
+   ============================================================================ */
+
+.barber-datetime-selection {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 20px 0;
+    width: 100%;
+    align-items: start;
+}
+
+/* ============================================================================
+   SECCIÓN DE BARBEROS
+   ============================================================================ */
+
+.barber-selector {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    width: 100%;
+}
+
+.barber-selector .form-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--primary-color, #3e1a4e);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.barber-selector .form-label i {
+    font-size: 1.5rem;
+}
+
+.barbers-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 10px 0;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ============================================================================
+   TARJETA DE BARBERO
+   ============================================================================ */
+
+.barber-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.barber-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(62, 26, 78, 0.15);
+    border-color: var(--secondary-color, #8a5cbf);
+}
+
+.barber-card.selected {
+    border-color: var(--primary-color, #3e1a4e);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: 0 8px 24px rgba(62, 26, 78, 0.25);
+}
+
+.barber-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+/* ============================================================================
+   IMAGEN DEL BARBERO
+   ============================================================================ */
+
+.barber-image-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 3px solid var(--primary-color, #3e1a4e);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.barber-card:hover .barber-image-container {
+    transform: scale(1.05);
+    border-color: var(--secondary-color, #8a5cbf);
+}
+
+.barber-card.selected .barber-image-container {
+    border-color: var(--accent-color, #ff9e1b);
+    box-shadow: 0 6px 16px rgba(255, 158, 27, 0.4);
+}
+
+.barber-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ============================================================================
+   INFORMACIÓN DEL BARBERO
+   ============================================================================ */
+
+.barber-info {
+    flex: 1;
+    width: 100%;
+}
+
+.barber-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color, #3e1a4e);
+    margin: 0 0 8px 0;
+}
+
+.barber-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    color: var(--accent-color, #ff9e1b);
+    font-size: 0.9rem;
+}
+
+.barber-rating i {
+    font-size: 0.85rem;
+}
+
+.rating-value {
+    color: var(--dark-color, #212529);
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.barber-email {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+/* ============================================================================
+   ICONO DE SELECCIÓN
+   ============================================================================ */
+
+.barber-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--success-color, #28a745);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s ease;
+}
+
+.barber-card.selected .barber-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.barber-check i {
+    color: white;
+    font-size: 1.2rem;
+}
+
+/* ============================================================================
+   ESTADO VACÍO - BARBEROS
+   ============================================================================ */
+
+.barbers-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.barbers-empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #dee2e6;
+}
+
+.barbers-empty-state h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark-color, #212529);
+    margin-bottom: 10px;
+}
+
+.barbers-empty-state p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ============================================================================
+   SECCIÓN DE FECHA Y HORA
+   ============================================================================ */
+
+.datetime-selection {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    width: 100%;
+}
+
+.date-selector,
+.time-selector {
+    display: block !important;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 2px solid #f0f0f0;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.date-selector:hover,
+.time-selector:hover {
+    border-color: var(--secondary-color, #8a5cbf);
+    box-shadow: 0 6px 24px rgba(62, 26, 78, 0.1);
+}
+
+.date-selector .form-label,
+.time-selector .form-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color, #3e1a4e);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-selector .form-label i,
+.time-selector .form-label i {
+    font-size: 1.4rem;
+    color: var(--secondary-color, #8a5cbf);
+}
+
+.date-selector .form-control {
+    padding: 15px 20px;
+    font-size: 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.date-selector .form-control:focus {
+    border-color: var(--primary-color, #3e1a4e);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(62, 26, 78, 0.1);
+}
+
+/* ============================================================================
+   CONTENEDOR DE SLOTS DE TIEMPO
+   ============================================================================ */
+
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 15px;
+    padding: 10px 0;
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* ============================================================================
+   SLOT DE TIEMPO
+   ============================================================================ */
+
+.time-slot {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: var(--dark-color, #212529);
+    font-size: 1.05rem;
+    position: relative;
+    display: flex;
+.time-slot:hover:not(.occupied) {
+    border-color: var(--secondary-color, #8a5cbf);
+    background: linear-gradient(135deg, rgba(138, 92, 191, 0.1) 0%, rgba(138, 92, 191, 0.05) 100%);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(62, 26, 78, 0.15);
+}
+
+.time-slot.selected {
+    background: linear-gradient(135deg, var(--primary-color, #3e1a4e) 0%, var(--secondary-color, #8a5cbf) 100%);
+    border-color: var(--primary-color, #3e1a4e);
+    color: white;
+    box-shadow: 0 6px 20px rgba(62, 26, 78, 0.4);
+    transform: translateY(-2px) scale(1.03);
+}
+
+.time-slot.selected::before {
+    content: '\f26b';
+    font-family: 'bootstrap-icons';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}time-slot.selected {
+    background: var(--primary-color, #3e1a4e);
+    border-color: var(--primary-color, #3e1a4e);
+    color: white;
+    box-shadow: 0 4px 12px rgba(62, 26, 78, 0.3);
+}
+
+.time-slot.occupied {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #adb5bd;
+    cursor: not-allowed;
+    opacity: 0.6;
+    position: relative;
+}
+
+.time-slot.occupied::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #adb5bd;
+    transform: translateY(-50%) rotate(-10deg);
+}
+
+/* ============================================================================
+   ESTADO VACÍO - SLOTS
+   ============================================================================ */
+
+.slots-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.slots-empty-state i {
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+/* Desktop grande - 2 columnas */
+@media (min-width: 1200px) {
+    .barber-datetime-selection {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+}
+
+/* Tablet horizontal - 2 columnas */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .barber-datetime-selection {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+    
+    .barber-selector,
+    .date-selector,
+    .time-selector {
+        padding: 25px;
+    }
+}
+
+/* Tablet vertical - 1 columna */
+@media (max-width: 991px) {
+    .barber-datetime-selection {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .barber-selector,
+    .date-selector,
+    .time-selector {
+        padding: 20px;
+    }
+    
+    .barbers-grid {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .barber-datetime-selection {
+        gap: 25px;
+    }
+    
+    .barber-selector,
+    .date-selector,
+    .time-selector {
+        padding: 20px;
+    }
+    
+    .barber-selector .form-label,
+    .date-selector .form-label,
+    .time-selector .form-label {
+        font-size: 1.1rem;
+    }
+    
+    .barbers-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .time-slots {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 12px;
+    }
+    
+    .time-slot {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        min-height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .barber-selector,
+    .date-selector,
+    .time-selector {
+        padding: 18px;
+        border-radius: 12px;
+    }
+    
+    .barber-image-container {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .barber-name {
+        font-size: 1rem;
+    }
+    
+    .time-slots {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .time-slot {
+        padding: 10px;
+        font-size: 0.9rem;
+        min-height: 42px;
+    }
+}       width: 80px;
+        height: 80px;
+    }
+    
+    .barber-name {
+        font-size: 1rem;
+    }
+    
+    .time-slots {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ============================================================================
+   ANIMACIONES
+   ============================================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.barber-card {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.time-slot {
+    animation: fadeIn 0.2s ease forwards;
+}
+
+/* Escalonar animaciones */
+.barber-card:nth-child(1) { animation-delay: 0.05s; }
+.barber-card:nth-child(2) { animation-delay: 0.1s; }
+.barber-card:nth-child(3) { animation-delay: 0.15s; }
+.barber-card:nth-child(4) { animation-delay: 0.2s; }
+.barber-card:nth-child(5) { animation-delay: 0.25s; }
+.barber-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* ============================================================================
+   SCROLLBAR PERSONALIZADO
+   ============================================================================ */
+
+.time-slots::-webkit-scrollbar {
+    width: 8px;
+}
+
+.time-slots::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.time-slots::-webkit-scrollbar-thumb {
+    background: var(--secondary-color, #8a5cbf);
+    border-radius: 4px;
+}
+
+.time-slots::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color, #3e1a4e);
+}

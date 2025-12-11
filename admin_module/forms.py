@@ -2,7 +2,8 @@
 from django import forms
 from workflows.models import FlowInstance
 from .models import Service
-from services_module.models import ServiceDate,EstablishmentService
+from services_module.models import ServiceDate
+from product.models import ProductEstablishment
 from django.contrib.auth.models import User
 from barber_module.models import BarberRequest
 from establishment.models import Establishment
@@ -102,9 +103,9 @@ class ServiceDateForm(forms.ModelForm):
         self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
         # 2) SERVICIOS por tabla intermedia
-        queryset_servicios = EstablishmentService.objects.none()
+        queryset_servicios = ProductEstablishment.objects.none()
         if establishment:
-            queryset_servicios = EstablishmentService.objects.filter(
+            queryset_servicios = ProductEstablishment.objects.filter(
                 establishment_id=establishment,
                 service__active=True
             )

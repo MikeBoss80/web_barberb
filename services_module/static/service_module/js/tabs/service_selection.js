@@ -39,10 +39,12 @@ const ServiceSelection = (function() {
     }
 
     function cacheElements() {
-        elements.servicesGrid = document.querySelector('.services-grid');
+        elements.servicesGrid = document.getElementById('services-container') || document.querySelector('.services-grid');
         
         if (!elements.servicesGrid) {
-            console.error('❌ No se encontró el contenedor .services-grid');
+            console.error('❌ No se encontró el contenedor de servicios');
+        } else {
+            console.log('✅ Contenedor de servicios encontrado:', elements.servicesGrid.id || elements.servicesGrid.className);
         }
     }
 
@@ -70,30 +72,45 @@ const ServiceSelection = (function() {
     }
 
     function handleServiceSelection(input) {
-        const serviceValue = input.value;
         const serviceCard = input.closest('.service-card');
         
-        if (!serviceCard) return;
+        if (!serviceCard) {
+            console.warn('⚠️ No se encontró .service-card para el servicio');
+            return;
+        }
         
-        // Obtener información del servicio
-        const serviceName = serviceCard.querySelector('.service-title')?.textContent;
-        const servicePrice = serviceCard.querySelector('.service-price')?.textContent;
-        const serviceDuration = serviceCard.querySelector('.service-duration')?.textContent;
+        // ✅ Leer ID desde dataset IGUAL QUE EL BARBERO
+        const serviceId = serviceCard.dataset.serviceId;
+        
+        console.log('✂️ Servicio seleccionado - ID:', serviceId);
+        
+        if (!serviceId) {
+            console.error('❌ No se encontró serviceId en el dataset');
+            return;
+        }
+        
+        // Obtener información del servicio desde la tarjeta
+        const serviceName = serviceCard.querySelector('.service-title')?.textContent || 'Servicio';
+        const servicePrice = serviceCard.querySelector('.service-price')?.textContent || '$0';
+        const serviceDuration = serviceCard.querySelector('.service-duration')?.textContent || '0 min';
         
         state.selectedService = {
-            id: serviceValue,
+            id: parseInt(serviceId),
             name: serviceName,
             price: servicePrice,
             duration: serviceDuration
         };
         
-        console.log('✂️ Servicio seleccionado:', state.selectedService);
+        console.log('✅ Servicio completo:', state.selectedService);
         
         // Actualizar reserva global
-        if (window.ReservaState) {
-            window.ReservaState.updateReserva('service_id', serviceValue);
-            window.ReservaState.updateReserva('service_name', serviceName);
-            window.ReservaState.updateReserva('service_price', servicePrice);
+        if (window.App && window.App.reserva) {
+            window.App.reserva.service_id = parseInt(serviceId);
+            window.App.reserva.service_name = serviceName;
+            window.App.reserva.service_price = servicePrice;
+            window.App.reserva.service_duration = serviceDuration;
+            
+            console.log('✅ App.reserva.service_id actualizado:', window.App.reserva.service_id);
         }
         
         // Emitir evento personalizado
@@ -148,6 +165,7 @@ const ServiceSelection = (function() {
     function createServiceCard(service, index) {
         const label = document.createElement('label');
         label.className = 'service-card';
+        label.dataset.serviceId = service.id;  // ✅ ID de EstablishmentService
         
         // Determinar si es servicio destacado (popular)
         const isPopular = service.is_popular || false;

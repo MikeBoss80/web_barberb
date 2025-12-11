@@ -304,6 +304,8 @@ const EstablishmentSelector = (function() {
         // Actualizar App.reserva global
         if (window.App) {
             window.App.reserva.establishment_id = establishmentId;
+            window.App.reserva.establishment_name = establishment.name;
+            window.App.reserva.establishment_address = establishment.address;
             
             // Cargar información del establecimiento en App.establishment
             loadEstablishmentData(establishment);

@@ -1,12 +1,13 @@
 
 from django.db import models
-from admin_module.models import EstablishmentService, Day
+from product.models import ProductEstablishment
+from admin_module.models import Day
 from django.contrib.auth.models import User
 
 
 # Tabla: services_module_dates
 class ServiceDate(models.Model):
-    service = models.ForeignKey(EstablishmentService, on_delete=models.CASCADE, related_name="service_dates")
+    service = models.ForeignKey(ProductEstablishment, on_delete=models.CASCADE, related_name="service_dates")
     date = models.DateTimeField()
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customer_dates")
     barber = models.ForeignKey(User, on_delete=models.CASCADE, related_name="barber_dates")

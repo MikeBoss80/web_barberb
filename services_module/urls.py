@@ -1,6 +1,7 @@
 from django.urls import path
 from services_module.views import MapServicesView, PlacesListView , getMap, getPlacesBySearch, HomeServicesView, SeguridadView, SoporteView, ServicesCitasView, LogoutView,EditarPerfilView,PerfilUsuarioView,ServiceDateCreateView, get_active_establishments_data
 from django.contrib.auth.views import LogoutView
+from services_module.api_views import BarberOccupiedSlotsView, CreateAppointmentView
 
 """//🔥 Nota: Usamos Class-Based View (HomePageView) lo cual es moderno."""
 app_name = 'services_module'
@@ -17,4 +18,13 @@ urlpatterns = [
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
     path('establecimientos/activos/list', get_active_establishments_data, name='establecimientos_activos_list'),
+    
+    # 🆕 API Endpoints
+    path('api/barber/<int:barber_id>/occupied-slots/', 
+         BarberOccupiedSlotsView.as_view(), 
+         name='barber_occupied_slots'),
+    
+    path('api/appointments/create/', 
+         CreateAppointmentView.as_view(), 
+         name='create_appointment_api'),
 ]   

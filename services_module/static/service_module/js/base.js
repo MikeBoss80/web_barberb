@@ -161,10 +161,94 @@ window.App = {
     // Datos de la reserva en proceso
     reserva: {
         establishment_id: null,
+        establishment_name: null,
+        establishment_address: null,
+        
         barber_id: null,
+        barber_name: null,
+        barber_email: null,
+        barber_rating: null,
+        
         service_id: null,
+        service_name: null,
+        service_price: null,
+        service_duration: null,
+        
         date: null,
-        hour: null,
+        time: null,
+        datetime: null,
+        
+        customer_notes: null,
+        
+        // Métodos de utilidad
+        updateField(field, value) {
+            if (this.hasOwnProperty(field)) {
+                this[field] = value;
+                console.log(`📝 App.reserva actualizado: ${field} = ${value}`);
+            }
+        },
+        
+        validate() {
+            const errors = [];
+            if (!this.establishment_id) errors.push('Selecciona un establecimiento');
+            if (!this.service_id) errors.push('Selecciona un servicio');
+            if (!this.barber_id) errors.push('Selecciona un barbero');
+            if (!this.date) errors.push('Selecciona una fecha');
+            if (!this.time) errors.push('Selecciona una hora');
+            return { valid: errors.length === 0, errors };
+        },
+        
+        getSummary() {
+            return `
+Resumen de la Reserva:
+━━━━━━━━━━━━━━━━━━━━
+🏢 Establecimiento: ${this.establishment_name || 'No seleccionado'}
+📍 Dirección: ${this.establishment_address || 'N/A'}
+✂️ Servicio: ${this.service_name || 'No seleccionado'}
+💰 Precio: ${this.service_price || 'N/A'}
+💈 Barbero: ${this.barber_name || 'No seleccionado'}
+⭐ Rating: ${this.barber_rating ? this.barber_rating.toFixed(1) : 'N/A'}
+📅 Fecha: ${this.date || 'No seleccionada'}
+⏰ Hora: ${this.time || 'No seleccionada'}
+━━━━━━━━━━━━━━━━━━━━
+            `.trim();
+        },
+        
+        getSubmitData() {
+            const data = {
+                establishment_id: this.establishment_id,
+                service_id: this.service_id,
+                barber_id: this.barber_id,
+                date: this.date,
+                time: this.time,
+                datetime: this.datetime,
+                customer_notes: this.customer_notes || ''
+            };
+            
+            console.log('📤 Datos a enviar al servidor:', data);
+            
+            // Validar que los IDs sean números
+            if (!data.establishment_id || isNaN(data.establishment_id)) {
+                console.error('❌ establishment_id inválido:', data.establishment_id);
+            }
+            if (!data.service_id || isNaN(data.service_id)) {
+                console.error('❌ service_id inválido:', data.service_id);
+            }
+            if (!data.barber_id || isNaN(data.barber_id)) {
+                console.error('❌ barber_id inválido:', data.barber_id);
+            }
+            
+            return data;
+        },
+        
+        reset() {
+            Object.keys(this).forEach(key => {
+                if (typeof this[key] !== 'function') {
+                    this[key] = null;
+                }
+            });
+            console.log('🔄 Reserva reiniciada');
+        }
     },
     
     // Método para inicializar la aplicación con datos del servidor

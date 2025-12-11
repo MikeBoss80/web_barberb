@@ -6,6 +6,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'service_module/css/appointment.css' %}">
 <link rel="stylesheet" href="{% static 'service_module/css/tabs/service_selection.css' %}">
+<link rel="stylesheet" href="{% static 'service_module/css/tabs/barber_selection.css' %}">
 
 <div class="appointment-wrapper">
     <!-- Progress Stepper -->
@@ -192,127 +193,30 @@
 
             <!-- Step 2: Service Selection -->
             <div class="appointment-step" data-step="2">
-                <div class="services-grid">
-                    <label class="service-card">
-                        <input type="radio" name="service" value="corte" class="service-input" required>
-                        <div class="service-card-inner">
-                            <div class="service-icon">
-                                <i class="bi bi-scissors"></i>
-                            </div>
-                            <h3 class="service-title">Corte de Cabello</h3>
-                            <div class="service-details">
-                                <span class="service-price">$15.000</span>
-                                <span class="service-duration">
-                                    <i class="bi bi-clock"></i> 30 min
-                                </span>
-                            </div>
-                            <div class="service-check">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                        </div>
-                    </label>
-                    
-                    <label class="service-card">
-                        <input type="radio" name="service" value="barba" class="service-input" required>
-                        <div class="service-card-inner">
-                            <div class="service-icon">
-                                <i class="bi bi-person"></i>
-                            </div>
-                            <h3 class="service-title">Arreglo de Barba</h3>
-                            <div class="service-details">
-                                <span class="service-price">$10.000</span>
-                                <span class="service-duration">
-                                    <i class="bi bi-clock"></i> 20 min
-                                </span>
-                            </div>
-                            <div class="service-check">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                        </div>
-                    </label>
-                    
-                    <label class="service-card">
-                        <input type="radio" name="service" value="combo" class="service-input" required>
-                        <div class="service-card-inner">
-                            <div class="service-icon service-icon--featured">
-                                <i class="bi bi-star-fill"></i>
-                            </div>
-                            <div class="service-badge">Popular</div>
-                            <h3 class="service-title">Combo Completo</h3>
-                            <div class="service-details">
-                                <span class="service-price">$20.000</span>
-                                <span class="service-duration">
-                                    <i class="bi bi-clock"></i> 45 min
-                                </span>
-                            </div>
-                            <div class="service-check">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                        </div>
-                    </label>
+                <div class="services-grid" id="services-container">
+                    <!-- Los servicios se cargarán dinámicamente desde service_selection.js -->
+                    <!-- Servicios de respaldo estáticos (se reemplazarán cuando se seleccione un establecimiento) -->
+                    <p class="text-center text-muted" id="noServicesMessage">
+                        Primero selecciona un establecimiento para ver los servicios disponibles
+                    </p>
                 </div>
             </div>
 
             <!-- Step 3: Barber, Date and Time -->
             <div class="appointment-step" data-step="3">
                 <div class="barber-datetime-selection">
-                    <!-- Barber Selection -->
+                    <!-- Columna Izquierda: Barber Selection -->
                     <div class="barber-selector">
                         <label class="form-label">
                             <i class="bi bi-person-badge"></i> Selecciona tu barbero
                         </label>
-                        <div class="barbers-grid" id="barbersGrid">
-                            <label class="barber-card">
-                                <input type="radio" name="barber" value="barber1" class="barber-input" required>
-                                <div class="barber-card-inner">
-                                    <div class="barber-avatar">
-                                        <i class="bi bi-person-circle"></i>
-                                    </div>
-                                    <h4 class="barber-name">Carlos Martínez</h4>
-                                    <p class="barber-rating">
-                                        <i class="bi bi-star-fill"></i> 4.8
-                                    </p>
-                                    <div class="barber-check">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    </div>
-                                </div>
-                            </label>
-                            
-                            <label class="barber-card">
-                                <input type="radio" name="barber" value="barber2" class="barber-input" required>
-                                <div class="barber-card-inner">
-                                    <div class="barber-avatar">
-                                        <i class="bi bi-person-circle"></i>
-                                    </div>
-                                    <h4 class="barber-name">Juan López</h4>
-                                    <p class="barber-rating">
-                                        <i class="bi bi-star-fill"></i> 4.9
-                                    </p>
-                                    <div class="barber-check">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    </div>
-                                </div>
-                            </label>
-                            
-                            <label class="barber-card">
-                                <input type="radio" name="barber" value="barber3" class="barber-input" required>
-                                <div class="barber-card-inner">
-                                    <div class="barber-avatar">
-                                        <i class="bi bi-person-circle"></i>
-                                    </div>
-                                    <h4 class="barber-name">Pedro Sánchez</h4>
-                                    <p class="barber-rating">
-                                        <i class="bi bi-star-fill"></i> 4.7
-                                    </p>
-                                    <div class="barber-check">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
+                        <p class="text-center text-muted" id="noBarbersMessage">Primero selecciona un servicio</p>
+                        <!-- Los barberos se cargarán dinámicamente aquí -->
+                        <div class="barbers-grid" id="available-barbers"></div>
+                        <input type="hidden" name="barber" id="selectedBarber" required>
                     </div>
                     
-                    <!-- Date and Time Selection -->
+                    <!-- Columna Derecha: Date and Time Selection -->
                     <div class="datetime-selection">
                         <div class="date-selector">
                             <label for="appointmentDate" class="form-label">
@@ -323,6 +227,7 @@
                                    name="date" 
                                    class="form-control" 
                                    required>
+                            <input type="hidden" id="selectedDate" name="selectedDate">
                             <div class="invalid-feedback">Por favor selecciona una fecha</div>
                         </div>
                         
@@ -330,9 +235,9 @@
                             <label class="form-label">
                                 <i class="bi bi-clock"></i> Horarios disponibles
                             </label>
-                            <div id="timeSlots" class="time-slots-grid">
-                                <!-- Dynamic time slots will be inserted here -->
-                            </div>
+                            <p class="text-center text-muted" id="noDateMessage">Primero selecciona una fecha y barbero</p>
+                            <!-- Los slots se generarán dinámicamente aquí -->
+                            <div id="time-options" class="time-slots"></div>
                             <input type="hidden" name="time" id="selectedTime" required>
                             <div class="invalid-feedback">Por favor selecciona una hora</div>
                         </div>
@@ -437,10 +342,12 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Scripts de la aplicación -->
 <script src="{% static 'service_module/js/base.js' %}"></script>
 <script src="{% static 'service_module/js/establishment-map.js' %}"></script>
 <script src="{% static 'service_module/js/establishment-selector.js' %}"></script>
 <script src="{% static 'service_module/js/tabs/service_selection.js' %}"></script>
+<script src="{% static 'service_module/js/tabs/barber_selection.js' %}"></script>
 <script src="{% static 'service_module/js/appointment.js' %}"></script>
 
 <script>
@@ -472,10 +379,27 @@
             console.error('❌ ServiceSelection no está disponible');
         }
         
-        // 3. El mapa se inicializa automáticamente desde EstablishmentSelector
-        // No es necesario inicializarlo manualmente
+        // 3. Inicializar el selector de barberos y horarios
+        if (window.BarberSelection) {
+            BarberSelection.init(establishmentsData);
+            console.log('✅ BarberSelection inicializado');
+        } else {
+            console.error('❌ BarberSelection no está disponible');
+        }
         
-        // 4. Escuchar eventos de selección de establecimiento
+        // 4. El mapa se inicializa automáticamente desde EstablishmentSelector
+        
+        // 5. Configurar listener para mostrar resumen cuando se complete la reserva
+        document.addEventListener('timeSlotSelected', function(e) {
+            if (window.App && window.App.reserva) {
+                const validation = window.App.reserva.validate();
+                if (validation.valid) {
+                    console.log('%c' + window.App.reserva.getSummary(), 'color: #10b981; font-weight: bold;');
+                }
+            }
+        });
+        
+        // 6. Escuchar eventos de selección de establecimiento
         document.addEventListener('establishmentSelected', function(e) {
             console.log('🎯 Evento: Establecimiento seleccionado', e.detail.establishment);
             
@@ -483,12 +407,56 @@
             if (window.EstablishmentMap && window.EstablishmentMap.isInitialized()) {
                 window.EstablishmentMap.highlightMarker(e.detail.establishment.id);
             }
-            
-            // Aquí puedes agregar lógica adicional cuando se selecciona un establecimiento
-            // Por ejemplo: actualizar servicios disponibles, mostrar barberos, etc.
         });
         
+        // 7. Escuchar eventos de selección de barbero
+        document.addEventListener('barberSelected', function(e) {
+            console.log('💈 Evento: Barbero seleccionado', e.detail.barber);
+        });
+        
+        // 8. Escuchar eventos de selección de horario
+        document.addEventListener('timeSlotSelected', function(e) {
+            console.log('⏰ Evento: Horario seleccionado', e.detail);
+        });
+        
+        // 9. Sincronizar el input de fecha visible con el campo oculto
+        const appointmentDateInput = document.getElementById('appointmentDate');
+        const selectedDateInput = document.getElementById('selectedDate');
+        
+        if (appointmentDateInput && selectedDateInput) {
+            appointmentDateInput.addEventListener('change', function() {
+                const dateValue = this.value;
+                console.log('📅 Fecha seleccionada desde input:', dateValue);
+                
+                // Actualizar el campo oculto que observa BarberSelection
+                selectedDateInput.value = dateValue;
+                
+                // Disparar evento de cambio para que el MutationObserver lo detecte
+                const event = new Event('change', { bubbles: true });
+                selectedDateInput.dispatchEvent(event);
+                
+                // También podemos disparar manualmente el método si existe
+                if (window.BarberSelection && dateValue) {
+                    // El MutationObserver debería detectarlo automáticamente
+                    console.log('✅ Campo selectedDate actualizado:', dateValue);
+                }
+            });
+        }
+        
         console.log('✅ Aplicación inicializada correctamente');
+        console.log('');
+        console.log('💡 Comandos disponibles en consola:');
+        console.log('   ReservaState.debug()        - Ver estado completo de la reserva');
+        console.log('   ReservaState.getSummary()   - Obtener resumen en texto');
+        
+        console.log('✅ Aplicación inicializada correctamente');
+        console.log('');
+        console.log('💡 Comandos disponibles en consola:');
+        console.log('   App.reserva.getSummary()   - Ver resumen completo');
+        console.log('   App.reserva.validate()     - Validar reserva');
+        console.log('   App.reserva.getSubmitData() - Datos para enviar');
+        console.log('   App.reserva                - Ver objeto completo');
+        console.log('');
     });
 </script>
 {% endblock %}
