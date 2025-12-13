@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Calendario de {{ nombre_barbero }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_module/css/calendario_barbero.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="calendario-container">
+  <!-- Header -->
+  <div class="page-header fade-in">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2><i class="bi bi-calendar3"></i> Calendario de {{ nombre_barbero }}</h2>
+        <p>Visualiza y gestiona las citas del barbero</p>
+      </div>
+      <a href="{% url 'admin_module:collabs' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Volver
+      </a>
+    </div>
+  </div>
+
+  <!-- Controles de Vista -->
+  <div class="view-controls fade-in">
+    <div class="view-toggle">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-primary active" id="btnVistaMes">
+          <i class="bi bi-calendar-month"></i> Vista Mensual
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btnVistaDia">
+          <i class="bi bi-calendar-day"></i> Vista Diaria
+        </button>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-outline-primary" id="todayBtn">
+        <i class="bi bi-calendar-check"></i> Hoy
+      </button>
+      <button class="btn btn-outline-secondary">
+        <i class="bi bi-printer"></i> Imprimir
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================== VISTA MENSUAL ======================== -->
+  <div id="vistaMensual" class="fade-in">
+    <div class="calendar-card">
+      <div class="calendar-header">
+        <div class="month-navigation">
+          <button id="prevMonth">
+            <i class="bi bi-chevron-left"></i> Anterior
+          </button>
+          <h3 id="currentMonthYear">Diciembre 2025</h3>
+          <button id="nextMonth">
+            Siguiente <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="calendar-body">
+        <!-- Días de la semana -->
+        <div class="calendar-grid">
+          <div class="calendar-weekday">Lun</div>
+          <div class="calendar-weekday">Mar</div>
+          <div class="calendar-weekday">Mié</div>
+          <div class="calendar-weekday">Jue</div>
+          <div class="calendar-weekday">Vie</div>
+          <div class="calendar-weekday">Sáb</div>
+          <div class="calendar-weekday">Dom</div>
+        </div>
+
+        <!-- Días del mes -->
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Los días se cargarán dinámicamente con JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== VISTA DIARIA ======================== -->
+  <div id="vistaDiaria" style="display: none;">
+    <!-- Estadísticas del día -->
+    <div class="day-stats fade-in">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Total Slots</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Ocupados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Disponibles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-label">Ingresos del día</div>
+      </div>
+    </div>
+
+    <!-- Slots del día -->
+    <div class="day-view-card fade-in">
+      <div class="day-header">
+        <h3><i class="bi bi-clock-history"></i> Selecciona un día</h3>
+        <p>Horarios del día seleccionado</p>
+      </div>
+
+      <div class="slots-container" id="slotsContainer">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i> Selecciona un día del calendario para ver los horarios disponibles.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Variables globales
+  const barberoId = {{ barbero_id }};
+  let currentDate = new Date();
+  let selectedDate = null;
+
+  // Inicializar el calendario al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    cargarCalendarioMensual(currentDate.getFullYear(), currentDate.getMonth() + 1);
+  });
+
+  // Toggle entre vistas
+  document.getElementById('btnVistaMes').addEventListener('click', function() {
+    document.getElementById('vistaMensual').style.display = 'block';
+    document.getElementById('vistaDiaria').style.display = 'none';
+    this.classList.add('btn-primary', 'active');
+    this.classList.remove('btn-outline-primary');
+    document.getElementById('btnVistaDia').classList.remove('btn-primary', 'active');
+    document.getElementById('btnVistaDia').classList.add('btn-outline-primary');
+  });
+
+  document.getElementById('btnVistaDia').addEventListener('click', function() {
+    if (!selectedDate) {
+      alert('Por favor selecciona un día del calendario');
+      return;
+    }
+    document.getElementById('vistaMensual').style.display = 'none';
+    document.getElementById('vistaDiaria').style.display = 'block';
+    this.classList.add('btn-primary', 'active');
+    this.classList.remove('btn-outline-primary');
+    document.getElementById('btnVistaMes').classList.remove('btn-primary', 'active');
+    document.getElementById('btnVistaMes').classList.add('btn-outline-primary');
+  });
+
+  // Navegación de meses
+  document.getElementById('prevMonth').addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    cargarCalendarioMensual(currentDate.getFullYear(), currentDate.getMonth() + 1);
+  });
+
+  document.getElementById('nextMonth').addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    cargarCalendarioMensual(currentDate.getFullYear(), currentDate.getMonth() + 1);
+  });
+
+  document.getElementById('todayBtn').addEventListener('click', function() {
+    currentDate = new Date();
+    cargarCalendarioMensual(currentDate.getFullYear(), currentDate.getMonth() + 1);
+  });
+
+  // Función para cargar el calendario mensual
+  async function cargarCalendarioMensual(year, month) {
+    try {
+      const response = await fetch(`/admin_module/calendario/barbero/${barberoId}/mes/?year=${year}&month=${month}`);
+      if (!response.ok) {
+        throw new Error('Error al cargar el calendario');
+      }
+      const data = await response.json();
+      renderizarCalendario(data);
+    } catch (error) {
+      console.error('Error:', error);
+      mostrarError('No se pudo cargar el calendario');
+    }
+  }
+
+  // Función para renderizar el calendario
+  function renderizarCalendario(data) {
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    // Actualizar encabezado
+    document.getElementById('currentMonthYear').textContent = `${monthNames[data.month - 1]} ${data.year}`;
+    
+    // Generar calendario
+    const calendarGrid = document.getElementById('calendarGrid');
+    calendarGrid.innerHTML = '';
+    
+    // Calcular primer día del mes y días totales
+    const firstDay = new Date(data.year, data.month - 1, 1).getDay();
+    const daysInMonth = new Date(data.year, data.month, 0).getDate();
+    
+    // Crear mapa de días con citas
+    const appointmentMap = {};
+    data.days.forEach(day => {
+      appointmentMap[day.day] = day;
+    });
+    
+    // Días vacíos al inicio (ajustar para que Lunes sea el primer día)
+    const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+    for (let i = 0; i < adjustedFirstDay; i++) {
+      calendarGrid.innerHTML += '<div class="calendar-day empty"></div>';
+    }
+    
+    // Días del mes
+    const today = new Date();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayData = appointmentMap[day];
+      const dateStr = `${data.year}-${String(data.month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      
+      let classes = 'calendar-day';
+      if (dayData && dayData.has_appointments) {
+        classes += ' has-appointments';
+      }
+      
+      // Marcar día actual
+      if (data.year === today.getFullYear() && 
+          data.month === today.getMonth() + 1 && 
+          day === today.getDate()) {
+        classes += ' today';
+      }
+      
+      let html = `
+        <div class="${classes}" onclick="verDia('${dateStr}', this)">
+          <div class="day-number">${day}</div>
+      `;
+      
+      if (dayData && dayData.has_appointments) {
+        html += `
+          <div class="appointment-indicator">
+            <span class="badge bg-primary">${dayData.appointment_count}</span>
+          </div>
+        `;
+      }
+      
+      html += '</div>';
+      calendarGrid.innerHTML += html;
+    }
+  }
+
+  // Función para ver día específico
+  function verDia(fecha, element) {
+    selectedDate = fecha;
+    
+    // Marcar día seleccionado
+    document.querySelectorAll('.calendar-day').forEach(day => {
+      day.classList.remove('selected');
+    });
+    element.classList.add('selected');
+    
+    // Cargar slots del día
+    cargarSlotsDia(fecha);
+    
+    // Cambiar a vista diaria
+    document.getElementById('btnVistaDia').click();
+  }
+
+  // Función para cargar los slots de un día específico
+  async function cargarSlotsDia(date) {
+    try {
+      const response = await fetch(`/admin_module/calendario/barbero/${barberoId}/dia/?date=${date}`);
+      if (!response.ok) {
+        throw new Error('Error al cargar los slots');
+      }
+      const data = await response.json();
+      renderizarSlots(data);
+    } catch (error) {
+      console.error('Error:', error);
+      mostrarError('No se pudieron cargar los horarios del día');
+    }
+  }
+
+  // Función para renderizar slots del día
+  function renderizarSlots(data) {
+    const container = document.getElementById('slotsContainer');
+    
+    // Actualizar encabezado del día
+    const dateObj = new Date(data.date + 'T00:00:00');
+    const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    const dayName = dayNames[dateObj.getDay()];
+    const day = dateObj.getDate();
+    const month = monthNames[dateObj.getMonth()];
+    const year = dateObj.getFullYear();
+    
+    document.querySelector('.day-header h3').innerHTML = 
+      `<i class="bi bi-clock-history"></i> ${dayName}, ${day} de ${month} ${year}`;
+    
+    // Calcular estadísticas
+    const totalSlots = data.slots.length;
+    const occupied = data.slots.filter(s => s.status === 'occupied').length;
+    const available = totalSlots - occupied;
+    const totalIncome = data.slots
+      .filter(s => s.status === 'occupied' && s.appointment)
+      .reduce((sum, s) => sum + (parseFloat(s.appointment.price) || 0), 0);
+    
+    // Actualizar estadísticas
+    document.querySelectorAll('.stat-value')[0].textContent = totalSlots;
+    document.querySelectorAll('.stat-value')[1].textContent = occupied;
+    document.querySelectorAll('.stat-value')[2].textContent = available;
+    document.querySelectorAll('.stat-value')[3].textContent = `$${totalIncome.toFixed(2)}`;
+    
+    // Renderizar slots
+    container.innerHTML = '';
+    
+    if (data.slots.length === 0) {
+      container.innerHTML = `
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i> No hay horarios configurados para este día.
+        </div>
+      `;
+      return;
+    }
+    
+    data.slots.forEach(slot => {
+      let html = `
+        <div class="slot-item ${slot.status}">
+          <div class="slot-header">
+            <div class="slot-time">${slot.time}</div>
+            <span class="slot-status-badge ${slot.status}">
+              <i class="bi bi-circle-fill"></i> ${slot.status === 'occupied' ? 'Ocupado' : 'Disponible'}
+            </span>
+          </div>
+      `;
+      
+      if (slot.status === 'occupied' && slot.appointment) {
+        const apt = slot.appointment;
+        html += `
+          <div class="appointment-info">
+            <div class="info-row">
+              <span class="info-label"><i class="bi bi-person"></i> Cliente</span>
+              <span class="info-value">${apt.customer}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="bi bi-scissors"></i> Servicio</span>
+              <span class="info-value">${apt.service}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="bi bi-cash"></i> Precio</span>
+              <span class="info-value">$${parseFloat(apt.price).toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+      }
+      
+      html += '</div>';
+      container.innerHTML += html;
+    });
+  }
+
+  // Función para mostrar errores
+  function mostrarError(mensaje) {
+    alert(mensaje);
+  }
+</script>
+{% endblock %}

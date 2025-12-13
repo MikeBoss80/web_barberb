@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import ListView,TemplateView, UpdateView,CreateView,DeleteView, DetailView
-from datetime import date, time
+from datetime import date, time, datetime, timedelta
 from django.utils import timezone
 from django.views import View
 from .utils.mixins import BreadcrumbMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
-from django.db.models import Sum
-from .models import Service, Category
+from django.db.models import Sum, Count
+from .models import Service, Category, EstablishmentSchedule
 from establishment.models import Establishment
+import calendar
 from workflows.models import FlowInstance
 from services_module.models import ServiceDate
 from django.contrib.auth.models import User, Group
@@ -507,15 +508,214 @@ class BarberRequestCreateView(LoginRequiredMixin, BreadcrumbMixin, CreateView):
         return response
     
 class CalendarioBarberoView(LoginRequiredMixin, View):
+    """
+    Vista principal del calendario del barbero.
+    Carga datos reales del barbero y renderiza el template base.
+    """
     login_url = '/login_module/login/'
     
     def get(self, request, barbero_id):
-        # Aquí podrías cargar datos específicos del barbero, por ahora lo haremos estático
+        # Obtener barbero real de la BD
+        barbero = get_object_or_404(User, id=barbero_id, groups__name='Barbero')
+        
+        # Construir nombre completo
+        nombre_completo = f"{barbero.first_name} {barbero.last_name}".strip()
+        if not nombre_completo:
+            nombre_completo = barbero.username
+        
         context = {
             'barbero_id': barbero_id,
-            'nombre_barbero': 'Carlos Pérez',  # Lo puedes modificar según el barbero
+            'nombre_barbero': nombre_completo,
+            'fecha_actual': timezone.now().date(),
         }
-        return render(request, 'calendario_barbero.html', context)
+        return render(request, 'admin_module/calendario_barbero.html', context)
+
+
+class CalendarioBarberMesAPIView(LoginRequiredMixin, View):
+    """
+    API para obtener datos del calendario mensual de un barbero.
+    Retorna JSON con días que tienen citas agendadas.
+    
+    GET /admin/calendario/barbero/<id>/mes/?year=2025&month=12
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, barbero_id):
+        # Validar que el barbero existe
+        barbero = get_object_or_404(User, id=barbero_id, groups__name='Barbero')
+        
+        # Obtener parámetros de año y mes
+        try:
+            year = int(request.GET.get('year', timezone.now().year))
+            month = int(request.GET.get('month', timezone.now().month))
+        except (ValueError, TypeError):
+            return JsonResponse({'error': 'Año o mes inválido'}, status=400)
+        
+        # Validar mes
+        if not (1 <= month <= 12):
+            return JsonResponse({'error': 'Mes debe estar entre 1 y 12'}, status=400)
+        
+        # Calcular primer y último día del mes
+        first_day = datetime(year, month, 1).date()
+        last_day_num = calendar.monthrange(year, month)[1]
+        last_day = datetime(year, month, last_day_num).date()
+        
+        # Consultar citas del mes (excluir canceladas)
+        citas_mes = ServiceDate.objects.filter(
+            barber=barbero,
+            date__date__gte=first_day,
+            date__date__lte=last_day
+        ).exclude(
+            status='Cancelada'
+        ).values('date__date').annotate(
+            count=Count('id')
+        ).order_by('date__date')
+        
+        # Construir diccionario de días con citas
+        dias_con_citas = {
+            cita['date__date'].isoformat(): cita['count']
+            for cita in citas_mes
+        }
+        
+        # Construir respuesta con todos los días del mes
+        days = []
+        for day_num in range(1, last_day_num + 1):
+            day_date = datetime(year, month, day_num).date()
+            day_iso = day_date.isoformat()
+            
+            days.append({
+                'date': day_iso,
+                'day': day_num,
+                'has_appointments': day_iso in dias_con_citas,
+                'appointment_count': dias_con_citas.get(day_iso, 0)
+            })
+        
+        return JsonResponse({
+            'year': year,
+            'month': month,
+            'barber_id': barbero_id,
+            'barber_name': f"{barbero.first_name} {barbero.last_name}".strip() or barbero.username,
+            'days': days
+        })
+
+
+class CalendarioBarberoDiaAPIView(LoginRequiredMixin, View):
+    """
+    API para obtener slots de un día específico del barbero.
+    Genera slots basados en horario del establecimiento y marca ocupados según ServiceDate.
+    
+    GET /admin/calendario/barbero/<id>/dia/?date=2025-12-15
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, barbero_id):
+        # Validar barbero
+        barbero = get_object_or_404(User, id=barbero_id, groups__name='Barbero')
+        
+        # Obtener fecha del query param
+        date_str = request.GET.get('date')
+        if not date_str:
+            return JsonResponse({'error': 'Parámetro date requerido (formato: YYYY-MM-DD)'}, status=400)
+        
+        try:
+            fecha = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return JsonResponse({'error': 'Formato de fecha inválido (debe ser YYYY-MM-DD)'}, status=400)
+        
+        # Obtener establecimiento del barbero
+        try:
+            establecimiento = barbero.profile.establishment
+        except (Profile.DoesNotExist, AttributeError):
+            return JsonResponse({'error': 'Barbero sin establecimiento asignado'}, status=400)
+        
+        if not establecimiento:
+            return JsonResponse({'error': 'Barbero sin establecimiento asignado'}, status=400)
+        
+        # Generar slots del día
+        slots = self._generar_slots_dia(barbero, establecimiento, fecha)
+        
+        return JsonResponse({
+            'date': fecha.isoformat(),
+            'barber_id': barbero_id,
+            'barber_name': f"{barbero.first_name} {barbero.last_name}".strip() or barbero.username,
+            'slots': slots
+        })
+    
+    def _generar_slots_dia(self, barbero, establecimiento, fecha):
+        """
+        Genera lista de slots para un día específico.
+        Basado en horario del establecimiento + duración de slot configurada.
+        Marca ocupado si hay cita en ServiceDate.
+        """
+        # Obtener día de la semana (1=Lunes, 7=Domingo)
+        dia_semana = fecha.isoweekday()
+        
+        # Obtener horario del establecimiento para ese día
+        try:
+            horario_est = EstablishmentSchedule.objects.get(
+                establishment=establecimiento,
+                day_of_week=dia_semana,
+                is_open=True
+            )
+            hora_inicio = horario_est.opening_time
+            hora_fin = horario_est.closing_time
+        except EstablishmentSchedule.DoesNotExist:
+            # No hay horario configurado, retornar vacío
+            return []
+        
+        # Obtener duración de slot desde configuración del establecimiento
+        try:
+            slot_config = EstablishmentSlotConfiguration.objects.get(establishment=establecimiento)
+            duracion_slot = slot_config.default_slot_duration
+        except EstablishmentSlotConfiguration.DoesNotExist:
+            duracion_slot = 30  # Por defecto 30 minutos
+        
+        # Obtener todas las citas del barbero en ese día (excluir canceladas)
+        citas_dia = ServiceDate.objects.filter(
+            barber=barbero,
+            date__date=fecha
+        ).exclude(
+            status='Cancelada'
+        ).select_related('service__product', 'customer')
+        
+        # Crear diccionario de citas por hora (redondear a minutos exactos)
+        citas_por_hora = {}
+        for cita in citas_dia:
+            hora_cita = cita.date.time().replace(second=0, microsecond=0)
+            citas_por_hora[hora_cita] = {
+                'id': cita.id,
+                'customer': f"{cita.customer.first_name} {cita.customer.last_name}".strip() or cita.customer.username,
+                'service': cita.service.product.name if cita.service and cita.service.product else 'Sin servicio',
+                'status': cita.status,
+                'price': float(cita.price_total)
+            }
+        
+        # Generar todos los slots del día
+        slots = []
+        hora_actual = datetime.combine(fecha, hora_inicio)
+        hora_limite = datetime.combine(fecha, hora_fin)
+        
+        while hora_actual < hora_limite:
+            hora_slot = hora_actual.time().replace(second=0, microsecond=0)
+            
+            # Verificar si hay cita en este slot
+            if hora_slot in citas_por_hora:
+                slots.append({
+                    'time': hora_slot.strftime('%H:%M'),
+                    'status': 'occupied',
+                    'appointment': citas_por_hora[hora_slot]
+                })
+            else:
+                slots.append({
+                    'time': hora_slot.strftime('%H:%M'),
+                    'status': 'available'
+                })
+            
+            # Avanzar al siguiente slot
+            hora_actual += timedelta(minutes=duracion_slot)
+        
+        return slots
+
 
 # Vista para mostrar servicios
 class ServiciosView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):

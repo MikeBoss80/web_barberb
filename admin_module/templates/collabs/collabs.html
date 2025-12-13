@@ -42,7 +42,7 @@
               <div class="card barbero">
                 <img src="{% static 'admin_module/img/foto_barbero1.png' %}" class="card-img-top" alt="Foto de {{ barbero.nombre }}">
                 <div class="card-body">
-                  <h5 class="card-title">{{ barbero.first_name }} {{ barbero.last_name }}</h5>
+                  <h1 class="card-title">{{ barbero.first_name }} {{ barbero.last_name }}</h1>
                   <p class="card-text"><strong>Celular:</strong> {{ barbero.profile.phone }}</p>
                   <p class="card-text"><strong>Calificación:</strong> {{ barbero.profile.qa_average }} ⭐</p>
                   <p class="card-text"><strong>Cumpleaños:</strong> {{ barbero.profile.birth_date }}</p>
@@ -58,9 +58,10 @@
                     <span class="text-danger">🔴 Inactivo</span>
                     {% endif %}
                   </p>
-                  <!-- <button class="btn btn-outline-primary btn-sm w-100" onclick="mostrarCalendario({ barberoid })">📅 Ver
-                    Calendario</button>
-                  <div class="d-flex w-100 justify-content-between">
+                  <a class="btn btn-outline-primary btn-m w-100" href="{% url 'admin_module:calendario_barbero' barbero.id %}">
+                    <i class="bi bi-calendar-week"></i> Ver Agenda
+                  </a>
+                  <!-- <div class="d-flex w-100 justify-content-between">
                     <a href="#" class="btn btn-sm btn-outline-secondary">✏️ Editar</a>
                     <a href="#" class="btn btn-sm btn-outline-danger">🛑 Desactivar</a>
                   </div> -->

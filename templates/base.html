@@ -29,6 +29,9 @@
     <!-- Estilos personalizados -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    <!-- Estilos adicionales de páginas específicas -->
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>

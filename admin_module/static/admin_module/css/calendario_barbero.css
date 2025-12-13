@@ -1,0 +1,397 @@
+  /* ====== VARIABLES ====== */
+  :root {
+      --primary-color: #b800d4;
+      --primary-dark: #4c0763;
+      --success-color: #4caf50;
+      --danger-color: #f44336;
+      --warning-color: #ff9800;
+      --info-color: #b800d4;
+      --primary-light: #e1bee7;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-600: #6c757d;
+      --gray-800: #343a40;
+  }
+
+  /* ====== LAYOUT GENERAL ====== */
+  .calendar-container {
+      max-width: 100%;
+      padding: 1rem;
+  }
+
+  .page-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+
+  .page-header h2 {
+      margin: 0;
+      font-size: 1.75rem;
+      font-weight: 600;
+  }
+
+  .page-header p {
+      margin: 0.5rem 0 0 0;
+      opacity: 0.9;
+  }
+
+  /* ====== CONTROLES DE VISTA ====== */
+  .view-controls {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+  }
+
+  .view-toggle .btn {
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s;
+  }
+
+  .view-toggle .btn-primary {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+  }
+
+  .view-toggle .btn-primary:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+      transform: translateY(-2px);
+  }
+
+  /* ====== CALENDARIO MENSUAL ====== */
+  .calendar-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .calendar-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+  }
+
+  .month-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .month-navigation h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+  }
+
+  .month-navigation button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+  }
+
+  .month-navigation button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+  }
+
+  .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0;
+  }
+
+  .calendar-weekday {
+      background: var(--gray-100);
+      padding: 1rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      border: 1px solid var(--gray-200);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+  }
+
+  .calendar-day {
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-200);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      background: white;
+  }
+
+  .calendar-day:hover {
+      background: var(--gray-100);
+      transform: scale(1.02);
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .calendar-day.other-month {
+      background: #fafafa;
+      color: #ccc;
+  }
+
+  .calendar-day.today {
+      background: #fff9e6;
+      border: 2px solid var(--warning-color);
+      font-weight: 600;
+  }
+
+  .calendar-day.has-appointments {
+      background: #f3e5f5;
+      border-color: var(--primary-color);
+  }
+
+  .calendar-day.selected {
+      background: var(--primary-color);
+      color: white;
+      border: 2px solid var(--primary-dark);
+  }
+
+  .day-number {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+  }
+
+  .appointment-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(184, 0, 212, 0.4);
+  }
+
+  .appointment-preview {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      margin-top: 0.25rem;
+  }
+
+  /* ====== VISTA DIARIA (SLOTS) ====== */
+  .day-view-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .day-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+  }
+
+  .day-header h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+  }
+
+  .day-header p {
+      margin: 0.5rem 0 0 0;
+      opacity: 0.9;
+      font-size: 0.95rem;
+  }
+
+  .slots-container {
+      padding: 2rem;
+      max-height: 700px;
+      overflow-y: auto;
+  }
+
+  .slot-item {
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      border-left: 5px solid;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .slot-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  }
+
+  .slot-item.available {
+      background: linear-gradient(to right, #e8f5e9, #f1f8f4);
+      border-left-color: var(--success-color);
+  }
+
+  .slot-item.occupied {
+      background: linear-gradient(to right, #ffebee, #fef5f5);
+      border-left-color: var(--danger-color);
+  }
+
+  .slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+  }
+
+  .slot-time {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gray-800);
+  }
+
+  .slot-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+  }
+
+  .slot-status-badge.available {
+      background: var(--success-color);
+      color: white;
+  }
+
+  .slot-status-badge.occupied {
+      background: var(--danger-color);
+      color: white;
+  }
+
+  .appointment-info {
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 8px;
+      margin-top: 0.75rem;
+  }
+
+  .appointment-info .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+  }
+
+  .appointment-info .info-row:last-child {
+      margin-bottom: 0;
+  }
+
+  .info-label {
+      color: var(--gray-600);
+      font-size: 0.85rem;
+      font-weight: 500;
+  }
+
+  .info-value {
+      font-weight: 600;
+      color: var(--gray-800);
+  }
+
+  /* ====== ESTADÍSTICAS DEL DÍA ====== */
+  .day-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      text-align: center;
+  }
+
+  .stat-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+  }
+
+  .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-800);
+  }
+
+  .stat-label {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 768px) {
+      .calendar-day {
+          min-height: 70px;
+          padding: 0.5rem;
+      }
+
+      .day-number {
+          font-size: 1rem;
+      }
+
+      .appointment-badge {
+          width: 20px;
+          height: 20px;
+          font-size: 0.7rem;
+      }
+
+      .slot-time {
+          font-size: 1.1rem;
+      }
+
+      .month-navigation h3 {
+          font-size: 1.2rem;
+      }
+  }
+
+  /* ====== ANIMACIONES ====== */
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+          transform: translateY(10px);
+      }
+
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+
+  .fade-in {
+      animation: fadeIn 0.4s ease-out;
+  }

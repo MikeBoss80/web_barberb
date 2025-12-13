@@ -1,5 +1,5 @@
 from django.urls import path
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView, CollapsView, ServiciosView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, PerfilUsuarioView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView, SelecGrupoView
+from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView, CollapsView, ServiciosView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, CalendarioBarberMesAPIView, CalendarioBarberoDiaAPIView, PerfilUsuarioView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView, SelecGrupoView
 from . import views
 # from .schedule_views import (
 #     configurar_horarios_establecimiento,
@@ -27,6 +27,8 @@ urlpatterns = [
     path('soporte/', SoporteView.as_view(), name='soporte'),
     path('establecimiento/', ContenidosView.as_view(), name='establecimiento'),
     path('barberos/<int:barbero_id>/calendario/', CalendarioBarberoView.as_view(), name='calendario_barbero'),
+    path('calendario/barbero/<int:barbero_id>/mes/', CalendarioBarberMesAPIView.as_view(), name='calendario_barbero_mes_api'),
+    path('calendario/barbero/<int:barbero_id>/dia/', CalendarioBarberoDiaAPIView.as_view(), name='calendario_barbero_dia_api'),
     path("perfil/", PerfilUsuarioView.as_view(), name="perfil_usuario"),
     path("perfil/seleccionar-rol/", SelecGrupoView.as_view(), name="seleccionar_rol"),
 #    path('perfil/editar/', EditarPerfilView.as_view(), name='editar_perfil'),
