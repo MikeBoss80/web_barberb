@@ -10,3 +10,6 @@ docs/
 
 /staticfiles
 
+
+#Archivo para ignorar archivos de sistema y proteger informacion sensible
+
