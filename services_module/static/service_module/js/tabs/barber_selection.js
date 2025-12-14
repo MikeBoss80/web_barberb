@@ -542,13 +542,20 @@ const BarberSelection = (function() {
             return;
         }
         
-        // Renderizar cada slot
-        slots.forEach((slot, index) => {
+        // Filtrar solo los slots disponibles (no ocupados)
+        const availableSlots = slots.filter(slot => slot.available);
+        
+        if (availableSlots.length === 0) {
+            showNoSlotsAvailable('No hay horarios disponibles para esta fecha');
+            return;
+        }
+        
+        // Renderizar solo los slots disponibles
+        availableSlots.forEach((slot, index) => {
             const slotElement = createTimeSlotElement(slot, index);
             elements.slotsContainer.appendChild(slotElement);
         });
         
-        console.log(`✅ ${slots.length} slots de tiempo renderizados`);
     }
 
     function createTimeSlotElement(slot, index) {
