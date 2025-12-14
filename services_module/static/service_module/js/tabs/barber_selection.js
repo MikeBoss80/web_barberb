@@ -228,13 +228,24 @@ const BarberSelection = (function() {
             return;
         }
         
-        // Remover selección anterior
+        // Remover selección anterior y checks
         document.querySelectorAll('.time-slot').forEach(slot => {
             slot.classList.remove('selected');
+            // Remover check si existe
+            const existingCheck = slot.querySelector('.slot-check');
+            if (existingCheck) {
+                existingCheck.remove();
+            }
         });
         
         // Marcar como seleccionado
         slotElement.classList.add('selected');
+        
+        // Agregar check solo a este slot
+        const checkElement = document.createElement('div');
+        checkElement.className = 'slot-check';
+        checkElement.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+        slotElement.appendChild(checkElement);  
         
         state.selectedTime = timeValue;
         
@@ -569,7 +580,7 @@ const BarberSelection = (function() {
             div.title = 'No disponible';
         }
         
-        div.textContent = slot.time;
+        div.innerHTML = `<span class="time-text">${slot.time}</span>`;
         
         return div;
     }

@@ -367,6 +367,24 @@
     transform: translateY(-50%) rotate(-10deg);
 }
 
+/* Check de selección para slots */
+.slot-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.time-slot.selected .slot-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.slot-check i {
+    color: rgb(76, 173, 38);
+    font-size: 1.2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
 /* ============================================================================
    ESTADO VACÍO - SLOTS
    ============================================================================ */
