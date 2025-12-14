@@ -1,4 +1,32 @@
 """
+ESTE ARCHIVO NO ESTA EN USO, SE MANTENDRA PARA FUTURIAS INCORPORACIONES
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 API Endpoint para validar disponibilidad de slots
 ==================================================
 
@@ -88,7 +116,7 @@ class BarberOccupiedSlotsView(View):
                 date__gte=start_datetime,
                 date__lte=end_datetime,
                 status__in=['Agendada', 'agendada', 'confirmada', 'Confirmada']  # Solo citas activas
-            ).select_related('service', 'customer')
+            ).select_related('product', 'customer')
             
             # Formatear datos
             occupied_slots = []
@@ -96,7 +124,7 @@ class BarberOccupiedSlotsView(View):
                 occupied_slots.append({
                     'time': appointment.date.strftime('%H:%M'),
                     'datetime': appointment.date.strftime('%Y-%m-%d %H:%M:%S'),
-                    'service': appointment.service.product.name if hasattr(appointment.service, 'product') else 'Servicio',
+                    'service': appointment.product.name if appointment.product else 'Servicio',
                     'customer': appointment.customer.get_full_name(),
                     'status': appointment.status
                 })
@@ -252,7 +280,8 @@ class CreateAppointmentView(LoginRequiredMixin, View):
             
             # Crear la cita
             appointment = ServiceDate.objects.create(
-                service=service,
+                product=service.product,
+                establishment=establishment,
                 date=appointment_datetime,
                 customer=request.user,
                 barber=barber,

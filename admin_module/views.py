@@ -62,7 +62,7 @@ class HomeadminView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
         #Citas del dia
         citas_hoy=ServiceDate.objects.filter(
             date=today,
-            service__establishment=establecimiento
+            establishment=establecimiento
         ).count()
 
         #Barberos activos
@@ -82,13 +82,13 @@ class HomeadminView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
         # Ingresos del día
         ingresos_hoy = ServiceDate.objects.filter(
             date=today,
-            service__establishment=establecimiento
+            establishment=establecimiento
         ).aggregate(total=Sum('price_total'))['total'] or 0
 
         # Próximas citas (de hoy en adelante)
         proximas_citas = ServiceDate.objects.filter(
             date__gte=today,
-            service__establishment=establecimiento
+            establishment=establecimiento
         ).order_by('date', 'date')[:5]
 
         # Notificaciones del sistema (ejemplo: solicitudes pendientes)
@@ -149,8 +149,8 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
             try:
                 establecimiento = Establishment.objects.get(id_admin=user)
                 citas = ServiceDate.objects.select_related(
-                    'service', 'service__establishment', 'barber', 'customer'
-                ).filter(service__establishment=establecimiento)
+                    'product', 'establishment', 'barber', 'customer'
+                ).filter(establishment=establecimiento)
             except Establishment.DoesNotExist:
                 pass
 
@@ -159,13 +159,13 @@ class CitasView(UserPassesTestMixin, BreadcrumbMixin, TemplateView, CitasQueryse
             establecimiento = getattr(user.profile, 'establishment_id', None)
             if establecimiento:
                 citas = ServiceDate.objects.select_related(
-                    'service', 'service__establishment', 'barber', 'customer'
-                ).filter(service__establishment=establecimiento, barber=user)
+                    'product', 'establishment', 'barber', 'customer'
+                ).filter(establishment=establecimiento, barber=user)
 
         # CLIENTE
         elif rol == 'Cliente':
             citas = ServiceDate.objects.select_related(
-                'service', 'service__establishment', 'barber', 'customer'
+                'product', 'establishment', 'barber', 'customer'
             ).filter(customer=user)
 
         # Agregar citas al contexto
@@ -218,9 +218,16 @@ class CrearCitaRapidaView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('admin_module:citas')
     login_url = '/login_module/login/'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from datetime import date, timedelta
+        context['today'] = date.today().isoformat()
+        context['max_date'] = (date.today() + timedelta(days=60)).isoformat()
+        return context
+
     def form_valid(self, form):
-        # Asignar precio automático desde el servicio
-        form.instance.price_total = form.instance.service.service.price_service
+        # Asignar precio automático desde el producto/servicio
+        form.instance.price_total = form.instance.product.sale_price
         return super().form_valid(form)
     
     def get_form_kwargs(self):
@@ -676,7 +683,7 @@ class CalendarioBarberoDiaAPIView(LoginRequiredMixin, View):
             date__date=fecha
         ).exclude(
             status='Cancelada'
-        ).select_related('service__product', 'customer')
+        ).select_related('product', 'customer')
         
         # Crear diccionario de citas por hora (redondear a minutos exactos)
         citas_por_hora = {}
@@ -685,7 +692,7 @@ class CalendarioBarberoDiaAPIView(LoginRequiredMixin, View):
             citas_por_hora[hora_cita] = {
                 'id': cita.id,
                 'customer': f"{cita.customer.first_name} {cita.customer.last_name}".strip() or cita.customer.username,
-                'service': cita.service.product.name if cita.service and cita.service.product else 'Sin servicio',
+                'service': cita.product.name if cita.product else 'Sin servicio',
                 'status': cita.status,
                 'price': float(cita.price_total)
             }

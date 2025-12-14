@@ -59,60 +59,76 @@ class CreateEstablishmentForm(forms.ModelForm):
 class ServiceDateForm(forms.ModelForm):
     class Meta:
         model = ServiceDate
-        fields = ['customer', 'barber', 'service', 'date']
+        fields = ['customer', 'barber', 'product', 'establishment', 'date']
         labels = {
             'customer': 'Cliente',
             'barber': 'Barbero',
-            'service': 'Servicio',
+            'product': 'Servicio',
+            'establishment': 'Establecimiento',
             'date': 'Fecha y Hora',
         }
         widgets = {
             'customer': forms.Select(attrs={'class': 'form-control select2'}),
             'barber': forms.Select(attrs={'class': 'form-control'}),
-            'service': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'product': forms.Select(attrs={'class': 'form-control'}),
+            'establishment': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.HiddenInput(),
         }
     
     def __init__(self, *args, **kwargs):
+        from establishment.models import Establishment
+        from product.models import Product
+        
         request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
-        establishment = None
+        establishment_id = None
         if request:
             user = request.user
 
             # Si es barbero
             if user.groups.filter(name='Barbero').exists():
-                establishment = getattr(user.profile, 'establishment_id', None)
+                establishment_id = getattr(user.profile, 'establishment_id', None)
 
             # Si es administrador
             elif user.groups.filter(name='Administrador').exists():
                 try:
-                    establishment = Establishment.objects.get(id_admin=user).id
+                    establishment = Establishment.objects.get(id_admin=user)
+                    establishment_id = establishment.id
                 except Establishment.DoesNotExist:
-                    establishment = None
+                    establishment_id = None
 
         # 1) BARBEROS solo del establecimiento
         queryset_barberos = User.objects.none()
-        if establishment:
+        if establishment_id:
             queryset_barberos = User.objects.filter(
                 groups__name='Barbero',
-                profile__establishment_id=establishment
+                profile__establishment_id=establishment_id
             )
         self.fields['barber'].queryset = queryset_barberos
         self.fields['barber'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
-        # 2) SERVICIOS por tabla intermedia
-        queryset_servicios = ProductEstablishment.objects.none()
-        if establishment:
-            queryset_servicios = ProductEstablishment.objects.filter(
-                establishment_id=establishment,
-                service__active=True
-            )
-        self.fields['service'].queryset = queryset_servicios
-        self.fields['service'].label_from_instance = lambda obj: f"{obj.service.name_service} - ${obj.service.price_service}"
+        # 2) PRODUCTOS/SERVICIOS activos (filtramos por categoría de tipo 'service')
+        queryset_productos = Product.objects.filter(
+            category__category_type='service',
+            is_active=True
+        )
+        
+        # Si no hay productos de servicio, mostrar todos los productos activos
+        if not queryset_productos.exists():
+            queryset_productos = Product.objects.filter(is_active=True)
+        
+        self.fields['product'].queryset = queryset_productos
+        self.fields['product'].label_from_instance = lambda obj: f"{obj.name} - ${obj.sale_price}"
+        
+        # 3) ESTABLECIMIENTO (si el usuario es barbero/admin, pre-seleccionar su establecimiento)
+        if establishment_id:
+            self.fields['establishment'].queryset = Establishment.objects.filter(id=establishment_id)
+            self.fields['establishment'].initial = establishment_id
+        else:
+            self.fields['establishment'].queryset = Establishment.objects.filter(active=True)
 
-        # 3) CLIENTES (puedes filtrar por establecimiento si también los tienes asociados)
+        # 4) CLIENTES (puedes filtrar por establecimiento si también los tienes asociados)
         self.fields['customer'].queryset = User.objects.filter(groups__name='Cliente')
         self.fields['customer'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 

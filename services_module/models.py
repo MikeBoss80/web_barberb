@@ -1,13 +1,15 @@
 
 from django.db import models
-from product.models import ProductEstablishment
+from product.models import Product
+from establishment.models import Establishment
 from admin_module.models import Day
 from django.contrib.auth.models import User
 
 
 # Tabla: services_module_dates
 class ServiceDate(models.Model):
-    service = models.ForeignKey(ProductEstablishment, on_delete=models.CASCADE, related_name="service_dates")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="service_dates")
+    establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE, related_name="service_dates")
     date = models.DateTimeField()
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customer_dates")
     barber = models.ForeignKey(User, on_delete=models.CASCADE, related_name="barber_dates")
@@ -16,7 +18,7 @@ class ServiceDate(models.Model):
     price_total = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
-        return f"{self.service} on {self.date}"
+        return f"{self.product.name} - {self.establishment.name_est} on {self.date}"
 
 # Tabla intermedia: services_module_dates_x_dates (relación muchos a muchos con días)
 class ServiceDateDay(models.Model):

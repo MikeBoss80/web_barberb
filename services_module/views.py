@@ -77,7 +77,7 @@ class ServiceDateCreateView(LoginRequiredMixin, CreateView):
         Si el formulario es válido, guarda la cita y muestra mensaje de éxito.
         """
         #Asigna el precio automáticamente según el servicio seleccionado
-        form.instance.price_total = form.instance.service.service.price_service
+        form.instance.price_total = form.instance.product.sale_price
 
 
         #Asigna un comentario por defecto si deseas
@@ -88,7 +88,8 @@ class ServiceDateCreateView(LoginRequiredMixin, CreateView):
         print("Creando cita:")
         print(f"Cliente: {form.instance.customer}")
         print(f"Barbero: {form.instance.barber}")
-        print(f"Servicio: {form.instance.service}")
+        print(f"Producto/Servicio: {form.instance.product}")
+        print(f"Establecimiento: {form.instance.establishment}")
         print(f"Fecha: {form.instance.date}")
         print(f"Precio Total: {form.instance.price_total}")
 

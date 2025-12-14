@@ -1,4 +1,142 @@
-<form method="post" action="{% url 'admin_module:crear_cita' %}">
+<form method="post" action="{% url 'admin_module:crear_cita' %}" id="formCrearCitaRapida">
   {% csrf_token %}
-  {{ form.as_p }}
+  
+  <div class="mb-3">
+    <label for="{{ form.customer.id_for_label }}" class="form-label">{{ form.customer.label }}</label>
+    {{ form.customer }}
+    {% if form.customer.errors %}
+      <div class="text-danger">{{ form.customer.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    <label for="id_fecha" class="form-label">Fecha</label>
+    <input type="date" class="form-control" id="id_fecha" name="fecha" required 
+           min="{{ today }}" max="{{ max_date }}">
+  </div>
+
+  <div class="mb-3">
+    <label for="{{ form.barber.id_for_label }}" class="form-label">{{ form.barber.label }}</label>
+    {{ form.barber }}
+    {% if form.barber.errors %}
+      <div class="text-danger">{{ form.barber.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    <label for="id_hora" class="form-label">Horario Disponible</label>
+    <select class="form-control" id="id_hora" name="hora" required>
+      <option value="">Seleccione fecha y barbero primero</option>
+    </select>
+    <small class="text-muted">Los horarios se cargarán según el barbero y fecha seleccionados</small>
+  </div>
+
+  <div class="mb-3">
+    <label for="{{ form.product.id_for_label }}" class="form-label">{{ form.product.label }}</label>
+    {{ form.product }}
+    {% if form.product.errors %}
+      <div class="text-danger">{{ form.product.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3" style="display: none;">
+    {{ form.establishment }}
+  </div>
+
+  <!-- Campo oculto para datetime combinado -->
+  {{ form.date }}
+
 </form>
+
+<script>
+(function() {
+    console.log('Script de formulario ejecutándose inmediatamente');
+    
+    // Esperar un momento para que el DOM se renderice
+    setTimeout(function() {
+        const fechaInput = document.getElementById('id_fecha');
+        const barberoSelect = document.querySelector('select[name="barber"]');
+        const horaSelect = document.getElementById('id_hora');
+        const dateField = document.querySelector('input[name="date"]');
+
+        console.log('Elementos encontrados:', {
+            fechaInput: !!fechaInput,
+            barberoSelect: !!barberoSelect,
+            horaSelect: !!horaSelect,
+            dateField: !!dateField
+        });
+
+        if (!fechaInput || !barberoSelect || !horaSelect || !dateField) {
+            console.error('No se encontraron todos los elementos del formulario');
+            return;
+        }
+
+        // Función para cargar horarios disponibles
+        async function cargarHorariosDisponibles() {
+            const fecha = fechaInput.value;
+            const barberoId = barberoSelect.value;
+
+            console.log('Cargando horarios para:', { fecha, barberoId });
+
+            if (!fecha || !barberoId) {
+                horaSelect.innerHTML = '<option value="">Seleccione fecha y barbero primero</option>';
+                return;
+            }
+
+            horaSelect.innerHTML = '<option value="">Cargando...</option>';
+            horaSelect.disabled = true;
+
+            const url = `/admin_module/calendario/barbero/${barberoId}/dia/?date=${fecha}`;
+            console.log('URL API:', url);
+
+            try {
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('Data recibida:', data);
+
+                horaSelect.innerHTML = '';
+                
+                if (data.slots && data.slots.length > 0) {
+                    // Filtrar solo los slots disponibles (status === 'available')
+                    const slotsDisponibles = data.slots.filter(slot => slot.status === 'available');
+                    console.log('Slots disponibles:', slotsDisponibles);
+                    
+                    if (slotsDisponibles.length > 0) {
+                        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+                        slotsDisponibles.forEach(slot => {
+                            const option = document.createElement('option');
+                            option.value = slot.time;
+                            option.textContent = slot.time;
+                            horaSelect.appendChild(option);
+                        });
+                    } else {
+                        horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+                    }
+                } else {
+                    horaSelect.innerHTML = '<option value="">No hay horarios configurados</option>';
+                }
+            } catch (error) {
+                console.error('Error al cargar horarios:', error);
+                horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
+            } finally {
+                horaSelect.disabled = false;
+            }
+        }
+
+        // Event listeners
+        fechaInput.addEventListener('change', function() {
+            console.log('Fecha cambiada:', this.value);
+            cargarHorariosDisponibles();
+        });
+        
+        barberoSelect.addEventListener('change', function() {
+            console.log('Barbero cambiado:', this.value);
+            cargarHorariosDisponibles();
+        });
+        
+        console.log('Event listeners agregados correctamente');
+    }, 100);
+})();
+</script>
