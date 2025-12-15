@@ -1,5 +1,17 @@
 from django.urls import path
-from admin_module.views import VinculationDeleteView,CreateVinculationView,CitasView, CollapsView, ServiciosView, ReportesView, SeguridadView, SoporteView, ContenidosView, CalendarioBarberoView, CalendarioBarberMesAPIView, CalendarioBarberoDiaAPIView, PerfilUsuarioView, CreateEstablishmentView, HomeadminView,DeleteEstablishmentView, EditarBarberoEstadoView,CrearCitaRapidaView, cancelar_cita, AdminSolicitudesListView, AdminSolicitudesDetailView,BarberRequestListView,BarberValidateVinculation, BarberRequestDetailView,BarberRequestCreateView, SelecGrupoView
+from admin_module.views import (
+    VinculationDeleteView, CreateVinculationView, CitasView, CollapsView, 
+    ServiciosView, ReportesView, SeguridadView, SoporteView, ContenidosView, 
+    CalendarioBarberoView, CalendarioBarberMesAPIView, CalendarioBarberoDiaAPIView, 
+    PerfilUsuarioView, CreateEstablishmentView, HomeadminView, DeleteEstablishmentView, 
+    EditarBarberoEstadoView, CrearCitaRapidaView, cancelar_cita, 
+    AdminSolicitudesListView, AdminSolicitudesDetailView, BarberRequestListView,
+    BarberValidateVinculation, BarberRequestDetailView, BarberRequestCreateView, 
+    SelecGrupoView,
+    # Endpoints API Dashboard
+    DashboardCitasHoyAPIView, DashboardIngresosAPIView, DashboardBarberosActivosAPIView,
+    DashboardIngresosSemanalesAPIView, DashboardServiciosPopularesAPIView
+)
 from . import views
 # from .schedule_views import (
 #     configurar_horarios_establecimiento,
@@ -50,6 +62,15 @@ urlpatterns = [
     path('solicitudes/validate/<int:pk>/<int:value>/', BarberValidateVinculation.as_view(), name='barber_vinculation_validate'),
     path('solicitud/<int:pk>/', BarberRequestDetailView.as_view(), name='barber_solicitud_detalle'),
     path('crear-solicitud/barbero/', BarberRequestCreateView.as_view(), name ='solicitud_barbero'),
+    
+    # ============================================================================
+    # API ENDPOINTS PARA DASHBOARD EN TIEMPO REAL
+    # ============================================================================
+    path('api/dashboard/citas-hoy/', DashboardCitasHoyAPIView.as_view(), name='api_dashboard_citas_hoy'),
+    path('api/dashboard/ingresos/', DashboardIngresosAPIView.as_view(), name='api_dashboard_ingresos'),
+    path('api/dashboard/barberos-activos/', DashboardBarberosActivosAPIView.as_view(), name='api_dashboard_barberos_activos'),
+    path('api/dashboard/ingresos-semanales/', DashboardIngresosSemanalesAPIView.as_view(), name='api_dashboard_ingresos_semanales'),
+    path('api/dashboard/servicios-populares/', DashboardServiciosPopularesAPIView.as_view(), name='api_dashboard_servicios_populares'),
     
     # ============================================================================
     # URLs para Configuración de Horarios y Slots - DEPRECADO

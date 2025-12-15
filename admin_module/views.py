@@ -1238,12 +1238,356 @@ class SelecGrupoView(LoginRequiredMixin, TemplateView):
             messages.error(request, f'Error al actualizar roles: {str(e)}')
         
         return redirect('admin_module:seleccionar_rol')
-    
- 
-   
-    
 
-    
-    
-    
 
+# ==========================================
+# ENDPOINTS API PARA DASHBOARD EN TIEMPO REAL
+# ==========================================
+
+class DashboardCitasHoyAPIView(LoginRequiredMixin, View):
+    """
+    Endpoint API que devuelve el número de citas programadas para hoy
+    en el establecimiento del administrador
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # Obtener el establecimiento del usuario administrador
+            establecimiento = Establishment.objects.filter(id_admin=request.user).first()
+            
+            if not establecimiento:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No tienes un establecimiento asignado',
+                    'data': {'citas_hoy': 0, 'comparacion': 0}
+                })
+            
+            today = timezone.now().date()
+            yesterday = today - timedelta(days=1)
+            
+            # Citas de hoy
+            citas_hoy = ServiceDate.objects.filter(
+                date__date=today,
+                establishment=establecimiento
+            ).count()
+            
+            # Citas de ayer para comparación
+            citas_ayer = ServiceDate.objects.filter(
+                date__date=yesterday,
+                establishment=establecimiento
+            ).count()
+            
+            # Calcular porcentaje de cambio
+            if citas_ayer > 0:
+                cambio_porcentaje = ((citas_hoy - citas_ayer) / citas_ayer) * 100
+            else:
+                cambio_porcentaje = 100 if citas_hoy > 0 else 0
+            
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    'citas_hoy': citas_hoy,
+                    'citas_ayer': citas_ayer,
+                    'cambio_porcentaje': round(cambio_porcentaje, 1),
+                    'tendencia': 'up' if cambio_porcentaje > 0 else 'down' if cambio_porcentaje < 0 else 'neutral'
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al obtener las citas: {str(e)}',
+                'data': {'citas_hoy': 0}
+            }, status=500)
+
+
+class DashboardIngresosAPIView(LoginRequiredMixin, View):
+    """
+    Endpoint API que devuelve el ingreso estimado del día
+    basado en las citas programadas y completadas
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # Obtener el establecimiento del usuario administrador
+            establecimiento = Establishment.objects.filter(id_admin=request.user).first()
+            
+            if not establecimiento:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No tienes un establecimiento asignado',
+                    'data': {'ingresos_hoy': 0}
+                })
+            
+            today = timezone.now().date()
+            
+            # Ingresos del día (citas completadas + agendadas)
+            ingresos_result = ServiceDate.objects.filter(
+                date__date=today,
+                establishment=establecimiento
+            ).exclude(
+                status='Cancelada'
+            ).aggregate(
+                total=Sum('price_total')
+            )
+            
+            ingresos_hoy = float(ingresos_result['total'] or 0)
+            
+            # Ingresos confirmados (solo completadas)
+            ingresos_confirmados = ServiceDate.objects.filter(
+                date__date=today,
+                establishment=establecimiento,
+                status='Completada'
+            ).aggregate(
+                total=Sum('price_total')
+            )['total'] or 0
+            
+            # Calcular promedio semanal para comparación
+            hace_7_dias = today - timedelta(days=7)
+            promedio_semanal = ServiceDate.objects.filter(
+                date__date__gte=hace_7_dias,
+                date__date__lt=today,
+                establishment=establecimiento
+            ).exclude(
+                status='Cancelada'
+            ).aggregate(
+                total=Sum('price_total')
+            )['total'] or 0
+            
+            promedio_diario = float(promedio_semanal) / 7 if promedio_semanal > 0 else 0
+            
+            # Calcular porcentaje vs promedio
+            if promedio_diario > 0:
+                cambio_vs_promedio = ((ingresos_hoy - promedio_diario) / promedio_diario) * 100
+            else:
+                cambio_vs_promedio = 100 if ingresos_hoy > 0 else 0
+            
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    'ingresos_hoy': round(ingresos_hoy, 2),
+                    'ingresos_confirmados': round(float(ingresos_confirmados), 2),
+                    'promedio_diario': round(promedio_diario, 2),
+                    'cambio_vs_promedio': round(cambio_vs_promedio, 1),
+                    'tendencia': 'up' if cambio_vs_promedio > 0 else 'down' if cambio_vs_promedio < 0 else 'neutral'
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al calcular ingresos: {str(e)}',
+                'data': {'ingresos_hoy': 0}
+            }, status=500)
+
+
+class DashboardBarberosActivosAPIView(LoginRequiredMixin, View):
+    """
+    Endpoint API que devuelve el número de barberos activos
+    en el establecimiento
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # Obtener el establecimiento del usuario administrador
+            establecimiento = Establishment.objects.filter(id_admin=request.user).first()
+            
+            if not establecimiento:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No tienes un establecimiento asignado',
+                    'data': {'barberos_activos': 0}
+                })
+            
+            # Barberos activos (usuarios activos del grupo Barbero)
+            barberos_activos = Profile.objects.filter(
+                establishment=establecimiento,
+                user__is_active=True,
+                user__groups__name='Barbero'
+            ).count()
+            
+            # Total de barberos (incluyendo inactivos)
+            total_barberos = Profile.objects.filter(
+                establishment=establecimiento,
+                user__groups__name='Barbero'
+            ).count()
+            
+            # Barberos con citas hoy
+            today = timezone.now().date()
+            barberos_con_citas_hoy = ServiceDate.objects.filter(
+                date__date=today,
+                establishment=establecimiento
+            ).values('barber').distinct().count()
+            
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    'barberos_activos': barberos_activos,
+                    'total_barberos': total_barberos,
+                    'barberos_con_citas_hoy': barberos_con_citas_hoy,
+                    'porcentaje_ocupados': round((barberos_con_citas_hoy / barberos_activos * 100), 1) if barberos_activos > 0 else 0
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al obtener barberos activos: {str(e)}',
+                'data': {'barberos_activos': 0}
+            }, status=500)
+
+
+class DashboardIngresosSemanalesAPIView(LoginRequiredMixin, View):
+    """
+    Endpoint API que devuelve los ingresos de los últimos 7 días
+    para la gráfica de ingresos semanales
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # Obtener el establecimiento del usuario administrador
+            establecimiento = Establishment.objects.filter(id_admin=request.user).first()
+            
+            if not establecimiento:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No tienes un establecimiento asignado',
+                    'data': {}
+                })
+            
+            today = timezone.now().date()
+            
+            # Obtener ingresos de los últimos 7 días (semana actual)
+            ingresos_semana_actual = []
+            labels = []
+            dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+            
+            for i in range(6, -1, -1):
+                dia = today - timedelta(days=i)
+                ingresos_dia = ServiceDate.objects.filter(
+                    date__date=dia,
+                    establishment=establecimiento
+                ).exclude(
+                    status='Cancelada'
+                ).aggregate(
+                    total=Sum('price_total')
+                )['total'] or 0
+                
+                ingresos_semana_actual.append(float(ingresos_dia))
+                # Obtener nombre del día de la semana
+                dia_semana = dias_semana[dia.weekday()]
+                labels.append(dia_semana)
+            
+            # Obtener ingresos de la semana anterior (hace 7-13 días) para comparación
+            ingresos_semana_anterior = []
+            for i in range(13, 6, -1):
+                dia = today - timedelta(days=i)
+                ingresos_dia = ServiceDate.objects.filter(
+                    date__date=dia,
+                    establishment=establecimiento
+                ).exclude(
+                    status='Cancelada'
+                ).aggregate(
+                    total=Sum('price_total')
+                )['total'] or 0
+                
+                ingresos_semana_anterior.append(float(ingresos_dia))
+            
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    'labels': labels,
+                    'semana_actual': ingresos_semana_actual,
+                    'semana_anterior': ingresos_semana_anterior,
+                    'total_actual': sum(ingresos_semana_actual),
+                    'total_anterior': sum(ingresos_semana_anterior)
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al obtener ingresos semanales: {str(e)}',
+                'data': {}
+            }, status=500)
+
+
+class DashboardServiciosPopularesAPIView(LoginRequiredMixin, View):
+    """
+    Endpoint API que devuelve los servicios más solicitados
+    para la gráfica de servicios populares
+    """
+    login_url = '/login_module/login/'
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # Obtener el establecimiento del usuario administrador
+            establecimiento = Establishment.objects.filter(id_admin=request.user).first()
+            
+            if not establecimiento:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No tienes un establecimiento asignado',
+                    'data': {}
+                })
+            
+            # Obtener el parámetro de periodo (por defecto: mes actual)
+            periodo = request.GET.get('periodo', 'mes')
+            today = timezone.now().date()
+            
+            # Calcular fecha de inicio según el periodo
+            if periodo == 'mes':
+                fecha_inicio = today.replace(day=1)
+            elif periodo == '3meses':
+                fecha_inicio = (today - timedelta(days=90))
+            elif periodo == 'anio':
+                fecha_inicio = today.replace(month=1, day=1)
+            else:
+                fecha_inicio = today.replace(day=1)
+            
+            # Obtener los servicios más solicitados con su cantidad
+            servicios_populares = ServiceDate.objects.filter(
+                date__date__gte=fecha_inicio,
+                date__date__lte=today,
+                establishment=establecimiento
+            ).exclude(
+                status='Cancelada'
+            ).values(
+                'product__name'
+            ).annotate(
+                cantidad=Count('id'),
+                ingresos=Sum('price_total')
+            ).order_by('-cantidad')[:10]  # Top 10 servicios
+            
+            # Preparar datos para la gráfica
+            labels = []
+            cantidades = []
+            ingresos = []
+            
+            for servicio in servicios_populares:
+                labels.append(servicio['product__name'] or 'Sin nombre')
+                cantidades.append(servicio['cantidad'])
+                ingresos.append(float(servicio['ingresos'] or 0))
+            
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    'labels': labels,
+                    'cantidades': cantidades,
+                    'ingresos': ingresos,
+                    'periodo': periodo,
+                    'fecha_inicio': fecha_inicio.strftime('%Y-%m-%d'),
+                    'fecha_fin': today.strftime('%Y-%m-%d')
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al obtener servicios populares: {str(e)}',
+                'data': {}
+            }, status=500)

@@ -18,14 +18,14 @@
 <div class="container my-4">
 
   <div class="mb-4">
-    <h1 class="h2">¡Hola, {{ user.first_name }}!</h1>
+    <h2 class="h2">¡Hola, {{ user.first_name }}!</h2>
     <p class="lead text-muted">Resumen del {{ today|date:"l, d F Y" }}</p>
   </div>
 
   <!-- SECCIÓN DE TARJETAS -->
   <div class="row g-4 mb-5">
     <!-- Tarjeta 1: Citas del Día -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-4 col-md-6">
       <div class="metric-card card-border-color" role="region" aria-label="Citas programadas para hoy">
         <div class="card-header d-flex justify-content-between align-items-center">
           <span>Citas del Día</span>
@@ -34,19 +34,19 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-end">
             <div>
-              <h2 class="metric-value">{{ citas_hoy }}</h2>
-              <p class="metric-trend text-success">
-                <i class="bi bi-arrow-up-short"></i> 12% vs ayer
+              <h2 class="metric-value" id="citas-hoy-value">{{ citas_hoy }}</h2>
+              <p class="metric-trend text-muted" id="citas-hoy-trend">
+                <i class="bi bi-dash"></i> <span>Cargando...</span>
               </p>
             </div>
-            <button class="btn btn-sm btn-outline-primary">Ver todas</button>
+            <a href="{% url 'admin_module:citas' %}" class="btn btn-sm btn-outline-primary">Gestión</a>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Tarjeta 2: Barberos Activos -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-4 col-md-6">
       <div class="metric-card card-border-color" role="region" aria-label="Barberos disponibles">
         <div class="card-header d-flex justify-content-between align-items-center">
           <span>Barberos Activos</span>
@@ -55,40 +55,19 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-end">
             <div>
-              <h2 class="metric-value">{{ barberos_activos }}</h2>
-              <p class="metric-trend text-muted">
-                <i class="bi bi-dash"></i> Sin cambios
+              <h2 class="metric-value" id="barberos-activos-value">{{ barberos_activos }}</h2>
+              <p class="metric-trend text-muted" id="barberos-activos-trend">
+                <i class="bi bi-dash"></i> <span>Cargando...</span>
               </p>
             </div>
-            <button class="btn btn-sm btn-outline-primary">Gestión</button>
+            <a href="{% url 'admin_module:collabs' %}" class="btn btn-sm btn-outline-primary">Gestión</a>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Tarjeta 3: Inventario -->
-    <div class="col-xl-3 col-md-6">
-      <div class="metric-card card-border-color" role="region" aria-label="Productos con bajo stock">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <span>Bajo Stock</span>
-          <i class="bi bi-box-seam-fill metric-icon"></i>
-        </div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-end">
-            <div>
-              <h2 class="metric-value">{{ bajo_stock }}</h2>
-              <p class="metric-trend text-danger">
-                <i class="bi bi-arrow-down-short"></i> 3 productos críticos
-              </p>
-            </div>
-            <button class="btn btn-sm btn-outline-primary">Reabastecer</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta 4: Ingresos -->
-    <div class="col-xl-3 col-md-6">
+    <!-- Tarjeta 3: Ingresos -->
+    <div class="col-xl-4 col-md-6">
       <div class="metric-card card-border-color" role="region" aria-label="Ingresos estimados">
         <div class="card-header d-flex justify-content-between align-items-center">
           <span>Ingresos Estimados</span>
@@ -97,12 +76,11 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-end">
             <div>
-              <h2 class="metric-value">${{ ingresos_hoy }}</h2>
-              <p class="metric-trend text-success">
-                <i class="bi bi-arrow-up-short"></i> 18% vs promedio
+              <h2 class="metric-value" id="ingresos-value">${{ ingresos_hoy }}</h2>
+              <p class="metric-trend text-muted" id="ingresos-trend">
+                <i class="bi bi-dash"></i> <span>Cargando...</span>
               </p>
             </div>
-            <button class="btn btn-sm btn-outline-primary">Detalles</button>
           </div>
         </div>
       </div>
@@ -112,7 +90,7 @@
 
 
   <!-- 3. Próximas Citas -->
-  <div class="mt-5">
+  <!-- <div class="mt-5">
     <h4>Próximas Citas</h4>
     <ul class="list-group">
       {% for cita in proximas_citas %}
@@ -124,7 +102,7 @@
       <li class="list-group-item">No hay citas próximas.</li>
       {% endfor %}
     </ul>
-  </div>
+  </div> -->
 
   <!-- SECCIÓN DE GRÁFICAS -->
   <div class="row mt-5">
@@ -149,10 +127,10 @@
       <div class="chart-card">
         <div class="chart-header d-flex justify-content-between align-items-center mb-3">
           <h3>Servicios Más Solicitados</h3>
-          <select class="form-select form-select-sm chart-filter" style="width: auto;">
-            <option>Este Mes</option>
-            <option>Últimos 3 Meses</option>
-            <option>Este Año</option>
+          <select id="periodo-servicios" class="form-select form-select-sm chart-filter" style="width: auto;" onchange="actualizarGraficaServicios(this.value)">
+            <option value="mes">Este Mes</option>
+            <option value="3meses">Últimos 3 Meses</option>
+            <option value="anio">Este Año</option>
           </select>
         </div>
         <div class="chart-container">
@@ -164,7 +142,7 @@
 
 
   <!-- 5. Notificaciones -->
-  <div class="mt-5">
+  <!-- <div class="mt-5">
     <h4>Notificaciones del Sistema</h4>
     <ul class="list-group">
       {% for notificacion in notificaciones %}
@@ -175,7 +153,7 @@
       <li class="list-group-item">No hay notificaciones por ahora.</li>
       {% endfor %}
     </ul>
-  </div>
+  </div> -->
 </div>
 
 
@@ -186,91 +164,234 @@
   Chart.defaults.font.family = "'Roboto', sans-serif";
   Chart.defaults.color = "#6c757d";
 
-  // 1. Gráfica de Ingresos (Lineal)
-  const ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
-  new Chart(ingresosCtx, {
-    type: 'line',
-    data: {
-      labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-      datasets: [
-        {
-          label: '2025',
-          data: [1200, 1900, 1700, 2100, 2500, 2200, 1800],
-          borderColor: '#004D98',
-          backgroundColor: 'rgba(0, 77, 152, 0.05)',
-          borderWidth: 2,
-          tension: 0.3,
-          fill: true
-        },
-        {
-          label: '2024',
-          data: [900, 1200, 1100, 1500, 1800, 1600, 1300],
-          borderColor: '#6c757d',
-          borderWidth: 1,
-          borderDash: [5, 5],
-          tension: 0.3
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-          callbacks: {
-            label: function (context) {
-              return ` $${context.parsed.y.toLocaleString()}`;
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: {
-            callback: function (value) {
-              return `$${value.toLocaleString()}`;
-            }
-          }
-        },
-        x: { grid: { display: false } }
-      }
-    }
-  });
+  // Variables globales para las gráficas
+  let ingresosChart = null;
+  let serviciosChart = null;
 
-  // 2. Gráfica de Servicios (Barras horizontales)
-  const serviciosCtx = document.getElementById('serviciosChart').getContext('2d');
-  new Chart(serviciosCtx, {
-    type: 'bar',
-    data: {
-      labels: ['Corte Clásico', 'Barba Premium', 'Tinte', 'Afeitado', 'Tratamiento'],
-      datasets: [{
-        label: 'Veces solicitado',
-        data: [45, 32, 18, 25, 12],
-        backgroundColor: [
-          'rgba(0, 77, 152, 0.7)',
-          'rgba(0, 77, 152, 0.6)',
-          'rgba(0, 77, 152, 0.5)',
-          'rgba(0, 77, 152, 0.4)',
-          'rgba(0, 77, 152, 0.3)'
-        ],
-        borderColor: '#004D98',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(0,0,0,0.05)' } },
-        y: { grid: { display: false } }
-      }
-    }
+  // ==========================================
+  // FUNCIONES PARA ACTUALIZAR GRÁFICAS
+  // ==========================================
+
+  // 1. Función para cargar/actualizar Gráfica de Ingresos Semanales
+  function actualizarGraficaIngresos() {
+    fetch('{% url "admin_module:api_dashboard_ingresos_semanales" %}')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const ctx = document.getElementById('ingresosChart').getContext('2d');
+          
+          // Si ya existe la gráfica, destruirla
+          if (ingresosChart) {
+            ingresosChart.destroy();
+          }
+          
+          // Crear nueva gráfica con datos actuales
+          ingresosChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: data.data.labels,
+              datasets: [
+                {
+                  label: 'Semana Actual',
+                  data: data.data.semana_actual,
+                  borderColor: '#004D98',
+                  backgroundColor: 'rgba(0, 77, 152, 0.05)',
+                  borderWidth: 2,
+                  tension: 0.3,
+                  fill: true
+                },
+                {
+                  label: 'Semana Anterior',
+                  data: data.data.semana_anterior,
+                  borderColor: '#6c757d',
+                  borderWidth: 1,
+                  borderDash: [5, 5],
+                  tension: 0.3
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  mode: 'index',
+                  intersect: false,
+                  callbacks: {
+                    label: function (context) {
+                      return ` $${context.parsed.y.toLocaleString('es-CL')}`;
+                    }
+                  }
+                },
+                legend: {
+                  display: true,
+                  position: 'top'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: { color: 'rgba(0,0,0,0.05)' },
+                  ticks: {
+                    callback: function (value) {
+                      return `$${value.toLocaleString('es-CL')}`;
+                    }
+                  }
+                },
+                x: { grid: { display: false } }
+              }
+            }
+          });
+        }
+      })
+      .catch(error => console.error('Error al cargar gráfica de ingresos:', error));
+  }
+
+  // 2. Función para cargar/actualizar Gráfica de Servicios Populares
+  function actualizarGraficaServicios(periodo = 'mes') {
+    fetch(`{% url "admin_module:api_dashboard_servicios_populares" %}?periodo=${periodo}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const ctx = document.getElementById('serviciosChart').getContext('2d');
+          
+          // Si ya existe la gráfica, destruirla
+          if (serviciosChart) {
+            serviciosChart.destroy();
+          }
+          
+          // Generar colores degradados para las barras
+          const colores = data.data.labels.map((_, index) => {
+            const opacity = 0.8 - (index * 0.05);
+            return `rgba(0, 77, 152, ${opacity})`;
+          });
+          
+          // Crear nueva gráfica con datos actuales
+          serviciosChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.data.labels,
+              datasets: [{
+                label: 'Veces solicitado',
+                data: data.data.cantidades,
+                backgroundColor: colores,
+                borderColor: '#004D98',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      const cantidad = context.parsed.x;
+                      const ingreso = data.data.ingresos[context.dataIndex];
+                      return [
+                        `Cantidad: ${cantidad} veces`,
+                        `Ingresos: $${ingreso.toLocaleString('es-CL')}`
+                      ];
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: { 
+                  grid: { color: 'rgba(0,0,0,0.05)' },
+                  beginAtZero: true
+                },
+                y: { grid: { display: false } }
+              }
+            }
+          });
+        }
+      })
+      .catch(error => console.error('Error al cargar gráfica de servicios:', error));
+  }
+
+  // ==========================================
+  // ACTUALIZACIÓN EN TIEMPO REAL DEL DASHBOARD
+  // ==========================================
+  
+  function actualizarDashboard() {
+    // 1. Actualizar Citas del Día
+    fetch('{% url "admin_module:api_dashboard_citas_hoy" %}')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const citasValue = document.getElementById('citas-hoy-value');
+          const citasTrend = document.getElementById('citas-hoy-trend');
+          
+          citasValue.textContent = data.data.citas_hoy;
+          
+          const icon = data.data.tendencia === 'up' ? 'bi-arrow-up-short' : 
+                       data.data.tendencia === 'down' ? 'bi-arrow-down-short' : 'bi-dash';
+          const color = data.data.tendencia === 'up' ? 'text-success' : 
+                        data.data.tendencia === 'down' ? 'text-danger' : 'text-muted';
+          
+          citasTrend.className = `metric-trend ${color}`;
+          citasTrend.innerHTML = `<i class="bi ${icon}"></i> <span>${Math.abs(data.data.cambio_porcentaje)}% vs ayer</span>`;
+        }
+      })
+      .catch(error => console.error('Error al actualizar citas:', error));
+
+    // 2. Actualizar Ingresos
+    fetch('{% url "admin_module:api_dashboard_ingresos" %}')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const ingresosValue = document.getElementById('ingresos-value');
+          const ingresosTrend = document.getElementById('ingresos-trend');
+          
+          ingresosValue.textContent = `$${data.data.ingresos_hoy.toLocaleString('es-CL')}`;
+          
+          const icon = data.data.tendencia === 'up' ? 'bi-arrow-up-short' : 
+                       data.data.tendencia === 'down' ? 'bi-arrow-down-short' : 'bi-dash';
+          const color = data.data.tendencia === 'up' ? 'text-success' : 
+                        data.data.tendencia === 'down' ? 'text-danger' : 'text-muted';
+          
+          ingresosTrend.className = `metric-trend ${color}`;
+          ingresosTrend.innerHTML = `<i class="bi ${icon}"></i> <span>${Math.abs(data.data.cambio_vs_promedio)}% vs promedio</span>`;
+        }
+      })
+      .catch(error => console.error('Error al actualizar ingresos:', error));
+
+    // 3. Actualizar Barberos Activos
+    fetch('{% url "admin_module:api_dashboard_barberos_activos" %}')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const barberosValue = document.getElementById('barberos-activos-value');
+          const barberosTrend = document.getElementById('barberos-activos-trend');
+          
+          barberosValue.textContent = data.data.barberos_activos;
+          
+          const mensaje = data.data.barberos_con_citas_hoy > 0 
+            ? `${data.data.barberos_con_citas_hoy} con citas hoy (${data.data.porcentaje_ocupados}%)`
+            : 'Sin citas programadas';
+          
+          barberosTrend.className = 'metric-trend text-info';
+          barberosTrend.innerHTML = `<i class="bi bi-info-circle"></i> <span>${mensaje}</span>`;
+        }
+      })
+      .catch(error => console.error('Error al actualizar barberos:', error));
+  }
+
+  // Ejecutar al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    // Cargar métricas del dashboard
+    actualizarDashboard();
+    
+    // Cargar gráficas inicialmente
+    actualizarGraficaIngresos();
+    actualizarGraficaServicios('mes');
+    
+    // Actualizar métricas cada 30 segundos
+    setInterval(actualizarDashboard, 30000);
+    
+    // Actualizar gráfica de ingresos cada 60 segundos
+    setInterval(actualizarGraficaIngresos, 60000);
   });
 
 </script>
